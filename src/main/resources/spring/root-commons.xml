@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/cache
+       http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+	<bean id="messageSource" name="msg,messages,messageSource"
+	      class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:text/messages</value>
+				<value>classpath:org/hibernate/validator/ValidationMessages</value>
+			</list>
+		</property>
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="fallbackToSystemLocale" value="true"/>
+	</bean>
+
+	<cache:annotation-driven mode="aspectj"/>
+
+	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
+		<property name="caches">
+			<set>
+				<bean p:name="default"
+				      class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
+				<bean p:name="appConfig"
+				      class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
+			</set>
+		</property>
+	</bean>
+
+	<task:annotation-driven mode="aspectj" executor="asyncExecutor" scheduler="scheduler"/>
+	<task:executor id="asyncExecutor" pool-size="1-10" queue-capacity="50" keep-alive="30"/>
+	<task:scheduler id="scheduler" pool-size="1"/>
+	<!--task:scheduled-tasks scheduler="scheduler">
+		<task:scheduled ref="httpdCheck" method="checkHttpd"
+		                fixed-delay="${checkHttpd.fixed-delay}"/>
+	</task:scheduled-tasks-->
+
+</beans>

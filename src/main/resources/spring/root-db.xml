@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/jee
+        http://www.springframework.org/schema/jee/spring-jee-4.0.xsd">
+
+	<!--
+		context.xml: <Resource ... />
+	-->
+	<jee:jndi-lookup id="dataSource" jndi-name="exifweb" />
+
+    <!-- dataSource for embedded tomcat -->
+	<!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/exifweb" resource-ref="false" />-->
+
+    <!-- DBCP clasic -->
+    <!--<bean id="dataSource"-->
+          <!--class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">-->
+        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
+        <!--<property name="url" value="jdbc:mysql://192.168.1.31:3306/exifweb"/>-->
+        <!--<property name="username" value="exifweb"/>-->
+        <!--<property name="password" value="exifweb"/>-->
+        <!--<property name="validationQuery" value="SELECT 1 FROM dual"/>-->
+        <!--<property name="initialSize" value="2"/>-->
+        <!--<property name="maxActive" value="10"/>-->
+        <!--<property name="maxIdle" value="2"/>-->
+        <!--<property name="maxWait" value="30000"/>-->
+        <!--<property name="logAbandoned" value="true"/>-->
+        <!--<property name="minIdle" value="1"/>-->
+        <!--<property name="testWhileIdle" value="true"/>-->
+        <!--<property name="validationQueryTimeout" value="5"/>-->
+        <!--<property name="removeAbandoned" value="true"/>-->
+        <!--<property name="removeAbandonedTimeout" value="60"/>-->
+    <!--</bean>-->
+
+	<bean id="sessionFactory" lazy-init="true"
+	      class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!--class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">-->
+		<property name="dataSource" ref="dataSource"/>
+		<!--<property name="mappingLocations">-->
+		<!--<list>-->
+		<!--<value>classpath:/hibernate/**/*.hbm.xml</value>-->
+		<!--</list>-->
+		<!--</property>-->
+		<property name="packagesToScan" value="image.exifweb.persistence"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+				<prop key="hibernate.jdbc.batch_size">20</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.validator.autoregister_listeners">false</prop>
+				<!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
+				<!--
+				<prop key="hibernate.id.new_generator_mappings">true</prop>
+				<prop key="hibernate.current_session_context_class">jta</prop> -->
+				<!--<prop key="javax.persistence.validation.mode"></prop>-->
+			</props>
+		</property>
+	</bean>
+
+	<!-- Transaction manager for a single Hibernate SessionFactory (alternative to JTA) -->
+	<bean id="transactionManager" name="transactionManager"
+	      class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<!--
+	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
+	 -->
+	<!--
+		Default transaction-manager = "transactionManager".
+		Annotations supported: @Transactional and EJB3's @TransactionAttribute.
+	-->
+	<tx:annotation-driven mode="aspectj"/>
+
+</beans>
