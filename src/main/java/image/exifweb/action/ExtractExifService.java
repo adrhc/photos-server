@@ -60,7 +60,7 @@ public class ExtractExifService {
     public void extractExif(String albumName) {
         try {
             extractExif(new File(appConfigService.getLinuxAlbumPath() +
-                File.separatorChar + albumName), null, false, null);
+                    File.separatorChar + albumName), null, false, null);
             albumService.writeJsonForAlbum(albumName);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -114,7 +114,6 @@ public class ExtractExifService {
         StopWatch sw = new StopWatch();
         sw.start(path.getAbsolutePath());
         List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
-        List<String> imageLowerNames = new ArrayList<>(noFiles ? 0 : files.length);
         if (noFiles) {
             logger.debug("BEGIN album {}, 0 poze", path.getAbsolutePath());
         } else {
@@ -124,18 +123,17 @@ public class ExtractExifService {
                 extractExif(file, album, onlyImportNewAlbums, processedAlbums);
                 name = file.getName();
                 imageNames.add(name);
-                imageLowerNames.add(name.toLowerCase());
             }
         }
         if (curDirIsAlbum && !onlyImportNewAlbums) {
-            deleteNotFoundImages(imageNames, imageLowerNames, album);
+            deleteNotFoundImages(imageNames, album);
         }
         sw.stop();
         logger.debug("END album " + path.getAbsolutePath() + ":\n" + sw.shortSummary());
     }
 
     @Transactional
-    private void deleteNotFoundImages(List<String> imageNames, List<String> imageLowerNames, Album album) {
+    private void deleteNotFoundImages(List<String> imageNames, Album album) {
         logger.debug("imageNames.size: {}, albumId = {}", imageNames.size(), album.getId());
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery("SELECT id as id, name as name FROM Image WHERE album.id = :albumId");
@@ -143,14 +141,20 @@ public class ExtractExifService {
         q.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
         List<Map<String, Object>> imagesDB = q.list();
         logger.debug("images.size: {}", imagesDB.size());
-        String dbName, fsName;
+        String dbName;
+        boolean usingOppositeCase;
         int fsNameIdx, removedCount = 0;
         Image image;
         for (Map<String, Object> imageCols : imagesDB) {
+            usingOppositeCase = false;
             dbName = imageCols.get("name").toString();
-            fsNameIdx = imageLowerNames.indexOf(dbName.toLowerCase());
-            fsName = fsNameIdx < 0 ? null : imageNames.get(fsNameIdx);
-            if (fsName == null) {
+            fsNameIdx = imageNames.indexOf(dbName);
+            // searching for opposite string-case of dbName
+            if (fsNameIdx < 0) {
+                fsNameIdx = imageNames.indexOf(toFileNameWithOppositeExtensionCase(dbName));
+                usingOppositeCase = true;
+            }
+            if (fsNameIdx < 0) {
                 // poza nu exista in file system
                 image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
                 if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
@@ -163,11 +167,11 @@ public class ExtractExifService {
                     logger.debug("poza din DB nu exista in file system: {} -> s-a marcat ca stearsa", dbName);
                     image.setDeleted(true);
                 }
-            } else if (!fsName.equals(dbName)) {
+            } else if (usingOppositeCase) {
                 // diferenta de CASE; update photo's name & path
-                logger.debug("poza din DB cu nume diferit (case) in file system: {}", dbName);
+                logger.debug("poza din DB ({}) cu nume diferit in file system: {}", dbName, imageNames.get(fsNameIdx));
                 image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
-                image.setName(fsName);
+                image.setName(imageNames.get(fsNameIdx));
             } else {
                 // imagine existenta in DB cu acelas nume ca in file system
                 // acesta este cazul in care nu am folosit nimic din db deci nu are sens sa dam flush & clear
@@ -182,6 +186,22 @@ public class ExtractExifService {
             session.flush();// trebuie dat ca altfel e totul anulat de catre clear
             session.clear();// just clearing memory
         }
+    }
+
+    private String toFileNameWithOppositeExtensionCase(String fileName) {
+        StringBuilder sb = new StringBuilder(fileName);
+        int idx = sb.lastIndexOf(".");
+        if (idx <= 0) {
+            return fileName;
+        }
+        sb.append(fileName.substring(0, idx));
+        String pointAndExtension = fileName.substring(idx);
+        if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
+            sb.append(pointAndExtension.toUpperCase());
+        } else {
+            sb.append(pointAndExtension.toLowerCase());
+        }
+        return sb.toString();
     }
 
     @Transactional
