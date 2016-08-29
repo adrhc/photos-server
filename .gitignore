@@ -1,0 +1,13 @@
+.git/
+.svn/
+.idea/
+target/
+.DS_Store
+.tmp/
+dist/
+.sass-cache
+node_modules
+nohup.out
+.iml
+.ipr
+.iws
