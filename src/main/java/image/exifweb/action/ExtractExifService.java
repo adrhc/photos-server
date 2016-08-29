@@ -142,21 +142,17 @@ public class ExtractExifService {
         List<Map<String, Object>> imagesDB = q.list();
         logger.debug("images.size: {}", imagesDB.size());
         String dbName;
-        boolean foundWithOppositeCase;
+        boolean usingOppositeCase;
         int fsNameIdx, removedCount = 0;
         Image image;
         for (Map<String, Object> imageCols : imagesDB) {
-            foundWithOppositeCase = false;
+            usingOppositeCase = false;
             dbName = imageCols.get("name").toString();
             fsNameIdx = imageNames.indexOf(dbName);
             // searching for opposite string-case of dbName
             if (fsNameIdx < 0) {
-                foundWithOppositeCase = true;
-                if (dbName.equals(dbName.toLowerCase())) {
-                    fsNameIdx = imageNames.indexOf(dbName.toUpperCase());
-                } else {
-                    fsNameIdx = imageNames.indexOf(dbName.toLowerCase());
-                }
+                fsNameIdx = imageNames.indexOf(toFileNameWithOppositeExtensionCase(dbName));
+                usingOppositeCase = true;
             }
             if (fsNameIdx < 0) {
                 // poza nu exista in file system
@@ -171,9 +167,9 @@ public class ExtractExifService {
                     logger.debug("poza din DB nu exista in file system: {} -> s-a marcat ca stearsa", dbName);
                     image.setDeleted(true);
                 }
-            } else if (foundWithOppositeCase) {
+            } else if (usingOppositeCase) {
                 // diferenta de CASE; update photo's name & path
-                logger.debug("poza din DB cu nume diferit (case) in file system: {}", dbName);
+                logger.debug("poza din DB ({}) cu nume diferit in file system: {}", dbName, imageNames.get(fsNameIdx));
                 image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
                 image.setName(imageNames.get(fsNameIdx));
             } else {
@@ -190,6 +186,22 @@ public class ExtractExifService {
             session.flush();// trebuie dat ca altfel e totul anulat de catre clear
             session.clear();// just clearing memory
         }
+    }
+
+    private String toFileNameWithOppositeExtensionCase(String fileName) {
+        StringBuilder sb = new StringBuilder(fileName);
+        int idx = sb.lastIndexOf(".");
+        if (idx <= 0) {
+            return fileName;
+        }
+        sb.append(fileName.substring(0, idx));
+        String pointAndExtension = fileName.substring(idx);
+        if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
+            sb.append(pointAndExtension.toUpperCase());
+        } else {
+            sb.append(pointAndExtension.toLowerCase());
+        }
+        return sb.toString();
     }
 
     @Transactional
