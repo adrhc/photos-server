@@ -8,6 +8,6 @@ dist/
 .sass-cache
 node_modules
 nohup.out
-.iml
-.ipr
-.iws
+*.iml
+*.ipr
+*.iws
