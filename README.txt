@@ -42,3 +42,5 @@ iar in tomcat/conf/context.xml:
               driverClassName="com.mysql.jdbc.Driver"
               url="jdbc:mysql://192.168.1.31:3306/exifweb"/>
 </Context>
+
+git test 8
