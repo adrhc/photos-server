@@ -53,7 +53,8 @@ public class AppConfigCtrl {
         processInfoService.prepareCPUMemSummary(model, null);
     }
 
-    @RequestMapping(value = "/getProcMemFullStats", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getProcMemFullStats", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @ResponseBody
     public void getProcMemFullStats()
             throws IOException, InterruptedException {
         // valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
