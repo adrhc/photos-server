@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.http.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -54,10 +55,12 @@ public class AppConfigCtrl {
     }
 
     @RequestMapping(value = "/getProcMemFullStats", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    @ResponseBody
-    public void getProcMemFullStats()
+    public ResponseEntity<String> getProcMemFullStats()
             throws IOException, InterruptedException {
         // valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
