@@ -54,7 +54,7 @@ public class AppConfigCtrl {
     }
 
     @RequestMapping(value = "/getProcMemFullStats", produces = "application/json;charset=UTF-8")
-    public void getProcMemFullStats(Model model)
+    public void getProcMemFullStats()
             throws IOException, InterruptedException {
         // valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
     }
