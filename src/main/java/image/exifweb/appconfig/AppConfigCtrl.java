@@ -58,9 +58,10 @@ public class AppConfigCtrl {
     public ResponseEntity<String> getProcMemFullStats()
             throws IOException, InterruptedException {
         // valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+        // HttpHeaders responseHeaders = new HttpHeaders();
+        // responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        // return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
