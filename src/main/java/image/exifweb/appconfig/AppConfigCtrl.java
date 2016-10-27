@@ -82,6 +82,12 @@ public class AppConfigCtrl {
         return testRAMObjectToJson;
     }
 
+    @RequestMapping(value = "/testRAMObjectToJsonDeferred", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DeferredResult<List<AppConfig>> testRAMObjectToJsonDeferred()
+            throws IOException, InterruptedException {
+        return (new ConstantDeferredResult<List<AppConfig>>()).setResultThenRun(testRAMObjectToJson);
+    }
+
     @RequestMapping(value = "/testRAMString", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     public String testRAMString()
@@ -91,7 +97,7 @@ public class AppConfigCtrl {
 
     @RequestMapping(value = "/testRAMStringDeferred", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
-    public StringConstDeferredResult testRAMStringDeferred()
+    public DeferredResult<String> testRAMStringDeferred()
             throws IOException, InterruptedException {
         return ac.getBean(StringConstDeferredResult.class).setString(testRAMString);
     }
