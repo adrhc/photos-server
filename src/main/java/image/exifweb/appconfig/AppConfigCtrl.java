@@ -8,6 +8,9 @@ import image.exifweb.sys.process.ProcStatPercent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +18,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.http.*;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -41,6 +44,7 @@ public class AppConfigCtrl {
     private MailService mailService;
     @Inject
     private AppConfigService appConfigService;
+    private List<AppConfig> testRAMJson;
 
     @RequestMapping("/subscribeToAsyncProcMemStats")
     @ResponseBody
@@ -48,42 +52,48 @@ public class AppConfigCtrl {
         return new CPUMemSummaryDeferredResult(processInfoService.asyncSubscribers);
     }
 
-    @RequestMapping(value = "/getProcMemStatSummary", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getProcMemStatSummary", produces = MediaType.APPLICATION_JSON_VALUE)
     public void getProcMemStatSummary(Model model)
             throws IOException, InterruptedException {
         processInfoService.prepareCPUMemSummary(model, null);
     }
 
-    @RequestMapping(value = "/getProcMemFullStats", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getProcMemFullStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProcMemFullStats()
             throws IOException, InterruptedException {
         // valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
         // HttpHeaders responseHeaders = new HttpHeaders();
-        // responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        // responseHeaders.setContentType(MediaType.APPLICATION_JSON_VALUE);
         // return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/testRAMJson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AppConfig> testRAMJson()
+            throws IOException, InterruptedException {
+        return testRAMJson;
+    }
+
+    @RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ProcStatPercent> getMemStat() throws IOException, InterruptedException {
         return processInfoService.getMemDetailUsingPs();
     }
 
-    @RequestMapping(value = "/getProcStat", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/getProcStat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<ProcStatPercent> getProcStat() throws IOException, InterruptedException {
         return processInfoService.getCPUDetailUsingTop();
     }
 
-    @RequestMapping(value = "/gc", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void gc(Model model) {
         System.gc();
         model.addAttribute("message", "System.gc run!");
     }
 
-    @RequestMapping(value = "/checkProcess", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/checkProcess", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public void checkProcess(@RequestParam String[] commands, Model model) throws Exception {
         List<String> runningCmds = processInfoService.getProcessesRunning(commands);
         if (runningCmds.isEmpty()) {
@@ -96,7 +106,7 @@ public class AppConfigCtrl {
         }
     }
 
-    @RequestMapping(value = "/checkMailService", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/checkMailService", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void checkMailService(Model model) throws Exception {
         if (mailService.checkMailService()) {
@@ -107,14 +117,14 @@ public class AppConfigCtrl {
         }
     }
 
-    @RequestMapping(value = "/reloadParams", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/reloadParams", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @CacheEvict(value = "appConfig", allEntries = true)
     public void reloadParams(Model model) {
         model.addAttribute("message", "App params reloaded!");
     }
 
-    @RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void update(@RequestBody List<AppConfig> appConfigs, Model model) throws IOException {
         appConfigService.update(appConfigs);
@@ -122,7 +132,7 @@ public class AppConfigCtrl {
         model.addAttribute("message", "App configs updated!");
     }
 
-    @RequestMapping(value = "/canUseJsonFiles", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/canUseJsonFiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public Map<String, String> canUseJsonFiles(WebRequest webRequest) {
         if (webRequest.checkNotModified(appConfigService.canUseJsonFilesLastUpdate())) {
@@ -136,7 +146,7 @@ public class AppConfigCtrl {
     }
 
     @RequestMapping(value = "getAppConfigs",
-            method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<AppConfig> getAppConfigs(WebRequest webRequest, HttpServletRequest request) {
 //        logger.debug("lastUpdatedAppConfigs = {}", appConfigService.getLastUpdatedAppConfigs());
@@ -151,5 +161,10 @@ public class AppConfigCtrl {
 //        logger.debug("modified:\n{}", ArrayUtils.toString(appConfigs));
 //        return appConfigs;
         return appConfigService.getAppConfigs();
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        testRAMJson = appConfigService.getAppConfigs();
     }
 }

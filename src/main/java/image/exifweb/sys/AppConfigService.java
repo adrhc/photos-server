@@ -3,7 +3,6 @@ package image.exifweb.sys;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.persistence.AppConfig;
 import image.exifweb.persistence.AppConfigEnum;
-import org.apache.commons.lang.ArrayUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -161,6 +160,9 @@ public class AppConfigService {
 //                appConfig.getName(), appConfig.getLastUpdate().getTime());
         }
 //        logger.debug("END {}", date.getTime());
+        if (date == null) {
+            return -1;
+        }
         return date.getTime();
     }
 
