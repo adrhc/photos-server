@@ -80,6 +80,7 @@ public class AppConfigCtrl {
     }
 
     @RequestMapping(value = "/testRAMString", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
     public String testRAMString()
             throws IOException, InterruptedException {
         return testRAMString;
