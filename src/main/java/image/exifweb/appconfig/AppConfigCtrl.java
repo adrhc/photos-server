@@ -9,6 +9,7 @@ import image.exifweb.sys.process.ProcStatPercent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,8 @@ public class AppConfigCtrl {
     private AppConfigService appConfigService;
     @Inject
     private MappingJackson2JsonView jacksonConverter;
+    @Inject
+    private ApplicationContext ac;
     private String testRAMString;
     private List<AppConfig> testRAMObjectToJson;
 
@@ -84,6 +87,13 @@ public class AppConfigCtrl {
     public String testRAMString()
             throws IOException, InterruptedException {
         return testRAMString;
+    }
+
+    @RequestMapping(value = "/testRAMStringDeferred", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    @ResponseBody
+    public StringConstDeferredResult testRAMStringDeferred()
+            throws IOException, InterruptedException {
+        return ac.getBean(StringConstDeferredResult.class).setString(testRAMString);
     }
 
     @RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

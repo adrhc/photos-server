@@ -1,6 +1,8 @@
 package image.exifweb.appconfig;
 
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.ui.Model;
+import org.springframework.web.context.ContextLoaderListenerEx;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Vector;
@@ -13,17 +15,17 @@ import java.util.Vector;
  * To change this template use File | Settings | File Templates.
  */
 public class CPUMemSummaryDeferredResult extends DeferredResult<Model> implements Runnable {
-	private Vector<CPUMemSummaryDeferredResult> asyncSubscribers;
+    private Vector<CPUMemSummaryDeferredResult> asyncSubscribers;
 
-	public CPUMemSummaryDeferredResult(Vector<CPUMemSummaryDeferredResult> asyncSubscribers) {
-		super();
-		this.asyncSubscribers = asyncSubscribers;
-		this.asyncSubscribers.add(this);
-		onCompletion(this);
-	}
+    public CPUMemSummaryDeferredResult(Vector<CPUMemSummaryDeferredResult> asyncSubscribers) {
+        super();
+        this.asyncSubscribers = asyncSubscribers;
+        this.asyncSubscribers.add(this);
+        ContextLoaderListenerEx.wac.getBean(ThreadPoolTaskExecutor.class).execute(this);
+    }
 
-	@Override
-	public void run() {
-		asyncSubscribers.remove(this);
-	}
+    @Override
+    public void run() {
+        asyncSubscribers.remove(this);
+    }
 }
