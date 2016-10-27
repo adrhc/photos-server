@@ -1,5 +1,6 @@
 package image.exifweb.appconfig;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import image.exifweb.persistence.AppConfig;
 import image.exifweb.sys.AppConfigService;
 import image.exifweb.sys.MailService;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -44,7 +46,10 @@ public class AppConfigCtrl {
     private MailService mailService;
     @Inject
     private AppConfigService appConfigService;
-    private List<AppConfig> testRAMJson;
+    @Inject
+    private MappingJackson2JsonView jacksonConverter;
+    private String testRAMString;
+    private List<AppConfig> testRAMObjectToJson;
 
     @RequestMapping("/subscribeToAsyncProcMemStats")
     @ResponseBody
@@ -68,10 +73,16 @@ public class AppConfigCtrl {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/testRAMJson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AppConfig> testRAMJson()
+    @RequestMapping(value = "/testRAMObjectToJson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AppConfig> testRAMObjectToJson()
             throws IOException, InterruptedException {
-        return testRAMJson;
+        return testRAMObjectToJson;
+    }
+
+    @RequestMapping(value = "/testRAMString", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    public String testRAMString()
+            throws IOException, InterruptedException {
+        return testRAMString;
     }
 
     @RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -165,6 +176,11 @@ public class AppConfigCtrl {
 
     @PostConstruct
     public void postConstruct() {
-        testRAMJson = appConfigService.getAppConfigs();
+        testRAMObjectToJson = appConfigService.getAppConfigs();
+        try {
+            testRAMString = jacksonConverter.getObjectMapper().writeValueAsString(testRAMObjectToJson);
+        } catch (JsonProcessingException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }
