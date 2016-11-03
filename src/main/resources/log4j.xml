@@ -20,7 +20,7 @@
 
     <appender name="exifweb-file" class="org.apache.log4j.RollingFileAppender">
         <param name="Threshold" value="debug"/>
-        <param name="file" value="exifweb.log"/>
+        <param name="file" value="/home/adr/apps/log/exifweb.log"/>
         <param name="MaxFileSize" value="1MB"/>
         <!-- Keep one backup file -->
         <param name="MaxBackupIndex" value="1"/>
@@ -31,7 +31,7 @@
 
     <appender name="subtitles-extractor-file" class="org.apache.log4j.RollingFileAppender">
         <param name="Threshold" value="debug"/>
-        <param name="file" value="subtitles-extractor.log"/>
+        <param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>
         <param name="MaxFileSize" value="5MB"/>
         <!-- Keep one backup file -->
         <param name="MaxBackupIndex" value="3"/>

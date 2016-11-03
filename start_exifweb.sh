@@ -1,3 +1,6 @@
+#!/bin/bash
+source env.sh
+
 export EXIFWEB_PORT=8080
 export EXIFWEB_DIR=/home/adr/Projects/exifweb/trunk/target/exifweb
 #echo "EXIFWEB_PORT = $EXIFWEB_PORT"
