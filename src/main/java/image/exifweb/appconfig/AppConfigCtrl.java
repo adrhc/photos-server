@@ -197,6 +197,12 @@ public class AppConfigCtrl {
         return appConfigService.testGetNoCacheableOrderedAppConfigs();
     }
 
+    @RequestMapping(value = "testGetNoCacheableAppConfigByName",
+            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public AppConfig testGetNoCacheableAppConfigByName() {
+        return appConfigService.testGetNoCacheableAppConfigByName("albums_path");
+    }
+
     @PostConstruct
     public void postConstruct() {
         testRAMObjectToJson = appConfigService.getAppConfigs();

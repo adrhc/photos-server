@@ -6,7 +6,9 @@ import image.exifweb.persistence.AppConfigEnum;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
@@ -142,7 +144,6 @@ public class AppConfigService {
     public List<AppConfig> getAppConfigs() {
         Session session = sessionFactory.getCurrentSession();
         List<AppConfig> ret = session.createCriteria(AppConfig.class).list();
-        Hibernate.initialize(ret);
         return ret;
     }
 
@@ -150,8 +151,13 @@ public class AppConfigService {
     public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
         Session session = sessionFactory.getCurrentSession();
         List<AppConfig> ret = session.createCriteria(AppConfig.class).addOrder(Order.asc("name")).list();
-        Hibernate.initialize(ret);
         return ret;
+    }
+
+    @Transactional
+    public AppConfig testGetNoCacheableAppConfigByName(String name) {
+        Session session = sessionFactory.getCurrentSession();
+        return (AppConfig) session.createCriteria(AppConfig.class).add(Restrictions.eq("name", name)).uniqueResult();
     }
 
     @Cacheable(value = "appConfig", key = "'lastUpdatedAppConfigs'")
