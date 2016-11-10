@@ -176,7 +176,7 @@ public class AppConfigCtrl {
     @RequestMapping(value = "getAppConfigs",
             method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<AppConfig> getAppConfigs(WebRequest webRequest, HttpServletRequest request) {
+    public List<AppConfig> getAppConfigs(WebRequest webRequest) {
 //        logger.debug("lastUpdatedAppConfigs = {}", appConfigService.getLastUpdatedAppConfigs());
 //        logger.debug("If-Modified-Since = {}", request.getDateHeader("If-Modified-Since"));
 //        logger.debug("currentTimeMillis = {}", System.currentTimeMillis());
@@ -189,6 +189,12 @@ public class AppConfigCtrl {
 //        logger.debug("modified:\n{}", ArrayUtils.toString(appConfigs));
 //        return appConfigs;
         return appConfigService.getAppConfigs();
+    }
+
+    @RequestMapping(value = "testGetNoCacheableOrderedAppConfigs",
+            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
+        return appConfigService.testGetNoCacheableOrderedAppConfigs();
     }
 
     @PostConstruct
