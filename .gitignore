@@ -11,3 +11,4 @@ nohup.out
 *.iml
 *.ipr
 *.iws
+/.project
