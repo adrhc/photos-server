@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,6 +86,9 @@ public class ImageExif {
             // utilizat in url-ul imaginii si cu impact in browser-cache
 //            image.setDateTime(sdf.parse(exifIFD0Descriptor.getDescription(306)));
             image.setDateTime(new Date(imgFile.lastModified()));
+        } catch (FileNotFoundException e) {
+            logger.info("{} no longer exists! (datected too late so will not be deleted from DB)", imgFile.getPath());
+            return null;
         } catch (Exception e) {
             logger.error("Nu s-a putut extrage EXIF pt:\n{}", imgFile.getPath());
             image.setDateTime(new Date(imgFile.lastModified()));

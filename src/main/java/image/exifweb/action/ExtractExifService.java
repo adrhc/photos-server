@@ -85,6 +85,10 @@ public class ExtractExifService {
         if (path.isFile()) {
             try {
                 Image image = imageExif.extractExif(path);
+                if (image == null) {
+                    // path no longer exists
+                    return;
+                }
                 image.setAlbum(album);
                 saveImageExif(image);
             } catch (Exception e) {
@@ -133,8 +137,8 @@ public class ExtractExifService {
     }
 
     @Transactional
-    private void deleteNotFoundImages(List<String> imageNames, Album album) {
-        logger.debug("imageNames.size: {}, albumId = {}", imageNames.size(), album.getId());
+    private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
+        logger.debug("imageNames.size: {}, albumId = {}", foundImageNames.size(), album.getId());
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery("SELECT id as id, name as name FROM Image WHERE album.id = :albumId");
         q.setInteger("albumId", album.getId());
@@ -148,14 +152,14 @@ public class ExtractExifService {
         for (Map<String, Object> imageCols : imagesDB) {
             usingOppositeCase = false;
             dbName = imageCols.get("name").toString();
-            fsNameIdx = imageNames.indexOf(dbName);
+            fsNameIdx = foundImageNames.indexOf(dbName);
             // searching for opposite string-case of dbName
             if (fsNameIdx < 0) {
-                fsNameIdx = imageNames.indexOf(toFileNameWithOppositeExtensionCase(dbName));
+                fsNameIdx = foundImageNames.indexOf(toFileNameWithOppositeExtensionCase(dbName));
                 usingOppositeCase = true;
             }
             if (fsNameIdx < 0) {
-                // poza nu exista in file system
+                // poza din DB nu mai exista in file system
                 image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
                 if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
                     // status = 0
@@ -168,13 +172,13 @@ public class ExtractExifService {
                     image.setDeleted(true);
                 }
             } else if (usingOppositeCase) {
-                // diferenta de CASE; update photo's name & path
-                logger.debug("poza din DB ({}) cu nume diferit in file system: {}", dbName, imageNames.get(fsNameIdx));
+                // diferenta de CASE; update photo's name & path in DB
+                logger.debug("poza din DB ({}) cu nume diferit in file system: {}", dbName, foundImageNames.get(fsNameIdx));
                 image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
-                image.setName(imageNames.get(fsNameIdx));
+                image.setName(foundImageNames.get(fsNameIdx));
             } else {
                 // imagine existenta in DB cu acelas nume ca in file system
-                // acesta este cazul in care nu am folosit nimic din db deci nu are sens sa dam flush & clear
+                // acesta este cazul in care nu am folosit nimic din db
                 continue;
             }
             session.flush();// trebuie dat ca altfel e totul anulat de catre clear
