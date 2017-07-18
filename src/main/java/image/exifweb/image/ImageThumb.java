@@ -6,9 +6,9 @@ import java.util.Date;
  * Created by adr on 14-Apr-15.
  */
 public interface ImageThumb extends ImageDimensions {
-    public String getImgPath();
+    public String getImagePath();
 
-    public void setImgPath(String imgPath);
+    public void setImagePath(String imagePath);
 
     public String getImgName();
 

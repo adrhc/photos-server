@@ -54,12 +54,12 @@ public class AlbumCover implements ImageThumb {
         this.albumName = albumName;
     }
 
-    public String getImgPath() {
+    public String getImagePath() {
         return imgPath;
     }
 
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
+    public void setImagePath(String imagePath) {
+        this.imgPath = imagePath;
     }
 
     public int getImageHeight() {

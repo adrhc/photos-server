@@ -172,7 +172,7 @@ public class AlbumService {
 				thumbPath.append(thumb.getAlbumName()).append('/');
 				thumbPath.append(thumb.getThumbLastModified().getTime()).append('/');
 				thumbPath.append(thumb.getImgName());
-				thumb.setImgPath(thumbPath.toString());
+				thumb.setImagePath(thumbPath.toString());
 				thumbPath.clear();
 			}
 		}
