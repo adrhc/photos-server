@@ -10,7 +10,10 @@
     <properties>
         <tomcat.version>7.0.64</tomcat.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- same version for spring-instrument-tomcat-*.jar -->
+        <!--
+            https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
+            Should be the same version for spring-instrument-tomcat-*.jar!
+        -->
         <springframework.version>4.3.13.RELEASE</springframework.version>
         <spring-security.version>3.2.10.RELEASE</spring-security.version>
         <spring-data.version>1.6.1.RELEASE</spring-data.version>
