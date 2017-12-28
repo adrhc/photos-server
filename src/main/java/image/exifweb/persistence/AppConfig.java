@@ -17,18 +17,13 @@ import java.sql.Timestamp;
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 public class AppConfig implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	@Column
 	private String name;
-	@Column
 	private String value;
-	@JsonIgnore
-	@Version
-	@Column(name = "last_update")
 	private Timestamp lastUpdate;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
 	}
@@ -37,6 +32,7 @@ public class AppConfig implements Serializable {
 		this.id = id;
 	}
 
+	@Column
 	public String getName() {
 		return name;
 	}
@@ -45,6 +41,7 @@ public class AppConfig implements Serializable {
 		this.name = name;
 	}
 
+	@Column
 	public String getValue() {
 		return value;
 	}
@@ -58,6 +55,9 @@ public class AppConfig implements Serializable {
 		this.value = value == null || !value.equals("true") && !value.equals("false") ? value : value.intern();
 	}
 
+	@JsonIgnore
+	@Version
+	@Column(name = "last_update")
 	public Timestamp getLastUpdate() {
 		return lastUpdate;
 	}
