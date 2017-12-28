@@ -8,7 +8,7 @@
             <option name="name" value="Maven: org.springframework:spring-aspects:4.2.9.RELEASE" />
           </projectLibrary>
           <projectLibrary>
-            <option name="name" value="Maven: org.springframework.security:spring-security-aspects:3.2.10.RELEASE" />
+            <option name="name" value="Maven: org.springframework.security:spring-security-aspects:4.0.4.RELEASE" />
           </projectLibrary>
         </option>
       </configuration>
@@ -102,9 +102,9 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.9" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.7.9" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:3.2.10.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:3.2.10.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:3.2.10.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-aspects:3.2.10.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-web:4.0.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-core:4.0.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-config:4.0.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-aspects:4.0.4.RELEASE" level="project" />
   </component>
 </module>
