@@ -1,10 +1,10 @@
 ATENTIE, depinde de subtitles-extractor compilat non-shade!
 
 tomcat/lib (pt a functiona aspectj - @Async):
-spring-instrument-tomcat-3.2.4.RELEASE.jar
+spring-instrument-tomcat-4.2.9.RELEASE.jar
 
 tomcat/lib (pt a functiona varianta tomcat-embedded):
-mysql-connector-java-5.1.25.jar
+mysql-connector-java-5.1.38.jar
 
 In tomcat/conf/server.xml:
   <Host name="localhost"  appBase="webapps"
