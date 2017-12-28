@@ -19,8 +19,12 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-        <!--<property name="ignoreAcceptHeader" value="true" />-->
+    <bean id="contentNegotiationManager"  class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <!--<property name="favorPathExtension" value="true" />-->
+        <!--<property name="ignoreAcceptHeader" value="true"/>-->
+        <!--<property name="useJaf" value="false"/>-->
+        <property name="defaultContentType" value="application/json" />
+
         <property name="mediaTypes">
             <map>
                 <entry key="json" value="application/json"/>
@@ -30,6 +34,22 @@
                 <entry key="kml" value="application/vnd.google-earth.kml"/>
             </map>
         </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <!--<property name="ignoreAcceptHeader" value="true" />-->
+
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <!--<property name="mediaTypes">-->
+            <!--<map>-->
+                <!--<entry key="json" value="application/json"/>-->
+                <!--<entry key="atom" value="application/atom+xml"/>-->
+                <!--<entry key="html" value="text/html"/>-->
+                <!--<entry key="xml" value="text/xml"/>-->
+                <!--<entry key="kml" value="application/vnd.google-earth.kml"/>-->
+            <!--</map>-->
+        <!--</property>-->
+
         <property name="viewResolvers">
             <list>
                 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
