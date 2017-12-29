@@ -210,22 +210,32 @@ public class ExtractExifService {
 	/**
 	 * Require compile time aspectj weaving!
 	 *
-	 * @param image
+	 * @param imgWithNewExif
 	 */
-	@Transactional
-	private void saveImageExif(Image image) {
-		ImageIdAndDates imageIdAndDates = getImageIdAndDates(image.getName(), image.getAlbum().getId());
+	private void saveImageExif(Image imgWithNewExif) {
+		ImageIdAndDates imageIdAndDates = getImageIdAndDates(
+				imgWithNewExif.getName(), imgWithNewExif.getAlbum().getId());
 		if (imageIdAndDates == null) {
-			sessionFactory.getCurrentSession().persist(image);
-		} else if (imageIdAndDates.dateTime.before(image.getDateTime())) {
-			Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, imageIdAndDates.id);
-			imageExif.copyExifProperties(image, dbImage);
-		} else if (imageIdAndDates.thumbLastModified.before(image.getThumbLastModified())) {
-			// utilizat in url-ul thumb-ului si cu impact in browser-cache
-			updateThumbLastModifiedForImg(image.getThumbLastModified(), imageIdAndDates.id);
+			persistImage(imgWithNewExif);
+		} else if (imageIdAndDates.dateTime.before(imgWithNewExif.getDateTime())) {
+			updateExifPropertiesInDB(imgWithNewExif, imageIdAndDates.id);
+		} else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
+			updateThumbLastModifiedForImg(imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
 		}
 	}
 
+	@Transactional
+	private void persistImage(Image image) {
+		sessionFactory.getCurrentSession().persist(image);
+	}
+
+	@Transactional
+	private void updateExifPropertiesInDB(Image image, Integer imageId) {
+		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
+		imageExif.copyExifProperties(image, dbImage);
+	}
+
+	@Transactional
 	private void updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("UPDATE Image SET thumbLastModified = :thumbLastModified WHERE id = :imageId");
@@ -234,6 +244,7 @@ public class ExtractExifService {
 		q.executeUpdate();
 	}
 
+	@Transactional
 	private ImageIdAndDates getImageIdAndDates(String name, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("SELECT new image.exifweb.action.ExtractExifService$ImageIdAndDates" +
