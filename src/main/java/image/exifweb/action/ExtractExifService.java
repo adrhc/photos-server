@@ -228,8 +228,9 @@ public class ExtractExifService {
 
 	private void updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Image SET thumbLastModified = :thumbLastModified");
+		Query q = session.createQuery("UPDATE Image SET thumbLastModified = :thumbLastModified WHERE id = :imageId");
 		q.setDate("thumbLastModified", thumbLastModified);
+		q.setInteger("imageId", imageId);
 		q.executeUpdate();
 	}
 
