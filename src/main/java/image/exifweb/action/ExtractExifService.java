@@ -207,25 +207,6 @@ public class ExtractExifService {
 		return sb.toString();
 	}
 
-	@Transactional
-	private void saveImageExif1(Image image) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("SELECT i FROM Image i WHERE i.name = :name AND i.album.id = :albumId");
-		q.setString("name", image.getName());
-		q.setInteger("albumId", image.getAlbum().getId());
-		Image dbImage = (Image) q.uniqueResult();
-		if (dbImage == null) {
-			session.persist(image);
-			return;
-		}
-		if (dbImage.getDateTime().before(image.getDateTime())) {
-			imageExif.copyExifProperties(image, dbImage);
-		} else if (dbImage.getThumbLastModified().before(image.getThumbLastModified())) {
-			// utilizat in url-ul thumb-ului si cu impact in browser-cache
-			dbImage.setThumbLastModified(image.getThumbLastModified());
-		}
-	}
-
 	/**
 	 * Require compile time aspectj weaving!
 	 *
