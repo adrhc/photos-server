@@ -66,53 +66,70 @@ public class ExtractExifService {
 		}
 	}
 
+	public void extractExifFromFile(File path, Album album) {
+		try {
+			Image image = imageExif.extractExif(path);
+			if (image == null) {
+				// path no longer exists
+				return;
+			}
+			image.setAlbum(album);
+			saveImageExif(image);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			logger.error(path.getAbsolutePath());
+		}
+	}
+
 	/**
 	 * Exista posibilitatea ca in cadrul extragerii EXIF anumite
 	 * albume sa fie sterse pt ca nu mai au poze in folderul aferent.
 	 * De aceea avem evict pe lastUpdatedForAlbums.
 	 *
 	 * @param path
-	 * @param album
+	 * @param album               is the path's album when path is a image-file otherwise is null
 	 * @param onlyImportNewAlbums
 	 * @param processedAlbums
 	 */
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void extractExif(File path, Album album,
 	                        boolean onlyImportNewAlbums, List<Album> processedAlbums) {
-		boolean curDirIsAlbum;
 		// cazul in care path este o poza
 		if (path.isFile()) {
-			try {
-				Image image = imageExif.extractExif(path);
-				if (image == null) {
-					// path no longer exists
-					return;
-				}
-				image.setAlbum(album);
-				saveImageExif(image);
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				logger.error(path.getAbsolutePath());
-			}
+			extractExifFromFile(path, album);
 			return;
 		}
-		// cazul in care path este un album
-		curDirIsAlbum = albumInfo.isAlbum(path.getName());
 		File[] files = path.listFiles();
 		boolean noFiles = files == null || files.length == 0;
+		boolean curDirIsAlbum = albumInfo.isAlbum(path.getName());
 		if (curDirIsAlbum) {
+			// path este un album
 			if (onlyImportNewAlbums && noFiles) {
-				// album fara poze
+				// ignoram importul de albume fara poze
+				logger.warn("{} este gol!", path.getPath());
 				return;
 			}
-			// creem albumul chiar daca nu are poze (returns null if already exists)
-			album = getOrCreateAlbum(path.getName(), onlyImportNewAlbums);
+			album = albumService.getAlbumByName(path.getName());
 			if (album == null) {
+				// album inexistent in DB
+				if (noFiles) {
+					// album dir e gol
+					return;
+				}
+				// creem un nou album (dir aferent are poze)
+				album = albumService.create(path.getName());
+			} else if (onlyImportNewAlbums) {
 				// cazul in care doar importam albume iar path este un album deja importat
 				return;
-			} else if (processedAlbums != null) {
+			}
+			if (processedAlbums != null) {
+				// marcam albumul ca procesat
 				processedAlbums.add(album);
 			}
+		} else if (noFiles) {
+			// path este chiar root-ul albumelor si e gol
+			logger.error("{} este gol!", path.getPath());
+			return;
 		}
 		StopWatch sw = new StopWatch();
 		sw.start(path.getAbsolutePath());
@@ -121,11 +138,9 @@ public class ExtractExifService {
 			logger.debug("BEGIN album {}, 0 poze", path.getAbsolutePath());
 		} else {
 			logger.debug("BEGIN album {}, {} poze", path.getAbsolutePath(), files.length);
-			String name;
 			for (File file : files) {
 				extractExif(file, album, onlyImportNewAlbums, processedAlbums);
-				name = file.getName();
-				imageNames.add(name);
+				imageNames.add(file.getName());
 			}
 		}
 		if (curDirIsAlbum && !onlyImportNewAlbums) {
@@ -252,20 +267,6 @@ public class ExtractExifService {
 		q.setString("name", name);
 		q.setInteger("albumId", albumId);
 		return (ImageIdAndDates) q.uniqueResult();
-	}
-
-	@Transactional
-	private Album getOrCreateAlbum(String name, boolean onlyCreate) {
-		Album album = albumService.getAlbumByName(name);
-		if (album == null) {
-			// creating new album
-			album = new Album(name);
-			sessionFactory.getCurrentSession().persist(album);
-		} else if (onlyCreate) {
-			// existing album
-			return null;
-		}
-		return album;
 	}
 
 	private static class ImageIdAndDates {
