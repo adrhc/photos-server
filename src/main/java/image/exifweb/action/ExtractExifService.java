@@ -69,7 +69,7 @@ public class ExtractExifService {
 	/**
 	 * Exista posibilitatea ca in cadrul extragerii EXIF anumite
 	 * albume sa fie sterse pt ca nu mai au poze in folderul aferent.
-	 * Deaceea avem evict pe lastUpdatedForAlbums.
+	 * De aceea avem evict pe lastUpdatedForAlbums.
 	 *
 	 * @param path
 	 * @param album
