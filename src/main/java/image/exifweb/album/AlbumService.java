@@ -56,6 +56,12 @@ public class AlbumService {
 	@Inject
 	private ExtractExifService extractExifService;
 
+	public Album create(String name) {
+		Album album = new Album(name);
+		sessionFactory.getCurrentSession().persist(album);
+		return album;
+	}
+
 	@Transactional
 	public Album getAlbumById(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
