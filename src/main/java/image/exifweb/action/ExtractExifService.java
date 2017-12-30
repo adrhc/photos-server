@@ -66,19 +66,20 @@ public class ExtractExifService {
 		}
 	}
 
-	public void extractExifFromFile(File path, Album album) {
-		try {
-			Image image = imageExif.extractExif(path);
-			if (image == null) {
-				// path no longer exists
-				return;
-			}
-			image.setAlbum(album);
-			saveImageExif(image);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			logger.error(path.getAbsolutePath());
+	/**
+	 * @param path
+	 * @param album
+	 * @return true = EXIF processed, false = file no longer exists
+	 */
+	public boolean extractExifFromFile(File path, Album album) {
+		Image image = imageExif.extractExif(path);
+		if (image == null) {
+			logger.info("{} no longer exists!", path.getPath());
+			return false;
 		}
+		image.setAlbum(album);
+		saveImageExif(image);
+		return true;
 	}
 
 	/**
@@ -133,14 +134,21 @@ public class ExtractExifService {
 		}
 		StopWatch sw = new StopWatch();
 		sw.start(path.getAbsolutePath());
-		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
+		// 1 level only album supported
+		List<String> imageNames = curDirIsAlbum ? new ArrayList<>(noFiles ? 0 : files.length) : null;
 		if (noFiles) {
 			logger.debug("BEGIN album {}, 0 poze", path.getAbsolutePath());
 		} else {
 			logger.debug("BEGIN album {}, {} poze", path.getAbsolutePath(), files.length);
 			for (File file : files) {
-				extractExif(file, album, onlyImportNewAlbums, processedAlbums);
-				imageNames.add(file.getName());
+				if (curDirIsAlbum) {
+					// 1 level only album supported
+					if (extractExifFromFile(file, album)) {
+						imageNames.add(file.getName());
+					}
+				} else {
+					extractExif(file, album, onlyImportNewAlbums, processedAlbums);
+				}
 			}
 		}
 		if (curDirIsAlbum && !onlyImportNewAlbums) {
