@@ -1,7 +1,7 @@
 package image.exifweb.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.action.ExtractExifService;
+import image.exifweb.exif.ExtractExifService;
 import image.exifweb.image.ImageDimensions;
 import image.exifweb.image.ImageThumb;
 import image.exifweb.persistence.Album;
