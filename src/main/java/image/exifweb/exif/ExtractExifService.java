@@ -45,10 +45,26 @@ public class ExtractExifService {
 	@Inject
 	private AlbumService albumService;
 
+	/**
+	 * This is not @Async because we need the result from importedAlbums.
+	 *
+	 * @param importedAlbums
+	 */
+	public void importNewAlbums(List<Album> importedAlbums) {
+		try {
+			extractExif(new File(appConfigService.getLinuxAlbumPath()),
+					null, true, importedAlbums);
+			albumService.writeJsonForAllAlbums();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
 	@Async
 	public void extractExifForAllAlbums() {
 		try {
-			extractExif(new File(appConfigService.getLinuxAlbumPath()), null, false, null);
+			extractExif(new File(appConfigService.getLinuxAlbumPath()),
+					null, false, null);
 			albumService.writeJsonForAllAlbums();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
