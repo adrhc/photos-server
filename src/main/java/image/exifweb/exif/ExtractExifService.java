@@ -46,7 +46,7 @@ public class ExtractExifService {
 	private AlbumService albumService;
 
 	@Async
-	public void extractExif() {
+	public void extractExifForAllAlbums() {
 		try {
 			extractExif(new File(appConfigService.getLinuxAlbumPath()), null, false, null);
 			albumService.writeJsonForAllAlbums();
@@ -56,7 +56,7 @@ public class ExtractExifService {
 	}
 
 	@Async
-	public void extractExif(String albumName) {
+	public void extractExifFor1Album(String albumName) {
 		try {
 			extractExif(new File(appConfigService.getLinuxAlbumPath() +
 					File.separatorChar + albumName), null, false, null);
