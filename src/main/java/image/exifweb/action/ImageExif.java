@@ -33,6 +33,8 @@ import java.util.Date;
 public class ImageExif {
 	private static final Logger logger = LoggerFactory.getLogger(ImageExif.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final int WIDTH = 0;
+	private static final int HEIGHT = 1;
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -47,42 +49,7 @@ public class ImageExif {
 		image.setName(imgFile.getName());
 
 		try {
-			Metadata metadata = ImageMetadataReader.readMetadata(imgFile);
-			Directory directory = metadata.getDirectory(JpegDirectory.class);
-
-			JpegDescriptor jpegDescriptor = new JpegDescriptor((JpegDirectory) directory);
-			image.setImageHeight(Integer.parseInt(jpegDescriptor.getImageHeightDescription().replace(" pixels", "")));
-			image.setImageWidth(Integer.parseInt(jpegDescriptor.getImageWidthDescription().replace(" pixels", "")));
-
-			directory = metadata.getDirectory(ExifSubIFDDirectory.class);
-			ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-			image.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription());
-			image.setfNumber(exifSubIFDDescriptor.getFNumberDescription());
-			image.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription());
-			image.setIsoSpeedRatings(Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription()));
-			image.setDateTimeOriginal(sdf.parse(exifSubIFDDescriptor.getDescription(36867)));
-			image.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription());
-			image.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription());
-			image.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription());
-			image.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription());
-			image.setFlash(exifSubIFDDescriptor.getFlashDescription());
-			image.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription());
-			image.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription());
-			image.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription());
-			image.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription());
-			image.setGainControl(exifSubIFDDescriptor.getGainControlDescription());
-			image.setContrast(exifSubIFDDescriptor.getContrastDescription());
-			image.setSaturation(exifSubIFDDescriptor.getSaturationDescription());
-			image.setSharpness(exifSubIFDDescriptor.getSharpnessDescription());
-			image.setSubjectDistanceRange(exifSubIFDDescriptor.getSubjectDistanceRangeDescription());
-			image.setLensModel(exifSubIFDDescriptor.getDescription(42036));
-
-			directory = metadata.getDirectory(ExifIFD0Directory.class);
-			ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
-			image.setModel(exifIFD0Descriptor.getDescription(272));
-			// utilizat in url-ul imaginii si cu impact in browser-cache
-//            image.setDateTime(sdf.parse(exifIFD0Descriptor.getDescription(306)));
-			image.setDateTime(new Date(imgFile.lastModified()));
+			loadExifFromImgFile(image, imgFile);
 		} catch (FileNotFoundException e) {
 			// path no longer exists
 			return null;
@@ -93,27 +60,73 @@ public class ImageExif {
 			prepareImageDimensions(image, imgFile.getPath());
 		}
 
-		File thumb = new File(imgFile.getPath().replaceFirst(albumsDir, thumbsDir));
+		updateThumbLastModified(image, imgFile);
+
+		return image;
+	}
+
+	private void loadExifFromImgFile(Image image, File imgFile) throws Exception {
+		Metadata metadata = ImageMetadataReader.readMetadata(imgFile);
+		Directory directory = metadata.getDirectory(JpegDirectory.class);
+
+		JpegDescriptor jpegDescriptor = new JpegDescriptor((JpegDirectory) directory);
+		image.setImageHeight(Integer.parseInt(jpegDescriptor.getImageHeightDescription().replace(" pixels", "")));
+		image.setImageWidth(Integer.parseInt(jpegDescriptor.getImageWidthDescription().replace(" pixels", "")));
+
+		directory = metadata.getDirectory(ExifSubIFDDirectory.class);
+		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
+		image.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription());
+		image.setfNumber(exifSubIFDDescriptor.getFNumberDescription());
+		image.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription());
+		image.setIsoSpeedRatings(Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription()));
+		image.setDateTimeOriginal(sdf.parse(exifSubIFDDescriptor.getDescription(36867)));
+		image.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription());
+		image.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription());
+		image.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription());
+		image.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription());
+		image.setFlash(exifSubIFDDescriptor.getFlashDescription());
+		image.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription());
+		image.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription());
+		image.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription());
+		image.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription());
+		image.setGainControl(exifSubIFDDescriptor.getGainControlDescription());
+		image.setContrast(exifSubIFDDescriptor.getContrastDescription());
+		image.setSaturation(exifSubIFDDescriptor.getSaturationDescription());
+		image.setSharpness(exifSubIFDDescriptor.getSharpnessDescription());
+		image.setSubjectDistanceRange(exifSubIFDDescriptor.getSubjectDistanceRangeDescription());
+		image.setLensModel(exifSubIFDDescriptor.getDescription(42036));
+
+		directory = metadata.getDirectory(ExifIFD0Directory.class);
+		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
+		image.setModel(exifIFD0Descriptor.getDescription(272));
+		// utilizat in url-ul imaginii si cu impact in browser-cache
+		image.setDateTime(new Date(imgFile.lastModified()));
+	}
+
+	private void updateThumbLastModified(Image image, File imgFile) {
+		File thumb = getThumbFileForImgFile(imgFile);
 		if (thumb.exists()) {
 			image.setThumbLastModified(new Date(thumb.lastModified()));
 		} else {
 			image.setThumbLastModified(image.getDateTime());
 		}
+	}
 
-		return image;
+	private File getThumbFileForImgFile(File imgFile) {
+		return new File(imgFile.getPath().replaceFirst(albumsDir, thumbsDir));
 	}
 
 	private void prepareImageDimensions(Image image, String path) {
 		try {
-//            ProcessBuilder identifyImgDimensions = new ProcessBuilder(
-//                    "/home/adr/x.sh", "image_dims", path);
+//			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
+//					"/home/adr/x.sh", "image_dims", path);
 			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 					"identify", "-format", "%[fx:w] %[fx:h]", path);
 			String dimensions = processInfoService.getProcessOutput(identifyImgDimensions);
 //            logger.debug("dimensions {} for:\n{}", dimensions, path);
 			String[] dims = dimensions.split("\\s");
-			image.setImageWidth(Integer.parseInt(dims[0]));
-			image.setImageHeight(Integer.parseInt(dims[1]));
+			image.setImageWidth(Integer.parseInt(dims[WIDTH]));
+			image.setImageHeight(Integer.parseInt(dims[HEIGHT]));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			logger.error("Using default dimensions: {}x{}", maxThumbSizeInt, maxThumbSizeInt);
@@ -122,6 +135,12 @@ public class ImageExif {
 		}
 	}
 
+	/**
+	 * Includes all properties touched by extractExif.
+	 *
+	 * @param from
+	 * @param to
+	 */
 	public void copyExifProperties(Image from, Image to) {
 		to.setImageHeight(from.getImageHeight());
 		to.setImageWidth(from.getImageWidth());
