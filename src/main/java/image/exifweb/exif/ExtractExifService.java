@@ -107,7 +107,8 @@ public class ExtractExifService {
 		if (curDirIsAlbum) {
 			// path este un album
 			if (onlyImportNewAlbums && noFiles) {
-				// ignoram importul de albume fara poze
+				// ne dorim sa fie album nou dar path nu are poze asa ca daca ar
+				// fi intr-adevar album nou atunci nu ar avea sens sa-l import
 				logger.warn("{} este gol!", path.getPath());
 				return;
 			}
@@ -115,7 +116,7 @@ public class ExtractExifService {
 			if (album == null) {
 				// album inexistent in DB
 				if (noFiles) {
-					// album dir e gol
+					// path este album nou dar nu are poze
 					return;
 				}
 				// creem un nou album (dir aferent are poze)
@@ -148,6 +149,7 @@ public class ExtractExifService {
 						imageNames.add(file.getName());
 					}
 				} else {
+					// is albums root
 					extractExif(file, album, onlyImportNewAlbums, processedAlbums);
 				}
 			}
