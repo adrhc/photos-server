@@ -149,10 +149,10 @@ public class ExtractExifService {
 		// 1 level only album supported
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {
-			logger.debug("BEGIN album {}, 0 poze", path.getAbsolutePath());
+			logger.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
 		} else {
 			// 1 level only album supported
-			logger.debug("BEGIN album {}, {} poze", path.getAbsolutePath(), files.length);
+			logger.debug("BEGIN album with {} poze:\n{}", files.length, path.getAbsolutePath());
 			for (File file : files) {
 				if (importImageFromFile(file, album)) {
 					imageNames.add(file.getName());
@@ -167,7 +167,7 @@ public class ExtractExifService {
 			processedAlbums.add(album);
 		}
 		sw.stop();
-		logger.debug("END album " + path.getAbsolutePath() + ":\n" + sw.shortSummary());
+		logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
 	}
 
 	/**

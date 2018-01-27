@@ -6,7 +6,7 @@ import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,26 +31,22 @@ import java.util.Map;
 public class AlbumCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCtrl.class);
 	@Inject
+	private ThreadPoolTaskExecutor asyncExecutor;
+	@Inject
 	private AlbumService albumService;
 
 	@RequestMapping(value = "/importAlbums", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() throws IOException {
 		logger.debug("BEGIN");
-		KeyValueDeferredResult<String, String> resultHolder =
-				new KeyValueDeferredResult<>();
-		importNewAlbumsOnly(resultHolder);
-		return resultHolder;
-	}
-
-	@Async
-	private void importNewAlbumsOnly(KeyValueDeferredResult<String, String> resultHolder) throws IOException {
-		String importedAlbums = albumService.importNewAlbumsOnly();
-		if (importedAlbums == null) {
-			resultHolder.setResult("message", "No new album to import!");
-		} else {
-			resultHolder.setResult("message", "Albums imported for: " + importedAlbums);
-		}
+		return KeyValueDeferredResult.of(() -> {
+			String importedAlbums = albumService.importNewAlbumsOnly();
+			if (importedAlbums == null) {
+				return "No new album to import!";
+			} else {
+				return "Albums imported for: " + importedAlbums;
+			}
+		}, "message", asyncExecutor);
 	}
 
 	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

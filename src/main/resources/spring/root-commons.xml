@@ -37,7 +37,7 @@
 	</bean>
 
 	<task:annotation-driven mode="aspectj" executor="asyncExecutor" scheduler="scheduler"/>
-	<task:executor id="asyncExecutor" pool-size="1-4" queue-capacity="10000" keep-alive="30"/>
+	<task:executor id="asyncExecutor" pool-size="1-4" queue-capacity="1024" keep-alive="30"/>
 	<task:scheduler id="scheduler" pool-size="1"/>
 	<!--task:scheduled-tasks scheduler="scheduler">
 		<task:scheduled ref="httpdCheck" method="checkHttpd"

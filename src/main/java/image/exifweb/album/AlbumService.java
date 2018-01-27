@@ -278,7 +278,7 @@ public class AlbumService {
 	}
 
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public String importNewAlbumsOnly() throws IOException {
+	public String importNewAlbumsOnly() {
 		logger.debug("BEGIN");
 		List<Album> importedAlbums = new ArrayList<>();
 		extractExifService.importNewAlbumsOnly(importedAlbums);
