@@ -72,10 +72,18 @@ public class AlbumCtrl {
 	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void updateJsonForAllAlbums(Model model) throws IOException {
+	public void updateJsonForAllAlbums(Model model) {
 		logger.debug("BEGIN");
-		albumService.writeJsonForAllAlbums();
-		model.addAttribute("message", "JSON files updated!");
+		switch (albumService.writeJsonForAllAlbumsSafe()) {
+			case fail:
+				model.addAttribute("message", "All JSON files NOT updated!");
+				break;
+			case success:
+				model.addAttribute("message", "All JSON files updated!");
+				break;
+			case partial:
+				model.addAttribute("message", "Some JSON files updated some NOT!");
+		}
 	}
 
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,

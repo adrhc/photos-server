@@ -264,10 +264,19 @@ public class AlbumService {
 		album.setDirty(false);
 	}
 
-	public void writeJsonForAllAlbumsSafe() {
+	public E3ResultTypes writeJsonForAllAlbumsSafe() {
 		List<AlbumCover> albumCovers = getAllCovers();
+		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (AlbumCover albumCover : albumCovers) {
-			writeJsonForAlbumSafe(new Album(albumCover));
+			successForAlbum = writeJsonForAlbumSafe(new Album(albumCover));
+			existsFail = existsFail || !successForAlbum;
+			existsSuccess = existsSuccess || successForAlbum;
+		}
+		if (existsFail) {
+			return existsSuccess ?
+					E3ResultTypes.partial : E3ResultTypes.fail;
+		} else {
+			return E3ResultTypes.success;
 		}
 	}
 
