@@ -64,8 +64,7 @@ public class ProcessInfoService {
 	@Value("${memProcInfo.rss.mb}")
 	private boolean memProcInfoRssMb;
 
-	public final Vector<CPUMemSummaryDeferredResult> asyncSubscribers =
-			new Vector<CPUMemSummaryDeferredResult>();
+	public final Vector<CPUMemSummaryDeferredResult> asyncSubscribers = new Vector<>();
 	@Inject
 	private AppConfigService appConfigService;
 

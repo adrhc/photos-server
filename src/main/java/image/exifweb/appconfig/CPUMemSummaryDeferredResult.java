@@ -8,6 +8,8 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.Vector;
 
 /**
+ * See also: ProcessInfoService.syncCPUMemInfo
+ *
  * Created with IntelliJ IDEA.
  * User: adrian.petre
  * Date: 12/19/13
@@ -18,7 +20,6 @@ public class CPUMemSummaryDeferredResult extends DeferredResult<Model> implement
     private Vector<CPUMemSummaryDeferredResult> asyncSubscribers;
 
     public CPUMemSummaryDeferredResult(Vector<CPUMemSummaryDeferredResult> asyncSubscribers) {
-        super();
         this.asyncSubscribers = asyncSubscribers;
         this.asyncSubscribers.add(this);
         ContextLoaderListenerEx.wac.getBean(ThreadPoolTaskExecutor.class).execute(this);
