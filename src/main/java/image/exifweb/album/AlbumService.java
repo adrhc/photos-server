@@ -204,6 +204,15 @@ public class AlbumService {
 		writeJsonForAlbum(album);
 	}
 
+	public void writeJsonForAlbumSafe(Album album) {
+		try {
+			writeJsonForAlbum(album);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			logger.debug("failed to write json for: {}", album.getName());
+		}
+	}
+
 	public void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN {}", album.getName());
 		if (album.isDeleted()) {

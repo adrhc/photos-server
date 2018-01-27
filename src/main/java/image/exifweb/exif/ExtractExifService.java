@@ -19,7 +19,6 @@ import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,19 +57,11 @@ public class ExtractExifService {
 	public void importNewAlbumsOnly(Consumer<List<Album>> consumer) {
 		List<Album> importedAlbums = new ArrayList<>();
 		try {
-			importFromAlbumsRoot(true, importedAlbums);
+			importFromAlbumsRoot(true, importedAlbums::add);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		for (Album album : importedAlbums) {
-			try {
-				albumService.writeJsonForAlbum(album);
-				logger.debug("imported: {}", album.getName());
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-				logger.debug("failed to write json for: {}", album.getName());
-			}
-		}
+		importedAlbums.forEach(albumService::writeJsonForAlbumSafe);
 		consumer.accept(importedAlbums);
 	}
 
@@ -89,21 +80,25 @@ public class ExtractExifService {
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAllFromAlbumsRoot() {
 		try {
-			importFromAlbumsRoot(false, null);
+			importFromAlbumsRoot(false);
 			albumService.writeJsonForAllAlbums();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 	}
 
+	private void importFromAlbumsRoot(boolean onlyImportNewAlbums) {
+		importFromAlbumsRoot(onlyImportNewAlbums, null);
+	}
+
 	private void importFromAlbumsRoot(boolean onlyImportNewAlbums,
-	                                  List<Album> processedAlbums) {
+	                                  Consumer<Album> albumConsumer) {
 		File albumsRoot = new File(appConfigService.getLinuxAlbumPath());
 		File[] files = albumsRoot.listFiles();
 		if (files == null || files.length == 0) {
 			return;
 		}
-		Stream.of(files).forEach(f -> importAlbumByPath(f, onlyImportNewAlbums, processedAlbums));
+		Stream.of(files).forEach(f -> importAlbumByPath(f, onlyImportNewAlbums, albumConsumer));
 	}
 
 
@@ -114,11 +109,11 @@ public class ExtractExifService {
 	 *
 	 * @param path
 	 * @param onlyImportNewAlbums
-	 * @param processedAlbums
+	 * @param albumConsumer
 	 */
 	private void importAlbumByPath(File path,
 	                               boolean onlyImportNewAlbums,
-	                               List<Album> processedAlbums) {
+	                               Consumer<Album> albumConsumer) {
 		// cazul in care path este o poza
 		if (path.isFile()) {
 			logger.error("Wrong path (is a file):\n{}", path.getPath());
@@ -166,9 +161,9 @@ public class ExtractExifService {
 		if (!onlyImportNewAlbums) {
 			deleteNotFoundImages(imageNames, album);
 		}
-		if (processedAlbums != null) {
+		if (albumConsumer != null) {
 			// marcam albumul ca procesat
-			processedAlbums.add(album);
+			albumConsumer.accept(album);
 		}
 		sw.stop();
 		logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
