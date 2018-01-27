@@ -50,7 +50,7 @@ public class ExtractExifService {
 	 *
 	 * @param importedAlbums
 	 */
-	public void importNewAlbums(List<Album> importedAlbums) {
+	public void importNewAlbumsOnly(List<Album> importedAlbums) {
 		try {
 			extractExif(new File(appConfigService.getLinuxAlbumPath()),
 					null, true, importedAlbums);
@@ -61,7 +61,7 @@ public class ExtractExifService {
 	}
 
 	@Async
-	public void extractExifForAllAlbums() {
+	public void importAllFromAlbumsRoot() {
 		try {
 			extractExif(new File(appConfigService.getLinuxAlbumPath()),
 					null, false, null);
@@ -72,7 +72,7 @@ public class ExtractExifService {
 	}
 
 	@Async
-	public void extractExifFor1Album(String albumName) {
+	public void importAlbumByName(String albumName) {
 		try {
 			extractExif(new File(appConfigService.getLinuxAlbumPath() +
 					File.separatorChar + albumName), null, false, null);

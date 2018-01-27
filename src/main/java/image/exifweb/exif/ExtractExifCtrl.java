@@ -28,10 +28,10 @@ public class ExtractExifCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void extractExif(@RequestBody JsonValue jsonValue, Model model) {
 		if (StringUtils.hasText(jsonValue.getValue())) {
-			extractExifService.extractExifFor1Album(jsonValue.getValue());
+			extractExifService.importAlbumByName(jsonValue.getValue());
 			model.addAttribute("message", "Start extracting EXIF for " + jsonValue.getValue() + " ...");
 		} else {
-			extractExifService.extractExifForAllAlbums();
+			extractExifService.importAllFromAlbumsRoot();
 			model.addAttribute("message", "Start extracting EXIF for all ...");
 		}
 	}
