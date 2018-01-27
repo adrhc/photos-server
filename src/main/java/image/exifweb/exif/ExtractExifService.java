@@ -99,9 +99,7 @@ public class ExtractExifService {
 		if (files == null || files.length == 0) {
 			return;
 		}
-		Stream.of(files).forEach(f -> {
-			importAlbumByPath(f, onlyImportNewAlbums, processedAlbums);
-		});
+		Stream.of(files).forEach(f -> importAlbumByPath(f, onlyImportNewAlbums, processedAlbums));
 	}
 
 
