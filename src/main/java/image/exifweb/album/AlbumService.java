@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -278,23 +279,13 @@ public class AlbumService {
 
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public String importNewAlbumsOnly() throws IOException {
+		logger.debug("BEGIN");
 		List<Album> importedAlbums = new ArrayList<>();
 		extractExifService.importNewAlbumsOnly(importedAlbums);
-		if (importedAlbums.isEmpty()) {
-			return null;
-		}
-		for (Album album : importedAlbums) {
-			writeJsonForAlbum(album);
-		}
 		return importedAlbumsToString(importedAlbums);
 	}
 
 	private String importedAlbumsToString(List<Album> importedAlbums) {
-		StrBuilder sb = new StrBuilder();
-		for (Album album : importedAlbums) {
-			sb.append(album.getName()).append(", ");
-		}
-		sb.delete(sb.length() - ", ".length(), sb.length());
-		return sb.toString();
+		return importedAlbums.stream().map(Album::getName).collect(Collectors.joining(", "));
 	}
 }

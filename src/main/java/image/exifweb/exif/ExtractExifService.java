@@ -19,6 +19,7 @@ import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +56,26 @@ public class ExtractExifService {
 	public void importNewAlbumsOnly(List<Album> importedAlbums) {
 		try {
 			importFromAlbumsRoot(true, importedAlbums);
-			albumService.writeJsonForAllAlbums();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		for (Album album : importedAlbums) {
+			try {
+				albumService.writeJsonForAlbum(album);
+				logger.debug("imported: {}", album.getName());
+			} catch (IOException e) {
+				logger.error(e.getMessage(), e);
+				logger.debug("failed to write json for: {}", album.getName());
+			}
+		}
+	}
+
+	@Async
+	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+	public void importAlbumByName(String albumName) {
+		try {
+			importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
+			albumService.writeJsonForAlbum(albumName);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -67,17 +87,6 @@ public class ExtractExifService {
 		try {
 			importFromAlbumsRoot(false, null);
 			albumService.writeJsonForAllAlbums();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-
-	@Async
-	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void importAlbumByName(String albumName) {
-		try {
-			importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
-			albumService.writeJsonForAlbum(albumName);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
