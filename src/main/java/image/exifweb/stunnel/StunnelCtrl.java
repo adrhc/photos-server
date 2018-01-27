@@ -18,11 +18,11 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping("/json/stunnel")
 public class StunnelCtrl extends AppManagerCtrl {
-    @Inject
-    private ApplicationContext ac;
+	@Inject
+	private ApplicationContext ac;
 
-    @PostConstruct
-    public void postConstruct() {
-        this.appManagerService = ac.getBean(StunnelService.class);
-    }
+	@PostConstruct
+	public void postConstruct() {
+		this.appManagerService = ac.getBean(StunnelService.class);
+	}
 }

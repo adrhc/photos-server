@@ -14,12 +14,12 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class StunnelService extends AppManagerService {
-    @PostConstruct
-    public void postConstruct() {
-        appProcName = "stunnel";
-        appStart = new ProcessBuilder(
-            "stunnel", "/ffp/etc/stunnel/stunnel.conf", "1>/ffp/var/stunnel.log", "2>/ffp/var/stunnel.log", "&");
-        appStop = new ProcessBuilder("killall", "stunnel");
-        appStopForce = new ProcessBuilder("killall", "-9", "stunnel");
-    }
+	@PostConstruct
+	public void postConstruct() {
+		appProcName = "stunnel";
+		appStart = new ProcessBuilder(
+				"stunnel", "/ffp/etc/stunnel/stunnel.conf", "1>/ffp/var/stunnel.log", "2>/ffp/var/stunnel.log", "&");
+		appStop = new ProcessBuilder("killall", "stunnel");
+		appStopForce = new ProcessBuilder("killall", "-9", "stunnel");
+	}
 }

@@ -15,29 +15,29 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class AppManagerCtrl {
-    protected AppManagerService appManagerService;
+	protected AppManagerService appManagerService;
 
-    @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/start", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public void start(Model model) throws IOException, InterruptedException {
-        if (appManagerService.isRunning()) {
-            model.addAttribute("message",
-                appManagerService.getAppProcName() + " already running!");
-            return;
-        }
-        appManagerService.start();
-        model.addAttribute("message", appManagerService.getAppProcName() + " started!");
-    }
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping(value = "/start", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	public void start(Model model) throws IOException, InterruptedException {
+		if (appManagerService.isRunning()) {
+			model.addAttribute("message",
+					appManagerService.getAppProcName() + " already running!");
+			return;
+		}
+		appManagerService.start();
+		model.addAttribute("message", appManagerService.getAppProcName() + " started!");
+	}
 
-    @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = "/stop", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public void stop(Model model) throws IOException, InterruptedException {
-        if (!appManagerService.isRunning()) {
-            model.addAttribute("message",
-                appManagerService.getAppProcName() + " NOT running!");
-            return;
-        }
-        appManagerService.stop();
-        model.addAttribute("message", appManagerService.getAppProcName() + " stopped!");
-    }
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping(value = "/stop", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	public void stop(Model model) throws IOException, InterruptedException {
+		if (!appManagerService.isRunning()) {
+			model.addAttribute("message",
+					appManagerService.getAppProcName() + " NOT running!");
+			return;
+		}
+		appManagerService.stop();
+		model.addAttribute("message", appManagerService.getAppProcName() + " stopped!");
+	}
 }

@@ -14,10 +14,10 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class TransmissionService extends AppManagerService {
-    @PostConstruct
-    public void postConstruct() {
-        appProcName = "transmission-daemon";
-        appStart = new ProcessBuilder(
-            "/ffp/start/transmission.sh", "start");
-    }
+	@PostConstruct
+	public void postConstruct() {
+		appProcName = "transmission-daemon";
+		appStart = new ProcessBuilder(
+				"/ffp/start/transmission.sh", "start");
+	}
 }

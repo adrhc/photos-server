@@ -17,81 +17,81 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class AppManagerService {
-    private static final Logger logger = LoggerFactory.getLogger(ProcessInfoService.class);
-    /**
-     * appProcName folosit de pidof si in loguri
-     */
-    protected String appProcName;
-    protected ProcessBuilder appStatus;
-    protected ProcessBuilder appStart;
-    protected ProcessBuilder appStop;
-    protected ProcessBuilder appStopForce;
-    @Inject
-    protected ProcessInfoService processInfoService;
-    @Value("${wait.to.verify.kill}")
-    private int waitToVerifyKill;
+	private static final Logger logger = LoggerFactory.getLogger(ProcessInfoService.class);
+	/**
+	 * appProcName folosit de pidof si in loguri
+	 */
+	protected String appProcName;
+	protected ProcessBuilder appStatus;
+	protected ProcessBuilder appStart;
+	protected ProcessBuilder appStop;
+	protected ProcessBuilder appStopForce;
+	@Inject
+	protected ProcessInfoService processInfoService;
+	@Value("${wait.to.verify.kill}")
+	private int waitToVerifyKill;
 
-    public boolean isRunning() throws IOException, InterruptedException {
-        if (appStatus != null) {
-            return StringUtils.hasText(processInfoService.getProcessOutput(appStatus));
-        } else {
-            return StringUtils.hasText(getPID());
-        }
-    }
+	public boolean isRunning() throws IOException, InterruptedException {
+		if (appStatus != null) {
+			return StringUtils.hasText(processInfoService.getProcessOutput(appStatus));
+		} else {
+			return StringUtils.hasText(getPID());
+		}
+	}
 
-    public void start() throws IOException {
-        appStart.start();
-    }
+	public void start() throws IOException {
+		appStart.start();
+	}
 
-    public void stop() throws IOException, InterruptedException {
-        try {
-            if (appStop == null) {
-                String pid = getPID();
-                if (StringUtils.hasText(pid)) {
-                    new ProcessBuilder("kill", pid).start();
-                }
-            } else {
-                appStop.start();
-            }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        safeWait();
-        if (isRunning()) {
-            try {
-                if (appStopForce == null) {
-                    String pid = getPID();
-                    if (StringUtils.hasText(pid)) {
-                        logger.warn("Forced kill of {}", appProcName);
-                        new ProcessBuilder("kill", "-9", pid).start();
-                    }
-                } else {
-                    logger.warn("Forced kill of {}", appProcName);
-                    appStopForce.start();
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
+	public void stop() throws IOException, InterruptedException {
+		try {
+			if (appStop == null) {
+				String pid = getPID();
+				if (StringUtils.hasText(pid)) {
+					new ProcessBuilder("kill", pid).start();
+				}
+			} else {
+				appStop.start();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		safeWait();
+		if (isRunning()) {
+			try {
+				if (appStopForce == null) {
+					String pid = getPID();
+					if (StringUtils.hasText(pid)) {
+						logger.warn("Forced kill of {}", appProcName);
+						new ProcessBuilder("kill", "-9", pid).start();
+					}
+				} else {
+					logger.warn("Forced kill of {}", appProcName);
+					appStopForce.start();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+	}
 
-    protected String getPID() throws IOException, InterruptedException {
-        String[] pids = processInfoService.pidof(appProcName);
-        if (pids.length == 0) {
-            return null;
-        }
-        return pids[0];
-    }
+	protected String getPID() throws IOException, InterruptedException {
+		String[] pids = processInfoService.pidof(appProcName);
+		if (pids.length == 0) {
+			return null;
+		}
+		return pids[0];
+	}
 
-    private void safeWait() {
-        try {
-            Thread.sleep(waitToVerifyKill);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+	private void safeWait() {
+		try {
+			Thread.sleep(waitToVerifyKill);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
 
-    public String getAppProcName() {
-        return appProcName;
-    }
+	public String getAppProcName() {
+		return appProcName;
+	}
 }

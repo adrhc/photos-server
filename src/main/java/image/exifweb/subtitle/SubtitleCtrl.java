@@ -66,7 +66,7 @@ public class SubtitleCtrl {
 		if (mkvExtractStarted) {
 			if (StringUtils.hasText(jsonValue.getValue())) {
 				model.addAttribute("message", "extractSubtitles started for " + jsonValue.getValue() + " !");
-			}else{
+			} else {
 				model.addAttribute("message", "extractSubtitles started for all videos !");
 			}
 		} else {

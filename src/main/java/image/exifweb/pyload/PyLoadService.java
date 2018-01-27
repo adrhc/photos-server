@@ -16,17 +16,17 @@ import java.io.IOException;
  */
 @Service
 public class PyLoadService extends AppManagerService {
-    @Value("${pyLoadCore.path}")
-    String pyLoadCorePath;
+	@Value("${pyLoadCore.path}")
+	String pyLoadCorePath;
 
-    @PostConstruct
-    public void postConstruct() {
-        appProcName = "pyLoad";
-        appStatus = new ProcessBuilder("pgrep", "-f", pyLoadCorePath);
-        appStart = new ProcessBuilder("python", pyLoadCorePath, "--no-remote", "--daemon");
-    }
+	@PostConstruct
+	public void postConstruct() {
+		appProcName = "pyLoad";
+		appStatus = new ProcessBuilder("pgrep", "-f", pyLoadCorePath);
+		appStart = new ProcessBuilder("python", pyLoadCorePath, "--no-remote", "--daemon");
+	}
 
-    protected String getPID() throws IOException, InterruptedException {
-        return processInfoService.pgrep(pyLoadCorePath, true);
-    }
+	protected String getPID() throws IOException, InterruptedException {
+		return processInfoService.pgrep(pyLoadCorePath, true);
+	}
 }

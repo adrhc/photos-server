@@ -10,22 +10,22 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class ImageStatus implements Serializable {
-    private Integer id;
-    private Byte status;
+	private Integer id;
+	private Byte status;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public Byte getStatus() {
-        return status;
-    }
+	public Byte getStatus() {
+		return status;
+	}
 
-    public void setStatus(Byte status) {
-        this.status = status;
-    }
+	public void setStatus(Byte status) {
+		this.status = status;
+	}
 }

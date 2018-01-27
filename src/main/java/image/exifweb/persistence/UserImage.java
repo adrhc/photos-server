@@ -19,47 +19,47 @@ import java.io.Serializable;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = AppConfig.class)
 public class UserImage implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(nullable = false)
-    private byte rating = 5;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_IMAGE")
-    private Image image;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "FK_USER")
-    private User user;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	@Column(nullable = false)
+	private byte rating = 5;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "FK_IMAGE")
+	private Image image;
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "FK_USER")
+	private User user;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public byte getRating() {
-        return rating;
-    }
+	public byte getRating() {
+		return rating;
+	}
 
-    public void setRating(byte rating) {
-        this.rating = rating;
-    }
+	public void setRating(byte rating) {
+		this.rating = rating;
+	}
 
-    public Image getImage() {
-        return image;
-    }
+	public Image getImage() {
+		return image;
+	}
 
-    public void setImage(Image image) {
-        this.image = image;
-    }
+	public void setImage(Image image) {
+		this.image = image;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

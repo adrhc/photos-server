@@ -8,5 +8,5 @@ package image.exifweb.sys.process;
  * To change this template use File | Settings | File Templates.
  */
 public interface ProcStatPercent {
-    public String getPercent();
+	public String getPercent();
 }

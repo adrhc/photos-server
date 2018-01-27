@@ -18,11 +18,11 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping("/json/plex")
 public class PlexCtrl extends AppManagerCtrl {
-    @Inject
-    private ApplicationContext ac;
+	@Inject
+	private ApplicationContext ac;
 
-    @PostConstruct
-    public void postConstruct() {
-        this.appManagerService = ac.getBean(PlexService.class);
-    }
+	@PostConstruct
+	public void postConstruct() {
+		this.appManagerService = ac.getBean(PlexService.class);
+	}
 }

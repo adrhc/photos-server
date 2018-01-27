@@ -23,20 +23,20 @@ import java.util.Map;
 @Controller
 @RequestMapping("/json/session")
 public class SessionController {
-    @Autowired
-    private AuthSuccessHandler authSuccessHandler;
+	@Autowired
+	private AuthSuccessHandler authSuccessHandler;
 
-    @PreAuthorize("isAuthenticated()")
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    @ResponseBody
-    public Map<String, Object> getSessionData(WebRequest webRequest, HttpSession httpSession) {
-        if (webRequest.checkNotModified(httpSession.getCreationTime())) {
-            return null;
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("success", "true");
-        map.put("error", "false");
-        map.putAll(authSuccessHandler.prepareSessionData());
-        return map;
-    }
+	@PreAuthorize("isAuthenticated()")
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public Map<String, Object> getSessionData(WebRequest webRequest, HttpSession httpSession) {
+		if (webRequest.checkNotModified(httpSession.getCreationTime())) {
+			return null;
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("success", "true");
+		map.put("error", "false");
+		map.putAll(authSuccessHandler.prepareSessionData());
+		return map;
+	}
 }

@@ -10,22 +10,22 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class ImageRating implements Serializable {
-    private Integer id;
-    private Byte rating;
+	private Integer id;
+	private Byte rating;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public Byte getRating() {
-        return rating;
-    }
+	public Byte getRating() {
+		return rating;
+	}
 
-    public void setRating(Byte status) {
-        this.rating = status;
-    }
+	public void setRating(Byte status) {
+		this.rating = status;
+	}
 }

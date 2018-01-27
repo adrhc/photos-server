@@ -10,35 +10,35 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public class ProcStatInfo implements ProcStatPercent, Serializable {
-    private String percent;
-    private String command;
+	private String percent;
+	private String command;
 
-    public ProcStatInfo(String percent, String command) {
-        this.percent = percent;
-        this.command = command;
-    }
+	public ProcStatInfo(String percent, String command) {
+		this.percent = percent;
+		this.command = command;
+	}
 
-    public String getCommand() {
-        return command;
-    }
+	public String getCommand() {
+		return command;
+	}
 
-    public void setCommand(String command) {
-        this.command = command;
-    }
+	public void setCommand(String command) {
+		this.command = command;
+	}
 
-    public String getPercent() {
-        return percent;
-    }
+	public String getPercent() {
+		return percent;
+	}
 
-    public void setPercent(String percent) {
-        this.percent = percent;
-    }
+	public void setPercent(String percent) {
+		this.percent = percent;
+	}
 
-    @Override
-    public String toString() {
-        return "ProcStatInfo{" +
-            "command='" + command + '\'' +
-            ", percent='" + percent + '\'' +
-            '}';
-    }
+	@Override
+	public String toString() {
+		return "ProcStatInfo{" +
+				"command='" + command + '\'' +
+				", percent='" + percent + '\'' +
+				'}';
+	}
 }

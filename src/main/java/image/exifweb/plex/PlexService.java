@@ -14,12 +14,12 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class PlexService extends AppManagerService {
-    @PostConstruct
-    public void postConstruct() {
-        appProcName = "Plex Media Server";
-        appStart = new ProcessBuilder(
-            "/ffp/start/plexmediaserver.sh", "start");
+	@PostConstruct
+	public void postConstruct() {
+		appProcName = "Plex Media Server";
+		appStart = new ProcessBuilder(
+				"/ffp/start/plexmediaserver.sh", "start");
 //        appStop = new ProcessBuilder("kill", "`pidof Plex\\ Media\\ Server`");
 //        appStopForce = new ProcessBuilder("kill", "-9", "`pidof Plex\\ Media\\ Server`");
-    }
+	}
 }

@@ -18,11 +18,11 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping("/json/darkstat")
 public class DarkStatCtrl extends AppManagerCtrl {
-    @Inject
-    private ApplicationContext ac;
+	@Inject
+	private ApplicationContext ac;
 
-    @PostConstruct
-    public void postConstruct() {
-        this.appManagerService = ac.getBean(DarkStatService.class);
-    }
+	@PostConstruct
+	public void postConstruct() {
+		this.appManagerService = ac.getBean(DarkStatService.class);
+	}
 }

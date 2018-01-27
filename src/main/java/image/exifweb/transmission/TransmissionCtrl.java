@@ -18,11 +18,11 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping("/json/transmission")
 public class TransmissionCtrl extends AppManagerCtrl {
-    @Inject
-    private ApplicationContext ac;
+	@Inject
+	private ApplicationContext ac;
 
-    @PostConstruct
-    public void postConstruct() {
-        this.appManagerService = ac.getBean(TransmissionService.class);
-    }
+	@PostConstruct
+	public void postConstruct() {
+		this.appManagerService = ac.getBean(TransmissionService.class);
+	}
 }

@@ -6,19 +6,19 @@ import java.util.Date;
  * Created by adr on 14-Apr-15.
  */
 public interface ImageThumb extends ImageDimensions {
-    public String getImagePath();
+	public String getImagePath();
 
-    public void setImagePath(String imagePath);
+	public void setImagePath(String imagePath);
 
-    public String getImgName();
+	public String getImgName();
 
-    public void setImgName(String imgName);
+	public void setImgName(String imgName);
 
-    public String getAlbumName();
+	public String getAlbumName();
 
-    public void setAlbumName(String albumName);
+	public void setAlbumName(String albumName);
 
-    public Date getThumbLastModified();
+	public Date getThumbLastModified();
 
-    public void setThumbLastModified(Date thumbLastModified);
+	public void setThumbLastModified(Date thumbLastModified);
 }

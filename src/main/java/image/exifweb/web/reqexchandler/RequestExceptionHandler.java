@@ -23,30 +23,30 @@ import java.util.Map;
  */
 @ControllerAdvice
 public class RequestExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(RequestExceptionHandler.class);
-    @Autowired
-    private MessageSource ms;
+	private static final Logger logger = LoggerFactory.getLogger(RequestExceptionHandler.class);
+	@Autowired
+	private MessageSource ms;
 
-    @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleRuntimeWithMsgExc(RuntimeWithMsgExc rwme) {
-        Map<String, String> errInfo = new HashMap<String, String>(4, 1);
-        errInfo.put("message", ms.getMessage(rwme.getMessageKey(), rwme.getArgs(), null));
-        errInfo.put("success", "false");
-        errInfo.put("error", "true");
-        if (rwme.getMessage() != null) {
-            errInfo.put("detailMessage", rwme.getMessage());
-        }
-        return new ResponseEntity<Map<String, String>>(errInfo, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler
+	public ResponseEntity<Map<String, String>> handleRuntimeWithMsgExc(RuntimeWithMsgExc rwme) {
+		Map<String, String> errInfo = new HashMap<String, String>(4, 1);
+		errInfo.put("message", ms.getMessage(rwme.getMessageKey(), rwme.getArgs(), null));
+		errInfo.put("success", "false");
+		errInfo.put("error", "true");
+		if (rwme.getMessage() != null) {
+			errInfo.put("detailMessage", rwme.getMessage());
+		}
+		return new ResponseEntity<Map<String, String>>(errInfo, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 
-    @ExceptionHandler
-    public ResponseEntity<Map<String, String>> handleException(Exception e) {
-        logger.error(e.getMessage(), e);
-        Map<String, String> errInfo = new HashMap<String, String>(3, 1);
-        errInfo.put("message", e.getMessage());
-        errInfo.put("stack trace", ExceptionUtils.getStackTrace(e));
-        errInfo.put("success", "false");
-        errInfo.put("error", "true");
-        return new ResponseEntity<Map<String, String>>(errInfo, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+	@ExceptionHandler
+	public ResponseEntity<Map<String, String>> handleException(Exception e) {
+		logger.error(e.getMessage(), e);
+		Map<String, String> errInfo = new HashMap<String, String>(3, 1);
+		errInfo.put("message", e.getMessage());
+		errInfo.put("stack trace", ExceptionUtils.getStackTrace(e));
+		errInfo.put("success", "false");
+		errInfo.put("error", "true");
+		return new ResponseEntity<Map<String, String>>(errInfo, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
 }

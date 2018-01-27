@@ -15,19 +15,19 @@ import javax.annotation.PostConstruct;
  */
 @Service
 public class DarkStatService extends AppManagerService {
-    @Value("${darkstat.port}")
-    private String darkstatPort;
-    @Value("${darkstat.niceness}")
-    private int darkstatNiceness;
-    @Value("${system.default.niceness}")
-    private int systemDefaultNiceness;
+	@Value("${darkstat.port}")
+	private String darkstatPort;
+	@Value("${darkstat.niceness}")
+	private int darkstatNiceness;
+	@Value("${system.default.niceness}")
+	private int systemDefaultNiceness;
 
-    @PostConstruct
-    public void postConstruct() {
-        appProcName = "darkstat";
-        appStart = new ProcessBuilder("nice",
-            '-' + String.valueOf(darkstatNiceness - systemDefaultNiceness),
-            "darkstat", "-i", "egiga0", "-p", darkstatPort, "--base", "darkstat",
-            "--no-dns", "-l", "192.168.1.31/255.255.255.0");
-    }
+	@PostConstruct
+	public void postConstruct() {
+		appProcName = "darkstat";
+		appStart = new ProcessBuilder("nice",
+				'-' + String.valueOf(darkstatNiceness - systemDefaultNiceness),
+				"darkstat", "-i", "egiga0", "-p", darkstatPort, "--base", "darkstat",
+				"--no-dns", "-l", "192.168.1.31/255.255.255.0");
+	}
 }

@@ -23,19 +23,19 @@ import java.util.Map;
  */
 @Service
 public class LogoutSuccessHandler implements
-    org.springframework.security.web.authentication.logout.LogoutSuccessHandler {
-    private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
-    @Autowired
-    private HibernateAwareObjectMapper hibernateAwareObjectMapper;
+		org.springframework.security.web.authentication.logout.LogoutSuccessHandler {
+	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
+	@Autowired
+	private HibernateAwareObjectMapper hibernateAwareObjectMapper;
 
-    @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-                                Authentication authentication) throws IOException, ServletException {
-        logger.debug("Log off user: {}", authentication);
-        Map<String, Object> success = new HashMap<String, Object>();
-        success.put("success", "true");
-        success.put("error", "false");
-        response.setContentType("application/json");
-        hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
-    }
+	@Override
+	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
+	                            Authentication authentication) throws IOException, ServletException {
+		logger.debug("Log off user: {}", authentication);
+		Map<String, Object> success = new HashMap<String, Object>();
+		success.put("success", "true");
+		success.put("error", "false");
+		response.setContentType("application/json");
+		hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
+	}
 }

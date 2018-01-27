@@ -18,21 +18,21 @@ import java.util.List;
  */
 @Service
 public class MailService {
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 
-    public boolean checkMailService() throws IOException, InterruptedException {
-        List<String> params = new ArrayList<String>();
-        params.add("/usr/sbin/email_notify.sh");
-        params.add("by_command");
-        String date = sdf.format(new Date());
-        params.add("[" + date + "] NSA310 mail service status is ok");
-        params.add("[" + date + "] NSA310 mail service status is ok");
-        ProcessBuilder ps = new ProcessBuilder(params);
-        Process process = ps.start();
-        process.waitFor();
-        InputStream is = process.getInputStream();
-        int available = is.available();
-        is.close();
-        return available == 0;
-    }
+	public boolean checkMailService() throws IOException, InterruptedException {
+		List<String> params = new ArrayList<String>();
+		params.add("/usr/sbin/email_notify.sh");
+		params.add("by_command");
+		String date = sdf.format(new Date());
+		params.add("[" + date + "] NSA310 mail service status is ok");
+		params.add("[" + date + "] NSA310 mail service status is ok");
+		ProcessBuilder ps = new ProcessBuilder(params);
+		Process process = ps.start();
+		process.waitFor();
+		InputStream is = process.getInputStream();
+		int available = is.available();
+		is.close();
+		return available == 0;
+	}
 }

@@ -58,13 +58,12 @@ public class ProcessInfoService {
 			"top", "-bn1");
 	private static final ProcessBuilder psCmdMemDetail = new ProcessBuilder(
 			"ps", "ax", "--sort=-rss,pmem", "-o", "rss,pmem,comm");
+	public final Vector<CPUMemSummaryDeferredResult> asyncSubscribers = new Vector<>();
 	private URL cpuCGI;
 	@Value("${httpd-admin.base}")
 	private String httpdAdminBase;
 	@Value("${memProcInfo.rss.mb}")
 	private boolean memProcInfoRssMb;
-
-	public final Vector<CPUMemSummaryDeferredResult> asyncSubscribers = new Vector<>();
 	@Inject
 	private AppConfigService appConfigService;
 
@@ -331,7 +330,7 @@ public class ProcessInfoService {
 		Matcher matcher = psMemDetailPattern.matcher(psOutput);
 		while (matcher.find()) {
 			memProcInfos.add(new MemProcInfo(matcher.group(2),
-                matcher.group(4), matcher.group(6), memProcInfoRssMb));
+					matcher.group(4), matcher.group(6), memProcInfoRssMb));
 		}
 		return memProcInfos;
 	}
@@ -406,6 +405,16 @@ public class ProcessInfoService {
 		return psOutput;
 	}
 
+	@PostConstruct
+	public void postConstruct() {
+		try {
+			cpuCGI = new URL(httpdAdminBase +
+					"cgi/cpu/?write=0&c0=configure%20terminal%20show%20cpu%20status");
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
 	public class ProcessInfo {
 		private String pid;
 		private String cmd;
@@ -437,16 +446,6 @@ public class ProcessInfoService {
 					"pid='" + pid + '\'' +
 					", cmd='" + cmd + '\'' +
 					'}';
-		}
-	}
-
-	@PostConstruct
-	public void postConstruct() {
-		try {
-			cpuCGI = new URL(httpdAdminBase +
-					"cgi/cpu/?write=0&c0=configure%20terminal%20show%20cpu%20status");
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 		}
 	}
 }

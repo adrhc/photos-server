@@ -18,11 +18,11 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping("/json/pyload")
 public class PyLoadCtrl extends AppManagerCtrl {
-    @Inject
-    private ApplicationContext ac;
+	@Inject
+	private ApplicationContext ac;
 
-    @PostConstruct
-    public void postConstruct() {
-        this.appManagerService = ac.getBean(PyLoadService.class);
-    }
+	@PostConstruct
+	public void postConstruct() {
+		this.appManagerService = ac.getBean(PyLoadService.class);
+	}
 }

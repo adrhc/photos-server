@@ -10,11 +10,11 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public interface ImageDimensions extends Serializable {
-    public int getImageHeight();
+	public int getImageHeight();
 
-    public void setImageHeight(int imageHeight);
+	public void setImageHeight(int imageHeight);
 
-    public int getImageWidth();
+	public int getImageWidth();
 
-    public void setImageWidth(int imageWidth);
+	public void setImageWidth(int imageWidth);
 }

@@ -20,25 +20,25 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/https/httpdCheck")
 public class HttpdCheckController {
-    @Inject
-    private HttpdCheck httpdCheck;
+	@Inject
+	private HttpdCheck httpdCheck;
 
-    @RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void getHttpdRestartLogs(Model model) throws IOException {
-        String logs = httpdCheck.getHttpdRestartLogs();
-        model.addAttribute("message", logs);
-    }
+	@RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void getHttpdRestartLogs(Model model) throws IOException {
+		String logs = httpdCheck.getHttpdRestartLogs();
+		model.addAttribute("message", logs);
+	}
 
-    @RequestMapping(value = "/checkHttpd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void checkHttpd(Model model) throws IOException, InterruptedException {
-        checkHttpdAsync();
-        model.addAttribute("message", "Starting checkHttpd ...");
-    }
+	@RequestMapping(value = "/checkHttpd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void checkHttpd(Model model) throws IOException, InterruptedException {
+		checkHttpdAsync();
+		model.addAttribute("message", "Starting checkHttpd ...");
+	}
 
-    @Async
-    private void checkHttpdAsync() throws IOException, InterruptedException {
-        httpdCheck.checkHttpd();
-    }
+	@Async
+	private void checkHttpdAsync() throws IOException, InterruptedException {
+		httpdCheck.checkHttpd();
+	}
 }

@@ -29,36 +29,36 @@ import java.util.Map;
  */
 @Service
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
-    private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
-    @Autowired
-    private HibernateAwareObjectMapper hibernateAwareObjectMapper;
+	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
+	@Autowired
+	private HibernateAwareObjectMapper hibernateAwareObjectMapper;
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
-        logger.debug("Log on user: {}",
-            SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        response.setContentType("application/json");
-        Map<String, Object> success = prepareSessionData();
-        success.put("success", "true");
-        success.put("error", "false");
-        hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
-    }
+	@Override
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+	                                    Authentication authentication) throws IOException, ServletException {
+		logger.debug("Log on user: {}",
+				SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		response.setContentType("application/json");
+		Map<String, Object> success = prepareSessionData();
+		success.put("success", "true");
+		success.put("error", "false");
+		hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
+	}
 
-    public Map<String, Object> prepareSessionData() {
-        Map<String, Object> success = new HashMap<>(3, 1);
-        AbstractAuthenticationToken up = (AbstractAuthenticationToken)
-            SecurityContextHolder.getContext().getAuthentication();
-        success.put("userName", up.getName());
-        success.put("authorities", getAuthorities());
-        return success;
-    }
+	public Map<String, Object> prepareSessionData() {
+		Map<String, Object> success = new HashMap<>(3, 1);
+		AbstractAuthenticationToken up = (AbstractAuthenticationToken)
+				SecurityContextHolder.getContext().getAuthentication();
+		success.put("userName", up.getName());
+		success.put("authorities", getAuthorities());
+		return success;
+	}
 
-    private Collection<String> getAuthorities() {
-        BeanToPropertyValueTransformer transformer =
-            new BeanToPropertyValueTransformer("authority");
-        return CollectionUtils.collect(
-            SecurityContextHolder.getContext().getAuthentication().getAuthorities(),
-            transformer);
-    }
+	private Collection<String> getAuthorities() {
+		BeanToPropertyValueTransformer transformer =
+				new BeanToPropertyValueTransformer("authority");
+		return CollectionUtils.collect(
+				SecurityContextHolder.getContext().getAuthentication().getAuthorities(),
+				transformer);
+	}
 }

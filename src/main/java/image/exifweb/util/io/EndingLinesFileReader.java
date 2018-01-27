@@ -23,12 +23,12 @@ import java.util.List;
 @Service
 @Scope("prototype")
 public class EndingLinesFileReader {
+	private static final Logger logger = LoggerFactory.getLogger(EndingLinesFileReader.class);
+	private static final int CHUNK_SIZE = 256;
 	@Value("${movie.name.prefix}")
 	private String movieNamePrefix;
 	@Inject
 	private AppConfigService appConfigService;
-	private static final Logger logger = LoggerFactory.getLogger(EndingLinesFileReader.class);
-	private static final int CHUNK_SIZE = 256;
 	private String runningMessage;
 	private String videoFolder;
 	private String path;

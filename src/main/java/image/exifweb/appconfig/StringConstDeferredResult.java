@@ -14,18 +14,18 @@ import javax.inject.Inject;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class StringConstDeferredResult extends DeferredResult<String> implements Runnable {
-    @Inject
-    private ThreadPoolTaskExecutor asyncExecutor;
-    private String string;
+	@Inject
+	private ThreadPoolTaskExecutor asyncExecutor;
+	private String string;
 
-    public StringConstDeferredResult setString(String string) {
-        this.string = string;
-        asyncExecutor.execute(this);
-        return this;
-    }
+	public StringConstDeferredResult setString(String string) {
+		this.string = string;
+		asyncExecutor.execute(this);
+		return this;
+	}
 
-    @Override
-    public void run() {
-        this.setResult(string);
-    }
+	@Override
+	public void run() {
+		this.setResult(string);
+	}
 }

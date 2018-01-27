@@ -22,16 +22,16 @@ import java.util.Map;
  */
 @Service
 public class AuthFailureHandler implements AuthenticationFailureHandler {
-    @Autowired
-    private HibernateAwareObjectMapper hibernateAwareObjectMapper;
+	@Autowired
+	private HibernateAwareObjectMapper hibernateAwareObjectMapper;
 
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
-        Map<String, String> success = new HashMap<String, String>();
-        success.put("success", "false");
-        success.put("error", "true");
-        response.setContentType("application/json");
-        hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
-    }
+	@Override
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+	                                    AuthenticationException exception) throws IOException, ServletException {
+		Map<String, String> success = new HashMap<String, String>();
+		success.put("success", "false");
+		success.put("error", "true");
+		response.setContentType("application/json");
+		hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
+	}
 }

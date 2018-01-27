@@ -8,14 +8,14 @@ package image.exifweb.persistence;
  * To change this template use File | Settings | File Templates.
  */
 public enum AppConfigEnum {
-    LINUX_ALBUMS_PATH(1), PHOTOS_PER_PAGE(2);
-    private Integer value;
+	LINUX_ALBUMS_PATH(1), PHOTOS_PER_PAGE(2);
+	private Integer value;
 
-    AppConfigEnum(Integer dbIdAppConfig) {
-        this.value = dbIdAppConfig;
-    }
+	AppConfigEnum(Integer dbIdAppConfig) {
+		this.value = dbIdAppConfig;
+	}
 
-    public Integer getValue() {
-        return value;
-    }
+	public Integer getValue() {
+		return value;
+	}
 }
