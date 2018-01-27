@@ -1,6 +1,6 @@
 package image.exifweb.album;
 
-import image.exifweb.exif.ExtractExifService;
+import image.exifweb.exif.AlbumImportService;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
@@ -37,14 +37,14 @@ public class AlbumCtrl {
 	@Inject
 	private AlbumService albumService;
 	@Inject
-	private ExtractExifService extractExifService;
+	private AlbumImportService albumImportService;
 
 	@RequestMapping(value = "/importAlbums", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() throws IOException {
 		logger.debug("BEGIN");
 		KeyValueDeferredResult<String, String> deferredResult = new KeyValueDeferredResult<>();
-		extractExifService.importNewAlbumsOnly(importedAlbums -> {
+		albumImportService.importNewAlbumsOnly(importedAlbums -> {
 			logger.debug("BEGIN importedAlbums.size = {}", importedAlbums.size());
 			if (importedAlbums.isEmpty()) {
 				deferredResult.setResult("message", "No new album to import!");

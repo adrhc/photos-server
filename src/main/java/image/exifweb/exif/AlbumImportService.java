@@ -34,8 +34,8 @@ import java.util.stream.Stream;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ExtractExifService {
-	private static final Logger logger = LoggerFactory.getLogger(ExtractExifService.class);
+public class AlbumImportService {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumImportService.class);
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
@@ -289,7 +289,7 @@ public class ExtractExifService {
 	@Transactional
 	private ImageIdAndDates getImageIdAndDates(String name, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("SELECT new image.exifweb.exif.ExtractExifService$ImageIdAndDates" +
+		Query q = session.createQuery("SELECT new image.exifweb.exif.AlbumImportService$ImageIdAndDates" +
 				"(i.id, i.dateTime, i.thumbLastModified) FROM Image i WHERE i.name = :name AND i.album.id = :albumId");
 		q.setString("name", name);
 		q.setInteger("albumId", albumId);

@@ -22,16 +22,16 @@ import javax.inject.Inject;
 @RequestMapping("/json/action/exif")
 public class ExtractExifCtrl {
 	@Inject
-	private ExtractExifService extractExifService;
+	private AlbumImportService albumImportService;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void extractExif(@RequestBody JsonValue jsonValue, Model model) {
 		if (StringUtils.hasText(jsonValue.getValue())) {
-			extractExifService.importAlbumByName(jsonValue.getValue());
+			albumImportService.importAlbumByName(jsonValue.getValue());
 			model.addAttribute("message", "Start extracting EXIF for " + jsonValue.getValue() + " ...");
 		} else {
-			extractExifService.importAllFromAlbumsRoot();
+			albumImportService.importAllFromAlbumsRoot();
 			model.addAttribute("message", "Start extracting EXIF for all ...");
 		}
 	}
