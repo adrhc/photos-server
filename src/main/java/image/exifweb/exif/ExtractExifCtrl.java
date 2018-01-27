@@ -1,6 +1,7 @@
 package image.exifweb.exif;
 
 import image.exifweb.util.json.JsonValue;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,8 @@ public class ExtractExifCtrl {
 	@Inject
 	private AlbumImportService albumImportService;
 
-	@RequestMapping(method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void extractExif(@RequestBody JsonValue jsonValue, Model model) {
 		if (StringUtils.hasText(jsonValue.getValue())) {

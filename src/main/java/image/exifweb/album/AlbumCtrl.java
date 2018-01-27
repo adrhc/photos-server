@@ -7,6 +7,7 @@ import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -39,7 +40,8 @@ public class AlbumCtrl {
 	@Inject
 	private AlbumImportService albumImportService;
 
-	@RequestMapping(value = "/importAlbums", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/importAlbums", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() throws IOException {
 		logger.debug("BEGIN");
@@ -58,7 +60,8 @@ public class AlbumCtrl {
 		return deferredResult;
 	}
 
-	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void writeJsonForAlbumsPage(Model model) throws IOException {
 		logger.debug("BEGIN");
@@ -66,7 +69,8 @@ public class AlbumCtrl {
 		model.addAttribute("message", AlbumService.ALBUMS_PAGE_JSON + " updated!");
 	}
 
-	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateJsonForAllAlbums(Model model) throws IOException {
 		logger.debug("BEGIN");
@@ -74,7 +78,8 @@ public class AlbumCtrl {
 		model.addAttribute("message", "JSON files updated!");
 	}
 
-	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void updateJsonForAlbum(@RequestBody JsonValue jsonValue, Model model) {
 		logger.debug("BEGIN");
@@ -87,7 +92,8 @@ public class AlbumCtrl {
 		}
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public Album get(@PathVariable Integer id, WebRequest webRequest) {
 		Album album = albumService.getAlbumById(id);
@@ -97,7 +103,8 @@ public class AlbumCtrl {
 		return album;
 	}
 
-	@RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		if (webRequest.checkNotModified(albumService.getLastUpdatedForAlbums().getTime())) {
