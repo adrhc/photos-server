@@ -11,7 +11,7 @@
     <import resource="classpath*:/org/springframework/jdbc/support/sql-error-codes.xml"/>
 
     <mvc:annotation-driven>
-        <!-- albums re/import take a lot of time -->
+        <!-- albums re/importing takes a lot of time -->
         <mvc:async-support default-timeout="600000"/>
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
