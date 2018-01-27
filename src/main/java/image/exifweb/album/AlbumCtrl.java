@@ -76,11 +76,15 @@ public class AlbumCtrl {
 
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void updateJsonForAlbum(@RequestBody JsonValue jsonValue, Model model) throws IOException {
+	public void updateJsonForAlbum(@RequestBody JsonValue jsonValue, Model model) {
 		logger.debug("BEGIN");
-		albumService.writeJsonForAlbum(jsonValue.getValue());
-		model.addAttribute("message",
-				"JSON files updated for album " + jsonValue.getValue() + "!");
+		if (albumService.writeJsonForAlbumSafe(jsonValue.getValue())) {
+			model.addAttribute("message",
+					"JSON files NOT updated for album " + jsonValue.getValue() + "!");
+		} else {
+			model.addAttribute("message",
+					"JSON files updated for album " + jsonValue.getValue() + "!");
+		}
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
