@@ -196,24 +196,23 @@ public class AlbumService {
 		}
 	}
 
-	public void writeJsonForAlbum(String name) throws IOException {
+	public boolean writeJsonForAlbumSafe(String name) {
 		Album album = getAlbumByName(name);
-		if (album == null) {
-			return;
-		}
-		writeJsonForAlbum(album);
+		return album != null && writeJsonForAlbumSafe(album);
 	}
 
-	public void writeJsonForAlbumSafe(Album album) {
+	public boolean writeJsonForAlbumSafe(Album album) {
 		try {
 			writeJsonForAlbum(album);
+			return true;
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 			logger.debug("failed to write json for: {}", album.getName());
 		}
+		return false;
 	}
 
-	public void writeJsonForAlbum(Album album) throws IOException {
+	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN {}", album.getName());
 		if (album.isDeleted()) {
 			logger.debug("END (is deleted) {}", album.getName());
@@ -263,6 +262,13 @@ public class AlbumService {
 		Session session = sessionFactory.getCurrentSession();
 		Album album = (Album) session.load(Album.class, albumId);
 		album.setDirty(false);
+	}
+
+	public void writeJsonForAllAlbumsSafe() {
+		List<AlbumCover> albumCovers = getAllCovers();
+		for (AlbumCover albumCover : albumCovers) {
+			writeJsonForAlbumSafe(new Album(albumCover));
+		}
 	}
 
 	public void writeJsonForAllAlbums() throws IOException {

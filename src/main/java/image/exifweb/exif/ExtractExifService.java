@@ -68,23 +68,15 @@ public class ExtractExifService {
 	@Async
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAlbumByName(String albumName) {
-		try {
-			importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
-			albumService.writeJsonForAlbum(albumName);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
+		albumService.writeJsonForAlbumSafe(albumName);
 	}
 
 	@Async
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAllFromAlbumsRoot() {
-		try {
-			importFromAlbumsRoot(false);
-			albumService.writeJsonForAllAlbums();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
+		importFromAlbumsRoot(false);
+		albumService.writeJsonForAllAlbumsSafe();
 	}
 
 	private void importFromAlbumsRoot(boolean onlyImportNewAlbums) {
