@@ -1,5 +1,6 @@
 package image.exifweb.album;
 
+import image.exifweb.exif.ExtractExifService;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,19 +36,26 @@ public class AlbumCtrl {
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
 	private AlbumService albumService;
+	@Inject
+	private ExtractExifService extractExifService;
 
 	@RequestMapping(value = "/importAlbums", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() throws IOException {
 		logger.debug("BEGIN");
-		return KeyValueDeferredResult.of(() -> {
-			String importedAlbums = albumService.importNewAlbumsOnly();
-			if (importedAlbums == null) {
-				return "No new album to import!";
+		KeyValueDeferredResult<String, String> deferredResult = new KeyValueDeferredResult<>();
+		extractExifService.importNewAlbumsOnly(importedAlbums -> {
+			logger.debug("BEGIN importedAlbums.size = {}", importedAlbums.size());
+			if (importedAlbums.isEmpty()) {
+				deferredResult.setResult("message", "No new album to import!");
 			} else {
-				return "Albums imported for: " + importedAlbums;
+				deferredResult.setResult("message", "Albums imported for: " +
+						importedAlbums.stream().map(Album::getName)
+								.collect(Collectors.joining(", ")));
 			}
-		}, "message", asyncExecutor);
+		});
+		logger.debug("END");
+		return deferredResult;
 	}
 
 	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")

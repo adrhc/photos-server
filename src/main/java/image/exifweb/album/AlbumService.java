@@ -1,7 +1,6 @@
 package image.exifweb.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.exif.ExtractExifService;
 import image.exifweb.image.ImageDimensions;
 import image.exifweb.image.ImageThumb;
 import image.exifweb.persistence.Album;
@@ -24,8 +23,10 @@ import org.springframework.util.StringUtils;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -54,8 +55,6 @@ public class AlbumService {
 	private SessionFactory sessionFactory;
 	@Inject
 	private AppConfigService appConfigService;
-	@Inject
-	private ExtractExifService extractExifService;
 
 	public Album create(String name) {
 		Album album = new Album(name);
@@ -275,20 +274,5 @@ public class AlbumService {
 		file.getParentFile().mkdirs();
 		List<AlbumCover> albums = getAllCovers(true);
 		json.writeValue(file, albums);
-	}
-
-	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public String importNewAlbumsOnly() {
-		logger.debug("BEGIN");
-		List<Album> importedAlbums = new ArrayList<>();
-		extractExifService.importNewAlbumsOnly(importedAlbums);
-		return importedAlbumsToString(importedAlbums);
-	}
-
-	private String importedAlbumsToString(List<Album> importedAlbums) {
-		if (importedAlbums.isEmpty()) {
-			return null;
-		}
-		return importedAlbums.stream().map(Album::getName).collect(Collectors.joining(", "));
 	}
 }

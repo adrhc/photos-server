@@ -47,7 +47,9 @@ public class AppConfig implements Serializable {
 	}
 
 	/**
-	 * small optimization based on MC - JOverflow
+	 * small optimization based on MC - JOverflow Analyzer
+	 * duplicate strings, String.intern(), memory optimization
+	 * https://www.youtube.com/watch?v=b-mv9iWY8kw&ab_channel=OracleLearningLibrary
 	 *
 	 * @param value
 	 */

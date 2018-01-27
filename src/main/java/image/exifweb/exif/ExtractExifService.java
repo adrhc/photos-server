@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -50,10 +51,12 @@ public class ExtractExifService {
 	/**
 	 * This is not @Async because we need the result from importedAlbums.
 	 *
-	 * @param importedAlbums
+	 * @param consumer
 	 */
+	@Async
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void importNewAlbumsOnly(List<Album> importedAlbums) {
+	public void importNewAlbumsOnly(Consumer<List<Album>> consumer) {
+		List<Album> importedAlbums = new ArrayList<>();
 		try {
 			importFromAlbumsRoot(true, importedAlbums);
 		} catch (Exception e) {
@@ -68,6 +71,7 @@ public class ExtractExifService {
 				logger.debug("failed to write json for: {}", album.getName());
 			}
 		}
+		consumer.accept(importedAlbums);
 	}
 
 	@Async
