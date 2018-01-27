@@ -2,7 +2,6 @@ package image.exifweb.album;
 
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.view.AlbumCover;
-import image.exifweb.sys.AppConfigService;
 import image.exifweb.util.json.JsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +31,9 @@ public class AlbumCtrl {
 
     @RequestMapping(value = "/importAlbums", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void importAlbums(Model model) throws IOException {
+    public void importNewAlbumsOnly(Model model) throws IOException {
         logger.debug("BEGIN");
-        String importedAlbums = albumService.importAlbums();
+        String importedAlbums = albumService.importNewAlbumsOnly();
         if (importedAlbums == null) {
             model.addAttribute("message", "No new album to import!");
         } else {

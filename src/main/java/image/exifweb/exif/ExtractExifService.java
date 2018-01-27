@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,10 +51,10 @@ public class ExtractExifService {
 	 *
 	 * @param importedAlbums
 	 */
+	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importNewAlbumsOnly(List<Album> importedAlbums) {
 		try {
-			extractExif(new File(appConfigService.getLinuxAlbumPath()),
-					null, true, importedAlbums);
+			importFromAlbumsRoot(true, importedAlbums);
 			albumService.writeJsonForAllAlbums();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -61,10 +62,10 @@ public class ExtractExifService {
 	}
 
 	@Async
+	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAllFromAlbumsRoot() {
 		try {
-			extractExif(new File(appConfigService.getLinuxAlbumPath()),
-					null, false, null);
+			importFromAlbumsRoot(false, null);
 			albumService.writeJsonForAllAlbums();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -72,31 +73,28 @@ public class ExtractExifService {
 	}
 
 	@Async
+	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAlbumByName(String albumName) {
 		try {
-			extractExif(new File(appConfigService.getLinuxAlbumPath() +
-					File.separatorChar + albumName), null, false, null);
+			importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
 			albumService.writeJsonForAlbum(albumName);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 	}
 
-	/**
-	 * @param path
-	 * @param album
-	 * @return true = EXIF processed, false = file no longer exists
-	 */
-	public boolean extractExifFromFile(File path, Album album) {
-		Image image = imageExif.extractExif(path);
-		if (image == null) {
-			logger.info("{} no longer exists!", path.getPath());
-			return false;
+	private void importFromAlbumsRoot(boolean onlyImportNewAlbums,
+	                                  List<Album> processedAlbums) {
+		File albumsRoot = new File(appConfigService.getLinuxAlbumPath());
+		File[] files = albumsRoot.listFiles();
+		if (files == null || files.length == 0) {
+			return;
 		}
-		image.setAlbum(album);
-		saveImageExif(image);
-		return true;
+		Stream.of(files).forEach(f -> {
+			importAlbumByPath(f, onlyImportNewAlbums, processedAlbums);
+		});
 	}
+
 
 	/**
 	 * Exista posibilitatea ca in cadrul extragerii EXIF anumite
@@ -104,77 +102,81 @@ public class ExtractExifService {
 	 * De aceea avem evict pe lastUpdatedForAlbums.
 	 *
 	 * @param path
-	 * @param album               is the path's album when path is a image-file otherwise is null
 	 * @param onlyImportNewAlbums
 	 * @param processedAlbums
 	 */
-	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void extractExif(File path, Album album,
-	                        boolean onlyImportNewAlbums,
-	                        List<Album> processedAlbums) {
+	private void importAlbumByPath(File path,
+	                               boolean onlyImportNewAlbums,
+	                               List<Album> processedAlbums) {
 		// cazul in care path este o poza
 		if (path.isFile()) {
-			extractExifFromFile(path, album);
-			return;
+			logger.error("Wrong path (is a file):\n{}", path.getPath());
+			throw new UnsupportedOperationException("Wrong path (is a file):\n" + path.getPath());
 		}
+		// cazul in care path este un album
 		File[] files = path.listFiles();
 		boolean noFiles = files == null || files.length == 0;
-		boolean curDirIsAlbum = albumInfo.isAlbum(path.getName());
-		if (curDirIsAlbum) {
-			// path este un album
-			if (onlyImportNewAlbums && noFiles) {
-				// ne dorim sa fie album nou dar path nu are poze asa ca daca ar
-				// fi intr-adevar album nou atunci nu ar avea sens sa-l import
-				logger.warn("{} este gol!", path.getPath());
-				return;
-			}
-			album = albumService.getAlbumByName(path.getName());
-			if (album == null) {
-				// album inexistent in DB
-				if (noFiles) {
-					// path este album nou dar nu are poze
-					return;
-				}
-				// creem un nou album (dir aferent are poze)
-				album = albumService.create(path.getName());
-			} else if (onlyImportNewAlbums) {
-				// cazul in care doar importam albume iar path este un album deja importat
-				return;
-			}
-			if (processedAlbums != null) {
-				// marcam albumul ca procesat
-				processedAlbums.add(album);
-			}
-		} else if (noFiles) {
-			// path este chiar root-ul albumelor si e gol
-			logger.error("{} este gol!", path.getPath());
+		// path este un album
+		if (onlyImportNewAlbums && noFiles) {
+			// ne dorim sa fie album nou dar path nu are poze asa ca daca ar
+			// fi intr-adevar album nou atunci nu ar avea sens sa-l import
+			logger.warn("{} este gol!", path.getPath());
 			return;
 		}
+		Album album = albumService.getAlbumByName(path.getName());
+		if (album == null) {
+			// album inexistent in DB
+			if (noFiles) {
+				// path este album nou dar nu are poze
+				return;
+			}
+			// creem un nou album (dir aferent are poze)
+			album = albumService.create(path.getName());
+		} else if (onlyImportNewAlbums) {
+			// cazul in care doar importam albume iar path este un album deja importat
+			return;
+		}
+		// at this point: album != null
 		StopWatch sw = new StopWatch();
 		sw.start(path.getAbsolutePath());
 		// 1 level only album supported
-		List<String> imageNames = curDirIsAlbum ? new ArrayList<>(noFiles ? 0 : files.length) : null;
+		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {
 			logger.debug("BEGIN album {}, 0 poze", path.getAbsolutePath());
 		} else {
+			// 1 level only album supported
 			logger.debug("BEGIN album {}, {} poze", path.getAbsolutePath(), files.length);
 			for (File file : files) {
-				if (curDirIsAlbum) {
-					// 1 level only album supported
-					if (extractExifFromFile(file, album)) {
-						imageNames.add(file.getName());
-					}
-				} else {
-					// is albums root
-					extractExif(file, album, onlyImportNewAlbums, processedAlbums);
+				if (importImageFromFile(file, album)) {
+					imageNames.add(file.getName());
 				}
 			}
 		}
-		if (curDirIsAlbum && !onlyImportNewAlbums) {
+		if (!onlyImportNewAlbums) {
 			deleteNotFoundImages(imageNames, album);
+		}
+		if (processedAlbums != null) {
+			// marcam albumul ca procesat
+			processedAlbums.add(album);
 		}
 		sw.stop();
 		logger.debug("END album " + path.getAbsolutePath() + ":\n" + sw.shortSummary());
+	}
+
+	/**
+	 * @param path
+	 * @param album
+	 * @return true = EXIF processed, false = file no longer exists
+	 */
+	private boolean importImageFromFile(File path, Album album) {
+		Image image = imageExif.extractExif(path);
+		if (image == null) {
+			logger.info("{} no longer exists!", path.getPath());
+			return false;
+		}
+		image.setAlbum(album);
+		saveOrUpdateImage(image);
+		return true;
 	}
 
 	@Transactional
@@ -254,7 +256,7 @@ public class ExtractExifService {
 	 *
 	 * @param imgWithNewExif
 	 */
-	private void saveImageExif(Image imgWithNewExif) {
+	private void saveOrUpdateImage(Image imgWithNewExif) {
 		ImageIdAndDates imageIdAndDates = getImageIdAndDates(
 				imgWithNewExif.getName(), imgWithNewExif.getAlbum().getId());
 		if (imageIdAndDates == null) {
