@@ -286,6 +286,9 @@ public class AlbumService {
 	}
 
 	private String importedAlbumsToString(List<Album> importedAlbums) {
+		if (importedAlbums.isEmpty()) {
+			return null;
+		}
 		return importedAlbums.stream().map(Album::getName).collect(Collectors.joining(", "));
 	}
 }
