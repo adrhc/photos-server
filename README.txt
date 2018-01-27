@@ -43,4 +43,7 @@ iar in tomcat/conf/context.xml:
               url="jdbc:mysql://192.168.1.31:3306/exifweb"/>
 </Context>
 
+timeouts: albums re/importing takes a lot of time
+see also xhttpd_zld.conf
+<mvc:async-support default-timeout="600000"/>
 curl -X POST --cookie "JSESSIONID=667E458E733A10AD5FD4D53282254A78" -H "Content-Type: application/json" -d '{"value":"2015-10-24 Botez Nataly"}' https://adrhc.go.ro/photos/app/json/action/exif
