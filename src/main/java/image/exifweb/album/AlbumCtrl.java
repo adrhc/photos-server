@@ -43,19 +43,17 @@ public class AlbumCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
 		logger.debug("BEGIN");
-		KeyValueDeferredResult<String, String> deferredResult = new KeyValueDeferredResult<>();
-		albumImportService.importNewAlbumsOnly(importedAlbums -> {
-			logger.debug("BEGIN importedAlbums.size = {}", importedAlbums.size());
-			if (importedAlbums.isEmpty()) {
-				deferredResult.setResult("message", "No new album to import!");
-			} else {
-				deferredResult.setResult("message", "Albums imported for: " +
-						importedAlbums.stream().map(Album::getName)
-								.collect(Collectors.joining(", ")));
-			}
-		});
-		logger.debug("END");
-		return deferredResult;
+		return KeyValueDeferredResult.of((deferredResult) ->
+				albumImportService.importNewAlbumsOnly(importedAlbums -> {
+					logger.debug("BEGIN importedAlbums.size = {}", importedAlbums.size());
+					if (importedAlbums.isEmpty()) {
+						deferredResult.setResult("message", "No new album to import!");
+					} else {
+						deferredResult.setResult("message", "Albums imported for: " +
+								importedAlbums.stream().map(Album::getName)
+										.collect(Collectors.joining(", ")));
+					}
+				}), asyncExecutor);
 	}
 
 	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
@@ -63,13 +61,10 @@ public class AlbumCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
 		logger.debug("BEGIN");
-		KeyValueDeferredResult<String, String> deferredResult = new KeyValueDeferredResult<>();
-		asyncExecutor.execute(() -> {
+		return KeyValueDeferredResult.of((deferredResult) -> {
 			albumService.writeJsonForAlbumsPageSafe();
 			deferredResult.setResult("message", AlbumService.ALBUMS_PAGE_JSON + " updated!");
-		});
-		logger.debug("END");
-		return deferredResult;
+		}, asyncExecutor);
 	}
 
 	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
@@ -77,8 +72,7 @@ public class AlbumCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
 		logger.debug("BEGIN");
-		KeyValueDeferredResult<String, String> deferredResult = new KeyValueDeferredResult<>();
-		asyncExecutor.execute(() -> {
+		return KeyValueDeferredResult.of((deferredResult) -> {
 			switch (albumService.writeJsonForAllAlbumsSafe()) {
 				case fail:
 					deferredResult.setResult("message", "All JSON files NOT updated!");
@@ -89,9 +83,7 @@ public class AlbumCtrl {
 				case partial:
 					deferredResult.setResult("message", "Some JSON files updated some NOT!");
 			}
-		});
-		logger.debug("END");
-		return deferredResult;
+		}, asyncExecutor);
 	}
 
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
@@ -99,8 +91,7 @@ public class AlbumCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonValue jsonValue) {
 		logger.debug("BEGIN");
-		KeyValueDeferredResult<String, String> deferredResult = new KeyValueDeferredResult<>();
-		asyncExecutor.execute(() -> {
+		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (albumService.writeJsonForAlbumSafe(jsonValue.getValue())) {
 				deferredResult.setResult("message",
 						"JSON files NOT updated for album " + jsonValue.getValue() + "!");
@@ -108,9 +99,7 @@ public class AlbumCtrl {
 				deferredResult.setResult("message",
 						"JSON files updated for album " + jsonValue.getValue() + "!");
 			}
-		});
-		logger.debug("END");
-		return deferredResult;
+		}, asyncExecutor);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,

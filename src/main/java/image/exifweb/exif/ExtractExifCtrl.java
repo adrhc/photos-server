@@ -1,16 +1,21 @@
 package image.exifweb.exif;
 
+import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,19 +27,25 @@ import javax.inject.Inject;
 @Controller
 @RequestMapping("/json/action/exif")
 public class ExtractExifCtrl {
+	private static final Logger logger = LoggerFactory.getLogger(ExtractExifCtrl.class);
+	@Inject
+	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
 	private AlbumImportService albumImportService;
 
 	@RequestMapping(method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void extractExif(@RequestBody JsonValue jsonValue, Model model) {
-		if (StringUtils.hasText(jsonValue.getValue())) {
-			albumImportService.importAlbumByName(jsonValue.getValue());
-			model.addAttribute("message", "Start extracting EXIF for " + jsonValue.getValue() + " ...");
-		} else {
-			albumImportService.importAllFromAlbumsRoot();
-			model.addAttribute("message", "Start extracting EXIF for all ...");
-		}
+	public DeferredResult<Map<String, String>> extractExif(@RequestBody JsonValue jsonValue) {
+		logger.debug("BEGIN");
+		return KeyValueDeferredResult.of((deferredResult) -> {
+			if (StringUtils.hasText(jsonValue.getValue())) {
+				albumImportService.importAlbumByName(jsonValue.getValue());
+				deferredResult.setResult("message", "Reimported " + jsonValue.getValue());
+			} else {
+				albumImportService.importAllFromAlbumsRoot();
+				deferredResult.setResult("message", "Reimported all albums");
+			}
+		}, asyncExecutor);
 	}
 }

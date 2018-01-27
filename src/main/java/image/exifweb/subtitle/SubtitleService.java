@@ -58,7 +58,7 @@ public class SubtitleService {
 		}
 	}
 
-	public boolean extractSubtitles(String startVideoDir, boolean appendVideoRoot) throws IOException, InterruptedException {
+	public boolean extractSubtitles(String startVideoDir, boolean appendVideoRoot) {
 		if (isSubtitlesExtractorRunning()) {
 			return false;
 		}

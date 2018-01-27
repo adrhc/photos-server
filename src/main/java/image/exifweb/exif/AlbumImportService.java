@@ -12,7 +12,6 @@ import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
@@ -47,12 +46,6 @@ public class AlbumImportService {
 	@Inject
 	private AlbumService albumService;
 
-	/**
-	 * This is not @Async because we need the result from importedAlbums.
-	 *
-	 * @param consumer
-	 */
-	@Async
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importNewAlbumsOnly(Consumer<List<Album>> consumer) {
 		List<Album> importedAlbums = new ArrayList<>();
@@ -65,14 +58,12 @@ public class AlbumImportService {
 		consumer.accept(importedAlbums);
 	}
 
-	@Async
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
 		albumService.writeJsonForAlbumSafe(albumName);
 	}
 
-	@Async
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAllFromAlbumsRoot() {
 		importFromAlbumsRoot(false);
