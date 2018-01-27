@@ -280,23 +280,20 @@ public class AlbumService {
 		}
 	}
 
-	public void writeJsonForAllAlbums() throws IOException {
-		List<AlbumCover> albumCovers = getAllCovers();
-		for (AlbumCover albumCover : albumCovers) {
-			writeJsonForAlbum(new Album(albumCover));
-		}
-	}
-
 	/**
 	 * Necesara doar la debug din js/grunt fara serverul java.
-	 *
-	 * @throws IOException
 	 */
-	public void writeJsonForAlbumsPage() throws IOException {
-		File file = new File(appConfigService.getConfig("photos json FS path") +
-				File.separatorChar + ALBUMS_PAGE_JSON);
+	public boolean writeJsonForAlbumsPageSafe() {
+		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
 		List<AlbumCover> albums = getAllCovers(true);
-		json.writeValue(file, albums);
+		try {
+			json.writeValue(file, albums);
+			return true;
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			logger.debug("failed to write json for: {}", ALBUMS_PAGE_JSON);
+		}
+		return false;
 	}
 }
