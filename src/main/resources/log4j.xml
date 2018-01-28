@@ -54,6 +54,9 @@
     <logger name="org.springframework">
         <level value="info"/>
     </logger>
+    <logger name="org.springframework.cache">
+        <level value="trace"/>
+    </logger>
 
     <!-- Hibernate -->
     <!--log just the SQL -->

@@ -277,7 +277,7 @@ public class AlbumImporter {
 	@Transactional
 	private ImageIdAndDates getImageIdAndDates(String name, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("SELECT new image.exifweb.exif.AlbumImporter$ImageIdAndDates" +
+		Query q = session.createQuery("SELECT new image.exifweb.album.AlbumImporter$ImageIdAndDates" +
 				"(i.id, i.dateTime, i.thumbLastModified) FROM Image i WHERE i.name = :name AND i.album.id = :albumId");
 		q.setString("name", name);
 		q.setInteger("albumId", albumId);

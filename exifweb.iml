@@ -35,6 +35,7 @@
           <file>file://$MODULE_DIR$/src/main/resources/spring/root-db.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/spring/root-security.xml</file>
           <file>file://$MODULE_DIR$/src/main/resources/spring/root-commons.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/root-cache.xml</file>
         </fileset>
         <fileset id="web application context" name="MVC application context" removed="true">
           <file>file://$MODULE_DIR$/src/main/resources/spring/root-db.xml</file>

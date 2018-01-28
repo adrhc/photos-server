@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.exifweb.persistence.view.AlbumCover;
 import org.hibernate.annotations.Cascade;
+import org.springframework.cache.annotation.CacheEvict;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -68,6 +69,7 @@ public class Album implements Serializable {
 		return name;
 	}
 
+	@CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -76,6 +78,7 @@ public class Album implements Serializable {
 		return cover;
 	}
 
+	@CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
 	public void setCover(Image cover) {
 		this.cover = cover;
 	}
@@ -84,6 +87,7 @@ public class Album implements Serializable {
 		return this.images;
 	}
 
+	@CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
 	public void setImages(List<Image> images) {
 		this.images = images;
 	}
@@ -92,8 +96,18 @@ public class Album implements Serializable {
 		return dirty;
 	}
 
+	@CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	@CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public Timestamp getLastUpdate() {
@@ -107,13 +121,5 @@ public class Album implements Serializable {
 	 */
 	public void setLastUpdate(Timestamp lastUpdate) {
 		this.lastUpdate = lastUpdate;
-	}
-
-	public boolean isDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(boolean deleted) {
-		this.deleted = deleted;
 	}
 }
