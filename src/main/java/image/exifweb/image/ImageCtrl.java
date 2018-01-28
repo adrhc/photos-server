@@ -1,5 +1,6 @@
 package image.exifweb.image;
 
+import image.exifweb.album.AlbumExporter;
 import image.exifweb.album.AlbumService;
 import image.exifweb.album.PhotoThumb;
 import image.exifweb.persistence.Image;
@@ -120,8 +121,8 @@ public class ImageCtrl {
 
 		@Override
 		public Model call() throws Exception {
-			model.addAttribute(AlbumService.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
-			model.addAttribute(AlbumService.PAGE_COUNT,
+			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
+			model.addAttribute(AlbumExporter.PAGE_COUNT,
 					albumService.getPageCount(toSearch, viewHidden, albumId));
 			return model;
 		}

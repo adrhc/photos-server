@@ -1,6 +1,5 @@
 package image.exifweb.album;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.image.ImageDimensions;
 import image.exifweb.image.ImageThumb;
 import image.exifweb.persistence.Album;
@@ -21,12 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,10 +33,8 @@ import java.util.Map;
  */
 @Service
 public class AlbumService {
-	public static final String ALBUMS_PAGE_JSON = "albums.json";
-	public static final String PAGE_COUNT = "pageCount";
-	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
+
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${max.thumb.size.px}")
@@ -49,8 +43,6 @@ public class AlbumService {
 	private double maxThumbSize;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
-	@Inject
-	private ObjectMapper json;
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
@@ -196,51 +188,6 @@ public class AlbumService {
 		}
 	}
 
-	public boolean writeJsonForAlbumSafe(String name) {
-		Album album = getAlbumByName(name);
-		return album != null && writeJsonForAlbumSafe(album);
-	}
-
-	public boolean writeJsonForAlbumSafe(Album album) {
-		try {
-			writeJsonForAlbum(album);
-			return true;
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			logger.debug("failed to write json for: {}", album.getName());
-		}
-		return false;
-	}
-
-	private void writeJsonForAlbum(Album album) throws IOException {
-		logger.debug("BEGIN {}", album.getName());
-		if (album.isDeleted()) {
-			logger.debug("END (is deleted) {}", album.getName());
-			return;
-		}
-		int pageCount = getPageCount(null, false, album.getId());
-		int photosPerPage = appConfigService.getPhotosPerPage();
-		Map<String, Object> map = new HashMap<>();
-		map.put(PAGE_COUNT, pageCount);
-		map.put(PHOTOS_PER_PAGE, photosPerPage);
-		File dir = new File(appConfigService.getConfig("photos json FS path") +
-				File.separatorChar + album.getId());
-		dir.mkdirs();
-		File file = new File(dir, "pageCount.json");
-		// write pageCount info
-		json.writeValue(file, map);
-		for (int i = 0; i < pageCount; i++) {
-			// write page i + 1 asc
-			json.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
-					getPage(i + 1, "asc", null, false, album.getId()));
-			// write page i + 1 desc
-			json.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
-					getPage(i + 1, "desc", null, false, album.getId()));
-		}
-		clearDirtyForAlbum(album.getId());
-		logger.debug("END {}", album.getName());
-	}
-
 	@Transactional
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void putAlbumCover(Integer imageId) throws IOException {
@@ -262,38 +209,5 @@ public class AlbumService {
 		Session session = sessionFactory.getCurrentSession();
 		Album album = (Album) session.load(Album.class, albumId);
 		album.setDirty(false);
-	}
-
-	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<AlbumCover> albumCovers = getAllCovers();
-		boolean successForAlbum, existsFail = false, existsSuccess = false;
-		for (AlbumCover albumCover : albumCovers) {
-			successForAlbum = writeJsonForAlbumSafe(new Album(albumCover));
-			existsFail = existsFail || !successForAlbum;
-			existsSuccess = existsSuccess || successForAlbum;
-		}
-		if (existsFail) {
-			return existsSuccess ?
-					E3ResultTypes.partial : E3ResultTypes.fail;
-		} else {
-			return E3ResultTypes.success;
-		}
-	}
-
-	/**
-	 * Necesara doar la debug din js/grunt fara serverul java.
-	 */
-	public boolean writeJsonForAlbumsPageSafe() {
-		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
-		file.getParentFile().mkdirs();
-		List<AlbumCover> albums = getAllCovers(true);
-		try {
-			json.writeValue(file, albums);
-			return true;
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			logger.debug("failed to write json for: {}", ALBUMS_PAGE_JSON);
-		}
-		return false;
 	}
 }

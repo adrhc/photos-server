@@ -46,6 +46,8 @@ public class AlbumImporter {
 	private AlbumInfo albumInfo;
 	@Inject
 	private AlbumService albumService;
+	@Inject
+	private AlbumExporter albumExporter;
 
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importNewAlbumsOnly(Consumer<List<Album>> consumer) {
@@ -55,24 +57,20 @@ public class AlbumImporter {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		importedAlbums.forEach(albumService::writeJsonForAlbumSafe);
+		importedAlbums.forEach(albumExporter::writeJsonForAlbumSafe);
 		consumer.accept(importedAlbums);
 	}
 
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
-		albumService.writeJsonForAlbumSafe(albumName);
+		albumExporter.writeJsonForAlbumSafe(albumName);
 	}
 
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importAllFromAlbumsRoot() {
-		importFromAlbumsRoot(false);
-		albumService.writeJsonForAllAlbumsSafe();
-	}
-
-	private void importFromAlbumsRoot(boolean onlyImportNewAlbums) {
-		importFromAlbumsRoot(onlyImportNewAlbums, null);
+		importFromAlbumsRoot(false, null);
+		albumExporter.writeJsonForAllAlbumsSafe();
 	}
 
 	private void importFromAlbumsRoot(boolean onlyImportNewAlbums,
@@ -84,7 +82,6 @@ public class AlbumImporter {
 		}
 		Stream.of(files).forEach(f -> importAlbumByPath(f, onlyImportNewAlbums, albumConsumer));
 	}
-
 
 	/**
 	 * Exista posibilitatea ca in cadrul extragerii EXIF anumite
