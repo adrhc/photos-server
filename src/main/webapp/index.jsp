@@ -26,11 +26,6 @@
             border-color:black;
         }
 
-        .bottom {
-            border-bottom:thin solid;
-            border-color:black;
-        }
-
         .left {
             border-left:thin solid;
             border-color:black;
