@@ -56,9 +56,8 @@ public class Gallery3RestCtrl {
 	public ResponseEntity<String> login(HttpSession httpSession) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(
+		return new ResponseEntity<>(
 				"1114d4023d89b15ce10a20ba4333eff7", headers, HttpStatus.OK);
-		return responseEntity;
 	}
 
 	@RequestMapping(value = "/rest/tree/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
