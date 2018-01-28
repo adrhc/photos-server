@@ -33,7 +33,7 @@ public class Album implements Serializable {
 	@OneToMany(mappedBy = "album", orphanRemoval = true)
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private List<Image> images;
-	@OneToOne(optional = true)
+	@OneToOne
 	@JoinColumn(name = "FK_IMAGE")
 	private Image cover;
 	@JsonIgnore
