@@ -76,8 +76,8 @@ public class ImageCtrl {
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@Transactional
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+	@Transactional
 	public void changeStatus(@RequestBody ImageStatus imageStatus) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageStatus.getId());
@@ -89,8 +89,8 @@ public class ImageCtrl {
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@Transactional
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+	@Transactional
 	public void setRating(@RequestBody ImageRating imageRating) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageRating.getId());
