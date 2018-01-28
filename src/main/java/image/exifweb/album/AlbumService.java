@@ -65,7 +65,7 @@ public class AlbumService {
 		return (Album) session.get(Album.class, id);// get initializeaza entity
 	}
 
-	@Cacheable(value = "album", unless = "#result != null")
+//	@Cacheable(value = "album", unless = "#result != null")
 	@Transactional
 	public Album getAlbumByName(String name) {
 		Session session = sessionFactory.getCurrentSession();
