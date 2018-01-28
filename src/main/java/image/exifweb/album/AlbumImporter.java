@@ -1,6 +1,7 @@
-package image.exifweb.exif;
+package image.exifweb.album;
 
-import image.exifweb.album.AlbumService;
+import image.exifweb.exif.AlbumInfo;
+import image.exifweb.exif.ImageExif;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;

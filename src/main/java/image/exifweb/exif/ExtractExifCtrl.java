@@ -1,5 +1,6 @@
 package image.exifweb.exif;
 
+import image.exifweb.album.AlbumImporter;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
 import org.slf4j.Logger;

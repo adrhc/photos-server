@@ -1,6 +1,5 @@
 package image.exifweb.album;
 
-import image.exifweb.exif.AlbumImporter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
