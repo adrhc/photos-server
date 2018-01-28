@@ -1,6 +1,5 @@
 package image.exifweb.album;
 
-import image.exifweb.exif.AlbumInfo;
 import image.exifweb.exif.ImageExif;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
@@ -42,8 +41,6 @@ public class AlbumImporter {
 	private SessionFactory sessionFactory;
 	@Inject
 	private ImageExif imageExif;
-	@Inject
-	private AlbumInfo albumInfo;
 	@Inject
 	private AlbumService albumService;
 	@Inject
