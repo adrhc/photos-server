@@ -1,5 +1,8 @@
 package image.exifweb.album;
 
+import image.exifweb.album.events.AlbumEventBuilder;
+import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.exif.ImageExif;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
@@ -44,7 +47,17 @@ public class AlbumImporter {
 	@Inject
 	private AlbumService albumService;
 	@Inject
-	private AlbumExporter albumExporter;
+	private AlbumEventsEmitter albumEventsEmitter;
+
+	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+	public void importAlbumByName(String albumName) {
+		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
+	}
+
+	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+	public void importAllFromAlbumsRoot() {
+		importFromAlbumsRoot(false, null);
+	}
 
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
 	public void importNewAlbumsOnly(Consumer<List<Album>> consumer) {
@@ -54,20 +67,7 @@ public class AlbumImporter {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		importedAlbums.forEach(albumExporter::writeJsonForAlbumSafe);
 		consumer.accept(importedAlbums);
-	}
-
-	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void importAlbumByName(String albumName) {
-		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
-		albumExporter.writeJsonForAlbumSafe(albumName);
-	}
-
-	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void importAllFromAlbumsRoot() {
-		importFromAlbumsRoot(false, null);
-		albumExporter.writeJsonForAllAlbumsSafe();
 	}
 
 	private void importFromAlbumsRoot(boolean onlyImportNewAlbums,
@@ -139,6 +139,8 @@ public class AlbumImporter {
 		if (!onlyImportNewAlbums) {
 			deleteNotFoundImages(imageNames, album);
 		}
+		albumEventsEmitter.emit(AlbumEventBuilder
+				.of(EAlbumEventType.ALBUM_IMPORTED).album(album).build());
 		if (albumConsumer != null) {
 			// marcam albumul ca procesat
 			albumConsumer.accept(album);

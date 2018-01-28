@@ -1,6 +1,9 @@
 package image.exifweb.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import image.exifweb.album.events.AlbumEventBuilder;
+import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.sys.AppConfigService;
@@ -8,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +32,8 @@ public class AlbumExporter {
 	private AppConfigService appConfigService;
 	@Inject
 	private AlbumService albumService;
+	@Inject
+	private AlbumEventsEmitter albumEventsEmitter;
 	@Inject
 	private ObjectMapper jsonMapper;
 
@@ -105,7 +111,19 @@ public class AlbumExporter {
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
 					albumService.getPage(i + 1, "desc", null, false, album.getId()));
 		}
-		albumService.clearDirtyForAlbum(album.getId());
+		albumEventsEmitter.emit(AlbumEventBuilder.of(EAlbumEventType.JSON_UPDATED).album(album).build());
 		logger.debug("END {}", album.getName());
+	}
+
+	@PostConstruct
+	public void postConstruct() {
+		albumEventsEmitter.subscribe(EAlbumEventType.ALBUM_IMPORTED,
+				(ae) -> {
+					if (ae.getAlbum() == null) {
+						writeJsonForAlbumSafe(ae.getAlbumName());
+					} else {
+						writeJsonForAlbumSafe(ae.getAlbum());
+					}
+				});
 	}
 }

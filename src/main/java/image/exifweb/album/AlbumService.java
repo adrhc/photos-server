@@ -1,5 +1,7 @@
 package image.exifweb.album;
 
+import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.image.ImageDimensions;
 import image.exifweb.image.ImageThumb;
 import image.exifweb.persistence.Album;
@@ -19,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +49,8 @@ public class AlbumService {
 	private SessionFactory sessionFactory;
 	@Inject
 	private AppConfigService appConfigService;
+	@Inject
+	private AlbumEventsEmitter albumEventsEmitter;
 
 	public Album create(String name) {
 		Album album = new Album(name);
@@ -190,7 +194,7 @@ public class AlbumService {
 
 	@Transactional
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void putAlbumCover(Integer imageId) throws IOException {
+	public void putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageId);
 		Album album = image.getAlbum();
@@ -198,16 +202,17 @@ public class AlbumService {
 		album.setDirty(true);
 	}
 
-	/**
-	 * @param albumId
-	 * @return
-	 * @throws IOException
-	 */
 	@Transactional
 	@CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-	public void clearDirtyForAlbum(Integer albumId) throws IOException {
+	public void clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Album album = (Album) session.load(Album.class, albumId);
 		album.setDirty(false);
+	}
+
+	@PostConstruct
+	public void postConstruct() {
+		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
+				(ae) -> clearDirtyForAlbum(ae.getAlbum().getId()));
 	}
 }
