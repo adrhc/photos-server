@@ -31,7 +31,7 @@ public class ExtractExifCtrl {
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
-	private AlbumImportService albumImportService;
+	private AlbumImporter albumImporter;
 
 	@RequestMapping(method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -40,10 +40,10 @@ public class ExtractExifCtrl {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (StringUtils.hasText(jsonValue.getValue())) {
-				albumImportService.importAlbumByName(jsonValue.getValue());
+				albumImporter.importAlbumByName(jsonValue.getValue());
 				deferredResult.setResult("message", "Reimported " + jsonValue.getValue());
 			} else {
-				albumImportService.importAllFromAlbumsRoot();
+				albumImporter.importAllFromAlbumsRoot();
 				deferredResult.setResult("message", "Reimported all albums");
 			}
 		}, asyncExecutor);
