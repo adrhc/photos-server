@@ -189,10 +189,10 @@ public class AlbumService {
      *
      * @param foundImageNames
      */
-    @Caching(evict = {
-            @CacheEvict(value = "album", key = "#album.name", condition = "#result"),
-            @CacheEvict(value = "album", key = "#album.id", condition = "#result")
-    })
+//    @Caching(evict = {
+//            @CacheEvict(value = "album", key = "#album.name", condition = "#result"),
+//            @CacheEvict(value = "album", key = "#album.id", condition = "#result")
+//    })
     @Transactional
     public boolean deleteNotFoundImages(List<String> foundImageNames, Album album) {
         logger.debug("BEGIN {}", album.getName());
