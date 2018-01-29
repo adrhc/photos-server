@@ -61,7 +61,7 @@
     <!-- Hibernate -->
     <!--log just the SQL -->
     <logger name="org.hibernate.SQL">
-        <level value="debug"/>
+        <level value="error"/>
     </logger>
     <!--log JDBC bind parameters -->
     <logger name="org.hibernate.type">

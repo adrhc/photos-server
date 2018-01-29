@@ -84,7 +84,8 @@ public class Album implements Serializable {
 
     @Caching(evict = {
             @CacheEvict(value = "album", key = "#root.target.name", condition = "#root.target.name != null"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
+            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null"),
+            @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     })
     public void setCover(Image cover) {
         this.cover = cover;
@@ -96,7 +97,8 @@ public class Album implements Serializable {
 
     @Caching(evict = {
             @CacheEvict(value = "album", key = "#root.target.name", condition = "#root.target.name != null"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
+            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null"),
+            @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     })
     public void setImages(List<Image> images) {
         this.images = images;

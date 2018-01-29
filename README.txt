@@ -46,22 +46,22 @@ iar in tomcat/conf/context.xml:
 timeouts: albums re/importing takes a lot of time
 see also xhttpd_zld.conf
 <mvc:async-support default-timeout="600000"/>
-curl -X POST --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" -d '{"value":"2015-10-24 Botez Nataly"}' https://adrhc.go.ro/photos/app/json/action/exif
+curl -X POST --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" -d '{"value":"2015-10-24 Botez Nataly"}' https://adrhc.go.ro/photos/app/json/action/exif
 
 AlbumCtrl.getAllCovers: test getLastUpdatedForAlbums cache
-curl -I -X GET --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album
+curl -I -X GET --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album
 
 AlbumCtrl.getAlbumById: test getAlbumById cache
 28 = 2000-01-01 Test
-curl -I -X GET --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album/28
+curl -I -X GET --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album/28
 
 AlbumCtrl.importNewAlbumsOnly: test getAlbumByName cache
-curl -X POST --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album/importAlbums
+curl -X POST --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album/importAlbums
 
 AlbumCtrl.updateJsonForAlbum: getAlbumByName (creates cache) then AlbumService.clearDirtyForAlbum (removes cache)
-curl -X POST --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" -d '{"value":"2012-01-01 Revelion"}' https://adrhc.go.ro/photos/app/json/album/updateJsonForAlbum
-curl -X POST --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" -d '{"value":"2000-01-01 Test"}' https://adrhc.go.ro/photos/app/json/album/updateJsonForAlbum
+curl -X POST --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" -d '{"value":"2012-01-01 Revelion"}' https://adrhc.go.ro/photos/app/json/album/updateJsonForAlbum
+curl -X POST --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" -d '{"value":"2000-01-01 Test"}' https://adrhc.go.ro/photos/app/json/album/updateJsonForAlbum
 
 ExtractExifCtrl.reImport: getAlbumByName (creates cache) then AlbumService.clearDirtyForAlbum (removes cache)
-curl -X POST --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" -d '{"value":"2012-01-01 Revelion"}' https://adrhc.go.ro/photos/app/json/action/exif
-curl -X POST --cookie "JSESSIONID=175DD0E7162BD5E788D105DA8BCEC8DD" -H "Content-Type: application/json" -d '{"value":"2000-01-01 Test"}' https://adrhc.go.ro/photos/app/json/action/exif
+curl -X POST --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" -d '{"value":"2012-01-01 Revelion"}' https://adrhc.go.ro/photos/app/json/action/exif
+curl -X POST --cookie "JSESSIONID=01812DFA4BA8BDC00F9F4DCEF9ED6562" -H "Content-Type: application/json" -d '{"value":"2000-01-01 Test"}' https://adrhc.go.ro/photos/app/json/action/exif

@@ -72,17 +72,17 @@ public class AlbumImporter {
         return true;
     };
 
-    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void importAlbumByName(String albumName) {
         importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
     }
 
-    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void importAllFromAlbumsRoot() {
         importFromAlbumsRoot(null);
     }
 
-    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void importNewAlbumsOnly() {
         importFromAlbumsRoot(IS_NEW_ALBUM);
     }

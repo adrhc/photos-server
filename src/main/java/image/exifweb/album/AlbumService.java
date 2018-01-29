@@ -273,7 +273,7 @@ public class AlbumService {
     }
 
     @Transactional
-    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void putAlbumCover(Integer imageId) {
         Session session = sessionFactory.getCurrentSession();
         Image image = (Image) session.load(Image.class, imageId);
@@ -283,7 +283,7 @@ public class AlbumService {
     }
 
     @Transactional
-    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void clearDirtyForAlbum(Integer albumId) {
         Session session = sessionFactory.getCurrentSession();
         Album album = (Album) session.load(Album.class, albumId);
