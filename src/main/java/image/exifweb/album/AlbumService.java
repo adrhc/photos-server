@@ -71,6 +71,7 @@ public class AlbumService {
     //	@Cacheable(value = "album", unless = "#result != null")
     @Transactional
     public Album getAlbumByName(String name) {
+        logger.debug("BEGIN name = {}", name);
         Session session = sessionFactory.getCurrentSession();
         Query q = session.createQuery("FROM Album WHERE name = :name");
         return (Album) q.setString("name", name).uniqueResult();
