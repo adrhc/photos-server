@@ -195,8 +195,10 @@ public class AlbumService {
     })
     @Transactional
     public boolean deleteNotFoundImages(List<String> foundImageNames, Album album) {
+        logger.debug("BEGIN {}", album.getName());
         boolean[] existsChange = {false};
-        album.getImages().forEach(image -> {
+        List<Image> images = imageService.getImagesByAlbumId(album.getId());
+        images.forEach(image -> {
             String dbName = image.getName();
             int fsNameIdx = foundImageNames.indexOf(dbName);
             if (fsNameIdx >= 0) {
@@ -214,20 +216,16 @@ public class AlbumService {
             if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
                 // status = 0
                 logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-                existsChange[0] = imageService.removeById(image.getId()) || existsChange[0];
+                imageService.remove(image);
+                existsChange[0] = true;
                 return;
             }
             // status != 0 (adica e o imagine "prelucrata")
             logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-            Image dbImage = imageService.getById(image.getId());
-            if (dbImage != null) {
-                dbImage.setDeleted(true);
-                existsChange[0] = true;
-            } else {
-                logger.warn("Though exists in album-spring-cache {} the image {} no longer exists in DB!",
-                        album.getName(), image.getName());
-            }
+            image.setDeleted(true);
+            existsChange[0] = true;
         });
+        logger.debug("END {}, return {}", album.getName(), existsChange[0]);
         return existsChange[0];
     }
 
