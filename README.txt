@@ -46,4 +46,21 @@ iar in tomcat/conf/context.xml:
 timeouts: albums re/importing takes a lot of time
 see also xhttpd_zld.conf
 <mvc:async-support default-timeout="600000"/>
-curl -X POST --cookie "JSESSIONID=667E458E733A10AD5FD4D53282254A78" -H "Content-Type: application/json" -d '{"value":"2015-10-24 Botez Nataly"}' https://adrhc.go.ro/photos/app/json/action/exif
+curl -X POST --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" -d '{"value":"2015-10-24 Botez Nataly"}' https://adrhc.go.ro/photos/app/json/action/exif
+
+AlbumCtrl.getAllCovers: test getLastUpdatedForAlbums cache
+curl -I -X GET --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album
+
+AlbumCtrl.getAlbumById: test getAlbumById cache
+curl -I -X GET --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album/28
+
+AlbumCtrl.importNewAlbumsOnly: test getAlbumByName cache
+curl -X POST --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" https://adrhc.go.ro/photos/app/json/album/importAlbums
+
+AlbumCtrl.updateJsonForAlbum: getAlbumByName (creates cache) then AlbumService.clearDirtyForAlbum (removes cache)
+curl -X POST --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" -d '{"value":"2012-01-01 Revelion"}' https://adrhc.go.ro/photos/app/json/album/updateJsonForAlbum
+curl -X POST --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" -d '{"value":"2000-01-01 Test"}' https://adrhc.go.ro/photos/app/json/album/updateJsonForAlbum
+
+ExtractExifCtrl.reImport: getAlbumByName (creates cache) then AlbumService.clearDirtyForAlbum (removes cache)
+curl -X POST --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" -d '{"value":"2012-01-01 Revelion"}' https://adrhc.go.ro/photos/app/json/action/exif
+curl -X POST --cookie "JSESSIONID=1C0FE61FB39CC1B9B3932D8367BC942E" -H "Content-Type: application/json" -d '{"value":"2000-01-01 Test"}' https://adrhc.go.ro/photos/app/json/action/exif

@@ -12,21 +12,29 @@ import javax.annotation.PreDestroy;
  */
 @Component
 public class AlbumEventsEmitter {
-	private PublishSubject<AlbumEvent> albumEvents = PublishSubject.create();
+    private PublishSubject<AlbumEvent> albumEvents = PublishSubject.create();
 
-	public void emit(AlbumEvent albumEvent) {
-		albumEvents.onNext(albumEvent);
-	}
+    public void emit(AlbumEvent albumEvent) {
+        albumEvents.onNext(albumEvent);
+    }
 
-	public Disposable subscribe(EAlbumEventType albumEventType,
-	                            Consumer<AlbumEvent> consumer) {
-		return albumEvents
-				.filter(ae -> ae.getEventType().equals(albumEventType))
-				.subscribe(consumer);
-	}
+    public Disposable subscribe(EAlbumEventType albumEventType,
+                                String requestId, Consumer<AlbumEvent> consumer) {
+        return albumEvents
+                .filter(ae -> ae.getEventType().equals(albumEventType))
+                .filter(ae -> ae.getRequestId().equals(requestId))
+                .subscribe(consumer);
+    }
 
-	@PreDestroy
-	public void preDestroy() {
-		albumEvents.onComplete();
-	}
+    public Disposable subscribe(EAlbumEventType albumEventType,
+                                Consumer<AlbumEvent> consumer) {
+        return albumEvents
+                .filter(ae -> ae.getEventType().equals(albumEventType))
+                .subscribe(consumer);
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        albumEvents.onComplete();
+    }
 }

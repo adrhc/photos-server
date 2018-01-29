@@ -21,11 +21,8 @@ import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -38,6 +35,7 @@ import java.util.stream.Stream;
 @Service
 public class AlbumImporter {
     private static final Logger logger = LoggerFactory.getLogger(AlbumImporter.class);
+    public ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
     @Inject
     private AppConfigService appConfigService;
     @Inject
@@ -48,64 +46,59 @@ public class AlbumImporter {
     private AlbumService albumService;
     @Inject
     private AlbumEventsEmitter albumEventsEmitter;
+    private Predicate<File> IS_NEW_ALBUM = albumPath -> {
+        // cazul in care albumPath este o poza
+        if (albumPath.isFile()) {
+            logger.error("Wrong albumPath (is a file):\n{}", albumPath.getPath());
+            return false;
+        }
+        // cazul in care albumPath este un album
+        File[] albumFiles = albumPath.listFiles();
+        boolean noFiles = albumFiles == null || albumFiles.length == 0;
+        if (noFiles) {
+            // ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
+            // ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
+            logger.warn("{} este gol!", albumPath.getPath());
+            return false;
+        }
+        Album album = albumService.getAlbumByName(albumPath.getName());
+        if (album != null) {
+            // albumPath este un album deja importat deci NU nou
+            return false;
+        }
+        // album inexistent in DB deci nou
+        return true;
+    };
 
     @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void importAlbumByName(String albumName) {
-        importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName), false, null);
+        importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
     }
 
     @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
     public void importAllFromAlbumsRoot() {
-        importFromAlbumsRoot(false, null);
+        importFromAlbumsRoot(null);
     }
 
     @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
-    public void importNewAlbumsOnly(Consumer<List<Album>> consumer) {
-        List<Album> importedAlbums = new ArrayList<>();
-        File albumsRoot = new File(appConfigService.getLinuxAlbumPath());
-        File[] files = albumsRoot.listFiles();
-        if (files == null || files.length == 0) {
-            return;
-        }
-        Stream.of(files)
-                .filter(albumPath -> {
-                    // cazul in care albumPath este o poza
-                    if (albumPath.isFile()) {
-                        logger.error("Wrong albumPath (is a file):\n{}", albumPath.getPath());
-                        return false;
-                    }
-                    // cazul in care albumPath este un album
-                    File[] albumFiles = albumPath.listFiles();
-                    boolean noFiles = albumFiles == null || albumFiles.length == 0;
-                    if (noFiles) {
-                        // ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
-                        // ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
-                        logger.warn("{} este gol!", albumPath.getPath());
-                        return false;
-                    }
-                    Album album = albumService.getAlbumByName(albumPath.getName());
-                    if (album == null) {
-                        // album inexistent in DB deci nou
-                        // creem un nou album  in db
-                        albumService.create(albumPath.getName());
-                    } else {
-                        // albumPath este un album deja importat deci NU nou
-                        return false;
-                    }
-                    return true;
-                })
-                .forEach(f -> importAlbumByPath(f, true, importedAlbums::add));
-        consumer.accept(importedAlbums);
+    public void importNewAlbumsOnly() {
+        importFromAlbumsRoot(IS_NEW_ALBUM);
     }
 
-    private void importFromAlbumsRoot(boolean onlyImportNewAlbums,
-                                      Consumer<Album> albumConsumer) {
+    private void importFromAlbumsRoot(Predicate<File> albumsFilter) {
         File albumsRoot = new File(appConfigService.getLinuxAlbumPath());
         File[] files = albumsRoot.listFiles();
         if (files == null || files.length == 0) {
             return;
         }
-        Stream.of(files).forEach(f -> importAlbumByPath(f, onlyImportNewAlbums, albumConsumer));
+        if (albumsFilter == null) {
+            Stream.of(files)
+                    .forEach(this::importAlbumByPath);
+        } else {
+            Stream.of(files)
+                    .filter(albumsFilter)
+                    .forEach(this::importAlbumByPath);
+        }
     }
 
     /**
@@ -114,44 +107,31 @@ public class AlbumImporter {
      * De aceea avem evict pe lastUpdatedForAlbums.
      *
      * @param path
-     * @param onlyImportNewAlbums
-     * @param albumConsumer
      */
-    private void importAlbumByPath(File path,
-                                   boolean onlyImportNewAlbums,
-                                   Consumer<Album> albumConsumer) {
+    private void importAlbumByPath(File path) {
         // cazul in care path este o poza
         if (path.isFile()) {
             logger.error("Wrong path (is a file):\n{}", path.getPath());
             throw new UnsupportedOperationException("Wrong path (is a file):\n" + path.getPath());
         }
+        StopWatch sw = new StopWatch();
+        sw.start(path.getAbsolutePath());
         // cazul in care path este un album
         File[] files = path.listFiles();
         boolean noFiles = files == null || files.length == 0;
-        // path este un album
-        if (onlyImportNewAlbums && noFiles) {
-            // ne dorim sa fie album nou dar path nu are poze asa ca daca ar
-            // fi intr-adevar album nou atunci nu ar avea sens sa-l import
-            logger.warn("{} este gol!", path.getPath());
-            return;
-        }
         Album album = albumService.getAlbumByName(path.getName());
-        if (album == null) {
-            // album inexistent in DB
+        boolean isNewAlbum = album == null;
+        if (isNewAlbum) {
+            // album inexistent in DB deci nou
             if (noFiles) {
                 // path este album nou dar nu are poze
+                sw.stop();
                 return;
             }
             // creem un nou album (dir aferent are poze)
             album = albumService.create(path.getName());
-        } else if (onlyImportNewAlbums) {
-            // cazul in care doar importam albume iar path este un album deja importat
-            return;
         }
         // at this point: album != null
-        StopWatch sw = new StopWatch();
-        sw.start(path.getAbsolutePath());
-        // 1 level only album supported
         List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
         if (noFiles) {
             logger.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
@@ -164,15 +144,14 @@ public class AlbumImporter {
                 }
             }
         }
-        if (!onlyImportNewAlbums) {
+        if (!isNewAlbum) {
             deleteNotFoundImages(imageNames, album);
         }
+        // used for thread safety
         albumEventsEmitter.emit(AlbumEventBuilder
-                .of(EAlbumEventType.ALBUM_IMPORTED).album(album).build());
-        if (albumConsumer != null) {
-            // marcam albumul ca procesat
-            albumConsumer.accept(album);
-        }
+                .of(EAlbumEventType.ALBUM_IMPORTED)
+                .requestId(requestId.get())
+                .album(album).build());
         sw.stop();
         logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
     }
@@ -183,6 +162,10 @@ public class AlbumImporter {
      * @return true = EXIF processed, false = file no longer exists
      */
     private boolean importImageFromFile(File path, Album album) {
+        if (path.isDirectory()) {
+            logger.error("Wrong path (is a directory):\n{}", path.getPath());
+            throw new UnsupportedOperationException("Wrong path (is a directory):\n" + path.getPath());
+        }
         Image image = imageExif.extractExif(path);
         if (image == null) {
             logger.info("{} no longer exists!", path.getPath());

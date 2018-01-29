@@ -1,5 +1,7 @@
 package image.exifweb.album;
 
+import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
@@ -15,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,98 +32,103 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/json/album")
 public class AlbumCtrl {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumCtrl.class);
-	@Inject
-	private ThreadPoolTaskExecutor asyncExecutor;
-	@Inject
-	private AlbumService albumService;
-	@Inject
-	private AlbumExporter albumExporter;
-	@Inject
-	private AlbumImporter albumImporter;
+    private static final Logger logger = LoggerFactory.getLogger(AlbumCtrl.class);
+    @Inject
+    private ThreadPoolTaskExecutor asyncExecutor;
+    @Inject
+    private AlbumService albumService;
+    @Inject
+    private AlbumExporter albumExporter;
+    @Inject
+    private AlbumImporter albumImporter;
+    @Inject
+    private AlbumEventsEmitter albumEventsEmitter;
 
-	@RequestMapping(value = "/importAlbums", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
-		logger.debug("BEGIN");
-		return KeyValueDeferredResult.of((deferredResult) ->
-				albumImporter.importNewAlbumsOnly(importedAlbums -> {
-					logger.debug("BEGIN importedAlbums.size = {}", importedAlbums.size());
-					if (importedAlbums.isEmpty()) {
-						deferredResult.setResult("message", "No new album to import!");
-					} else {
-						deferredResult.setResult("message", "Albums imported for: " +
-								importedAlbums.stream().map(Album::getName)
-										.collect(Collectors.joining(", ")));
-					}
-				}), asyncExecutor);
-	}
+    @RequestMapping(value = "/importAlbums", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
+        logger.debug("BEGIN");
+        return KeyValueDeferredResult.of((deferredResult) -> {
+            List<Album> newAlbums = new ArrayList<>();
+            albumEventsEmitter.subscribe(EAlbumEventType.ALBUM_IMPORTED,
+                    albumImporter.requestId.get(), ae -> newAlbums.add(ae.getAlbum()));
+            albumImporter.importNewAlbumsOnly();
+            logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
+            if (newAlbums.isEmpty()) {
+                deferredResult.setResult("message", "No new album to import!");
+            } else {
+                deferredResult.setResult("message", "Albums imported for: " +
+                        newAlbums.stream().map(Album::getName)
+                                .collect(Collectors.joining(", ")));
+            }
+        }, asyncExecutor);
+    }
 
-	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
-		logger.debug("BEGIN");
-		return KeyValueDeferredResult.of((deferredResult) -> {
-			albumExporter.writeJsonForAlbumsPageSafe();
-			deferredResult.setResult("message", AlbumExporter.ALBUMS_PAGE_JSON + " updated!");
-		}, asyncExecutor);
-	}
+    @RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
+        logger.debug("BEGIN");
+        return KeyValueDeferredResult.of((deferredResult) -> {
+            albumExporter.writeJsonForAlbumsPageSafe();
+            deferredResult.setResult("message", AlbumExporter.ALBUMS_PAGE_JSON + " updated!");
+        }, asyncExecutor);
+    }
 
-	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
-		logger.debug("BEGIN");
-		return KeyValueDeferredResult.of((deferredResult) -> {
-			switch (albumExporter.writeJsonForAllAlbumsSafe()) {
-				case fail:
-					deferredResult.setResult("message", "All JSON files NOT updated!");
-					break;
-				case success:
-					deferredResult.setResult("message", "All JSON files updated!");
-					break;
-				case partial:
-					deferredResult.setResult("message", "Some JSON files updated some NOT!");
-			}
-		}, asyncExecutor);
-	}
+    @RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
+        logger.debug("BEGIN");
+        return KeyValueDeferredResult.of((deferredResult) -> {
+            switch (albumExporter.writeJsonForAllAlbumsSafe()) {
+                case fail:
+                    deferredResult.setResult("message", "All JSON files NOT updated!");
+                    break;
+                case success:
+                    deferredResult.setResult("message", "All JSON files updated!");
+                    break;
+                case partial:
+                    deferredResult.setResult("message", "Some JSON files updated some NOT!");
+            }
+        }, asyncExecutor);
+    }
 
-	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonValue jsonValue) {
-		logger.debug("BEGIN");
-		return KeyValueDeferredResult.of((deferredResult) -> {
-			if (albumExporter.writeJsonForAlbumSafe(jsonValue.getValue())) {
-				deferredResult.setResult("message",
-						"JSON files NOT updated for album " + jsonValue.getValue() + "!");
-			} else {
-				deferredResult.setResult("message",
-						"JSON files updated for album " + jsonValue.getValue() + "!");
-			}
-		}, asyncExecutor);
-	}
+    @RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonValue jsonValue) {
+        logger.debug("BEGIN");
+        return KeyValueDeferredResult.of((deferredResult) -> {
+            if (albumExporter.writeJsonForAlbumSafe(jsonValue.getValue())) {
+                deferredResult.setResult("message",
+                        "JSON files NOT updated for album " + jsonValue.getValue() + "!");
+            } else {
+                deferredResult.setResult("message",
+                        "JSON files updated for album " + jsonValue.getValue() + "!");
+            }
+        }, asyncExecutor);
+    }
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public Album get(@PathVariable Integer id, WebRequest webRequest) {
-		Album album = albumService.getAlbumById(id);
-		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
-			return null;
-		}
-		return album;
-	}
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
+        Album album = albumService.getAlbumById(id);
+        if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
+            return null;
+        }
+        return album;
+    }
 
-	@RequestMapping(method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
-		if (webRequest.checkNotModified(albumService.getLastUpdatedForAlbums().getTime())) {
-			return null;
-		}
-		return albumService.getAllCovers(true);
-	}
+    @RequestMapping(method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public List<AlbumCover> getAllCovers(WebRequest webRequest) {
+        if (webRequest.checkNotModified(albumService.getLastUpdatedForAlbums().getTime())) {
+            return null;
+        }
+        return albumService.getAllCovers(true);
+    }
 }

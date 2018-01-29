@@ -12,12 +12,15 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -53,36 +56,43 @@ public class AlbumService {
     @Inject
     private AlbumEventsEmitter albumEventsEmitter;
 
-    @CachePut(value = "album", unless = "#result != null", key = "#result.id")
+    @Caching(put = {
+            @CachePut(value = "album", unless = "#result != null", key = "#result.id"),
+            @CachePut(value = "album", unless = "#result != null", key = "#result.name")
+    })
+    @Transactional
     public Album create(String name) {
         Album album = new Album(name);
         sessionFactory.getCurrentSession().persist(album);
         return album;
     }
 
-    @Cacheable(value = "album", unless = "#result != null")
+    @Cacheable(value = "album", unless = "#result != null", key = "#id")
     @Transactional
     public Album getAlbumById(Integer id) {
         logger.debug("BEGIN id = {}", id);
         Session session = sessionFactory.getCurrentSession();
-        return (Album) session.get(Album.class, id);// get initializeaza entity
+        // get initializes entity
+        return (Album) session.get(Album.class, id);
     }
 
-    //	@Cacheable(value = "album", unless = "#result != null")
+    @Cacheable(value = "album", unless = "#result != null", key = "#name")
     @Transactional
     public Album getAlbumByName(String name) {
         logger.debug("BEGIN name = {}", name);
         Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("FROM Album WHERE name = :name");
-        return (Album) q.setString("name", name).uniqueResult();
+        return (Album) session.createCriteria(Album.class)
+                .add(Restrictions.eq("name", name)).uniqueResult();
     }
 
-    @Transactional
     @Cacheable(value = "default", key = "'lastUpdatedForAlbums'")
+    @Transactional
     public Date getLastUpdatedForAlbums() {
+        logger.debug("BEGIN");
         Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("SELECT max(lastUpdate) FROM Album");
-        return (Date) q.uniqueResult();
+        return (Date) session.createCriteria(Album.class)
+                .setProjection(Projections.max("lastUpdate"))
+                .uniqueResult();
     }
 
     public List<AlbumCover> getAllCovers(boolean computeDimensionForThumbs) {

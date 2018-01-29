@@ -37,7 +37,7 @@ public class ExtractExifCtrl {
 	@RequestMapping(method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> reimport(@RequestBody JsonValue jsonValue) {
+	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonValue jsonValue) {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (StringUtils.hasText(jsonValue.getValue())) {
