@@ -25,119 +25,129 @@ import java.util.List;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Album.class)
 public class Album implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(nullable = false, unique = true, length = 512)
-    private String name;
-    @Column(name = "dirty")
-    private boolean dirty;
-    @OneToMany(mappedBy = "album", orphanRemoval = true)
-    @Cascade({org.hibernate.annotations.CascadeType.ALL})
-    private List<Image> images;
-    @OneToOne
-    @JoinColumn(name = "FK_IMAGE")
-    private Image cover;
-    @JsonIgnore
-    @Version
-    @Column(name = "last_update")
-    private Timestamp lastUpdate;
-    @Column(nullable = false)
-    private boolean deleted;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	@Column(nullable = false, unique = true, length = 512)
+	private String name;
+	@Column(name = "dirty")
+	private boolean dirty;
+	@OneToMany(mappedBy = "album", orphanRemoval = true)
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
+	private List<Image> images;
+	@OneToOne
+	@JoinColumn(name = "FK_IMAGE")
+	private Image cover;
+	@JsonIgnore
+	@Version
+	@Column(name = "last_update")
+	private Timestamp lastUpdate;
+	@Column(nullable = false)
+	private boolean deleted;
 
-    public Album() {
-    }
+	public Album() {
+	}
 
-    public Album(AlbumCover albumCover) {
-        this.id = albumCover.getId();
-        this.name = albumCover.getAlbumName();
-        this.dirty = albumCover.isDirty();
-    }
+	public Album(AlbumCover albumCover) {
+		this.id = albumCover.getId();
+		this.name = albumCover.getAlbumName();
+		this.dirty = albumCover.isDirty();
+	}
 
-    public Album(String name) {
-        this.name = name;
-    }
+	public Album(String name) {
+		this.name = name;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    @Caching(evict = {
-            @CacheEvict(value = "album", key = "#name"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
-    })
-    public void setName(String name) {
-        this.name = name;
-    }
+	@Caching(evict = {
+			@CacheEvict(value = "album", key = "#root.target.name",
+					condition = "#root.target.name != null", beforeInvocation = true),
+			@CacheEvict(value = "album", key = "#root.target.id",
+					condition = "#root.target.id != null")
+	})
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Image getCover() {
-        return cover;
-    }
+	public Image getCover() {
+		return cover;
+	}
 
-    @Caching(evict = {
-            @CacheEvict(value = "album", key = "#root.target.name", condition = "#root.target.name != null"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null"),
-            @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
-    })
-    public void setCover(Image cover) {
-        this.cover = cover;
-    }
+	@Caching(evict = {
+			@CacheEvict(value = "album", key = "#root.target.name",
+					condition = "#root.target.name != null"),
+			@CacheEvict(value = "album", key = "#root.target.id",
+					condition = "#root.target.id != null"),
+			@CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+	})
+	public void setCover(Image cover) {
+		this.cover = cover;
+	}
 
-    public List<Image> getImages() {
-        return this.images;
-    }
+	public boolean isDirty() {
+		return dirty;
+	}
 
-    @Caching(evict = {
-            @CacheEvict(value = "album", key = "#root.target.name", condition = "#root.target.name != null"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null"),
-            @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
-    })
-    public void setImages(List<Image> images) {
-        this.images = images;
-    }
+	@Caching(evict = {
+			@CacheEvict(value = "album", key = "#root.target.name",
+					condition = "#root.target.name != null"),
+			@CacheEvict(value = "album", key = "#root.target.id",
+					condition = "#root.target.id != null")
+	})
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
 
-    public boolean isDirty() {
-        return dirty;
-    }
+	public boolean isDeleted() {
+		return deleted;
+	}
 
-    @Caching(evict = {
-            @CacheEvict(value = "album", key = "#root.target.name", condition = "#root.target.name != null"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
-    })
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
+	@Caching(evict = {
+			@CacheEvict(value = "album", key = "#root.target.name",
+					condition = "#root.target.name != null"),
+			@CacheEvict(value = "album", key = "#root.target.id",
+					condition = "#root.target.id != null")
+	})
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
-    public boolean isDeleted() {
-        return deleted;
-    }
+	public Timestamp getLastUpdate() {
+		return lastUpdate;
+	}
 
-    @Caching(evict = {
-            @CacheEvict(value = "album", key = "#root.target.name", condition = "#root.target.name != null"),
-            @CacheEvict(value = "album", key = "#root.target.id", condition = "#root.target.id != null")
-    })
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
+	/**
+	 * Atentie, e o coloana @Version! Nu o seta niciodata pt ca o seteaza hibernate!
+	 * Dpv al cache-ului o eventuala modificare de lastUpdate e datorata
+	 * unei modificari a altei proprietati care ar afecta cache la randu-i.
+	 *
+	 * @param lastUpdate
+	 */
+	public void setLastUpdate(Timestamp lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
 
-    public Timestamp getLastUpdate() {
-        return lastUpdate;
-    }
+	public List<Image> getImages() {
+		return this.images;
+	}
 
-    /**
-     * Atentie, e o coloana @Version! Nu o seta niciodata ca o seteaza hibernate!
-     *
-     * @param lastUpdate
-     */
-    public void setLastUpdate(Timestamp lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
+	/**
+	 * Nu intra in zona de cache a Album.
+	 *
+	 * @param images
+	 */
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
 }
