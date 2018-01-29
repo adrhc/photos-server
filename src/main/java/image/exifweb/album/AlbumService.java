@@ -224,7 +224,8 @@ public class AlbumService {
                 dbImage.setDeleted(true);
                 existsChange[0] = true;
             } else {
-                logger.warn("Though exists in album spring-cache the image {} no longer exists in DB!", image.getName());
+                logger.warn("Though exists in album-spring-cache {} the image {} no longer exists in DB!",
+                        album.getName(), image.getName());
             }
         });
         return existsChange[0];
