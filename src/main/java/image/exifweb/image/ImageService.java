@@ -56,7 +56,7 @@ public class ImageService {
     }
 
     @Transactional
-    public List<Image> getImageIdsByAlbumId(Integer albumId) {
+    public List<Integer> getImageIdsByAlbumId(Integer albumId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria ic = session.createCriteria(Image.class);
         Criteria ac = ic.createCriteria("album", "a");
