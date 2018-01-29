@@ -1,4 +1,4 @@
 #!/bin/bash
 source env.sh
 
-mvn -Dmaven.test.skip=true -Dmaven.javadoc.skip=true clean install
+$MVN -Dmaven.test.skip=true -Dmaven.javadoc.skip=true clean install
