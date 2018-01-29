@@ -57,8 +57,8 @@ public class AlbumService {
     private AlbumEventsEmitter albumEventsEmitter;
 
     @Caching(put = {
-            @CachePut(value = "album", unless = "#result != null", key = "#result.id"),
-            @CachePut(value = "album", unless = "#result != null", key = "#result.name")
+            @CachePut(value = "album", unless = "#result == null", key = "#result.id"),
+            @CachePut(value = "album", unless = "#result == null", key = "#result.name")
     })
     @Transactional
     public Album create(String name) {
@@ -67,7 +67,7 @@ public class AlbumService {
         return album;
     }
 
-    @Cacheable(value = "album", unless = "#result != null", key = "#id")
+    @Cacheable(value = "album", unless = "#result == null", key = "#id")
     @Transactional
     public Album getAlbumById(Integer id) {
         logger.debug("BEGIN id = {}", id);
@@ -76,7 +76,7 @@ public class AlbumService {
         return (Album) session.get(Album.class, id);
     }
 
-    @Cacheable(value = "album", unless = "#result != null", key = "#name")
+    @Cacheable(value = "album", unless = "#result == null", key = "#name")
     @Transactional
     public Album getAlbumByName(String name) {
         logger.debug("BEGIN name = {}", name);
