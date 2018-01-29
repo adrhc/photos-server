@@ -104,7 +104,7 @@ public class Album implements Serializable {
         this.images = images;
     }
 
-    public boolean getDirty() {
+    public boolean isDirty() {
         return dirty;
     }
 

@@ -287,7 +287,7 @@ public class AlbumService {
 
     public boolean removeAlbumCover(Integer albumId) {
         Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("UPDATE Album SET cover = NULL WHERE id = :albumId");
+        Query q = session.createQuery("UPDATE Album SET cover = NULL WHERE id = :albumId AND cover IS NOT NULL");
         q.setParameter("albumId", albumId);
         return q.executeUpdate() > 0;
     }
@@ -296,8 +296,11 @@ public class AlbumService {
 //    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void clearDirtyForAlbum(Integer albumId) {
         Session session = sessionFactory.getCurrentSession();
-        Album album = (Album) session.load(Album.class, albumId);
-        album.setDirty(false);
+        Album album = (Album) session.get(Album.class, albumId);
+        if (album.isDirty()) {
+            // avoid evicting cache when not dirty
+            album.setDirty(false);
+        }
     }
 
     @PostConstruct
