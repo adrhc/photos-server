@@ -12,8 +12,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
@@ -72,17 +70,17 @@ public class AlbumImporter {
         return true;
     };
 
-//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+    //    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void importAlbumByName(String albumName) {
         importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
     }
 
-//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+    //    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void importAllFromAlbumsRoot() {
         importFromAlbumsRoot(null);
     }
 
-//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+    //    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void importNewAlbumsOnly() {
         importFromAlbumsRoot(IS_NEW_ALBUM);
     }
@@ -191,8 +189,18 @@ public class AlbumImporter {
             persistImage(imgWithNewExif);
         } else if (imageIdAndDates.dateTime.before(imgWithNewExif.getDateTime())) {
             updateExifPropertiesInDB(imgWithNewExif, imageIdAndDates.id);
+            if (imgWithNewExif.isCover()) {
+                // forcing cache evict when the image changing is album cover
+                logger.debug("{} album is dirty now", imgWithNewExif.getAlbum().getName());
+                imgWithNewExif.getAlbum().setDirty(true);
+            }
         } else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
             updateThumbLastModifiedForImg(imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
+            if (imgWithNewExif.isCover()) {
+                // forcing cache evict when the image changing is album cover
+                logger.debug("{} album is dirty now", imgWithNewExif.getAlbum().getName());
+                imgWithNewExif.getAlbum().setDirty(true);
+            }
         }
     }
 
