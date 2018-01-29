@@ -189,13 +189,14 @@ public class AlbumService {
      *
      * @param foundImageNames
      */
-//    @Caching(evict = {
-//            @CacheEvict(value = "album", key = "#album.name", condition = "#result"),
-//            @CacheEvict(value = "album", key = "#album.id", condition = "#result")
-//    })
+    @Caching(evict = {
+            @CacheEvict(value = "album", key = "#album.name", condition = "#result"),
+            @CacheEvict(value = "album", key = "#album.id", condition = "#result")
+    })
     @Transactional
     public boolean deleteNotFoundImages(List<String> foundImageNames, Album album) {
         logger.debug("BEGIN {}", album.getName());
+        Image cover = album.getCover();
         boolean[] existsChange = {false};
         List<Image> images = imageService.getImagesByAlbumId(album.getId());
         images.forEach(image -> {
@@ -216,14 +217,16 @@ public class AlbumService {
             if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
                 // status = 0
                 logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
+                if (cover != null && cover.getId().equals(image.getId())) {
+                    existsChange[0] = removeAlbumCover(album.getId());
+                }
                 imageService.remove(image);
-                existsChange[0] = true;
                 return;
             }
             // status != 0 (adica e o imagine "prelucrata")
             logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
             image.setDeleted(true);
-            existsChange[0] = true;
+//            existsChange[0] = true;
         });
         logger.debug("END {}, return {}", album.getName(), existsChange[0]);
         return existsChange[0];
@@ -280,6 +283,13 @@ public class AlbumService {
         Album album = image.getAlbum();
         album.setCover(image);
         album.setDirty(true);
+    }
+
+    public boolean removeAlbumCover(Integer albumId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery("UPDATE Album SET cover = NULL WHERE id = :albumId");
+        q.setParameter("albumId", albumId);
+        return q.executeUpdate() > 0;
     }
 
     @Transactional
