@@ -198,7 +198,8 @@ public class AlbumImporter {
         if (imageChanged && imgWithNewExif.isCover()) {
             // forcing cache evict when the image changing is album cover
             logger.debug("{} album is dirty now", imgWithNewExif.getAlbum().getName());
-            imgWithNewExif.getAlbum().setDirty(true);
+            // no db change for album here
+            imgWithNewExif.getAlbum().setCover(imgWithNewExif);
         }
     }
 
