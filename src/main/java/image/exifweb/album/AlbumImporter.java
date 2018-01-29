@@ -85,6 +85,11 @@ public class AlbumImporter {
         importFromAlbumsRoot(IS_NEW_ALBUM);
     }
 
+    /**
+     * Filters albums to be imported with albumsFilter.
+     *
+     * @param albumsFilter
+     */
     private void importFromAlbumsRoot(Predicate<File> albumsFilter) {
         File albumsRoot = new File(appConfigService.getLinuxAlbumPath());
         File[] files = albumsRoot.listFiles();
