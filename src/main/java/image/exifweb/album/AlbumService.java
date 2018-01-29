@@ -90,7 +90,7 @@ public class AlbumService {
 
     @Cacheable(value = "default", key = "'lastUpdatedForAlbums'")
     @Transactional
-    public Date getLastUpdatedForAlbums() {
+    public Date getAlbumCoversLastUpdate() {
         logger.debug("BEGIN");
         Session session = sessionFactory.getCurrentSession();
         return (Date) session.createCriteria(Album.class)
