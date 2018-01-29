@@ -7,21 +7,23 @@ import image.exifweb.exif.ImageExif;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
-import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -150,7 +152,7 @@ public class AlbumImporter {
             }
         }
         if (!isNewAlbum) {
-            deleteNotFoundImages(imageNames, album);
+            albumService.deleteNotFoundImages(imageNames, album);
         }
         // used for thread safety
         albumEventsEmitter.emit(AlbumEventBuilder
@@ -179,78 +181,6 @@ public class AlbumImporter {
         image.setAlbum(album);
         saveOrUpdateImage(image);
         return true;
-    }
-
-    @Transactional
-    private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
-        logger.debug("imageNames.size: {}, albumId = {}", foundImageNames.size(), album.getId());
-        Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("SELECT id as id, name as name FROM Image WHERE album.id = :albumId");
-        q.setInteger("albumId", album.getId());
-        q.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-        List<Map<String, Object>> imagesDB = q.list();
-        logger.debug("images.size: {}", imagesDB.size());
-        String dbName;
-        boolean usingOppositeCase;
-        int fsNameIdx, removedCount = 0;
-        Image image;
-        for (Map<String, Object> imageCols : imagesDB) {
-            usingOppositeCase = false;
-            dbName = imageCols.get("name").toString();
-            fsNameIdx = foundImageNames.indexOf(dbName);
-            // searching for opposite string-case of dbName
-            if (fsNameIdx < 0) {
-                fsNameIdx = foundImageNames.indexOf(toFileNameWithOppositeExtensionCase(dbName));
-                usingOppositeCase = true;
-            }
-            if (fsNameIdx < 0) {
-                // poza din DB nu mai exista in file system
-                image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
-                if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
-                    // status = 0
-                    logger.debug("poza din DB nu exista in file system: {} -> s-a sters", dbName);
-                    session.delete(image);
-                    removedCount++;
-                } else {
-                    // status != 0 (adica e o imagine "prelucrata")
-                    logger.debug("poza din DB nu exista in file system: {} -> s-a marcat ca stearsa", dbName);
-                    image.setDeleted(true);
-                }
-            } else if (usingOppositeCase) {
-                // diferenta de CASE; update photo's name & path in DB
-                logger.debug("poza din DB ({}) cu nume diferit in file system: {}", dbName, foundImageNames.get(fsNameIdx));
-                image = (Image) session.load(Image.class, (Integer) imageCols.get("id"));
-                image.setName(foundImageNames.get(fsNameIdx));
-            } else {
-                // imagine existenta in DB cu acelas nume ca in file system
-                // acesta este cazul in care nu am folosit nimic din db
-                continue;
-            }
-            session.flush();// trebuie dat ca altfel e totul anulat de catre clear
-            session.clear();// just clearing memory
-        }
-        if (imagesDB.size() == removedCount) {
-            session.buildLockRequest(LockOptions.NONE).lock(album);
-            album.setDeleted(true);
-            session.flush();// trebuie dat ca altfel e totul anulat de catre clear
-            session.clear();// just clearing memory
-        }
-    }
-
-    private String toFileNameWithOppositeExtensionCase(String fileName) {
-        StringBuilder sb = new StringBuilder(fileName);
-        int idx = sb.lastIndexOf(".");
-        if (idx <= 0) {
-            return fileName;
-        }
-        sb.append(fileName.substring(0, idx));
-        String pointAndExtension = fileName.substring(idx);
-        if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
-            sb.append(pointAndExtension.toUpperCase());
-        } else {
-            sb.append(pointAndExtension.toLowerCase());
-        }
-        return sb.toString();
     }
 
     /**

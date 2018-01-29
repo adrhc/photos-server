@@ -3,6 +3,7 @@ package image.exifweb.album;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.image.ImageDimensions;
+import image.exifweb.image.ImageService;
 import image.exifweb.image.ImageThumb;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
@@ -53,6 +54,8 @@ public class AlbumService {
     private SessionFactory sessionFactory;
     @Inject
     private AppConfigService appConfigService;
+    @Inject
+    private ImageService imageService;
     @Inject
     private AlbumEventsEmitter albumEventsEmitter;
 
@@ -179,6 +182,68 @@ public class AlbumService {
         prepareImageDimensions(thumbs);
         prepareURI(thumbs);
         return thumbs;
+    }
+
+    /**
+     * Cached Album is detached so can't be used as persistent as required in this method.
+     *
+     * @param foundImageNames
+     */
+    @Caching(evict = {
+            @CacheEvict(value = "album", key = "#album.name", condition = "#result"),
+            @CacheEvict(value = "album", key = "#album.id", condition = "#result")
+    })
+    @Transactional
+    public boolean deleteNotFoundImages(List<String> foundImageNames, Album album) {
+        boolean[] existsChange = {false};
+        album.getImages().forEach(image -> {
+            String dbName = image.getName();
+            int fsNameIdx = foundImageNames.indexOf(dbName);
+            if (fsNameIdx >= 0) {
+                // imagine existenta in DB cu acelas nume ca in file system
+                return;
+            }
+            String oppositeExtensionCase = toFileNameWithOppositeExtensionCase(dbName);
+            fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
+            if (fsNameIdx >= 0) {
+                logger.debug("poza din DB ({}) cu nume diferit in file system ({}): actualizez in DB cu {}",
+                        dbName, oppositeExtensionCase, oppositeExtensionCase);
+                image.setName(oppositeExtensionCase);
+                return;
+            }
+            if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
+                // status = 0
+                logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
+                existsChange[0] = imageService.removeById(image.getId()) || existsChange[0];
+                return;
+            }
+            // status != 0 (adica e o imagine "prelucrata")
+            logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
+            Image dbImage = imageService.getById(image.getId());
+            if (dbImage != null) {
+                dbImage.setDeleted(true);
+                existsChange[0] = true;
+            } else {
+                logger.warn("Though exists in album spring-cache the image {} no longer exists in DB!", image.getName());
+            }
+        });
+        return existsChange[0];
+    }
+
+    private String toFileNameWithOppositeExtensionCase(String fileName) {
+        StringBuilder sb = new StringBuilder(fileName);
+        int idx = sb.lastIndexOf(".");
+        if (idx <= 0) {
+            return fileName;
+        }
+        sb.append(fileName.substring(0, idx));
+        String pointAndExtension = fileName.substring(idx);
+        if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
+            sb.append(pointAndExtension.toUpperCase());
+        } else {
+            sb.append(pointAndExtension.toLowerCase());
+        }
+        return sb.toString();
     }
 
     private void prepareURI(List<? extends ImageThumb> thumbs) {
