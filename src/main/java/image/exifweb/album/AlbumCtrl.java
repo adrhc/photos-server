@@ -126,7 +126,7 @@ public class AlbumCtrl {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public List<AlbumCover> getAllCovers(WebRequest webRequest) {
-        if (webRequest.checkNotModified(albumService.getAlbumCoversLastUpdate().getTime())) {
+        if (webRequest.checkNotModified(albumService.getAlbumCoversLastUpdateDate().getTime())) {
             return null;
         }
         return albumService.getAllCovers(true);

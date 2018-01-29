@@ -88,9 +88,9 @@ public class AlbumService {
                 .add(Restrictions.eq("name", name)).uniqueResult();
     }
 
-    @Cacheable(value = "default", key = "'lastUpdatedForAlbums'")
+    @Cacheable(value = "default", key = "'albumCoversLastUpdateDate'")
     @Transactional
-    public Date getAlbumCoversLastUpdate() {
+    public Date getAlbumCoversLastUpdateDate() {
         logger.debug("BEGIN");
         Session session = sessionFactory.getCurrentSession();
         return (Date) session.createCriteria(Album.class)
@@ -273,7 +273,7 @@ public class AlbumService {
     }
 
     @Transactional
-//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void putAlbumCover(Integer imageId) {
         Session session = sessionFactory.getCurrentSession();
         Image image = (Image) session.load(Image.class, imageId);
@@ -283,7 +283,7 @@ public class AlbumService {
     }
 
     @Transactional
-//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void clearDirtyForAlbum(Integer albumId) {
         Session session = sessionFactory.getCurrentSession();
         Album album = (Album) session.load(Album.class, albumId);

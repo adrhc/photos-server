@@ -72,17 +72,17 @@ public class AlbumImporter {
         return true;
     };
 
-//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void importAlbumByName(String albumName) {
         importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
     }
 
-//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void importAllFromAlbumsRoot() {
         importFromAlbumsRoot(null);
     }
 
-//    @CacheEvict(value = "default", key = "'lastUpdatedForAlbums'")
+//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
     public void importNewAlbumsOnly() {
         importFromAlbumsRoot(IS_NEW_ALBUM);
     }
@@ -109,10 +109,6 @@ public class AlbumImporter {
     }
 
     /**
-     * Exista posibilitatea ca in cadrul extragerii EXIF anumite
-     * albume sa fie sterse pt ca nu mai au poze in folderul aferent.
-     * De aceea avem evict pe lastUpdatedForAlbums.
-     *
      * @param path
      */
     private void importAlbumByPath(File path) {
