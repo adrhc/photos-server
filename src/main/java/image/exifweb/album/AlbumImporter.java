@@ -183,24 +183,22 @@ public class AlbumImporter {
      * @param imgWithNewExif
      */
     private void saveOrUpdateImage(Image imgWithNewExif) {
+        boolean imageChanged = false;
         ImageIdAndDates imageIdAndDates = getImageIdAndDates(
                 imgWithNewExif.getName(), imgWithNewExif.getAlbum().getId());
         if (imageIdAndDates == null) {
             persistImage(imgWithNewExif);
         } else if (imageIdAndDates.dateTime.before(imgWithNewExif.getDateTime())) {
             updateExifPropertiesInDB(imgWithNewExif, imageIdAndDates.id);
-            if (imgWithNewExif.isCover()) {
-                // forcing cache evict when the image changing is album cover
-                logger.debug("{} album is dirty now", imgWithNewExif.getAlbum().getName());
-                imgWithNewExif.getAlbum().setDirty(true);
-            }
+            imageChanged = true;
         } else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
             updateThumbLastModifiedForImg(imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
-            if (imgWithNewExif.isCover()) {
-                // forcing cache evict when the image changing is album cover
-                logger.debug("{} album is dirty now", imgWithNewExif.getAlbum().getName());
-                imgWithNewExif.getAlbum().setDirty(true);
-            }
+            imageChanged = true;
+        }
+        if (imageChanged && imgWithNewExif.isCover()) {
+            // forcing cache evict when the image changing is album cover
+            logger.debug("{} album is dirty now", imgWithNewExif.getAlbum().getName());
+            imgWithNewExif.getAlbum().setDirty(true);
         }
     }
 
