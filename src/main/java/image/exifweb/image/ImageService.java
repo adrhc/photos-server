@@ -5,6 +5,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,16 @@ public class ImageService {
         Criteria ic = session.createCriteria(Image.class);
         Criteria ac = ic.createCriteria("album", "a");
         ac.add(Restrictions.idEq(albumId));
+        return ic.list();
+    }
+
+    @Transactional
+    public List<Image> getImageIdsByAlbumId(Integer albumId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria ic = session.createCriteria(Image.class);
+        Criteria ac = ic.createCriteria("album", "a");
+        ac.add(Restrictions.idEq(albumId));
+        ic.setProjection(Projections.id());
         return ic.list();
     }
 }
