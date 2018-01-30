@@ -122,6 +122,7 @@ public class AlbumCtrl {
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
+		logger.debug("album modified since: {}", sdf.format(album.getLastUpdate()));
 		return album;
 	}
 
