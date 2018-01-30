@@ -135,13 +135,13 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
-		logger.debug("BEGIN");
+//		logger.debug("BEGIN");
 		if (webRequest.checkNotModified(albumService.getAlbumCoversLastUpdateDate().getTime())) {
-			logger.debug("not modified since: {}",
-					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
+//			logger.debug("not modified since: {}",
+//					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 			return null;
 		}
-		logger.debug("modified since: {}",
+		logger.debug("covers modified since: {}",
 				sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 		return albumService.getAllCovers();
 	}
