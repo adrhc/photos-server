@@ -17,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/json/album")
 public class AlbumCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCtrl.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
@@ -129,6 +131,8 @@ public class AlbumCtrl {
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
 		if (webRequest.checkNotModified(albumService.getAlbumCoversLastUpdateDate().getTime())) {
+			logger.debug("not modified since: {}",
+					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 			return null;
 		}
 		return albumService.getAllCovers();
