@@ -147,13 +147,15 @@ public class AppConfigService {
 	@Transactional
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
-		return (List<AppConfig>) session.createCriteria(AppConfig.class).addOrder(Order.asc("name")).list();
+		return (List<AppConfig>) session.createCriteria(AppConfig.class)
+				.addOrder(Order.asc("name")).list();
 	}
 
 	@Transactional
 	public AppConfig testGetNoCacheableAppConfigByName(String name) {
 		Session session = sessionFactory.getCurrentSession();
-		return (AppConfig) session.createCriteria(AppConfig.class).add(Restrictions.eq("name", name)).uniqueResult();
+		return (AppConfig) session.createCriteria(AppConfig.class)
+				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
 	@Cacheable(value = "appConfig", key = "'lastUpdatedAppConfigs'")

@@ -49,19 +49,28 @@ public class ImageService {
 	@Transactional
 	public List<Image> getImagesByAlbumId(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria ic = session.createCriteria(Image.class);
-		Criteria ac = ic.createCriteria("album", "a");
-		ac.add(Restrictions.idEq(albumId));
+		// gets album and cover too
+//		Criteria ic = session.createCriteria(Image.class)
+//				.createAlias("album", "a")
+//				.add(Restrictions.eq("a.id", albumId));
+		// gets only the image
+		Criteria ic = session.createCriteria(Image.class)
+				.add(Restrictions.eq("album.id", albumId));
+		// gets album and cover too
+//		Criteria ic = session.createCriteria(Image.class)
+//				.createCriteria("album").add(Restrictions.eq("id", albumId));
 		return ic.list();
+		// gets only the image
+//		return session.createQuery("FROM Image WHERE album.id = :albumId")
+//				.setParameter("albumId", albumId).list();
 	}
 
 	@Transactional
 	public List<Integer> getImageIdsByAlbumId(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Criteria ic = session.createCriteria(Image.class);
-		Criteria ac = ic.createCriteria("album", "a");
-		ac.add(Restrictions.idEq(albumId));
-		ic.setProjection(Projections.id());
+		Criteria ic = session.createCriteria(Image.class)
+				.add(Restrictions.eq("album.id", albumId))
+				.setProjection(Projections.id());
 		return ic.list();
 	}
 }
