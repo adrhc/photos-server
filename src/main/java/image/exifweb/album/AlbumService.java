@@ -112,7 +112,7 @@ public class AlbumService implements IAlbumCache {
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
-	@Cacheable(value = "default", key = "'albumCoversLastUpdateDate'")
+	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
 	@Transactional
 	public Date getAlbumCoversLastUpdateDate() {
 		logger.debug("BEGIN");
@@ -122,17 +122,17 @@ public class AlbumService implements IAlbumCache {
 				.uniqueResult();
 	}
 
-	public List<AlbumCover> getAllCovers(boolean computeDimensionForThumbs) {
-		List<AlbumCover> covers = getAllCovers();
-		if (computeDimensionForThumbs) {
-			prepareImageDimensions(covers);
-		}
+	@Cacheable(value = "covers", key = "'allCovers'")
+	public List<AlbumCover> getAllCovers() {
+		logger.debug("BEGIN");
+		List<AlbumCover> covers = loadAllCovers();
+		prepareImageDimensions(covers);
 		prepareURI(covers);
 		return covers;
 	}
 
 	@Transactional
-	public List<AlbumCover> getAllCovers() {
+	private List<AlbumCover> loadAllCovers() {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("FROM AlbumCover ORDER BY albumName DESC");
 		return q.list();
@@ -295,7 +295,7 @@ public class AlbumService implements IAlbumCache {
 	}
 
 	@Transactional
-//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+//    @CacheEvict(value = "covers", allEntries = true)
 	public void putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageId);
@@ -307,7 +307,7 @@ public class AlbumService implements IAlbumCache {
 	/**
 	 * Used only by the below subscription:
 	 * imageEventsEmitter.imageEventsByType(... EImageEventType.DELETED ...)
-	 * otherwise this.evictCache or @CacheEvict (for public method) must be used.
+	 * otherwise this.evictAlbumCache or @CacheEvict (for public method) must be used.
 	 *
 	 * @param album
 	 * @return
@@ -321,7 +321,7 @@ public class AlbumService implements IAlbumCache {
 		return q.executeUpdate() > 0;
 	}
 
-	//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+	//    @CacheEvict(value = "covers", allEntries = true)
 	@Transactional
 	private void clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -335,12 +335,12 @@ public class AlbumService implements IAlbumCache {
 
 	@PostConstruct
 	public void postConstruct() {
-		// the cover image changed
+		// cover image changed (dealt with below)
 		Observable<Album> coverImgChanged = imageEventsEmitter.imageEventsByType(
 				EnumSet.of(EImageEventType.THUMB_UPDATED, EImageEventType.EXIF_UPDATED))
 				.filter(ie -> ie.getImage().isCover())
 				.map(ie -> ie.getImage().getAlbum());
-		// the cover image deleted
+		// cover image deleted
 		Observable<Album> coverImgDeleted = imageEventsEmitter.imageEventsByType(
 				EnumSet.of(EImageEventType.DELETED))
 				.filter(ie -> ie.getAlbum().getCover() != null)
@@ -350,8 +350,8 @@ public class AlbumService implements IAlbumCache {
 				.filter(this::removeAlbumCover);
 		// cover image changed or deleted
 		coverImgDeleted.mergeWith(coverImgChanged)
-				.doOnNext(this::evictCache)
-				.subscribe(album -> this.evictAlbumCoversLastUpdateDate());
+				.doOnNext(this::evictAlbumCache)
+				.subscribe(album -> this.evictCoversCache());
 		// album's json files updated
 		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
 				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));

@@ -93,7 +93,7 @@ public class Album implements Serializable {
 					condition = "#root.target.name != null"),
 			@CacheEvict(value = "album", key = "#root.target.id",
 					condition = "#root.target.id != null"),
-			@CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+			@CacheEvict(value = "covers", allEntries = true)
 	})
 	public void setCover(Image cover) {
 		this.cover = cover;

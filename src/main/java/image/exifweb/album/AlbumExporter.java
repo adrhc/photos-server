@@ -78,7 +78,7 @@ public class AlbumExporter {
 	public boolean writeJsonForAlbumsPageSafe() {
 		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
-		List<AlbumCover> albums = albumService.getAllCovers(true);
+		List<AlbumCover> albums = albumService.getAllCovers();
 		try {
 			jsonMapper.writeValue(file, albums);
 			return true;

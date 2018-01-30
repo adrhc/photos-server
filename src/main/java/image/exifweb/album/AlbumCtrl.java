@@ -115,6 +115,7 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
+		logger.debug("BEGIN");
 		Album album = albumService.getAlbumById(id);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
@@ -126,9 +127,10 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
+		logger.debug("BEGIN");
 		if (webRequest.checkNotModified(albumService.getAlbumCoversLastUpdateDate().getTime())) {
 			return null;
 		}
-		return albumService.getAllCovers(true);
+		return albumService.getAllCovers();
 	}
 }

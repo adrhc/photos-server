@@ -16,12 +16,12 @@ public interface IAlbumCache {
 			@CacheEvict(value = "album", key = "#album.name"),
 			@CacheEvict(value = "album", key = "#album.id")
 	})
-	default void evictCache(Album album) {
+	default void evictAlbumCache(Album album) {
 		logger.debug("removing {} album from cache", album.getName());
 	}
 
-	@CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
-	default void evictAlbumCoversLastUpdateDate() {
-		logger.debug("removing albumCoversLastUpdateDate from cache");
+	@CacheEvict(value = "covers", allEntries = true)
+	default void evictCoversCache() {
+		logger.debug("removing \"covers\" cache");
 	}
 }

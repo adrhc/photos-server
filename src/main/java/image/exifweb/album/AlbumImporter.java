@@ -76,18 +76,18 @@ public class AlbumImporter {
 		return true;
 	};
 
-	//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+	//    @CacheEvict(value = "covers", allEntries = true)
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
 	}
 
-	//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+	//    @CacheEvict(value = "covers", allEntries = true)
 	public void importAllFromAlbumsRoot() {
 		logger.debug("BEGIN");
 		importFromAlbumsRoot(null);
 	}
 
-	//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
+	//    @CacheEvict(value = "covers", allEntries = true)
 	public void importNewAlbumsOnly() {
 		importFromAlbumsRoot(IS_NEW_ALBUM);
 	}
