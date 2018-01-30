@@ -125,6 +125,12 @@ public class AlbumCtrl {
 		return album;
 	}
 
+	/**
+	 * Pt a testa checkNotModified TREBUIE ca browser cache sa fie activat!
+	 *
+	 * @param webRequest
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
