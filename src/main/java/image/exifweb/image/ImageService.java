@@ -35,18 +35,18 @@ public class ImageService {
 	 * @param image must be a persistent one
 	 * @return
 	 */
-	public void remove(Image image) {
+	public void removeNoTx(Image image) {
 		Session session = sessionFactory.getCurrentSession();
 		session.delete(image);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Image getById(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		return (Image) session.get(Image.class, imageId);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Image> getImagesByAlbumId(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		// gets album and cover too
@@ -65,7 +65,7 @@ public class ImageService {
 //				.setParameter("albumId", albumId).list();
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Integer> getImageIdsByAlbumId(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Criteria ic = session.createCriteria(Image.class)

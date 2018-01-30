@@ -235,7 +235,7 @@ public class AlbumImporter {
 		q.executeUpdate();
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	private ImageIdAndDates getImageIdAndDates(String name, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("SELECT new image.exifweb.album.AlbumImporter$ImageIdAndDates" +

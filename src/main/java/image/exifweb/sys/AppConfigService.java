@@ -105,8 +105,8 @@ public class AppConfigService {
 		return null;
 	}
 
-	@Transactional
 	@CacheEvict(value = "appConfig", allEntries = true)
+	@Transactional
 	public void update(List<AppConfig> appConfigs) {
 		Session session = sessionFactory.getCurrentSession();
 		List<AppConfig> dbAppConfigs = session.createCriteria(AppConfig.class).list();
@@ -137,21 +137,21 @@ public class AppConfigService {
 		json.writeValue(file, appConfigs);
 	}
 
-	@Transactional
 	@Cacheable(value = "appConfig", key = "'appConfigs'")
+	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class).list();
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class)
 				.addOrder(Order.asc("name")).list();
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public AppConfig testGetNoCacheableAppConfigByName(String name) {
 		Session session = sessionFactory.getCurrentSession();
 		return (AppConfig) session.createCriteria(AppConfig.class)
@@ -192,7 +192,7 @@ public class AppConfigService {
 		}
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public Date getDBNow() {
 		Session session = sessionFactory.getCurrentSession();
 		return (Date) session.createSQLQuery("SELECT now() FROM dual").uniqueResult();

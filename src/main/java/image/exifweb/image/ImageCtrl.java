@@ -41,8 +41,8 @@ public class ImageCtrl {
 	private SessionFactory sessionFactory;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	@Transactional
 	@ResponseBody
+	@Transactional(readOnly = true)
 	public Image get(@PathVariable Integer id, WebRequest webRequest) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.get(Image.class, id);

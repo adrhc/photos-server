@@ -104,7 +104,7 @@ public class AlbumService implements IAlbumCache {
 	}
 
 	@Cacheable(value = "album", unless = "#result == null", key = "#name")
-	@Transactional
+	@Transactional(readOnly = true)
 	public Album getAlbumByName(String name) {
 		logger.debug("BEGIN name = {}", name);
 		Session session = sessionFactory.getCurrentSession();
@@ -113,7 +113,7 @@ public class AlbumService implements IAlbumCache {
 	}
 
 	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
-	@Transactional
+	@Transactional(readOnly = true)
 	public Date getAlbumCoversLastUpdateDate() {
 		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
@@ -131,14 +131,14 @@ public class AlbumService implements IAlbumCache {
 		return covers;
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	private List<AlbumCover> loadAllCovers() {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("FROM AlbumCover ORDER BY albumName DESC");
 		return q.list();
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public int getPageCount(String toSearch, boolean viewHidden, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q;
@@ -164,7 +164,7 @@ public class AlbumService implements IAlbumCache {
 
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<PhotoThumb> getPageFromDb(int pageNr, String sort, String toSearch,
 	                                      boolean viewHidden, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -237,7 +237,7 @@ public class AlbumService implements IAlbumCache {
 			if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				imageService.remove(image);
+				imageService.removeNoTx(image);
 				imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.DELETED)
 						.image(image).album(album).build());
 				return;
@@ -294,8 +294,8 @@ public class AlbumService implements IAlbumCache {
 		}
 	}
 
-	@Transactional
 //    @CacheEvict(value = "covers", allEntries = true)
+	@Transactional
 	public void putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageId);
@@ -321,7 +321,7 @@ public class AlbumService implements IAlbumCache {
 		return q.executeUpdate() > 0;
 	}
 
-	//    @CacheEvict(value = "covers", allEntries = true)
+//    @CacheEvict(value = "covers", allEntries = true)
 	@Transactional
 	private void clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();

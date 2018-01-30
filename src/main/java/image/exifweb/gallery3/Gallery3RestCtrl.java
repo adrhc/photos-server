@@ -61,8 +61,8 @@ public class Gallery3RestCtrl {
 	}
 
 	@RequestMapping(value = "/rest/tree/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	@Transactional
 	@ResponseBody
+	@Transactional(readOnly = true)
 	public Gallery3TreeParent tree(@PathVariable String id, HttpServletRequest request) {
 		String requestURI = request.getRequestURI();
 		Gallery3TreeParent parent = new Gallery3TreeParent(gallery3BaseUrl +
@@ -94,15 +94,15 @@ public class Gallery3RestCtrl {
 	}
 
 	@RequestMapping(value = "/rest/item/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	@Transactional
 	@ResponseBody
+	@Transactional(readOnly = true)
 	public Gallery3ItemParent item(@PathVariable String id, HttpServletRequest request) {
 		String requestURI = request.getRequestURI();
 		Gallery3ItemParent parent = new Gallery3ItemParent(gallery3BaseUrl +
 				requestURI.substring(requestURI.indexOf("/rest/item")));
 		parent.getEntity().put("id", id);
 		parent.getEntity().put("type", getType(id));
-		parent.getEntity().put("title", getTitle(parent));
+		parent.getEntity().put("title", getTitleNoTx(parent));
 		if (id.equals(gallery3AlbumsId)) {
 			Session session = sessionFactory.getCurrentSession();
 			Query q = session.createQuery("FROM Album ORDER BY name DESC");
@@ -131,7 +131,7 @@ public class Gallery3RestCtrl {
 		return new Integer(id.substring(id.indexOf('-') + 1));
 	}
 
-	private String getTitle(Gallery3ItemParent parent) {
+	private String getTitleNoTx(Gallery3ItemParent parent) {
 		if (parent.getEntity().get("id").equals(gallery3AlbumsId)) {
 			return gallery3AlbumsName;
 		} else if (parent.getEntity().get("type").equals("album")) {
