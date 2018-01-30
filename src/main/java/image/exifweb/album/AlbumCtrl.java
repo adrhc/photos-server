@@ -135,6 +135,8 @@ public class AlbumCtrl {
 					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 			return null;
 		}
+		logger.debug("modified since: {}",
+				sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 		return albumService.getAllCovers();
 	}
 }
