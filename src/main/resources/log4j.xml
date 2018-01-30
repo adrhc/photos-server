@@ -55,7 +55,7 @@
         <level value="info"/>
     </logger>
     <logger name="org.springframework.cache">
-        <level value="all"/>
+        <level value="warn"/>
     </logger>
 
     <!-- Hibernate -->
