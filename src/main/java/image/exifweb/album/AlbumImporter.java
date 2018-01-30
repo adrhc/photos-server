@@ -10,6 +10,7 @@ import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
+import image.exifweb.util.ValueHolder;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -139,10 +140,10 @@ public class AlbumImporter {
 			album = albumService.create(path.getName());
 		}
 		// at this point: album != null
-		boolean[] existsImageChange = {false};
+		ValueHolder<Boolean> existsImageChange = ValueHolder.of(false);
 		imageEventsEmitter.imageEventsByType(true,
 				EnumSet.allOf(EImageEventType.class))
-				.take(1L).subscribe(ie -> existsImageChange[0] = true);
+				.take(1L).subscribe(ie -> existsImageChange.setValue(true));
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {
 			logger.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
@@ -159,7 +160,7 @@ public class AlbumImporter {
 			albumService.deleteNotFoundImages(imageNames, album);
 		}
 		// used for thread safety
-		if (existsImageChange[0]) {
+		if (existsImageChange.getValue()) {
 			albumEventsEmitter.emit(AlbumEventBuilder
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
@@ -204,7 +205,7 @@ public class AlbumImporter {
 		} else if (imageIdAndDates.dateTime.before(imgWithNewExif.getDateTime())) {
 			updateExifPropertiesInDB(imgWithNewExif, imageIdAndDates.id);
 			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.EXIF_UPDATED)
+					.of(EImageEventType.THUMB_UPDATED)
 					.image(imgWithNewExif).build());
 		} else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
 			updateThumbLastModifiedForImg(imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);

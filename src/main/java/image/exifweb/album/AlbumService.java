@@ -337,7 +337,7 @@ public class AlbumService implements IAlbumCache {
 	public void postConstruct() {
 		// the cover image changed
 		Observable<Album> coverImgChanged = imageEventsEmitter.imageEventsByType(
-				EnumSet.of(EImageEventType.THUMB_UPDATED, EImageEventType.EXIF_UPDATED))
+				EnumSet.of(EImageEventType.THUMB_UPDATED))
 				.filter(ie -> ie.getImage().isCover())
 				.map(ie -> ie.getImage().getAlbum());
 		// the cover image deleted
