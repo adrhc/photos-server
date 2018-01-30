@@ -82,6 +82,7 @@ public class AlbumImporter {
 
 	//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
 	public void importAllFromAlbumsRoot() {
+		logger.debug("BEGIN");
 		importFromAlbumsRoot(null);
 	}
 
