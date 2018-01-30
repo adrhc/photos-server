@@ -30,6 +30,10 @@ public class Album implements Serializable {
 	private Integer id;
 	@Column(nullable = false, unique = true, length = 512)
 	private String name;
+	/**
+	 * Means some images are changed while album's
+	 * json file-pages are not regenerated yet.
+	 */
 	@Column(name = "dirty")
 	private boolean dirty;
 	@OneToMany(mappedBy = "album", orphanRemoval = true)

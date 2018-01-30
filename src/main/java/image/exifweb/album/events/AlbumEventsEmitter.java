@@ -6,35 +6,41 @@ import io.reactivex.subjects.PublishSubject;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.util.UUID;
 
 /**
  * Created by adr on 1/28/18.
  */
 @Component
 public class AlbumEventsEmitter {
-    private PublishSubject<AlbumEvent> albumEvents = PublishSubject.create();
+	private ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
+	private PublishSubject<AlbumEvent> albumEvents = PublishSubject.create();
 
-    public void emit(AlbumEvent albumEvent) {
-        albumEvents.onNext(albumEvent);
-    }
+	public void emit(AlbumEvent albumEvent) {
+		albumEvent.setRequestId(requestId.get());
+		albumEvents.onNext(albumEvent);
+	}
 
-    public Disposable subscribe(EAlbumEventType albumEventType,
-                                String requestId, Consumer<AlbumEvent> consumer) {
-        return albumEvents
-                .filter(ae -> ae.getEventType().equals(albumEventType))
-                .filter(ae -> ae.getRequestId().equals(requestId))
-                .subscribe(consumer);
-    }
+	public Disposable subscribe(boolean filterByRequestId,
+	                            EAlbumEventType albumEventType,
+	                            Consumer<AlbumEvent> consumer) {
+		return albumEvents
+				.filter(ae -> ae.getEventType().equals(albumEventType))
+				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(requestId.get()))
+				.subscribe(consumer);
+	}
 
-    public Disposable subscribe(EAlbumEventType albumEventType,
-                                Consumer<AlbumEvent> consumer) {
-        return albumEvents
-                .filter(ae -> ae.getEventType().equals(albumEventType))
-                .subscribe(consumer);
-    }
+	public Disposable subscribe(EAlbumEventType albumEventType,
+	                            Consumer<AlbumEvent> consumer) {
+		return subscribe(false, albumEventType, consumer);
+	}
 
-    @PreDestroy
-    public void preDestroy() {
-        albumEvents.onComplete();
-    }
+	public String requestId() {
+		return requestId.get();
+	}
+
+	@PreDestroy
+	public void preDestroy() {
+		albumEvents.onComplete();
+	}
 }

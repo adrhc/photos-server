@@ -1,14 +1,20 @@
 package image.exifweb.album;
 
+import image.exifweb.album.cache.IAlbumCache;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.image.ImageDimensions;
 import image.exifweb.image.ImageService;
 import image.exifweb.image.ImageThumb;
+import image.exifweb.image.events.EImageEventType;
+import image.exifweb.image.events.ImageEvent;
+import image.exifweb.image.events.ImageEventBuilder;
+import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.sys.AppConfigService;
+import io.reactivex.Observable;
 import org.apache.commons.lang.text.StrBuilder;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -18,7 +24,6 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -29,6 +34,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -39,7 +45,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumService {
+public class AlbumService implements IAlbumCache {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
 
 	@Value("${thumbs.dir}")
@@ -58,6 +64,8 @@ public class AlbumService {
 	private ImageService imageService;
 	@Inject
 	private AlbumEventsEmitter albumEventsEmitter;
+	@Inject
+	private ImageEventsEmitter imageEventsEmitter;
 
 	/**
 	 * Returned with the intention to be an immutable object or at least
@@ -205,15 +213,9 @@ public class AlbumService {
 	 *
 	 * @param foundImageNames
 	 */
-	@Caching(evict = {
-			@CacheEvict(value = "album", key = "#album.name", condition = "#result"),
-			@CacheEvict(value = "album", key = "#album.id", condition = "#result")
-	})
 	@Transactional
-	public boolean deleteNotFoundImages(List<String> foundImageNames, Album album) {
+	public void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		logger.debug("BEGIN {}", album.getName());
-		Image cover = album.getCover();
-		boolean[] existsChange = {false};
 		List<Image> images = imageService.getImagesByAlbumId(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
@@ -228,24 +230,25 @@ public class AlbumService {
 				logger.debug("poza din DB ({}) cu nume diferit in file system ({}): actualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				image.setName(oppositeExtensionCase);
+				imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.UPDATED)
+						.image(image).album(album).build());
 				return;
 			}
 			if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				if (cover != null && cover.getId().equals(image.getId())) {
-					existsChange[0] = removeAlbumCover(album.getId());
-				}
 				imageService.remove(image);
+				imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.DELETED)
+						.image(image).album(album).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 			image.setDeleted(true);
-//            existsChange[0] = true;
+			imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.UPDATED)
+					.image(image).album(album).build());
 		});
-		logger.debug("END {}, return {}", album.getName(), existsChange[0]);
-		return existsChange[0];
+		logger.debug("END {}", album.getName());
 	}
 
 	private String toFileNameWithOppositeExtensionCase(String fileName) {
@@ -301,19 +304,30 @@ public class AlbumService {
 		album.setDirty(true);
 	}
 
-	public boolean removeAlbumCover(Integer albumId) {
+	/**
+	 * Used only by the below subscription:
+	 * imageEventsEmitter.imageEventsByType(... EImageEventType.DELETED ...)
+	 * otherwise this.evictCache or @CacheEvict (for public method) must be used.
+	 *
+	 * @param album
+	 * @return
+	 */
+	@Transactional
+	private boolean removeAlbumCover(Album album) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Album SET cover = NULL WHERE id = :albumId AND cover IS NOT NULL");
-		q.setParameter("albumId", albumId);
+		Query q = session.createQuery("UPDATE Album SET cover = NULL " +
+				"WHERE id = :albumId AND cover IS NOT NULL");
+		q.setParameter("albumId", album.getId());
 		return q.executeUpdate() > 0;
 	}
 
+	//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
 	@Transactional
-//    @CacheEvict(value = "default", key = "'albumCoversLastUpdateDate'")
-	public void clearDirtyForAlbum(Integer albumId) {
+	private void clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Album album = (Album) session.get(Album.class, albumId);
 		if (album.isDirty()) {
+			// avoid db update when not dirty
 			// avoid evicting cache when not dirty
 			album.setDirty(false);
 		}
@@ -321,7 +335,25 @@ public class AlbumService {
 
 	@PostConstruct
 	public void postConstruct() {
+		// the cover image changed
+		Observable<Album> coverImgChanged = imageEventsEmitter.imageEventsByType(
+				EnumSet.of(EImageEventType.THUMB_UPDATED, EImageEventType.EXIF_UPDATED))
+				.filter(ie -> ie.getImage().isCover())
+				.map(ie -> ie.getImage().getAlbum());
+		// the cover image deleted
+		Observable<Album> coverImgDeleted = imageEventsEmitter.imageEventsByType(
+				EnumSet.of(EImageEventType.DELETED))
+				.filter(ie -> ie.getAlbum().getCover() != null)
+				.filter(ie ->
+						ie.getAlbum().getCover().getId().equals(ie.getImage().getId()))
+				.map(ImageEvent::getAlbum)
+				.filter(this::removeAlbumCover);
+		// cover image changed or deleted
+		coverImgDeleted.mergeWith(coverImgChanged)
+				.doOnNext(this::evictCache)
+				.subscribe(album -> this.evictAlbumCoversLastUpdateDate());
+		// album's json files updated
 		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
-				(ae) -> clearDirtyForAlbum(ae.getAlbum().getId()));
+				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));
 	}
 }
