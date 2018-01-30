@@ -205,7 +205,7 @@ public class AlbumImporter {
 		} else if (imageIdAndDates.dateTime.before(imgWithNewExif.getDateTime())) {
 			updateExifPropertiesInDB(imgWithNewExif, imageIdAndDates.id);
 			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.THUMB_UPDATED)
+					.of(EImageEventType.EXIF_UPDATED)
 					.image(imgWithNewExif).build());
 		} else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
 			updateThumbLastModifiedForImg(imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
