@@ -321,12 +321,12 @@ public class AlbumService implements IAlbumCache {
 		return q.executeUpdate() > 0;
 	}
 
-	@CacheEvict(value = "covers", allEntries = true, condition = "#return")
+	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Album SET dirty = 0 " +
-				"WHERE id = :albumId AND dirty = 1");
+		Query q = session.createQuery("UPDATE Album SET dirty = false " +
+				"WHERE id = :albumId AND dirty = true");
 		q.setParameter("albumId", albumId);
 		return q.executeUpdate() > 0;
 	}
