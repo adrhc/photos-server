@@ -54,7 +54,7 @@ public class ImageExif {
 			// path no longer exists
 			return null;
 		} catch (Exception e) {
-			logger.error("Nu s-a putut extrage EXIF pt:\n{}", imgFile.getPath());
+			logger.error("{}/{}", imgFile.getParentFile().getName(), imgFile.getName());
 			image.setDateTime(new Date(imgFile.lastModified()));
 			image.setDateTimeOriginal(image.getDateTime());
 			prepareImageDimensions(image, imgFile.getPath());

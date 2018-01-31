@@ -105,10 +105,10 @@ public class AlbumCtrl {
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (albumExporter.writeJsonForAlbumSafe(jsonValue.getValue())) {
 				deferredResult.setResult("message",
-						"JSON files NOT updated for album " + jsonValue.getValue() + "!");
+						"JSON files updated for album " + jsonValue.getValue() + "!");
 			} else {
 				deferredResult.setResult("message",
-						"JSON files updated for album " + jsonValue.getValue() + "!");
+						"JSON files NOT updated for album " + jsonValue.getValue() + "!");
 			}
 		}, asyncExecutor);
 	}
