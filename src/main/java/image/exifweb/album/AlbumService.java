@@ -325,11 +325,9 @@ public class AlbumService implements IAlbumCache {
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Album SET dirty = :clean " +
-				"WHERE id = :albumId AND dirty = :dirty");
+		Query q = session.createQuery("UPDATE Album SET dirty = 0 " +
+				"WHERE id = :albumId AND dirty = 1");
 		q.setParameter("albumId", albumId);
-		q.setBoolean("clean", Boolean.FALSE);
-		q.setBoolean("dirty", Boolean.TRUE);
 		return q.executeUpdate() > 0;
 	}
 
