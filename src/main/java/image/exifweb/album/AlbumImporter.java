@@ -4,6 +4,7 @@ import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.exif.ImageExif;
+import image.exifweb.image.ImageService;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
@@ -22,10 +23,7 @@ import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -45,6 +43,8 @@ public class AlbumImporter {
 	private SessionFactory sessionFactory;
 	@Inject
 	private ImageExif imageExif;
+	@Inject
+	private ImageService imageService;
 	@Inject
 	private AlbumService albumService;
 	@Inject
@@ -76,18 +76,15 @@ public class AlbumImporter {
 		return true;
 	};
 
-	//    @CacheEvict(value = "covers", allEntries = true)
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
 	}
 
-	//    @CacheEvict(value = "covers", allEntries = true)
 	public void importAllFromAlbumsRoot() {
 		logger.debug("BEGIN");
 		importFromAlbumsRoot(null);
 	}
 
-	//    @CacheEvict(value = "covers", allEntries = true)
 	public void importNewAlbumsOnly() {
 		importFromAlbumsRoot(IS_NEW_ALBUM);
 	}
@@ -103,6 +100,7 @@ public class AlbumImporter {
 		if (files == null || files.length == 0) {
 			return;
 		}
+		Arrays.sort(files);
 		if (albumsFilter == null) {
 			Stream.of(files)
 					.forEach(this::importAlbumByPath);
@@ -139,11 +137,13 @@ public class AlbumImporter {
 			// creem un nou album (dir aferent are poze)
 			album = albumService.create(path.getName());
 		}
-		// at this point: album != null
-		ValueHolder<Boolean> existsImageChange = ValueHolder.of(false);
+		// when importing a new album existsAtLeast1ImageChange will
+		// always be true because we are not importing empty albums
+		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
 		imageEventsEmitter.imageEventsByType(true,
 				EnumSet.allOf(EImageEventType.class))
-				.take(1L).subscribe(ie -> existsImageChange.setValue(true));
+				.take(1L).subscribe(ie -> existsAtLeast1ImageChange.setValue(true));
+		// at this point: album != null
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {
 			logger.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
@@ -159,8 +159,7 @@ public class AlbumImporter {
 		if (!isNewAlbum) {
 			albumService.deleteNotFoundImages(imageNames, album);
 		}
-		// used for thread safety
-		if (existsImageChange.getValue()) {
+		if (existsAtLeast1ImageChange.getValue()) {
 			albumEventsEmitter.emit(AlbumEventBuilder
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
@@ -208,7 +207,8 @@ public class AlbumImporter {
 					.of(EImageEventType.EXIF_UPDATED)
 					.image(imgWithNewExif).build());
 		} else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
-			updateThumbLastModifiedForImg(imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
+			imageService.updateThumbLastModifiedForImg(
+					imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
 			imageEventsEmitter.emit(ImageEventBuilder
 					.of(EImageEventType.THUMB_UPDATED)
 					.image(imgWithNewExif).build());
@@ -226,20 +226,12 @@ public class AlbumImporter {
 		imageExif.copyExifProperties(image, dbImage);
 	}
 
-	@Transactional
-	private void updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Image SET thumbLastModified = :thumbLastModified WHERE id = :imageId");
-		q.setDate("thumbLastModified", thumbLastModified);
-		q.setInteger("imageId", imageId);
-		q.executeUpdate();
-	}
-
 	@Transactional(readOnly = true)
 	private ImageIdAndDates getImageIdAndDates(String name, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q = session.createQuery("SELECT new image.exifweb.album.AlbumImporter$ImageIdAndDates" +
-				"(i.id, i.dateTime, i.thumbLastModified) FROM Image i WHERE i.name = :name AND i.album.id = :albumId");
+				"(i.id, i.dateTime, i.thumbLastModified) FROM Image i " +
+				"WHERE i.name = :name AND i.album.id = :albumId").setCacheable(true);
 		q.setString("name", name);
 		q.setInteger("albumId", albumId);
 		return (ImageIdAndDates) q.uniqueResult();

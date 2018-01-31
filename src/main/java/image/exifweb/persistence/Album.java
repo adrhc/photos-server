@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.exifweb.persistence.view.AlbumCover;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.springframework.cache.annotation.CacheEvict;
 
@@ -23,6 +24,7 @@ import java.util.List;
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Album.class)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Album")
 public class Album implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +34,8 @@ public class Album implements Serializable {
 	/**
 	 * Means some images are changed while album's
 	 * json file-pages are not regenerated yet.
+	 * <p>
+	 * The album cover is marked specially for dirty albums.
 	 */
 	@Column(name = "dirty")
 	private boolean dirty;
@@ -73,6 +77,7 @@ public class Album implements Serializable {
 		return name;
 	}
 
+	@CacheEvict(value = "covers", allEntries = true)
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -90,6 +95,7 @@ public class Album implements Serializable {
 		return dirty;
 	}
 
+	@CacheEvict(value = "covers", allEntries = true)
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
@@ -98,6 +104,7 @@ public class Album implements Serializable {
 		return deleted;
 	}
 
+	@CacheEvict(value = "covers", allEntries = true)
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}

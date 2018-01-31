@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.exifweb.image.ImageDimensions;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ import java.util.Date;
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Image.class)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Image")
 public class Image implements ImageDimensions, Serializable {
 	public static final Byte DEFAULT_STATUS = 0;
 	public static final Byte DEFAULT_RATING = 1;
@@ -370,12 +372,5 @@ public class Image implements ImageDimensions, Serializable {
 
 	public void setRating(byte rating) {
 		this.rating = rating;
-	}
-
-	public boolean isCover() {
-		if (id == null || album == null || album.getCover() == null || album.getCover().getId() == null) {
-			return false;
-		}
-		return album.getCover().getId().equals(id);
 	}
 }

@@ -18,6 +18,8 @@ import java.util.Date;
 @Table(name = "v_album_cover")
 @JsonIgnoreProperties(ignoreUnknown = true,
 		value = {"hibernateLazyInitializer", "handler", "thumbLastModified"})
+//@Cacheable
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "AlbumCover")
 public class AlbumCover implements ImageThumb {
 	@Id
 	private Integer id;

@@ -2,7 +2,7 @@ package image.exifweb.sys;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.persistence.AppConfig;
-import image.exifweb.persistence.AppConfigEnum;
+import image.exifweb.persistence.enums.AppConfigEnum;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -106,7 +106,7 @@ public class AppConfigService {
 	@Transactional
 	public void update(List<AppConfig> appConfigs) {
 		Session session = sessionFactory.getCurrentSession();
-		List<AppConfig> dbAppConfigs = session.createCriteria(AppConfig.class).list();
+		List<AppConfig> dbAppConfigs = session.createCriteria(AppConfig.class).setCacheable(true).list();
 		for (AppConfig dbAppConfig : dbAppConfigs) {
 			for (AppConfig appConfig : appConfigs) {
 				if (dbAppConfig.getId().equals(appConfig.getId())) {
@@ -137,20 +137,20 @@ public class AppConfigService {
 	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
-		return (List<AppConfig>) session.createCriteria(AppConfig.class).list();
+		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true).list();
 	}
 
 	@Transactional(readOnly = true)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
-		return (List<AppConfig>) session.createCriteria(AppConfig.class)
+		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true)
 				.addOrder(Order.asc("name")).list();
 	}
 
 	@Transactional(readOnly = true)
 	public AppConfig testGetNoCacheableAppConfigByName(String name) {
 		Session session = sessionFactory.getCurrentSession();
-		return (AppConfig) session.createCriteria(AppConfig.class)
+		return (AppConfig) session.createCriteria(AppConfig.class).setCacheable(true)
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 

@@ -9,7 +9,6 @@ import image.exifweb.sys.ProcessInfoService;
 import image.exifweb.sys.process.ProcStatPercent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +37,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/json/appconfig")
-public class AppConfigCtrl {
+public class AppConfigCtrl implements IAppConfigCache {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigCtrl.class);
 	@Inject
 	private ProcessInfoService processInfoService;
@@ -146,8 +145,8 @@ public class AppConfigCtrl {
 
 	@RequestMapping(value = "/reloadParams", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@CacheEvict(value = "appConfig", allEntries = true)
 	public void reloadParams(Model model) {
+		evictAppConfigCache();
 		model.addAttribute("message", "App params reloaded!");
 	}
 

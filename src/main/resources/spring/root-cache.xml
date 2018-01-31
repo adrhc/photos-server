@@ -15,10 +15,10 @@
             <set>
                 <bean p:name="covers"
                       class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
-                <bean p:name="album"
-                      class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
-                <bean p:name="appConfig"
-                      class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>
+                <!--<bean p:name="album"-->
+                      <!--class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>-->
+                <!--<bean p:name="appConfig"-->
+                      <!--class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean"/>-->
             </set>
         </property>
     </bean>

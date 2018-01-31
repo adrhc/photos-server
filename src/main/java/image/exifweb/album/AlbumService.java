@@ -19,11 +19,13 @@ import org.apache.commons.lang.text.StrBuilder;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -36,6 +38,8 @@ import javax.inject.Inject;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+
+import static image.exifweb.image.events.EImageEventType.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,7 +100,7 @@ public class AlbumService implements IAlbumCache {
 	 */
 	@Transactional(readOnly = true)
 	public Album getAlbumById(Integer id) {
-		logger.debug("BEGIN id = {}", id);
+//		logger.debug("BEGIN id = {}", id);
 		Session session = sessionFactory.getCurrentSession();
 		// get initializes entity
 		return (Album) session.get(Album.class, id);
@@ -104,17 +108,18 @@ public class AlbumService implements IAlbumCache {
 
 	@Transactional(readOnly = true)
 	public Album getAlbumByName(String name) {
-		logger.debug("BEGIN name = {}", name);
+//		logger.debug("BEGIN name = {}", name);
 		Session session = sessionFactory.getCurrentSession();
-		return (Album) session.createCriteria(Album.class)
+		return (Album) session.createCriteria(Album.class).setCacheable(true)
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
+//	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
 	@Transactional(readOnly = true)
 	public Date getAlbumCoversLastUpdateDate() {
-		logger.debug("BEGIN");
+//		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
-		return (Date) session.createCriteria(Album.class)
+		return (Date) session.createCriteria(Album.class).setCacheable(true)
 				.setProjection(Projections.max("lastUpdate"))
 				.uniqueResult();
 	}
@@ -130,9 +135,10 @@ public class AlbumService implements IAlbumCache {
 
 	@Transactional(readOnly = true)
 	private List<AlbumCover> loadAllCovers() {
-		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("FROM AlbumCover ORDER BY albumName DESC");
-		return q.list();
+		// .setCacheable(true) -> requires evict on any Album.class update or album cover (Image.class)
+		return sessionFactory.getCurrentSession()
+				.createCriteria(AlbumCover.class)
+				.addOrder(Order.desc("albumName")).list();
 	}
 
 	@Transactional(readOnly = true)
@@ -223,27 +229,25 @@ public class AlbumService implements IAlbumCache {
 			}
 			String oppositeExtensionCase = toFileNameWithOppositeExtensionCase(dbName);
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
+			ImageEventBuilder imgEvBuilder = new ImageEventBuilder().album(album).image(image);
 			if (fsNameIdx >= 0) {
 				logger.debug("poza din DB ({}) cu nume diferit in file system ({}): actualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				image.setName(oppositeExtensionCase);
-				imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.UPDATED)
-						.image(image).album(album).build());
+				imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
 				return;
 			}
 			if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				imageService.removeNoTx(image);
-				imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.DELETED)
-						.image(image).album(album).build());
+				imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 			image.setDeleted(true);
-			imageEventsEmitter.emit(ImageEventBuilder.of(EImageEventType.UPDATED)
-					.image(image).album(album).build());
+			imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
 		});
 		logger.debug("END {}", album.getName());
 	}
@@ -291,7 +295,6 @@ public class AlbumService implements IAlbumCache {
 		}
 	}
 
-	//    @CacheEvict(value = "covers", allEntries = true)
 	@Transactional
 	public void putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -318,31 +321,38 @@ public class AlbumService implements IAlbumCache {
 		return q.executeUpdate() > 0;
 	}
 
-	//    @CacheEvict(value = "covers", allEntries = true)
+	@CacheEvict(value = "covers", allEntries = true, condition = "#return")
 	@Transactional
-	private void clearDirtyForAlbum(Integer albumId) {
+	public boolean clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
-		Album album = (Album) session.get(Album.class, albumId);
-		if (album.isDirty()) {
-			// avoid db update when not dirty
-			// avoid evicting cache when not dirty
-			album.setDirty(false);
-		}
+		Query q = session.createQuery("UPDATE Album SET dirty = :clean " +
+				"WHERE id = :albumId AND dirty = :dirty");
+		q.setParameter("albumId", albumId);
+		q.setBoolean("clean", Boolean.FALSE);
+		q.setBoolean("dirty", Boolean.TRUE);
+		return q.executeUpdate() > 0;
+	}
+
+	private boolean isCoverImageForAlbum(Image image, Album album) {
+		return album.getCover().getId().equals(image.getId());
+	}
+
+	private boolean isCoverImage(Image image) {
+		return isCoverImageForAlbum(image, image.getAlbum());
 	}
 
 	@PostConstruct
 	public void postConstruct() {
 		// cover image changed (dealt with below)
-		Observable<Album> coverImgChanged = imageEventsEmitter.imageEventsByType(
-				EnumSet.of(EImageEventType.THUMB_UPDATED, EImageEventType.EXIF_UPDATED))
-				.filter(ie -> ie.getImage().isCover())
+		Observable<Album> coverImgChanged = imageEventsEmitter
+				.imageEventsByType(EnumSet.of(THUMB_UPDATED, EXIF_UPDATED))
+				.filter(ie -> isCoverImage(ie.getImage()))
 				.map(ie -> ie.getImage().getAlbum());
 		// cover image deleted
-		Observable<Album> coverImgDeleted = imageEventsEmitter.imageEventsByType(
-				EnumSet.of(EImageEventType.DELETED))
+		Observable<Album> coverImgDeleted = imageEventsEmitter
+				.imageEventsByType(EnumSet.of(DELETED, MARKED_DELETED))
 				.filter(ie -> ie.getAlbum().getCover() != null)
-				.filter(ie ->
-						ie.getAlbum().getCover().getId().equals(ie.getImage().getId()))
+				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
 				.map(ImageEvent::getAlbum)
 				.filter(this::removeAlbumCover);
 		// cover image changed or deleted

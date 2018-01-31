@@ -5,14 +5,11 @@ import image.exifweb.album.AlbumService;
 import image.exifweb.album.PhotoThumb;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -36,16 +33,14 @@ public class ImageCtrl {
 	@Inject
 	private AlbumService albumService;
 	@Inject
-	private AppConfigService appConfigService;
+	private ImageService imageService;
 	@Inject
-	private SessionFactory sessionFactory;
+	private AppConfigService appConfigService;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	@Transactional(readOnly = true)
 	public Image get(@PathVariable Integer id, WebRequest webRequest) {
-		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.get(Image.class, id);
+		Image image = imageService.getById(id);
 		if (webRequest.checkNotModified(image.getDateTime().getTime())) {
 			return null;
 		}
@@ -75,26 +70,16 @@ public class ImageCtrl {
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	@CacheEvict(value = "covers", allEntries = true)
-	@Transactional
 	public void changeStatus(@RequestBody ImageStatus imageStatus) {
-		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageStatus.getId());
-		image.setStatus(imageStatus.getStatus());
-		image.getAlbum().setDirty(true);
+		imageService.changeStatus(imageStatus);
 	}
 
 	@RequestMapping(value = "/setRating",
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	@CacheEvict(value = "covers", allEntries = true)
-	@Transactional
-	public void setRating(@RequestBody ImageRating imageRating) {
-		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageRating.getId());
-		image.setRating(imageRating.getRating());
-		image.getAlbum().setDirty(true);
+	public void changeRating(@RequestBody ImageRating imageRating) {
+		imageService.changeRating(imageRating);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

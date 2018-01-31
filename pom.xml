@@ -17,10 +17,10 @@
         <springframework.version>4.3.13.RELEASE</springframework.version>
         <spring-security.version>3.2.10.RELEASE</spring-security.version>
         <spring-data.version>1.6.1.RELEASE</spring-data.version>
-        <hibernate.version>4.3.5.Final</hibernate.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
+        <jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>
         <slf4j.version>1.7.7</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
-        <jackson-datatype-hibernate4.version>2.7.9</jackson-datatype-hibernate4.version>
         <javaee-api.version>6.0</javaee-api.version>
         <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
         <!-- same as aspectjtools within aspectj-maven-plugin -->
@@ -174,9 +174,10 @@
             <version>${springframework.version}</version>
         </dependency>
 
+        <!-- depends on hibernate-core -->
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
+            <artifactId>hibernate-ehcache</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
 
