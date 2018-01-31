@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.exifweb.persistence.view.AlbumCover;
 import org.hibernate.annotations.Cascade;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -74,12 +73,6 @@ public class Album implements Serializable {
 		return name;
 	}
 
-	@Caching(evict = {
-			@CacheEvict(value = "album", key = "#root.target.name",
-					condition = "#root.target.name != null", beforeInvocation = true),
-			@CacheEvict(value = "album", key = "#root.target.id",
-					condition = "#root.target.id != null")
-	})
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -88,13 +81,7 @@ public class Album implements Serializable {
 		return cover;
 	}
 
-	@Caching(evict = {
-			@CacheEvict(value = "album", key = "#root.target.name",
-					condition = "#root.target.name != null"),
-			@CacheEvict(value = "album", key = "#root.target.id",
-					condition = "#root.target.id != null"),
-			@CacheEvict(value = "covers", allEntries = true)
-	})
+	@CacheEvict(value = "covers", allEntries = true)
 	public void setCover(Image cover) {
 		this.cover = cover;
 	}
@@ -103,12 +90,6 @@ public class Album implements Serializable {
 		return dirty;
 	}
 
-	@Caching(evict = {
-			@CacheEvict(value = "album", key = "#root.target.name",
-					condition = "#root.target.name != null"),
-			@CacheEvict(value = "album", key = "#root.target.id",
-					condition = "#root.target.id != null")
-	})
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}
@@ -117,12 +98,6 @@ public class Album implements Serializable {
 		return deleted;
 	}
 
-	@Caching(evict = {
-			@CacheEvict(value = "album", key = "#root.target.name",
-					condition = "#root.target.name != null"),
-			@CacheEvict(value = "album", key = "#root.target.id",
-					condition = "#root.target.id != null")
-	})
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}

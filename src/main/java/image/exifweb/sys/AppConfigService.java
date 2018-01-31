@@ -9,8 +9,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,7 +103,6 @@ public class AppConfigService {
 		return null;
 	}
 
-	@CacheEvict(value = "appConfig", allEntries = true)
 	@Transactional
 	public void update(List<AppConfig> appConfigs) {
 		Session session = sessionFactory.getCurrentSession();
@@ -137,7 +134,6 @@ public class AppConfigService {
 		json.writeValue(file, appConfigs);
 	}
 
-	@Cacheable(value = "appConfig", key = "'appConfigs'")
 	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
@@ -158,7 +154,6 @@ public class AppConfigService {
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
-	@Cacheable(value = "appConfig", key = "'lastUpdatedAppConfigs'")
 	public long getLastUpdatedAppConfigs() {
 //        logger.debug("BEGIN");
 		List<AppConfig> appConfigs = getAppConfigs();
@@ -179,7 +174,6 @@ public class AppConfigService {
 		return date.getTime();
 	}
 
-	@Cacheable(value = "appConfig", key = "'canUseJsonFilesLastUpdate'")
 	public long canUseJsonFilesLastUpdate() {
 		AppConfig useJsonFiles = getAppConfig("use json files");
 		AppConfig useJsonFilesForConfig = getAppConfig("use json files for config");

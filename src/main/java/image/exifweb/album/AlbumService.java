@@ -94,7 +94,6 @@ public class AlbumService implements IAlbumCache {
 	 * @param id
 	 * @return
 	 */
-	@Cacheable(value = "album", unless = "#result == null", key = "#id")
 	@Transactional(readOnly = true)
 	public Album getAlbumById(Integer id) {
 		logger.debug("BEGIN id = {}", id);
@@ -103,7 +102,6 @@ public class AlbumService implements IAlbumCache {
 		return (Album) session.get(Album.class, id);
 	}
 
-	@Cacheable(value = "album", unless = "#result == null", key = "#name")
 	@Transactional(readOnly = true)
 	public Album getAlbumByName(String name) {
 		logger.debug("BEGIN name = {}", name);
@@ -112,7 +110,6 @@ public class AlbumService implements IAlbumCache {
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
-	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
 	@Transactional(readOnly = true)
 	public Date getAlbumCoversLastUpdateDate() {
 		logger.debug("BEGIN");
@@ -294,7 +291,7 @@ public class AlbumService implements IAlbumCache {
 		}
 	}
 
-//    @CacheEvict(value = "covers", allEntries = true)
+	//    @CacheEvict(value = "covers", allEntries = true)
 	@Transactional
 	public void putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -321,7 +318,7 @@ public class AlbumService implements IAlbumCache {
 		return q.executeUpdate() > 0;
 	}
 
-//    @CacheEvict(value = "covers", allEntries = true)
+	//    @CacheEvict(value = "covers", allEntries = true)
 	@Transactional
 	private void clearDirtyForAlbum(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -350,7 +347,6 @@ public class AlbumService implements IAlbumCache {
 				.filter(this::removeAlbumCover);
 		// cover image changed or deleted
 		coverImgDeleted.mergeWith(coverImgChanged)
-				.doOnNext(this::evictAlbumCache)
 				.subscribe(album -> this.evictCoversCache());
 		// album's json files updated
 		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
