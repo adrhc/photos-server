@@ -18,6 +18,7 @@
         <spring-security.version>3.2.10.RELEASE</spring-security.version>
         <spring-data.version>1.6.1.RELEASE</spring-data.version>
         <hibernate.version>4.3.11.Final</hibernate.version>
+        <jackson-annotations.version>2.9.0</jackson-annotations.version>
         <jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>
         <slf4j.version>1.7.7</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
@@ -182,6 +183,28 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-datatype-hibernate4.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-datatype-hibernate4.version}</version>
+        </dependency>
+        <!--
+            jackson-datatype-hibernate4 depends on:
+                jackson-core -> jackson-databind -> jackson-annotations
+            version determined by jackson-datatype-hibernate4.version
+
+            see mvn dependency:tree | grep -B3 jackson
+        -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotations.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-hibernate4</artifactId>
             <version>${jackson-datatype-hibernate4.version}</version>
@@ -276,6 +299,85 @@
                 </configuration>
             </plugin>
 
+            <!--plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin-->
+
+            <!--
+                http://tomcat.apache.org/maven-plugin-2.2/
+            -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http://192.168.1.31:8080/manager</url>
+                    <server>TomcatServer</server>
+                    <path>/${project.build.finalName}</path>
+                </configuration>
+            </plugin>
+
+            <!--
+                ERROR
+                    EnhancementException: Unable to enhance persistent attribute [image.exifweb.persistence.Album:cover]
+                    Caused by: javassist.NotFoundException: image.exifweb.persistence.Image
+                PROBLEM?
+                    Album depends on Image which depends on Album
+
+                https://docs.jboss.org/hibernate/orm/5.0/topical/html/bytecode/BytecodeEnhancement.html#_build_time_enhancement
+
+                https://vladmihalcea.com/how-to-enable-bytecode-enhancement-dirty-checking-in-hibernate/
+                While the unidirectional @OneToOne association can be fetched lazily, the parent-side of a bidirectional @OneToOne association is not. Even when specifying that the association is not optional and we have the FetchType.LAZY, the parent-side association behaves like a FetchType.EAGER relationship.
+            -->
+            <!--<plugin>-->
+                <!--<groupId>org.hibernate.orm.tooling</groupId>-->
+                <!--<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
+                <!--<version>${hibernate.version}</version>-->
+                <!--<dependencies>-->
+                    <!--&lt;!&ndash;-->
+                        <!--version determined by jackson-datatype-hibernate4.version-->
+
+                        <!--see mvn dependency:tree | grep -B3 jackson-->
+                    <!--&ndash;&gt;-->
+                    <!--<dependency>-->
+                        <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                        <!--<artifactId>jackson-annotations</artifactId>-->
+                        <!--<version>${jackson-annotations.version}</version>-->
+                    <!--</dependency>-->
+                <!--</dependencies>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<configuration>-->
+                            <!--&lt;!&ndash;<dir>${project.build.outputDirectory}</dir>&ndash;&gt;-->
+                            <!--<failOnError>true</failOnError>-->
+                            <!--<enableLazyInitialization>true</enableLazyInitialization>-->
+                            <!--<enableDirtyTracking>true</enableDirtyTracking>-->
+                            <!--<enableAssociationManagement>true</enableAssociationManagement>-->
+                            <!--<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>enhance</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+            <!--
+                order matters: put this after hibernate-enhance-maven-plugin
+
+                https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+                multiple goals bound to a phase are executed in the same order as they are declared in the POM
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
@@ -307,34 +409,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin-->
-
-            <!--
-                http://tomcat.apache.org/maven-plugin-2.2/
-            -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <url>http://192.168.1.31:8080/manager</url>
-                    <server>TomcatServer</server>
-                    <path>/${project.build.finalName}</path>
-                </configuration>
             </plugin>
 
         </plugins>
