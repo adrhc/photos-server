@@ -16,6 +16,7 @@ import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.sys.AppConfigService;
 import io.reactivex.Observable;
 import org.apache.commons.lang.text.StrBuilder;
+import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -160,6 +161,7 @@ public class AlbumService implements IAlbumCache {
 					"WHERE a.id = :albumId " +
 					"AND i.deleted = 0 " +
 					"AND i.status = IF(:viewHidden, i.status, 0)");
+			q.setCacheable(!viewHidden).setCacheMode(CacheMode.GET);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
@@ -196,6 +198,7 @@ public class AlbumService implements IAlbumCache {
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
 					"AND i.status = IF(:viewHidden, i.status, 0) " +
 					"ORDER BY i.dateTimeOriginal " + sort);
+			q.setCacheable(!viewHidden).setCacheMode(CacheMode.GET);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
