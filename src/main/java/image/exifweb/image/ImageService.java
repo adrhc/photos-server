@@ -6,6 +6,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,8 @@ import java.util.List;
  */
 @Service
 public class ImageService {
+	private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+
 	@Inject
 	private SessionFactory sessionFactory;
 
@@ -52,6 +56,7 @@ public class ImageService {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageRating.getId());
 		image.setRating(imageRating.getRating());
+		logger.debug(image.getAlbum().toString());
 		image.getAlbum().setDirty(true);
 	}
 
