@@ -14,6 +14,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
+ * Watch out to triggers!
+ * e.g. ALBUM_DIRTY_ON_RATING used when using nginx drizzle (mysql)
+ * <p>
  * Created with IntelliJ IDEA.
  * User: adrian.petre
  * Date: 11/7/13
