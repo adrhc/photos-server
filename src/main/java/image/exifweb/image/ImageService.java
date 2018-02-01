@@ -58,22 +58,16 @@ public class ImageService {
 		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
 		logger.debug("old session.cacheMode: {}", session.getCacheMode().toString());
-//		session.setCacheMode(CacheMode.REFRESH);
-//		logger.debug("new session.cacheMode: {}", session.getCacheMode().toString());
 		Image image = (Image) session.get(Image.class, imageRating.getId());
 		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
-//		session.flush();
 		logger.debug("before image.getAlbum");
-//		logger.debug("before image.getAlbum (+after flush)");
 		Album album = image.getAlbum();
 		logger.debug("album:\n\tid: {}\n\tname: {}\n\tdirty: {}\n\tlastUpdate: {}",
 				album.getId(), album.getName(), album.isDirty(), album.getLastUpdate());
 		logger.debug("before album.setDirty");
 		album.setDirty(true);
-//		session.flush();
 		logger.debug("END");
-//		logger.debug("END (+after flush)");
 	}
 
 	@Transactional
