@@ -31,8 +31,11 @@ public class Image implements ImageDimensions, Serializable {
 	private Integer id;
 	@Column(nullable = false, length = 256)
 	private String name;
+	/**
+	 * see DEFAULT_STATUS = 0 defined above
+	 */
 	@Column(nullable = false)
-	private Byte status = 0;// default status = 0
+	private Byte status = DEFAULT_STATUS;
 	@Column(nullable = false)
 	private boolean deleted;
 	@Formula("status & 1")
@@ -55,6 +58,9 @@ public class Image implements ImageDimensions, Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date dateTimeOriginal;
+	/**
+	 * utilizat in url-ul thumb-ului si cu impact in browser-cache
+	 */
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "thumb_last_modified", nullable = false)
@@ -99,7 +105,10 @@ public class Image implements ImageDimensions, Serializable {
 	private String subjectDistanceRange;
 	@Column
 	private String whiteBalanceMode;
-	@Column
+	/**
+	 * see DEFAULT_RATING = 1 defined above
+	 */
+	@Column(nullable = false, columnDefinition = "INTEGER(1) NOT NULL DEFAULT 1")
 	private byte rating = DEFAULT_RATING;
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")
@@ -353,11 +362,6 @@ public class Image implements ImageDimensions, Serializable {
 		this.deleted = deleted;
 	}
 
-	/**
-	 * utilizat in url-ul thumb-ului si cu impact in browser-cache
-	 *
-	 * @return
-	 */
 	public Date getThumbLastModified() {
 		return thumbLastModified;
 	}
