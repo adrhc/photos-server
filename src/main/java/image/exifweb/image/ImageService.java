@@ -55,6 +55,7 @@ public class ImageService {
 	public void changeRating(ImageRating imageRating) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageRating.getId());
+		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
 		logger.debug(image.getAlbum().toString());
 		image.getAlbum().setDirty(true);
