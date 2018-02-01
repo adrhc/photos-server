@@ -161,7 +161,7 @@ public class AlbumService implements IAlbumCache {
 					"WHERE a.id = :albumId " +
 					"AND i.deleted = 0 " +
 					"AND i.status = IF(:viewHidden, i.status, 0)");
-			q.setCacheable(!viewHidden).setCacheMode(CacheMode.GET);
+			q.setCacheable(!viewHidden);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
@@ -198,7 +198,7 @@ public class AlbumService implements IAlbumCache {
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
 					"AND i.status = IF(:viewHidden, i.status, 0) " +
 					"ORDER BY i.dateTimeOriginal " + sort);
-			q.setCacheable(!viewHidden).setCacheMode(CacheMode.GET);
+			q.setCacheable(!viewHidden);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
