@@ -1,12 +1,14 @@
 package image.exifweb.persistence;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.exifweb.persistence.view.AlbumCover;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 
 import javax.persistence.*;
@@ -26,30 +28,14 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Album.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Album")
 public class Album implements Serializable {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private static final Logger logger = LoggerFactory.getLogger(Album.class);
+
 	private Integer id;
-	@Column(nullable = false, unique = true, length = 512)
 	private String name;
-	/**
-	 * Means some images are changed while album's
-	 * json file-pages are not regenerated yet.
-	 * <p>
-	 * The album cover is marked specially for dirty albums.
-	 */
-	@Column(name = "dirty")
 	private boolean dirty;
-	@OneToMany(mappedBy = "album", orphanRemoval = true)
-	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private List<Image> images;
-	@OneToOne
-	@JoinColumn(name = "FK_IMAGE")
 	private Image cover;
-	@JsonIgnore
-	@Version
-	@Column(name = "last_update")
 	private Timestamp lastUpdate;
-	@Column(nullable = false)
 	private boolean deleted;
 
 	public Album() {
@@ -65,6 +51,8 @@ public class Album implements Serializable {
 		this.name = name;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
 	}
@@ -73,6 +61,7 @@ public class Album implements Serializable {
 		this.id = id;
 	}
 
+	@Column(nullable = false, unique = true, length = 512)
 	public String getName() {
 		return name;
 	}
@@ -82,6 +71,8 @@ public class Album implements Serializable {
 		this.name = name;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "FK_IMAGE")
 	public Image getCover() {
 		return cover;
 	}
@@ -91,6 +82,13 @@ public class Album implements Serializable {
 		this.cover = cover;
 	}
 
+	/**
+	 * Means some images are changed while album's
+	 * json file-pages are not regenerated yet.
+	 * <p>
+	 * The album cover is marked specially for dirty albums.
+	 */
+	@Column(name = "dirty")
 	public boolean isDirty() {
 		return dirty;
 	}
@@ -100,6 +98,7 @@ public class Album implements Serializable {
 		this.dirty = dirty;
 	}
 
+	@Column(nullable = false)
 	public boolean isDeleted() {
 		return deleted;
 	}
@@ -109,6 +108,9 @@ public class Album implements Serializable {
 		this.deleted = deleted;
 	}
 
+	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
+	@Version
+	@Column(name = "last_update")
 	public Timestamp getLastUpdate() {
 		return lastUpdate;
 	}
@@ -121,9 +123,12 @@ public class Album implements Serializable {
 	 * @param lastUpdate
 	 */
 	public void setLastUpdate(Timestamp lastUpdate) {
+		logger.debug("album updated with lastUpdate = {}:\n{}", lastUpdate, toString());
 		this.lastUpdate = lastUpdate;
 	}
 
+	@OneToMany(mappedBy = "album", orphanRemoval = true)
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public List<Image> getImages() {
 		return this.images;
 	}
@@ -135,5 +140,18 @@ public class Album implements Serializable {
 	 */
 	public void setImages(List<Image> images) {
 		this.images = images;
+	}
+
+	@Override
+	public String toString() {
+		return "Album{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", dirty=" + dirty +
+				", images=" + (images == null ? null : images.size()) +
+				", cover=" + cover +
+				", lastUpdate=" + lastUpdate +
+				", deleted=" + deleted +
+				'}';
 	}
 }
