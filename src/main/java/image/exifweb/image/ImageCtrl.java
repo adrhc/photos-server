@@ -57,7 +57,7 @@ public class ImageCtrl {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
-	@RequestMapping(value="/page", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/page", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public CallablePage page(@RequestParam Integer albumId,
 	                         @RequestParam int pageNr,
@@ -136,6 +136,11 @@ public class ImageCtrl {
 		public List<PhotoThumb> call() throws Exception {
 			List<PhotoThumb> photoThumbs =
 					albumService.getPage(pageNr, sort, toSearch, viewHidden, albumId);
+			/*
+			 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
+			 * location /photos/app/
+			 * location /photosj/app/
+			 */
 			OptionalLong thumbLastModified =
 					photoThumbs.stream()
 							.mapToLong(pt -> pt.getThumbLastModified().getTime())
