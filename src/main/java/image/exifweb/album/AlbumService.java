@@ -287,7 +287,7 @@ public class AlbumService implements IAlbumCache {
 				});
 
 				thumb.setThumbPath(thumbPath.toString());
-				thumb.setImagePath(thumbPath.toString());
+				thumb.setImagePath(imagePath.toString());
 
 				thumbPath.clear();
 				imagePath.clear();
