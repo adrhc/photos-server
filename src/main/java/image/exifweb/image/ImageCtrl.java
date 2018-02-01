@@ -57,7 +57,7 @@ public class ImageCtrl {
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
-	@RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value="/page", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public CallablePage page(@RequestParam Integer albumId,
 	                         @RequestParam int pageNr,
