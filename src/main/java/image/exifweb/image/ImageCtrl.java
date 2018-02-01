@@ -17,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
+import java.util.OptionalLong;
 import java.util.concurrent.Callable;
 
 /**
@@ -62,8 +63,9 @@ public class ImageCtrl {
 	                         @RequestParam int pageNr,
 	                         @RequestParam(defaultValue = "asc") String sort,
 	                         @RequestParam(defaultValue = "false") boolean viewHidden,
-	                         @RequestParam(required = false) String toSearch) {
-		return new CallablePage(pageNr, sort, toSearch, viewHidden, albumId);
+	                         @RequestParam(required = false) String toSearch,
+	                         WebRequest webRequest) {
+		return new CallablePage(pageNr, sort, toSearch, viewHidden, albumId, webRequest);
 	}
 
 	@RequestMapping(value = "/changeStatus",
@@ -113,23 +115,37 @@ public class ImageCtrl {
 	}
 
 	protected class CallablePage implements Callable<List<PhotoThumb>> {
+		private WebRequest webRequest;
 		private Integer albumId;
 		private String sort;
 		private boolean viewHidden;
 		private String toSearch;
 		private int pageNr = -1;
 
-		public CallablePage(int pageNr, String sort, String toSearch, boolean viewHidden, Integer albumId) {
+		public CallablePage(int pageNr, String sort, String toSearch,
+		                    boolean viewHidden, Integer albumId, WebRequest webRequest) {
 			this.albumId = albumId;
 			this.pageNr = pageNr;
 			this.sort = sort;
 			this.viewHidden = viewHidden;
 			this.toSearch = toSearch;
+			this.webRequest = webRequest;
 		}
 
 		@Override
 		public List<PhotoThumb> call() throws Exception {
-			return albumService.getPage(pageNr, sort, toSearch, viewHidden, albumId);
+			List<PhotoThumb> photoThumbs =
+					albumService.getPage(pageNr, sort, toSearch, viewHidden, albumId);
+			OptionalLong thumbLastModified =
+					photoThumbs.stream()
+							.mapToLong(pt -> pt.getThumbLastModified().getTime())
+							.max();
+			if (thumbLastModified.isPresent()) {
+				if (webRequest.checkNotModified(thumbLastModified.getAsLong())) {
+					return null;
+				}
+			}
+			return photoThumbs;
 		}
 	}
 }
