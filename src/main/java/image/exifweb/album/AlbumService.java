@@ -181,7 +181,7 @@ public class AlbumService implements IAlbumCache {
 			q = session.createQuery("SELECT new image.exifweb.album.PhotoThumb(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
-					"i.thumbLastModified, i.dateTime, a.name as albumName) " +
+					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
 					"FROM Image i JOIN i.album a " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
 					"AND i.status = IF(:viewHidden, i.status, 0) " +
@@ -193,7 +193,7 @@ public class AlbumService implements IAlbumCache {
 			q = session.createQuery("SELECT new image.exifweb.album.PhotoThumb(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
-					"i.thumbLastModified, i.dateTime, a.name as albumName) " +
+					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
 					"FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
 					"AND i.status = IF(:viewHidden, i.status, 0) " +

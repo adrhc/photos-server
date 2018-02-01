@@ -140,13 +140,16 @@ public class ImageCtrl {
 			 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 			 * location /photos/app/
 			 * location /photosj/app/
+			 *
+			 * ImageLastUpdate means the record in DB but not the actual file!
+			 * ThumbLastModified is related to actual image file.
 			 */
-			OptionalLong thumbLastModified =
+			OptionalLong imageLastUpdate =
 					photoThumbs.stream()
-							.mapToLong(pt -> pt.getThumbLastModified().getTime())
+							.mapToLong(pt -> pt.getImageLastUpdate().getTime())
 							.max();
-			if (thumbLastModified.isPresent()) {
-				if (webRequest.checkNotModified(thumbLastModified.getAsLong())) {
+			if (imageLastUpdate.isPresent()) {
+				if (webRequest.checkNotModified(imageLastUpdate.getAsLong())) {
 					return null;
 				}
 			}

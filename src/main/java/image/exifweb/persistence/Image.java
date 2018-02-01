@@ -10,6 +10,7 @@ import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -59,7 +60,8 @@ public class Image implements ImageDimensions, Serializable {
 	@Column(nullable = false)
 	private Date dateTimeOriginal;
 	/**
-	 * utilizat in url-ul thumb-ului si cu impact in browser-cache
+	 * related to image file change
+	 * used for thumb's url (impact browser-cache)
 	 */
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -114,6 +116,20 @@ public class Image implements ImageDimensions, Serializable {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")
 	private Album album;
+	/*
+	 * related to db record -> rating, status, deleted change
+	 */
+	@Version
+	@Column(name = "last_update", nullable = false)
+	private Timestamp lastUpdate;
+
+	public Timestamp getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Timestamp lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
 
 	public Integer getId() {
 		return id;

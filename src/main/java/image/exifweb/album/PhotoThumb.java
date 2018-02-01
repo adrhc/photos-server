@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import image.exifweb.image.ImageThumb;
 import org.hibernate.annotations.Formula;
 
-import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -32,19 +31,28 @@ public class PhotoThumb implements ImageThumb {
 	private String albumName;
 	private byte rating;
 	private boolean isCover;
+	/**
+	 * related to image file change
+	 * used for thumb's url (impact browser-cache)
+	 */
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date thumbLastModified;
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date dateTime;
-	@Transient
+	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
+	/*
+	 * related to db record -> rating, status, deleted change
+	 */
+	private Date imageLastUpdate;
+	//	@Transient
 	private String thumbPath;
-	@Transient
+	//	@Transient
 	private String imagePath;
 
 	public PhotoThumb(Integer id, String imgName, boolean hidden, boolean personal,
 	                  boolean ugly, boolean duplicate, int imageHeight, int imageWidth,
 	                  byte rating, Integer coverId, Date thumbLastModified, Date dateTime,
-	                  String albumName) {
+	                  String albumName, Date imageLastUpdate) {
 		this.id = id;
 		this.imgName = imgName;
 		this.hidden = hidden;
@@ -58,6 +66,7 @@ public class PhotoThumb implements ImageThumb {
 		this.thumbLastModified = thumbLastModified;
 		this.dateTime = dateTime;
 		this.albumName = albumName;
+		this.imageLastUpdate = imageLastUpdate;
 	}
 
 	public Integer getId() {
@@ -180,5 +189,13 @@ public class PhotoThumb implements ImageThumb {
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
+	}
+
+	public Date getImageLastUpdate() {
+		return imageLastUpdate;
+	}
+
+	public void setImageLastUpdate(Date imageLastUpdate) {
+		this.imageLastUpdate = imageLastUpdate;
 	}
 }
