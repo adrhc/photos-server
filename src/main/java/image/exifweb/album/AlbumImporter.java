@@ -125,6 +125,9 @@ public class AlbumImporter {
 		// cazul in care path este un album
 		File[] files = path.listFiles();
 		boolean noFiles = files == null || files.length == 0;
+		if (!noFiles) {
+			Arrays.sort(files);
+		}
 		Album album = albumService.getAlbumByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
