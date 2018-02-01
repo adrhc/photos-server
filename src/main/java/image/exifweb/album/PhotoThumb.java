@@ -37,6 +37,8 @@ public class PhotoThumb implements ImageThumb {
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date dateTime;
 	@Transient
+	private String thumbPath;
+	@Transient
 	private String imagePath;
 
 	public PhotoThumb(Integer id, String imgName, boolean hidden, boolean personal,
@@ -160,6 +162,16 @@ public class PhotoThumb implements ImageThumb {
 
 	public void setDateTime(Date dateTime) {
 		this.dateTime = dateTime;
+	}
+
+	@Override
+	public String getThumbPath() {
+		return thumbPath;
+	}
+
+	@Override
+	public void setThumbPath(String thumbPath) {
+		this.thumbPath = thumbPath;
 	}
 
 	public String getImagePath() {

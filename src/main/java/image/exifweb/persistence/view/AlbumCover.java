@@ -38,7 +38,9 @@ public class AlbumCover implements ImageThumb {
 	@Column(name = "thumb_last_modified")
 	private Date thumbLastModified;
 	@Transient
-	private String imgPath;
+	private String imagePath;
+	@Transient
+	private String thumbPath;
 
 	public Integer getId() {
 		return id;
@@ -56,12 +58,22 @@ public class AlbumCover implements ImageThumb {
 		this.albumName = albumName;
 	}
 
+	@Override
+	public String getThumbPath() {
+		return thumbPath;
+	}
+
+	@Override
+	public void setThumbPath(String thumbPath) {
+		this.thumbPath = thumbPath;
+	}
+
 	public String getImagePath() {
-		return imgPath;
+		return imagePath;
 	}
 
 	public void setImagePath(String imagePath) {
-		this.imgPath = imagePath;
+		this.imagePath = imagePath;
 	}
 
 	public int getImageHeight() {

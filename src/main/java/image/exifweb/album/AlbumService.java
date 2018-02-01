@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static image.exifweb.image.events.EImageEventType.*;
 
@@ -54,6 +55,8 @@ public class AlbumService implements IAlbumCache {
 
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
+	@Value("${albums.dir}")
+	private String albumsDir;
 	@Value("${max.thumb.size.px}")
 	private String maxThumbSizePx;
 	@Value("${max.thumb.size}")
@@ -114,7 +117,7 @@ public class AlbumService implements IAlbumCache {
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
-//	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
+	//	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
 	@Transactional(readOnly = true)
 	public Date getAlbumCoversLastUpdateDate() {
 //		logger.debug("BEGIN");
@@ -270,15 +273,24 @@ public class AlbumService implements IAlbumCache {
 
 	private void prepareURI(List<? extends ImageThumb> thumbs) {
 		StrBuilder thumbPath = new StrBuilder(64);
+		StrBuilder imagePath = new StrBuilder(64);
 		for (ImageThumb thumb : thumbs) {
 			if (thumb.getImgName() != null) {
 				// 'thumbs'/albumName/thumbLastModified/imgName
 				thumbPath.append(thumbsDir).append('/');
-				thumbPath.append(thumb.getAlbumName()).append('/');
-				thumbPath.append(thumb.getThumbLastModified().getTime()).append('/');
-				thumbPath.append(thumb.getImgName());
+				imagePath.append(albumsDir).append('/');
+
+				Stream.of(thumbPath, imagePath).forEach(sb -> {
+					sb.append(thumb.getAlbumName()).append('/');
+					sb.append(thumb.getThumbLastModified().getTime()).append('/');
+					sb.append(thumb.getImgName());
+				});
+
+				thumb.setThumbPath(thumbPath.toString());
 				thumb.setImagePath(thumbPath.toString());
+
 				thumbPath.clear();
+				imagePath.clear();
 			}
 		}
 	}
