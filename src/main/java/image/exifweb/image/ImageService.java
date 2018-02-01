@@ -1,6 +1,8 @@
 package image.exifweb.image;
 
+import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
+import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -53,12 +55,25 @@ public class ImageService {
 
 	@Transactional
 	public void changeRating(ImageRating imageRating) {
+		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageRating.getId());
+		logger.debug("old session.cacheMode: {}", session.getCacheMode().toString());
+//		session.setCacheMode(CacheMode.REFRESH);
+//		logger.debug("new session.cacheMode: {}", session.getCacheMode().toString());
+		Image image = (Image) session.get(Image.class, imageRating.getId());
 		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
-		logger.debug(image.getAlbum().toString());
-		image.getAlbum().setDirty(true);
+//		session.flush();
+		logger.debug("before image.getAlbum");
+//		logger.debug("before image.getAlbum (+after flush)");
+		Album album = image.getAlbum();
+		logger.debug("album:\n\tid: {}\n\tname: {}\n\tdirty: {}\n\tlastUpdate: {}",
+				album.getId(), album.getName(), album.isDirty(), album.getLastUpdate());
+		logger.debug("before album.setDirty");
+		album.setDirty(true);
+//		session.flush();
+		logger.debug("END");
+//		logger.debug("END (+after flush)");
 	}
 
 	@Transactional

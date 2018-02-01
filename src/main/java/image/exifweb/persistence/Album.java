@@ -68,6 +68,7 @@ public class Album implements Serializable {
 
 	@CacheEvict(value = "covers", allEntries = true)
 	public void setName(String name) {
+//		logger.debug("album updated with name = {}:\n{}", name, toString());
 		this.name = name;
 	}
 
@@ -102,6 +103,7 @@ public class Album implements Serializable {
 
 	@CacheEvict(value = "covers", allEntries = true)
 	public void setDirty(boolean dirty) {
+		logger.debug("album updated with dirty = {}:\n{}", dirty, toString());
 		this.dirty = dirty;
 	}
 

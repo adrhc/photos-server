@@ -19,6 +19,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -137,13 +138,13 @@ public class AlbumCtrl {
 	@ResponseBody
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 //		logger.debug("BEGIN");
-		if (webRequest.checkNotModified(albumService.getAlbumCoversLastUpdateDate().getTime())) {
+		Date albumCoversLastUpdateDate = albumService.getAlbumCoversLastUpdateDate();
+		if (webRequest.checkNotModified(albumCoversLastUpdateDate.getTime())) {
 //			logger.debug("not modified since: {}",
 //					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 			return null;
 		}
-		logger.debug("covers modified since: {}",
-				sdf.format(albumService.getAlbumCoversLastUpdateDate()));
+		logger.debug("covers modified since: {}", sdf.format(albumCoversLastUpdateDate));
 		return albumService.getAllCovers();
 	}
 }

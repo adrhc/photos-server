@@ -61,7 +61,7 @@
     <!-- Hibernate -->
     <!--log just the SQL -->
     <logger name="org.hibernate.SQL">
-        <level value="info"/>
+        <level value="debug"/>
     </logger>
     <!--log JDBC bind parameters -->
     <logger name="org.hibernate.type">
@@ -69,10 +69,10 @@
     </logger>
 
     <logger name="org.hibernate.cache">
-        <level value="info"/>
+        <level value="debug"/>
     </logger>
     <logger name="net.sf.ehcache">
-        <level value="info"/>
+        <level value="debug"/>
     </logger>
 
     <!-- Root Logger -->
