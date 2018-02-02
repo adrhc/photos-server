@@ -284,7 +284,7 @@ public class AlbumService implements IAlbumCache {
 		if (!album.isDirty()) {
 			return false;
 		}
-		album.setDirty(true);
+		album.setDirty(false);
 		return true;
 	}
 
