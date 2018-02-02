@@ -3,32 +3,24 @@ package image.exifweb.album;
 import image.exifweb.album.cache.IAlbumCache;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
-import image.exifweb.image.ImageDimensions;
 import image.exifweb.image.ImageService;
-import image.exifweb.image.ImageThumb;
+import image.exifweb.image.ImageUtils;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEvent;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
-import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.sys.AppConfigService;
 import io.reactivex.Observable;
-import org.apache.commons.lang.text.StrBuilder;
-import org.hibernate.CacheMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +28,8 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static image.exifweb.image.events.EImageEventType.*;
 
@@ -54,16 +44,6 @@ import static image.exifweb.image.events.EImageEventType.*;
 public class AlbumService implements IAlbumCache {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
 
-	@Value("${thumbs.dir}")
-	private String thumbsDir;
-	@Value("${albums.dir}")
-	private String albumsDir;
-	@Value("${max.thumb.size.px}")
-	private String maxThumbSizePx;
-	@Value("${max.thumb.size}")
-	private double maxThumbSize;
-	@Value("${max.thumb.size}")
-	private int maxThumbSizeInt;
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
@@ -74,6 +54,8 @@ public class AlbumService implements IAlbumCache {
 	private AlbumEventsEmitter albumEventsEmitter;
 	@Inject
 	private ImageEventsEmitter imageEventsEmitter;
+	@Inject
+	private ImageUtils imageUtils;
 
 	/**
 	 * Returned with the intention to be an immutable object or at least
@@ -116,33 +98,6 @@ public class AlbumService implements IAlbumCache {
 		Session session = sessionFactory.getCurrentSession();
 		return (Album) session.createCriteria(Album.class).setCacheable(true)
 				.add(Restrictions.eq("name", name)).uniqueResult();
-	}
-
-	//	@Cacheable(value = "covers", key = "'albumCoversLastUpdateDate'")
-	@Transactional(readOnly = true)
-	public Date getAlbumCoversLastUpdateDate() {
-//		logger.debug("BEGIN");
-		Session session = sessionFactory.getCurrentSession();
-		return (Date) session.createCriteria(Album.class).setCacheable(true)
-				.setProjection(Projections.max("lastUpdate"))
-				.uniqueResult();
-	}
-
-	@Cacheable(value = "covers", key = "'allCovers'")
-	public List<AlbumCover> getAllCovers() {
-		logger.debug("BEGIN");
-		List<AlbumCover> covers = loadAllCovers();
-		prepareImageDimensions(covers);
-		prepareURI(covers);
-		return covers;
-	}
-
-	@Transactional(readOnly = true)
-	private List<AlbumCover> loadAllCovers() {
-		// .setCacheable(true) -> requires evict on any Album.class update or album cover (Image.class)
-		return sessionFactory.getCurrentSession()
-				.createCriteria(AlbumCover.class)
-				.addOrder(Order.desc("albumName")).list();
 	}
 
 	@Transactional(readOnly = true)
@@ -212,8 +167,8 @@ public class AlbumService implements IAlbumCache {
 	public List<PhotoThumb> getPage(int pageNr, String sort, String toSearch,
 	                                boolean viewHidden, Integer albumId) {
 		List<PhotoThumb> thumbs = getPageFromDb(pageNr, sort, toSearch, viewHidden, albumId);
-		prepareImageDimensions(thumbs);
-		prepareURI(thumbs);
+		imageUtils.appendImageDimensions(thumbs);
+		imageUtils.appendImageURIs(thumbs);
 		return thumbs;
 	}
 
@@ -272,42 +227,6 @@ public class AlbumService implements IAlbumCache {
 			sb.append(pointAndExtension.toLowerCase());
 		}
 		return sb.toString();
-	}
-
-	private void prepareURI(List<? extends ImageThumb> thumbs) {
-		StrBuilder thumbPath = new StrBuilder(64);
-		StrBuilder imagePath = new StrBuilder(64);
-		for (ImageThumb thumb : thumbs) {
-			if (thumb.getImgName() != null) {
-				// 'thumbs'/albumName/thumbLastModified/imgName
-				thumbPath.append(thumbsDir).append('/');
-				imagePath.append(albumsDir).append('/');
-
-				Stream.of(thumbPath, imagePath).forEach(sb -> {
-					sb.append(thumb.getAlbumName()).append('/');
-					sb.append(thumb.getThumbLastModified().getTime()).append('/');
-					sb.append(thumb.getImgName());
-				});
-
-				thumb.setThumbPath(thumbPath.toString());
-				thumb.setImagePath(imagePath.toString());
-
-				thumbPath.clear();
-				imagePath.clear();
-			}
-		}
-	}
-
-	private void prepareImageDimensions(List<? extends ImageDimensions> imageDimensions) {
-		for (ImageDimensions row : imageDimensions) {
-			if (row.getImageHeight() < row.getImageWidth()) {
-				row.setImageHeight((int) Math.floor(maxThumbSize * row.getImageHeight() / row.getImageWidth()));
-				row.setImageWidth(maxThumbSizeInt);
-			} else {
-				row.setImageWidth((int) Math.floor(maxThumbSize * row.getImageWidth() / row.getImageHeight()));
-				row.setImageHeight(maxThumbSizeInt);
-			}
-		}
 	}
 
 	@Transactional
