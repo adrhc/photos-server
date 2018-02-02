@@ -19,6 +19,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
@@ -245,13 +246,24 @@ public class AlbumService implements IAlbumCache {
 		return sb.toString();
 	}
 
+	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
-	public void putAlbumCover(Integer imageId) {
+	public boolean putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageId);
-		Album album = image.getAlbum();
-		album.setCover(image);
+		Image newCover = (Image) session.load(Image.class, imageId);
+		Album album = newCover.getAlbum();
+		Image currentCover = album.getCover();
+		if (currentCover == null) {
+			album.setCover(newCover);
+			album.setDirty(true);
+			return true;
+		}
+		if (currentCover.getId().equals(imageId)) {
+			return false;
+		}
+		album.setCover(newCover);
 		album.setDirty(true);
+		return true;
 	}
 
 	/**
@@ -259,16 +271,18 @@ public class AlbumService implements IAlbumCache {
 	 * imageEventsEmitter.imageEventsByType(... EImageEventType.DELETED ...)
 	 * otherwise this.evictAlbumCache or @CacheEvict (for public method) must be used.
 	 *
-	 * @param album
+	 * @param albumId
 	 * @return
 	 */
+	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
-	private boolean removeAlbumCover(Album album) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Album SET cover = NULL " +
-				"WHERE id = :albumId AND cover IS NOT NULL");
-		q.setParameter("albumId", album.getId());
-		return q.executeUpdate() > 0;
+	public boolean removeAlbumCover(Integer albumId) {
+		Album album = getAlbumById(albumId);
+		if (album.getCover() == null) {
+			return false;
+		}
+		album.setCover(null);
+		return true;
 	}
 
 	/**
@@ -277,8 +291,9 @@ public class AlbumService implements IAlbumCache {
 	 * DML-style HQL (insert, update and delete HQL statements) invalidates all Album cache, e.g.:
 	 * -    "UPDATE Album SET dirty = false WHERE id = :albumId AND dirty = true"
 	 */
+	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
-	private boolean clearDirtyForAlbum(Integer albumId) {
+	public boolean clearDirtyForAlbum(Integer albumId) {
 		Album album = getAlbumById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
@@ -309,7 +324,7 @@ public class AlbumService implements IAlbumCache {
 				.filter(ie -> ie.getAlbum().getCover() != null)
 				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
 				.map(ImageEvent::getAlbum)
-				.filter(this::removeAlbumCover);
+				.filter(a -> removeAlbumCover(a.getId()));
 		// cover image changed or deleted
 		coverImgChanged.mergeWith(coverImgDeleted)
 				.subscribe(album -> this.evictCoversCache());
