@@ -1,11 +1,12 @@
 package image.exifweb.persistence.view;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import image.exifweb.image.ImageThumb;
+import image.exifweb.image.ImageDimensions;
 
-import javax.persistence.*;
-import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,8 +20,8 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true,
 		value = {"hibernateLazyInitializer", "handler", "thumbLastModified"})
 //@Cacheable
-//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "AlbumCover")
-public class AlbumCover implements ImageThumb {
+//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class AlbumCover implements ImageDimensions {
 	@Id
 	private Integer id;
 	@Column(nullable = false, unique = true)
@@ -33,13 +34,7 @@ public class AlbumCover implements ImageThumb {
 	private int imageWidth;
 	@Column(name = "dirty")
 	private boolean dirty;
-	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "thumb_last_modified")
-	private Date thumbLastModified;
-	@Transient
-	private String imagePath;
-	@Transient
+	@Column
 	private String thumbPath;
 
 	public Integer getId() {
@@ -58,22 +53,12 @@ public class AlbumCover implements ImageThumb {
 		this.albumName = albumName;
 	}
 
-	@Override
 	public String getThumbPath() {
 		return thumbPath;
 	}
 
-	@Override
 	public void setThumbPath(String thumbPath) {
 		this.thumbPath = thumbPath;
-	}
-
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
 	}
 
 	public int getImageHeight() {
@@ -98,14 +83,6 @@ public class AlbumCover implements ImageThumb {
 
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
-	}
-
-	public Date getThumbLastModified() {
-		return thumbLastModified;
-	}
-
-	public void setThumbLastModified(Date thumbLastModified) {
-		this.thumbLastModified = thumbLastModified;
 	}
 
 	public String getImgName() {

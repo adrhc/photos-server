@@ -57,14 +57,8 @@ public class AppConfigService {
 		return Integer.parseInt(s);
 	}
 
-	public String getConfig(AppConfigEnum ace) {
-		List<AppConfig> appConfigs = getAppConfigs();
-		for (AppConfig ac : appConfigs) {
-			if (ac.getId().equals(ace.getValue())) {
-				return ac.getValue();
-			}
-		}
-		return null;
+	public String getConfig(AppConfigEnum appConfigEnum) {
+		return getAppConfigById(appConfigEnum.getValue()).getValue();
 	}
 
 	public boolean getConfigBool(String name) {
@@ -86,27 +80,27 @@ public class AppConfigService {
 	}
 
 	public String getConfig(String name) {
-		AppConfig ac = getAppConfig(name);
+		AppConfig ac = getAppConfigByName(name);
 		if (ac == null) {
 			return null;
 		}
 		return ac.getValue();
 	}
 
-	public AppConfig getAppConfig(String name) {
-		List<AppConfig> appConfigs = getAppConfigs();
-		for (AppConfig ac : appConfigs) {
-			if (ac.getName().equals(name)) {
-				return ac;
-			}
-		}
-		return null;
+	@Transactional
+	public AppConfig getAppConfigById(Integer id) {
+		return (AppConfig) sessionFactory.getCurrentSession().get(AppConfig.class, id);
+	}
+
+	@Transactional
+	public AppConfig getAppConfigByName(String name) {
+		return (AppConfig) sessionFactory.getCurrentSession().createCriteria(AppConfig.class)
+				.setCacheable(true).add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
 	@Transactional
 	public void update(List<AppConfig> appConfigs) {
-		Session session = sessionFactory.getCurrentSession();
-		List<AppConfig> dbAppConfigs = session.createCriteria(AppConfig.class).setCacheable(true).list();
+		List<AppConfig> dbAppConfigs = getAppConfigs();
 		for (AppConfig dbAppConfig : dbAppConfigs) {
 			for (AppConfig appConfig : appConfigs) {
 				if (dbAppConfig.getId().equals(appConfig.getId())) {
@@ -175,8 +169,8 @@ public class AppConfigService {
 	}
 
 	public long canUseJsonFilesLastUpdate() {
-		AppConfig useJsonFiles = getAppConfig("use json files");
-		AppConfig useJsonFilesForConfig = getAppConfig("use json files for config");
+		AppConfig useJsonFiles = getAppConfigByName("use json files");
+		AppConfig useJsonFilesForConfig = getAppConfigByName("use json files for config");
 		if (useJsonFiles.getLastUpdate().after(useJsonFilesForConfig.getLastUpdate())) {
 //            logger.debug("END {}", useJsonFiles.getLastUpdate().getTime());
 			return useJsonFiles.getLastUpdate().getTime();

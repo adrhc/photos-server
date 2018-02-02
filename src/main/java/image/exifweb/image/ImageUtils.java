@@ -1,17 +1,18 @@
 package image.exifweb.image;
 
-import org.apache.commons.lang.text.StrBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Created by adr on 2/2/18.
  */
 @Component
 public class ImageUtils {
+	private MessageFormat imageURIFormatter = new MessageFormat("{0}/{1}");
+	private MessageFormat commURIFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -21,29 +22,25 @@ public class ImageUtils {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 
-	public void appendImageURIs(List<? extends ImageThumb> thumbs) {
-		StrBuilder thumbPath = new StrBuilder(64);
-		StrBuilder imagePath = new StrBuilder(64);
-		for (ImageThumb thumb : thumbs) {
-			if (thumb.getImgName() != null) {
-				// 'thumbs'/albumName/thumbLastModified/imgName
-				thumbPath.append(thumbsDir).append('/');
-				imagePath.append(albumsDir).append('/');
-
-				Stream.of(thumbPath, imagePath).forEach(sb -> sb
-						.append(thumb.getAlbumName())
-						.append('/')
-						.append(thumb.getThumbLastModified().getTime())
-						.append('/')
-						.append(thumb.getImgName())
-				);
-
-				thumb.setThumbPath(thumbPath.toString());
-				thumb.setImagePath(imagePath.toString());
-
-				thumbPath.clear();
-				imagePath.clear();
+	public void appendImagePaths(List<? extends ImageBasicInfo> thumbs) {
+		String albumName, imgName, albumLastModifImg;
+		Long thumbLastModified;
+		for (ImageBasicInfo basicInfo : thumbs) {
+			if (basicInfo.getImgName() == null) {
+				continue;
 			}
+
+			albumName = basicInfo.getAlbumName();
+			thumbLastModified = basicInfo.getThumbLastModified().getTime();
+			imgName = basicInfo.getImgName();
+
+			albumLastModifImg = commURIFormatter.format(
+					new Object[]{albumName, thumbLastModified, imgName});
+
+			basicInfo.setThumbPath(imageURIFormatter.format(
+					new Object[]{thumbsDir, albumLastModifImg}));
+			basicInfo.setImagePath(imageURIFormatter.format(
+					new Object[]{albumsDir, albumLastModifImg}));
 		}
 	}
 

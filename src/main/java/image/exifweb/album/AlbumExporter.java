@@ -1,6 +1,7 @@
 package image.exifweb.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import image.exifweb.album.cover.AlbumCoverComp;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
@@ -36,6 +37,8 @@ public class AlbumExporter {
 	private AlbumEventsEmitter albumEventsEmitter;
 	@Inject
 	private ObjectMapper jsonMapper;
+	@Inject
+	private AlbumCoverComp albumCoverComp;
 
 	public boolean writeJsonForAlbumSafe(String name) {
 		Album album = albumService.getAlbumByName(name);
@@ -57,7 +60,7 @@ public class AlbumExporter {
 	}
 
 	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<AlbumCover> albumCovers = albumService.getAllCovers();
+		List<AlbumCover> albumCovers = albumCoverComp.getAllCovers();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (AlbumCover albumCover : albumCovers) {
 			successForAlbum = writeJsonForAlbumSafe(new Album(albumCover));
@@ -78,7 +81,7 @@ public class AlbumExporter {
 	public boolean writeJsonForAlbumsPageSafe() {
 		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
-		List<AlbumCover> albums = albumService.getAllCovers();
+		List<AlbumCover> albums = albumCoverComp.getAllCovers();
 		try {
 			jsonMapper.writeValue(file, albums);
 			return true;
@@ -95,25 +98,27 @@ public class AlbumExporter {
 			logger.debug("END (is deleted) {}", album.getName());
 			return;
 		}
+		logger.debug("getPageCount album.id = {}", album.getId());
 		int pageCount = albumService.getPageCount(null, false, album.getId());
 		int photosPerPage = appConfigService.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
-		File dir = new File(appConfigService.getConfig("photos json FS path") +
-				File.separatorChar + album.getId());
+		File dir = new File(appConfigService.getConfig("photos json FS path"),
+				album.getId().toString());
 		dir.mkdirs();
 		File file = new File(dir, "pageCount.json");
 		// write pageCount info
 		jsonMapper.writeValue(file, map);
 		for (int i = 0; i < pageCount; i++) {
-			// write page i + 1 asc
+			logger.debug("write page {} asc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
 					albumService.getPage(i + 1, "asc", null, false, album.getId()));
-			// write page i + 1 desc
+			logger.debug("write page {} desc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
 					albumService.getPage(i + 1, "desc", null, false, album.getId()));
 		}
+		logger.debug("done writing pages");
 		albumEventsEmitter.emit(AlbumEventBuilder
 				.of(EAlbumEventType.JSON_UPDATED)
 				.album(album).build());

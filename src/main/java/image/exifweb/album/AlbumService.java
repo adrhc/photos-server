@@ -19,7 +19,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
@@ -87,17 +86,17 @@ public class AlbumService implements IAlbumCache {
 	@Transactional(readOnly = true)
 	public Album getAlbumById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
-		Session session = sessionFactory.getCurrentSession();
 		// get initializes entity
-		return (Album) session.get(Album.class, id);
+		return (Album) sessionFactory.getCurrentSession().get(Album.class, id);
 	}
 
 	@Transactional(readOnly = true)
 	public Album getAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
 		Session session = sessionFactory.getCurrentSession();
-		return (Album) session.createCriteria(Album.class).setCacheable(true)
-				.add(Restrictions.eq("name", name)).uniqueResult();
+		return (Album) session.createCriteria(Album.class)
+				.setCacheable(true).add(Restrictions.eq("name", name))
+				.uniqueResult();
 	}
 
 	@Transactional(readOnly = true)
@@ -127,16 +126,31 @@ public class AlbumService implements IAlbumCache {
 
 	}
 
+	/**
+	 * http://www.baeldung.com/hibernate-second-level-cache
+	 * - For all tables that are queried as part of cacheable queries, Hibernate keeps last update timestamps ...
+	 * <p>
+	 * ehcache logs for Album update:
+	 * - Pre-invalidating space [Album], timestamp: 6216125958041600
+	 * - Invalidating space [Album], timestamp: 6216125712445440
+	 * ehcache logs for a page-count query:
+	 * - Checking query spaces are up-to-date: [Album, Image]
+	 * - [Album] last update timestamp: 6216125712445440, result set timestamp: 6216124363251712
+	 * -         Cached query results were not up-to-date
+	 * so when Album or Image cache is not up to date this query becomes invalid.
+	 */
 	@Transactional(readOnly = true)
-	public List<PhotoThumb> getPageFromDb(int pageNr, String sort, String toSearch,
-	                                      boolean viewHidden, Integer albumId) {
+	public List<AlbumPage> getPageFromDb(int pageNr, String sort, String toSearch,
+	                                     boolean viewHidden, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
-			q = session.createQuery("SELECT new image.exifweb.album.PhotoThumb(" +
+			q = session.createQuery("SELECT new image.exifweb.album.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
 					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
+//					"thumbPath(a.name, i.thumbLastModified, i.name), " +
+//					"imagePath(a.name, i.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
 					"AND i.status = IF(:viewHidden, i.status, 0) " +
@@ -145,10 +159,12 @@ public class AlbumService implements IAlbumCache {
 			// searches case-sensitive for name!
 			q.setString("toSearch", "%" + toSearch + "%");
 		} else {
-			q = session.createQuery("SELECT new image.exifweb.album.PhotoThumb(" +
+			q = session.createQuery("SELECT new image.exifweb.album.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
 					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
+//					"thumbPath(a.name, i.thumbLastModified, i.name), " +
+//					"imagePath(a.name, i.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
 					"AND i.status = IF(:viewHidden, i.status, 0) " +
@@ -164,11 +180,11 @@ public class AlbumService implements IAlbumCache {
 		return q.list();
 	}
 
-	public List<PhotoThumb> getPage(int pageNr, String sort, String toSearch,
-	                                boolean viewHidden, Integer albumId) {
-		List<PhotoThumb> thumbs = getPageFromDb(pageNr, sort, toSearch, viewHidden, albumId);
+	public List<AlbumPage> getPage(int pageNr, String sort, String toSearch,
+	                               boolean viewHidden, Integer albumId) {
+		List<AlbumPage> thumbs = getPageFromDb(pageNr, sort, toSearch, viewHidden, albumId);
 		imageUtils.appendImageDimensions(thumbs);
-		imageUtils.appendImageURIs(thumbs);
+		imageUtils.appendImagePaths(thumbs);
 		return thumbs;
 	}
 
@@ -255,14 +271,21 @@ public class AlbumService implements IAlbumCache {
 		return q.executeUpdate() > 0;
 	}
 
-	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
+	/**
+	 * http://www.baeldung.com/hibernate-second-level-cache
+	 * <p>
+	 * DML-style HQL (insert, update and delete HQL statements) invalidates all Album cache, e.g.:
+	 * -    "UPDATE Album SET dirty = false WHERE id = :albumId AND dirty = true"
+	 */
 	@Transactional
-	public boolean clearDirtyForAlbum(Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("UPDATE Album SET dirty = false " +
-				"WHERE id = :albumId AND dirty = true");
-		q.setParameter("albumId", albumId);
-		return q.executeUpdate() > 0;
+	private boolean clearDirtyForAlbum(Integer albumId) {
+		Album album = getAlbumById(albumId);
+		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
+		if (!album.isDirty()) {
+			return false;
+		}
+		album.setDirty(true);
+		return true;
 	}
 
 	private boolean isCoverImageForAlbum(Image image, Album album) {
@@ -288,7 +311,7 @@ public class AlbumService implements IAlbumCache {
 				.map(ImageEvent::getAlbum)
 				.filter(this::removeAlbumCover);
 		// cover image changed or deleted
-		coverImgDeleted.mergeWith(coverImgChanged)
+		coverImgChanged.mergeWith(coverImgDeleted)
 				.subscribe(album -> this.evictCoversCache());
 		// album's json files updated
 		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,

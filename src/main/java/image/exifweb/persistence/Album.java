@@ -7,9 +7,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.exifweb.persistence.view.AlbumCover;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,12 +23,17 @@ import java.util.List;
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Album.class)
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Album")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Album implements Serializable {
-	private static final Logger logger = LoggerFactory.getLogger(Album.class);
+//	private static final Logger logger = LoggerFactory.getLogger(Album.class);
 
 	private Integer id;
 	private String name;
+	/**
+	 * Means some images are changed while album's json page-files are stale.
+	 * <p>
+	 * Album dirty flag is used in GUI to highlight must-regenerate-json albums.
+	 */
 	private boolean dirty;
 	private List<Image> images;
 	private Image cover;
@@ -66,9 +68,8 @@ public class Album implements Serializable {
 		return name;
 	}
 
-	@CacheEvict(value = "covers", allEntries = true)
 	public void setName(String name) {
-//		logger.debug("album updated with name = {}:\n{}", name, toString());
+//		logger.debug("old name = {}, new name = {}", this.name, name);
 		this.name = name;
 	}
 
@@ -76,8 +77,6 @@ public class Album implements Serializable {
 	 * http://in.relation.to/2016/09/28/performance-tuning-and-best-practices/
 	 * <p>
 	 * The parent-side @OneToOne association requires bytecode enhancement so that the association can be loaded lazily. Otherwise, the parent-side is always fetched even if the association is marked with FetchType.LAZY.
-	 *
-	 * @return
 	 */
 	@OneToOne
 	@JoinColumn(name = "FK_IMAGE")
@@ -85,25 +84,20 @@ public class Album implements Serializable {
 		return cover;
 	}
 
-	@CacheEvict(value = "covers", allEntries = true)
 	public void setCover(Image cover) {
+//		logger.debug("old cover = {}, new cover = {}",
+//				this.cover == null ? null : this.cover.getId(),
+//				cover == null ? null : cover.getId());
 		this.cover = cover;
 	}
 
-	/**
-	 * Means some images are changed while album's
-	 * json file-pages are not regenerated yet.
-	 * <p>
-	 * The album cover is marked specially for dirty albums.
-	 */
 	@Column(name = "dirty")
 	public boolean isDirty() {
 		return dirty;
 	}
 
-	@CacheEvict(value = "covers", allEntries = true)
 	public void setDirty(boolean dirty) {
-		logger.debug("album updated with dirty = {}:\n{}", dirty, toString());
+//		logger.debug("old dirty = {}, new dirty = {}", this.dirty, dirty);
 		this.dirty = dirty;
 	}
 
@@ -112,8 +106,8 @@ public class Album implements Serializable {
 		return deleted;
 	}
 
-	@CacheEvict(value = "covers", allEntries = true)
 	public void setDeleted(boolean deleted) {
+//		logger.debug("old deleted = {}, new deleted = {}", this.deleted, deleted);
 		this.deleted = deleted;
 	}
 
@@ -127,12 +121,9 @@ public class Album implements Serializable {
 	/**
 	 * Atentie, e o coloana @Version! Nu o seta niciodata pt ca o seteaza hibernate!
 	 * Dpv al cache-ului o eventuala modificare de lastUpdate e datorata
-	 * unei modificari a altei proprietati care ar afecta cache la randu-i.
-	 *
-	 * @param lastUpdate
+	 * unei modificari a altei proprietati care oricum ar afecta cache la randu-i.
 	 */
 	public void setLastUpdate(Timestamp lastUpdate) {
-		logger.debug("album updated with lastUpdate = {}:\n{}", lastUpdate, toString());
 		this.lastUpdate = lastUpdate;
 	}
 
@@ -143,11 +134,14 @@ public class Album implements Serializable {
 	}
 
 	/**
-	 * Nu intra in zona de cache a Album.
-	 *
-	 * @param images
+	 * Nu intra in zona de album cache.
+	 * Dirty insa ar trebui se fie afectat si automat va afecta si album cache.
 	 */
 	public void setImages(List<Image> images) {
+//		logger.debug("old images = {}, new images = {}, are equal = {}",
+//				this.images == null ? null : this.images.size(),
+//				images == null ? null : images.size(),
+//				this.images == images);
 		this.images = images;
 	}
 

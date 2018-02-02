@@ -121,12 +121,25 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
-		logger.debug("BEGIN");
+		logger.debug("BEGIN {}", id);
 		Album album = albumService.getAlbumById(id);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
-		logger.debug("album modified since: {}", sdf.format(album.getLastUpdate()));
+		logger.debug("album ({}) modified since: {}", id, sdf.format(album.getLastUpdate()));
+		return album;
+	}
+
+	@RequestMapping(value = "/byName/{name}", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public Album getAlbumByName(@PathVariable String name, WebRequest webRequest) {
+		logger.debug("BEGIN {}", name);
+		Album album = albumService.getAlbumByName(name);
+		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
+			return null;
+		}
+		logger.debug("album ({}) modified since: {}", name, sdf.format(album.getLastUpdate()));
 		return album;
 	}
 

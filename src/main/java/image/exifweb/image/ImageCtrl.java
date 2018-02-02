@@ -1,8 +1,8 @@
 package image.exifweb.image;
 
 import image.exifweb.album.AlbumExporter;
+import image.exifweb.album.AlbumPage;
 import image.exifweb.album.AlbumService;
-import image.exifweb.album.PhotoThumb;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
 import org.slf4j.Logger;
@@ -16,8 +16,10 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.OptionalLong;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -31,6 +33,7 @@ import java.util.concurrent.Callable;
 @RequestMapping("/json/image")
 public class ImageCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(ImageCtrl.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 	@Inject
 	private AlbumService albumService;
 	@Inject
@@ -114,7 +117,7 @@ public class ImageCtrl {
 		}
 	}
 
-	protected class CallablePage implements Callable<List<PhotoThumb>> {
+	protected class CallablePage implements Callable<List<AlbumPage>> {
 		private WebRequest webRequest;
 		private Integer albumId;
 		private String sort;
@@ -133,8 +136,8 @@ public class ImageCtrl {
 		}
 
 		@Override
-		public List<PhotoThumb> call() throws Exception {
-			List<PhotoThumb> photoThumbs =
+		public List<AlbumPage> call() throws Exception {
+			List<AlbumPage> albumPages =
 					albumService.getPage(pageNr, sort, toSearch, viewHidden, albumId);
 			/*
 			 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
@@ -144,16 +147,22 @@ public class ImageCtrl {
 			 * ImageLastUpdate means the record in DB but not the actual file!
 			 * ThumbLastModified is related to actual image file.
 			 */
-			OptionalLong imageLastUpdate =
-					photoThumbs.stream()
-							.mapToLong(pt -> pt.getImageLastUpdate().getTime())
-							.max();
+			Optional<Date> imageLastUpdate =
+					albumPages.stream()
+							.map(AlbumPage::getImageLastUpdate)
+							.max(Date::compareTo);
 			if (imageLastUpdate.isPresent()) {
-				if (webRequest.checkNotModified(imageLastUpdate.getAsLong())) {
+				if (webRequest.checkNotModified(imageLastUpdate.get().getTime())) {
 					return null;
 				}
+				logger.debug("page modified since: {}",
+						sdf.format(imageLastUpdate.get()));
+			} else {
+				logger.debug("page modified since ever");
 			}
-			return photoThumbs;
+			logger.debug("pageNr = {}, sort = {}, viewHidden = {}, albumId = {}, toSearch = {}",
+					pageNr, sort, viewHidden, albumId, toSearch);
+			return albumPages;
 		}
 	}
 }

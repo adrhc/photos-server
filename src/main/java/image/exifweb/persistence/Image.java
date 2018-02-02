@@ -26,7 +26,7 @@ import java.util.Date;
 @Entity
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Image.class)
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Image")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements ImageDimensions, Serializable {
 	public static final Byte DEFAULT_STATUS = 0;
 	public static final Byte DEFAULT_RATING = 1;
@@ -115,7 +115,7 @@ public class Image implements ImageDimensions, Serializable {
 	 */
 	@Column(nullable = false, columnDefinition = "INTEGER(1) NOT NULL DEFAULT 1")
 	private byte rating = DEFAULT_RATING;
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "Album")
+//	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")
 	private Album album;

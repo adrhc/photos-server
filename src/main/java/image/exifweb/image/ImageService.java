@@ -1,8 +1,6 @@
 package image.exifweb.image;
 
-import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
-import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -10,6 +8,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,29 +52,35 @@ public class ImageService {
 		return (Image) session.get(Image.class, imageId);
 	}
 
+	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
-	public void changeRating(ImageRating imageRating) {
+	public boolean changeRating(ImageRating imageRating) {
 		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
-		logger.debug("old session.cacheMode: {}", session.getCacheMode().toString());
-		Image image = (Image) session.get(Image.class, imageRating.getId());
+		Image image = (Image) session.load(Image.class, imageRating.getId());
+		if (image.getRating() == imageRating.getRating()) {
+			logger.debug("END (same rating {})", imageRating.getRating());
+			return false;
+		}
 		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
-		logger.debug("before image.getAlbum");
-		Album album = image.getAlbum();
-		logger.debug("album:\n\tid: {}\n\tname: {}\n\tdirty: {}\n\tlastUpdate: {}",
-				album.getId(), album.getName(), album.isDirty(), album.getLastUpdate());
-		logger.debug("before album.setDirty");
-		album.setDirty(true);
+		logger.debug("before album.setDirty(true)");
+		image.getAlbum().setDirty(true);
 		logger.debug("END");
+		return true;
 	}
 
+	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
-	public void changeStatus(ImageStatus imageStatus) {
+	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageStatus.getId());
+		if (image.getStatus().equals(imageStatus.getStatus())) {
+			return false;
+		}
 		image.setStatus(imageStatus.getStatus());
 		image.getAlbum().setDirty(true);
+		return true;
 	}
 
 	@Transactional(readOnly = true)
