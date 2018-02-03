@@ -144,7 +144,6 @@ public class Album implements Serializable {
 				"id=" + id +
 				", name='" + name + '\'' +
 				", dirty=" + dirty +
-				", images=" + (images == null ? null : images.size()) +
 				", cover=" + (cover == null ? null : cover.getId()) +
 				", lastUpdate=" + lastUpdate +
 				", deleted=" + deleted +

@@ -2,19 +2,25 @@ package image.exifweb.image.events;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
 import java.util.EnumSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Created by adr on 1/28/18.
  */
 @Component
 public class ImageEventsEmitter {
+	private static final Logger logger = LoggerFactory.getLogger(ImageEventsEmitter.class);
 	private ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
-	private PublishSubject<ImageEvent> imageEvents = PublishSubject.create();
+	private Subject<ImageEvent> imageEvents = PublishSubject.<ImageEvent>create().toSerialized();
+//	private PublishSubject<ImageEvent> imageEvents = PublishSubject.create();
 
 	public void emit(ImageEvent imageEvent) {
 		imageEvent.setRequestId(requestId.get());
@@ -25,6 +31,15 @@ public class ImageEventsEmitter {
 			boolean filterByRequestId,
 			EnumSet<EImageEventType> imageEventTypes) {
 		return imageEvents
+				.doOnNext(ae -> {
+					logger.debug(ae.getAlbum().toString());
+					logger.debug("types accepted: {}",
+							imageEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")));
+					logger.debug("ae.eventType = {}, filter by type result = {}\nrequestId = {}",
+							ae.getEventType().name(),
+							imageEventTypes.contains(ae.getEventType()),
+							ae.getRequestId());
+				})
 				.filter(ae -> imageEventTypes.contains(ae.getEventType()))
 				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(requestId.get()));
 	}

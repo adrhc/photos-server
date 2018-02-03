@@ -53,18 +53,18 @@ public class ImageService {
 
 	@Transactional
 	public boolean changeRating(ImageRating imageRating) {
-//		logger.debug("BEGIN");
+		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageRating.getId());
 		if (image.getRating() == imageRating.getRating()) {
-//			logger.debug("END (same rating {})", imageRating.getRating());
+			logger.debug("END (same rating {})", imageRating.getRating());
 			return false;
 		}
-//		logger.debug("before setRating({})", imageRating.getRating());
+		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
-//		logger.debug("before album.setDirty(true)");
+		logger.debug("before album.setDirty(true)");
 		image.getAlbum().setDirty(true);
-//		logger.debug("END");
+		logger.debug("END");
 		return true;
 	}
 

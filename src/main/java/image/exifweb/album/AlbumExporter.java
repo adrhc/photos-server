@@ -114,9 +114,11 @@ public class AlbumExporter {
 					albumService.getPage(i + 1, "desc", null, false, album.getId()));
 		}
 		logger.debug("done writing pages");
+		// todo: find the problem
 		albumEventsEmitter.emit(AlbumEventBuilder
 				.of(EAlbumEventType.JSON_UPDATED)
 				.album(album).build());
+//		albumService.clearDirtyForAlbum(album.getId());
 		logger.debug("END {}", album.getName());
 	}
 

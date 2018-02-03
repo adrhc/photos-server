@@ -144,8 +144,8 @@ public class AlbumImporter {
 		// always be true because we are not importing empty albums
 		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
 		imageEventsEmitter.imageEventsByType(true,
-				EnumSet.allOf(EImageEventType.class))
-				.take(1L).subscribe(ie -> existsAtLeast1ImageChange.setValue(true));
+				EnumSet.allOf(EImageEventType.class)).take(1L)
+				.subscribe(ie -> existsAtLeast1ImageChange.setValue(true));
 		// at this point: album != null
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {

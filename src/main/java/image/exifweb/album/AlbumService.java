@@ -324,6 +324,14 @@ public class AlbumService {
 //				.subscribe(album -> this.evictCoversCache());
 		// album's json files updated
 		albumEventsEmitter.subscribe(JSON_UPDATED,
-				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));
+				ae -> {
+					if (ae.getAlbum() == null) {
+						logger.debug("album is null");
+					} else {
+						logger.debug("album id = {}, name = {}",
+								ae.getAlbum().getId(), ae.getAlbum().getName());
+					}
+					clearDirtyForAlbum(ae.getAlbum().getId());
+				});
 	}
 }
