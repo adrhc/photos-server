@@ -1,5 +1,6 @@
 package image.exifweb.image;
 
+import image.exifweb.persistence.view.AlbumCover;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,40 +23,55 @@ public class ImageUtils {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 
-	public void appendImagePaths(List<? extends ImageBasicInfo> thumbs) {
-		String albumName, imgName, albumLastModifImg;
-		Long thumbLastModified;
-		for (ImageBasicInfo basicInfo : thumbs) {
+	public void appendImagePaths(List<? extends ImageBasicInfo> imageBasicInfos) {
+		for (ImageBasicInfo basicInfo : imageBasicInfos) {
 			if (basicInfo.getImgName() == null) {
 				continue;
 			}
-
-			albumName = basicInfo.getAlbumName();
-			thumbLastModified = basicInfo.getThumbLastModified().getTime();
-			imgName = basicInfo.getImgName();
-
-			albumLastModifImg = commURIFormatter.format(
-					new Object[]{albumName, thumbLastModified, imgName});
-
-			basicInfo.setThumbPath(imageURIFormatter.format(
-					new Object[]{thumbsDir, albumLastModifImg}));
-			basicInfo.setImagePath(imageURIFormatter.format(
-					new Object[]{albumsDir, albumLastModifImg}));
+			appendImagePaths(basicInfo);
 		}
+	}
+
+	public void appendImagePaths(ImageBasicInfo basicInfo) {
+		String albumName = basicInfo.getAlbumName();
+		Long thumbLastModified = basicInfo.getThumbLastModified().getTime();
+		String imgName = basicInfo.getImgName();
+
+		String albumLastModifImg = commURIFormatter.format(
+				new Object[]{albumName, thumbLastModified, imgName});
+
+		basicInfo.setThumbPath(imageURIFormatter.format(
+				new Object[]{thumbsDir, albumLastModifImg}));
+		basicInfo.setImagePath(imageURIFormatter.format(
+				new Object[]{albumsDir, albumLastModifImg}));
+	}
+
+	public void appendImagePaths(AlbumCover albumCover, Long thumbLastModified) {
+		String albumName = albumCover.getAlbumName();
+		String imgName = albumCover.getImgName();
+
+		String albumLastModifImg = commURIFormatter.format(
+				new Object[]{albumName, thumbLastModified, imgName});
+
+		albumCover.setThumbPath(imageURIFormatter.format(
+				new Object[]{thumbsDir, albumLastModifImg}));
 	}
 
 	public void appendImageDimensions(List<? extends ImageDimensions> imageDimensions) {
-		for (ImageDimensions row : imageDimensions) {
-			if (row.getImageHeight() < row.getImageWidth()) {
-				row.setImageHeight((int)
-						Math.floor(maxThumbSize * row.getImageHeight() / row.getImageWidth()));
-				row.setImageWidth(maxThumbSizeInt);
-			} else {
-				row.setImageWidth((int)
-						Math.floor(maxThumbSize * row.getImageWidth() / row.getImageHeight()));
-				row.setImageHeight(maxThumbSizeInt);
-			}
+		for (ImageDimensions entity : imageDimensions) {
+			appendImageDimensions(entity);
 		}
 	}
 
+	public void appendImageDimensions(ImageDimensions entity) {
+		if (entity.getImageHeight() < entity.getImageWidth()) {
+			entity.setImageHeight((int)
+					Math.floor(maxThumbSize * entity.getImageHeight() / entity.getImageWidth()));
+			entity.setImageWidth(maxThumbSizeInt);
+		} else {
+			entity.setImageWidth((int)
+					Math.floor(maxThumbSize * entity.getImageWidth() / entity.getImageHeight()));
+			entity.setImageHeight(maxThumbSizeInt);
+		}
+	}
 }

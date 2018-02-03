@@ -2,6 +2,7 @@ package image.exifweb.persistence.view;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import image.exifweb.image.ImageDimensions;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import javax.persistence.Table;
 @JsonIgnoreProperties(ignoreUnknown = true,
 		value = {"hibernateLazyInitializer", "handler", "thumbLastModified"})
 //@Cacheable
-//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AlbumCover implements ImageDimensions {
 	@Id
 	private Integer id;
@@ -36,6 +37,18 @@ public class AlbumCover implements ImageDimensions {
 	private boolean dirty;
 	@Column
 	private String thumbPath;
+
+	public AlbumCover() {
+	}
+
+	public AlbumCover(Integer albumId, String albumName, String imgName, int imageHeight, int imageWidth, boolean dirty) {
+		this.id = albumId;
+		this.albumName = albumName;
+		this.imgName = imgName;
+		this.imageHeight = imageHeight;
+		this.imageWidth = imageWidth;
+		this.dirty = dirty;
+	}
 
 	public Integer getId() {
 		return id;

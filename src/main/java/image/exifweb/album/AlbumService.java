@@ -16,6 +16,7 @@ import io.reactivex.Observable;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,12 @@ public class AlbumService implements IAlbumCache {
 	private ImageEventsEmitter imageEventsEmitter;
 	@Inject
 	private ImageUtils imageUtils;
+
+	@Transactional
+	public List<Album> getAlbums() {
+		return sessionFactory.getCurrentSession().createCriteria(Album.class)
+				.setCacheable(true).addOrder(Order.desc("name")).list();
+	}
 
 	/**
 	 * Returned with the intention to be an immutable object or at least
@@ -246,7 +253,6 @@ public class AlbumService implements IAlbumCache {
 		return sb.toString();
 	}
 
-	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
 	public boolean putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -274,7 +280,6 @@ public class AlbumService implements IAlbumCache {
 	 * @param albumId
 	 * @return
 	 */
-	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
 	public boolean removeAlbumCover(Integer albumId) {
 		Album album = getAlbumById(albumId);
@@ -291,7 +296,6 @@ public class AlbumService implements IAlbumCache {
 	 * DML-style HQL (insert, update and delete HQL statements) invalidates all Album cache, e.g.:
 	 * -    "UPDATE Album SET dirty = false WHERE id = :albumId AND dirty = true"
 	 */
-	@CacheEvict(value = "covers", allEntries = true, condition = "#result")
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 		Album album = getAlbumById(albumId);

@@ -1,19 +1,20 @@
 package image.exifweb.album.cover;
 
+import image.exifweb.album.AlbumService;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.persistence.Album;
+import image.exifweb.persistence.Image;
 import image.exifweb.persistence.view.AlbumCover;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by adr on 2/2/18.
@@ -24,29 +25,26 @@ public class AlbumCoverComp {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
+	private AlbumService albumService;
+	@Inject
 	private ImageUtils imageUtils;
 
-	/**
-	 * Evict allCovers cache on any album change.
-	 * <p>
-	 * When any image changes then album in marked dirty (which is an album change).
-	 * Album dirty flag is used in GUI to highlight must-regenerate-json albums.
-	 */
-	@Cacheable(value = "covers", key = "'allCovers'")
 	public List<AlbumCover> getAllCovers() {
-		List<AlbumCover> covers = loadAllCovers();
-		imageUtils.appendImageDimensions(covers);
-		return covers;
-	}
-
-	/**
-	 * setCacheable(true) usage requires evict on any Album.class update or album cover (Image.class)
-	 */
-	@Transactional(readOnly = true)
-	private List<AlbumCover> loadAllCovers() {
-		return sessionFactory.getCurrentSession()
-				.createCriteria(AlbumCover.class)
-				.addOrder(Order.desc("albumName")).list();
+		return albumService.getAlbums().stream()
+				.map(a -> {
+					Image cover = a.getCover();
+					AlbumCover ac;
+					if (cover == null) {
+						ac = new AlbumCover(a.getId(), a.getName(), null, 0, 0, a.isDirty());
+					} else {
+						ac = new AlbumCover(a.getId(), a.getName(), cover.getName(),
+								cover.getImageHeight(), cover.getImageWidth(), a.isDirty());
+						imageUtils.appendImageDimensions(ac);
+						imageUtils.appendImagePaths(ac, cover.getThumbLastModified().getTime());
+					}
+					return ac;
+				})
+				.collect(Collectors.toList());
 	}
 
 	/**
