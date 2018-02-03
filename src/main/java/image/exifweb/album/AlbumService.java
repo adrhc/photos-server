@@ -59,7 +59,9 @@ public class AlbumService {
 	@Transactional
 	public List<Album> getAlbums() {
 		return sessionFactory.getCurrentSession().createCriteria(Album.class)
-				.setCacheable(true).addOrder(Order.desc("name")).list();
+				.setCacheable(true)
+				.add(Restrictions.eq("deleted", false))
+				.addOrder(Order.desc("name")).list();
 	}
 
 	@Transactional
