@@ -115,7 +115,7 @@ public class Image implements ImageDimensions, Serializable {
 	 */
 	@Column(nullable = false, columnDefinition = "INTEGER(1) NOT NULL DEFAULT 1")
 	private byte rating = DEFAULT_RATING;
-//	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")
 	private Album album;
