@@ -1,12 +1,12 @@
 package image.exifweb.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverComp;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
-import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.sys.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,10 +60,10 @@ public class AlbumExporter {
 	}
 
 	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<AlbumCover> albumCovers = albumCoverComp.getAllCovers();
+		List<Album> albums = albumService.getAlbums();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
-		for (AlbumCover albumCover : albumCovers) {
-			successForAlbum = writeJsonForAlbumSafe(new Album(albumCover));
+		for (Album album : albums) {
+			successForAlbum = writeJsonForAlbumSafe(album);
 			existsFail = existsFail || !successForAlbum;
 			existsSuccess = existsSuccess || successForAlbum;
 		}
@@ -81,7 +81,7 @@ public class AlbumExporter {
 	public boolean writeJsonForAlbumsPageSafe() {
 		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
-		List<AlbumCover> albums = albumCoverComp.getAllCovers();
+		List<AlbumCover> albums = albumCoverComp.getCovers();
 		try {
 			jsonMapper.writeValue(file, albums);
 			return true;

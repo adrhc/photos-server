@@ -1,6 +1,6 @@
 package image.exifweb.image;
 
-import image.exifweb.persistence.view.AlbumCover;
+import image.exifweb.album.cover.AlbumCover;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

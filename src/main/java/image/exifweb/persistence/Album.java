@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import image.exifweb.persistence.view.AlbumCover;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 
@@ -41,12 +40,6 @@ public class Album implements Serializable {
 	private boolean deleted;
 
 	public Album() {
-	}
-
-	public Album(AlbumCover albumCover) {
-		this.id = albumCover.getId();
-		this.name = albumCover.getAlbumName();
-		this.dirty = albumCover.isDirty();
 	}
 
 	public Album(String name) {

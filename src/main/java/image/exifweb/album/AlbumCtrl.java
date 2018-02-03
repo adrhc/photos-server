@@ -1,10 +1,11 @@
 package image.exifweb.album;
 
+import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverComp;
+import image.exifweb.album.cover.AlbumCoverRepo;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
-import image.exifweb.persistence.view.AlbumCover;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
 import org.slf4j.Logger;
@@ -41,6 +42,8 @@ public class AlbumCtrl {
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
 	private AlbumService albumService;
+	@Inject
+	private AlbumCoverRepo albumCoverRepo;
 	@Inject
 	private AlbumCoverComp albumCoverComp;
 	@Inject
@@ -154,13 +157,13 @@ public class AlbumCtrl {
 	@ResponseBody
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 //		logger.debug("BEGIN");
-		Date albumCoversLastUpdateDate = albumCoverComp.getAlbumCoversLastUpdateDate();
+		Date albumCoversLastUpdateDate = albumCoverRepo.getAlbumCoversLastUpdateDate();
 		if (webRequest.checkNotModified(albumCoversLastUpdateDate.getTime())) {
 //			logger.debug("not modified since: {}",
 //					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
 			return null;
 		}
 		logger.debug("covers modified since: {}", sdf.format(albumCoversLastUpdateDate));
-		return albumCoverComp.getAllCovers();
+		return albumCoverComp.getCovers();
 	}
 }

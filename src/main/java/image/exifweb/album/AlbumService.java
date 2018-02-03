@@ -1,8 +1,6 @@
 package image.exifweb.album;
 
-import image.exifweb.album.cache.IAlbumCache;
 import image.exifweb.album.events.AlbumEventsEmitter;
-import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.image.ImageService;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.image.events.EImageEventType;
@@ -12,7 +10,6 @@ import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
-import io.reactivex.Observable;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,9 +17,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -32,7 +26,8 @@ import javax.inject.Inject;
 import java.util.EnumSet;
 import java.util.List;
 
-import static image.exifweb.image.events.EImageEventType.*;
+import static image.exifweb.image.events.EImageEventType.DELETED;
+import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,7 +37,7 @@ import static image.exifweb.image.events.EImageEventType.*;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumService implements IAlbumCache {
+public class AlbumService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
 
 	@Inject
@@ -64,18 +59,6 @@ public class AlbumService implements IAlbumCache {
 				.setCacheable(true).addOrder(Order.desc("name")).list();
 	}
 
-	/**
-	 * Returned with the intention to be an immutable object or at least
-	 * not modifiable for the cache-related parts (any property except images).
-	 * When modified the cache would be evicted (because Album props CacheEvict).
-	 *
-	 * @param name
-	 * @return
-	 */
-	@Caching(put = {
-			@CachePut(value = "album", unless = "#result == null", key = "#result.id"),
-			@CachePut(value = "album", unless = "#result == null", key = "#result.name")
-	})
 	@Transactional
 	public Album create(String name) {
 		Album album = new Album(name);
@@ -318,22 +301,23 @@ public class AlbumService implements IAlbumCache {
 	@PostConstruct
 	public void postConstruct() {
 		// cover image changed (dealt with below)
-		Observable<Album> coverImgChanged = imageEventsEmitter
-				.imageEventsByType(EnumSet.of(THUMB_UPDATED, EXIF_UPDATED))
-				.filter(ie -> isCoverImage(ie.getImage()))
-				.map(ie -> ie.getImage().getAlbum());
+//		Observable<Album> coverImgChanged = imageEventsEmitter
+//				.imageEventsByType(EnumSet.of(THUMB_UPDATED, EXIF_UPDATED))
+//				.filter(ie -> isCoverImage(ie.getImage()))
+//				.map(ie -> ie.getImage().getAlbum());
 		// cover image deleted
-		Observable<Album> coverImgDeleted = imageEventsEmitter
+		imageEventsEmitter
 				.imageEventsByType(EnumSet.of(DELETED, MARKED_DELETED))
 				.filter(ie -> ie.getAlbum().getCover() != null)
 				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
 				.map(ImageEvent::getAlbum)
-				.filter(a -> removeAlbumCover(a.getId()));
+				.filter(a -> removeAlbumCover(a.getId()))
+				.subscribe();
 		// cover image changed or deleted
-		coverImgChanged.mergeWith(coverImgDeleted)
-				.subscribe(album -> this.evictCoversCache());
+//		coverImgChanged.mergeWith(coverImgDeleted)
+//				.subscribe(album -> this.evictCoversCache());
 		// album's json files updated
-		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
-				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));
+//		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
+//				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));
 	}
 }
