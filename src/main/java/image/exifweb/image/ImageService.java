@@ -45,7 +45,7 @@ public class ImageService {
 		session.delete(image);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public Image getById(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		return (Image) session.get(Image.class, imageId);
@@ -80,7 +80,7 @@ public class ImageService {
 		return true;
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public List<Image> getImagesByAlbumId(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		// gets album and cover too
@@ -97,14 +97,5 @@ public class ImageService {
 		// gets only the image
 //		return session.createQuery("FROM Image WHERE album.id = :albumId")
 //				.setParameter("albumId", albumId).list();
-	}
-
-	@Transactional(readOnly = true)
-	public List<Integer> getImageIdsByAlbumId(Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
-		Criteria ic = session.createCriteria(Image.class).setCacheable(true)
-				.add(Restrictions.eq("album.id", albumId))
-				.setProjection(Projections.id());
-		return ic.list();
 	}
 }

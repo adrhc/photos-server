@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 @Service
 public class AlbumService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 
 	@Inject
 	private SessionFactory sessionFactory;
@@ -75,14 +77,14 @@ public class AlbumService {
 	 * @param id
 	 * @return
 	 */
-	@Transactional(readOnly = true)
+	@Transactional
 	public Album getAlbumById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
 		return (Album) sessionFactory.getCurrentSession().get(Album.class, id);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public Album getAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
 		Session session = sessionFactory.getCurrentSession();
@@ -282,12 +284,16 @@ public class AlbumService {
 	 */
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
+		logger.debug("BEGIN");
 		Album album = getAlbumById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
+			logger.debug("END dirty update cancelled (already false), {}",
+					sdf.format(album.getLastUpdate()));
 			return false;
 		}
 		album.setDirty(false);
+		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
 		return true;
 	}
 
@@ -312,8 +318,7 @@ public class AlbumService {
 				.filter(ie -> ie.getAlbum().getCover() != null)
 				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
 				.map(ImageEvent::getAlbum)
-				.filter(a -> removeAlbumCover(a.getId()))
-				.subscribe();
+				.subscribe(a -> removeAlbumCover(a.getId()));
 		// cover image changed or deleted
 //		coverImgChanged.mergeWith(coverImgDeleted)
 //				.subscribe(album -> this.evictCoversCache());

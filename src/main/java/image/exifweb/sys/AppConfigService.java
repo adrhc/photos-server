@@ -128,7 +128,7 @@ public class AppConfigService {
 		json.writeValue(file, appConfigs);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public List<AppConfig> getAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true).list();

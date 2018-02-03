@@ -93,12 +93,7 @@ public class AlbumExporter {
 	}
 
 	private void writeJsonForAlbum(Album album) throws IOException {
-		logger.debug("BEGIN {}", album.getName());
-		if (album.isDeleted()) {
-			logger.debug("END (is deleted) {}", album.getName());
-			return;
-		}
-		logger.debug("getPageCount album.id = {}", album.getId());
+		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
 		int pageCount = albumService.getPageCount(null, false, album.getId());
 		int photosPerPage = appConfigService.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
