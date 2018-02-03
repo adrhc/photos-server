@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import java.util.EnumSet;
 import java.util.List;
 
+import static image.exifweb.album.events.EAlbumEventType.JSON_UPDATED;
 import static image.exifweb.image.events.EImageEventType.DELETED;
 import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 
@@ -317,7 +318,7 @@ public class AlbumService {
 //		coverImgChanged.mergeWith(coverImgDeleted)
 //				.subscribe(album -> this.evictCoversCache());
 		// album's json files updated
-//		albumEventsEmitter.subscribe(EAlbumEventType.JSON_UPDATED,
-//				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));
+		albumEventsEmitter.subscribe(JSON_UPDATED,
+				ae -> clearDirtyForAlbum(ae.getAlbum().getId()));
 	}
 }
