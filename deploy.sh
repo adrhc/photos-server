@@ -7,3 +7,5 @@ source env.sh
 echo "deploying ..."
 rm -r $HOME/apps/opt/tomcat/webapps/exifweb
 cp -r target/exifweb $HOME/apps/opt/tomcat/webapps
+echo "touched web.xml"
+touch $HOME/apps/opt/tomcat/webapps/exifweb/WEB-INF/web.xml
