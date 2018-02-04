@@ -41,7 +41,7 @@
     </appender>
 
     <logger name="image" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="exifweb-file"/>
     </logger>
 
