@@ -132,5 +132,6 @@ public class AlbumExporter {
 						writeJsonForAlbumSafe(ae.getAlbum());
 					}
 				});
+		logger.debug("END");
 	}
 }

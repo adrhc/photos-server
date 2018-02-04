@@ -354,5 +354,6 @@ public class AlbumService {
 					}
 					clearDirtyForAlbum(ae.getAlbum().getId());
 				});
+		logger.debug("END");
 	}
 }
