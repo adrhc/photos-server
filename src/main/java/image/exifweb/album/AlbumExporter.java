@@ -94,7 +94,7 @@ public class AlbumExporter {
 
 	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
-		int pageCount = albumService.getPageCount(null, false, album.getId());
+		int pageCount = albumService.getPageCount(null, false, false, album.getId());
 		int photosPerPage = appConfigService.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
@@ -108,10 +108,10 @@ public class AlbumExporter {
 		for (int i = 0; i < pageCount; i++) {
 			logger.debug("write page {} asc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
-					albumService.getPage(i + 1, "asc", null, false, album.getId()));
+					albumService.getPage(i + 1, "asc", null, false, false, album.getId()));
 			logger.debug("write page {} desc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
-					albumService.getPage(i + 1, "desc", null, false, album.getId()));
+					albumService.getPage(i + 1, "desc", null, false, false, album.getId()));
 		}
 		logger.debug("done writing pages");
 		// todo: find the problem cause

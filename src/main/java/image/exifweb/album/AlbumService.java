@@ -96,13 +96,16 @@ public class AlbumService {
 	}
 
 	@Transactional(readOnly = true)
-	public int getPageCount(String toSearch, boolean viewHidden, Integer albumId) {
+	public int getPageCount(String toSearch, boolean viewHidden,
+	                        boolean viewOnlyPrintable, Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT count(i) FROM Image i " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
-					"AND i.status = IF(:viewHidden, i.status, 0) " +
+//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
+					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
 					"AND i.name LIKE :toSearch");
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
@@ -110,13 +113,16 @@ public class AlbumService {
 			q = session.createQuery("SELECT count(i) FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId " +
 					"AND i.deleted = 0 " +
-					"AND i.status = IF(:viewHidden, i.status, 0)");
-			q.setCacheable(!viewHidden);
+//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
+					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewOnlyPrintable, 16, i.status)");
+			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
 		}
 		q.setBoolean("viewHidden", viewHidden);
+		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
 		return Double.valueOf(Math.ceil(((Number) q.uniqueResult()).doubleValue() /
 				appConfigService.getPhotosPerPage())).intValue();
 
@@ -137,7 +143,8 @@ public class AlbumService {
 	 */
 	@Transactional(readOnly = true)
 	public List<AlbumPage> getPageFromDb(int pageNr, String sort, String toSearch,
-	                                     boolean viewHidden, Integer albumId) {
+	                                     boolean viewHidden, boolean viewOnlyPrintable,
+	                                     Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
@@ -149,7 +156,9 @@ public class AlbumService {
 //					"imagePath(a.name, i.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
-					"AND i.status = IF(:viewHidden, i.status, 0) " +
+//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
+					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
 					"AND i.name LIKE :toSearch " +
 					"ORDER BY i.dateTimeOriginal " + sort);
 			// searches case-sensitive for name!
@@ -163,22 +172,27 @@ public class AlbumService {
 //					"imagePath(a.name, i.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
-					"AND i.status = IF(:viewHidden, i.status, 0) " +
+//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
+					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
 					"ORDER BY i.dateTimeOriginal " + sort);
-			q.setCacheable(!viewHidden);
+			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
 		}
 		q.setBoolean("viewHidden", viewHidden);
+		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
 		q.setFirstResult((pageNr - 1) * appConfigService.getPhotosPerPage());
 		q.setMaxResults(appConfigService.getPhotosPerPage());
 		return q.list();
 	}
 
 	public List<AlbumPage> getPage(int pageNr, String sort, String toSearch,
-	                               boolean viewHidden, Integer albumId) {
-		List<AlbumPage> thumbs = getPageFromDb(pageNr, sort, toSearch, viewHidden, albumId);
+	                               boolean viewHidden, boolean viewOnlyPrintable,
+	                               Integer albumId) {
+		List<AlbumPage> thumbs = getPageFromDb(pageNr, sort,
+				toSearch, viewHidden, viewOnlyPrintable, albumId);
 		imageUtils.appendImageDimensions(thumbs);
 		imageUtils.appendImagePaths(thumbs);
 		return thumbs;

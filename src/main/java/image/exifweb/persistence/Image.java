@@ -50,6 +50,8 @@ public class Image implements ImageDimensions, Serializable {
 	private boolean ugly;
 	@Formula("status & 8")
 	private boolean duplicate;
+	@Formula("status & 16")
+	private boolean printable;
 	@Column
 	private String apertureValue;
 	@Column
@@ -372,6 +374,10 @@ public class Image implements ImageDimensions, Serializable {
 
 	public boolean isDuplicate() {
 		return duplicate;
+	}
+
+	public boolean isPrintable() {
+		return printable;
 	}
 
 	public boolean isDeleted() {

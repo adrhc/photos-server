@@ -53,22 +53,28 @@ public class ImageCtrl {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
 	@RequestMapping(value = "/countPages", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public Callable<Model> pageCount(@RequestParam Integer albumId, Model model,
-	                                 @RequestParam(defaultValue = "false") boolean viewHidden,
-	                                 @RequestParam(required = false) String toSearch) {
-		return new CallablePageCount(albumId, model, viewHidden, toSearch);
+	public Callable<Model> pageCount(
+			@RequestParam(name = "albumId") Integer albumId,
+			@RequestParam(name = "toSearch", required = false) String toSearch,
+			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
+			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
+			Model model) {
+		return new CallablePageCount(albumId, model, viewHidden, viewOnlyPrintable, toSearch);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
 	@RequestMapping(value = "/page", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public CallablePage page(@RequestParam Integer albumId,
-	                         @RequestParam int pageNr,
-	                         @RequestParam(defaultValue = "asc") String sort,
-	                         @RequestParam(defaultValue = "false") boolean viewHidden,
-	                         @RequestParam(required = false) String toSearch,
-	                         WebRequest webRequest) {
-		return new CallablePage(pageNr, sort, toSearch, viewHidden, albumId, webRequest);
+	public CallablePage page(
+			@RequestParam(name = "albumId") Integer albumId,
+			@RequestParam(name = "pageNr") int pageNr,
+			@RequestParam(name = "sort", defaultValue = "asc") String sort,
+			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
+			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
+			@RequestParam(name = "toSearch", required = false) String toSearch,
+			WebRequest webRequest) {
+		return new CallablePage(pageNr, sort, toSearch,
+				viewHidden, viewOnlyPrintable, albumId, webRequest);
 	}
 
 	@RequestMapping(value = "/changeStatus",
@@ -99,12 +105,15 @@ public class ImageCtrl {
 		private Integer albumId;
 		private Model model;
 		private boolean viewHidden;
+		private boolean viewOnlyPrintable;
 		private String toSearch;
 
-		public CallablePageCount(Integer albumId, Model model, boolean viewHidden, String toSearch) {
+		public CallablePageCount(Integer albumId, Model model, boolean viewHidden,
+		                         boolean viewOnlyPrintable, String toSearch) {
 			this.albumId = albumId;
 			this.model = model;
 			this.viewHidden = viewHidden;
+			this.viewOnlyPrintable = viewOnlyPrintable;
 			this.toSearch = toSearch;
 		}
 
@@ -112,7 +121,7 @@ public class ImageCtrl {
 		public Model call() throws Exception {
 			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
 			model.addAttribute(AlbumExporter.PAGE_COUNT,
-					albumService.getPageCount(toSearch, viewHidden, albumId));
+					albumService.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
 			return model;
 		}
 	}
@@ -122,15 +131,18 @@ public class ImageCtrl {
 		private Integer albumId;
 		private String sort;
 		private boolean viewHidden;
+		private boolean viewOnlyPrintable;
 		private String toSearch;
 		private int pageNr = -1;
 
 		public CallablePage(int pageNr, String sort, String toSearch,
-		                    boolean viewHidden, Integer albumId, WebRequest webRequest) {
+		                    boolean viewHidden, boolean viewOnlyPrintable,
+		                    Integer albumId, WebRequest webRequest) {
 			this.albumId = albumId;
 			this.pageNr = pageNr;
 			this.sort = sort;
 			this.viewHidden = viewHidden;
+			this.viewOnlyPrintable = viewOnlyPrintable;
 			this.toSearch = toSearch;
 			this.webRequest = webRequest;
 		}
@@ -138,7 +150,7 @@ public class ImageCtrl {
 		@Override
 		public List<AlbumPage> call() throws Exception {
 			List<AlbumPage> albumPages =
-					albumService.getPage(pageNr, sort, toSearch, viewHidden, albumId);
+					albumService.getPage(pageNr, sort, toSearch, viewHidden, viewOnlyPrintable, albumId);
 			/*
 			 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 			 * location /photos/app/
@@ -160,8 +172,9 @@ public class ImageCtrl {
 			} else {
 				logger.debug("page modified since ever");
 			}
-			logger.debug("pageNr = {}, sort = {}, viewHidden = {}, albumId = {}, toSearch = {}",
-					pageNr, sort, viewHidden, albumId, toSearch);
+			logger.debug("pageNr = {}, sort = {}, viewHidden = {}, " +
+							"viewOnlyPrintable = {}, albumId = {}, toSearch = {}",
+					pageNr, sort, viewHidden, viewOnlyPrintable, albumId, toSearch);
 			return albumPages;
 		}
 	}
