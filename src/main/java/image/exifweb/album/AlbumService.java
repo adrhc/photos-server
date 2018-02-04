@@ -123,8 +123,8 @@ public class AlbumService {
 			q = session.createQuery("SELECT count(i) FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId " +
 					"AND i.deleted = 0 " +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					q.setCacheable(!viewHidden && !viewOnlyPrintable);
+					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL);
+			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
