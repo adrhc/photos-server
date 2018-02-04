@@ -108,6 +108,9 @@ public class Album implements Serializable {
 		this.deleted = deleted;
 	}
 
+	/**
+	 * A version or timestamp property can never be null for a detached instance. Hibernate detects any instance with a null version or timestamp as transient, regardless of other unsaved-value strategies that you specify. Declaring a nullable version or timestamp property is an easy way to avoid problems with transitive reattachment in Hibernate, especially useful if you use assigned identifiers or composite keys.
+	 */
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
 	@Version
 	@Column(name = "last_update")
