@@ -10,7 +10,6 @@ import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -134,13 +133,13 @@ public class Image implements ImageDimensions, Serializable {
 	 */
 	@Version
 	@Column(name = "last_update")
-	private Timestamp lastUpdate;
+	private Date lastUpdate;
 
-	public Timestamp getLastUpdate() {
+	public Date getLastUpdate() {
 		return lastUpdate;
 	}
 
-	public void setLastUpdate(Timestamp lastUpdate) {
+	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 

@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +40,7 @@ public class Album implements Serializable {
 	private boolean dirty;
 	private List<Image> images;
 	private Image cover;
-	private Timestamp lastUpdate;
+	private Date lastUpdate;
 	private boolean deleted;
 
 	public Album() {
@@ -120,7 +120,7 @@ public class Album implements Serializable {
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
 	@Version
 	@Column(name = "last_update")
-	public Timestamp getLastUpdate() {
+	public Date getLastUpdate() {
 		return lastUpdate;
 	}
 
@@ -129,7 +129,7 @@ public class Album implements Serializable {
 	 * Dpv al cache-ului o eventuala modificare de lastUpdate e datorata
 	 * unei modificari a altei proprietati care oricum ar afecta cache la randu-i.
 	 */
-	public void setLastUpdate(Timestamp lastUpdate) {
+	public void setLastUpdate(Date lastUpdate) {
 		logger.debug("new lastUpdate = {} for\n{}", sdf.format(lastUpdate), toString());
 		this.lastUpdate = lastUpdate;
 	}

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by adr on 2/3/18.
@@ -28,9 +28,9 @@ public class AlbumCoverRepo {
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Timestamp getAlbumCoversLastUpdateDate() {
+	public Date getAlbumCoversLastUpdateDate() {
 		Session session = sessionFactory.getCurrentSession();
-		return (Timestamp) session.createCriteria(Album.class)
+		return (Date) session.createCriteria(Album.class)
 				.setCacheable(true)
 				.setProjection(Projections.max("lastUpdate"))
 				.uniqueResult();

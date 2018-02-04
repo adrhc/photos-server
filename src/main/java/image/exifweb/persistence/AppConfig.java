@@ -6,7 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +22,7 @@ public class AppConfig implements Serializable {
 	private Integer id;
 	private String name;
 	private String value;
-	private Timestamp lastUpdate;
+	private Date lastUpdate;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,11 +62,11 @@ public class AppConfig implements Serializable {
 	@JsonIgnore
 	@Version
 	@Column(name = "last_update")
-	public Timestamp getLastUpdate() {
+	public Date getLastUpdate() {
 		return lastUpdate;
 	}
 
-	public void setLastUpdate(Timestamp lastUpdate) {
+	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 
