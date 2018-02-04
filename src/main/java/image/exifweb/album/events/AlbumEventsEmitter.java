@@ -30,8 +30,9 @@ public class AlbumEventsEmitter {
 	}
 
 	public Disposable subscribe(EAlbumEventType albumEventType,
-	                            Consumer<AlbumEvent> consumer) {
-		return albumEventsByTypes(false, EnumSet.of(albumEventType)).subscribe(consumer::accept);
+	                            Consumer<AlbumEvent> onNext, Consumer<? super Throwable> onError) {
+		return albumEventsByTypes(false, EnumSet.of(albumEventType))
+				.subscribe(onNext::accept, onError::accept);
 	}
 
 	public Observable<AlbumEvent> albumEventsByTypes(

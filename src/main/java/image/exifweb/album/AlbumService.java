@@ -339,7 +339,12 @@ public class AlbumService {
 				.filter(ie -> ie.getAlbum().getCover() != null)
 				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
 				.map(ImageEvent::getAlbum)
-				.subscribe(a -> removeAlbumCover(a.getId()));
+				.subscribe(
+						a -> removeAlbumCover(a.getId()),
+						t -> {
+							logger.error(t.getMessage(), t);
+							logger.error("[DELETED, MARKED_DELETED]");
+						});
 		// cover image changed or deleted
 //		coverImgChanged.mergeWith(coverImgDeleted)
 //				.subscribe(album -> this.evictCoversCache());
@@ -353,6 +358,10 @@ public class AlbumService {
 								ae.getAlbum().getId(), ae.getAlbum().getName());
 					}
 					clearDirtyForAlbum(ae.getAlbum().getId());
+				},
+				t -> {
+					logger.error(t.getMessage(), t);
+					logger.error("[JSON_UPDATED]");
 				});
 		logger.debug("END");
 	}

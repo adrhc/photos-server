@@ -146,8 +146,12 @@ public class AlbumImporter {
 		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
 		Disposable subscription = imageEventsEmitter
 				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
-				.take(1L)
-				.subscribe(ie -> existsAtLeast1ImageChange.setValue(true));
+				.take(1L).subscribe(
+						ie -> existsAtLeast1ImageChange.setValue(true),
+						t -> {
+							logger.error(t.getMessage(), t);
+							logger.error("[DELETED, MARKED_DELETED]");
+						});
 		// at this point: album != null
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {

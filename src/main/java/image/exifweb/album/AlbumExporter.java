@@ -131,6 +131,10 @@ public class AlbumExporter {
 					} else {
 						writeJsonForAlbumSafe(ae.getAlbum());
 					}
+				},
+				t -> {
+					logger.error(t.getMessage(), t);
+					logger.error("[DELETED, MARKED_DELETED]");
 				});
 		logger.debug("END");
 	}

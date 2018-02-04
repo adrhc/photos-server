@@ -60,8 +60,12 @@ public class AlbumCtrl {
 			List<Album> newAlbums = new ArrayList<>();
 			Disposable subscription = albumEventsEmitter
 					.albumEventsByTypes(true, EnumSet.of(EAlbumEventType.ALBUM_IMPORTED))
-					.take(1L)
-					.subscribe(ae -> newAlbums.add(ae.getAlbum()));
+					.take(1L).subscribe(
+							ae -> newAlbums.add(ae.getAlbum()),
+							t -> {
+								logger.error(t.getMessage(), t);
+								logger.error("[DELETED, MARKED_DELETED]");
+							});
 			albumImporter.importNewAlbumsOnly();
 			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
 			if (newAlbums.isEmpty()) {
