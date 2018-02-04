@@ -46,7 +46,7 @@
     </logger>
 
     <logger name="image.exifweb.persistence" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="exifweb-file"/>
     </logger>
 
