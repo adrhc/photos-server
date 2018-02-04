@@ -104,7 +104,7 @@ public class AlbumService {
 			q = session.createQuery("SELECT count(i) FROM Image i " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
 //					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
 					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
 					"AND i.name LIKE :toSearch");
 			// searches case-sensitive for name!
@@ -114,7 +114,7 @@ public class AlbumService {
 					"WHERE a.id = :albumId " +
 					"AND i.deleted = 0 " +
 //					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
 					"AND i.status = IF(:viewOnlyPrintable, 16, i.status)");
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
@@ -157,7 +157,7 @@ public class AlbumService {
 					"FROM Image i JOIN i.album a " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
 //					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
 					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
 					"AND i.name LIKE :toSearch " +
 					"ORDER BY i.dateTimeOriginal " + sort);
@@ -173,7 +173,7 @@ public class AlbumService {
 					"FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
 //					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - (i.hidden)) " +
+					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
 					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
 					"ORDER BY i.dateTimeOriginal " + sort);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);

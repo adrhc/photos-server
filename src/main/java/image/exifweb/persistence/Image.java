@@ -42,15 +42,15 @@ public class Image implements ImageDimensions, Serializable {
 	private Byte status = DEFAULT_STATUS;
 	@Column(nullable = false)
 	private boolean deleted;
-	@Formula("status & 1")
+	@Formula("(status & 1)")
 	private boolean hidden;
-	@Formula("status & 2")
+	@Formula("(status & 2)")
 	private boolean personal;
-	@Formula("status & 4")
+	@Formula("(status & 4)")
 	private boolean ugly;
-	@Formula("status & 8")
+	@Formula("(status & 8)")
 	private boolean duplicate;
-	@Formula("status & 16")
+	@Formula("(status & 16)")
 	private boolean printable;
 	@Column
 	private String apertureValue;
