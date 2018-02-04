@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import image.exifweb.image.ImageBasicInfo;
 import image.exifweb.image.ImageDimensions;
-import org.hibernate.annotations.Formula;
 
 import java.util.Date;
 
@@ -19,14 +18,11 @@ import java.util.Date;
 public class AlbumPage implements ImageBasicInfo, ImageDimensions {
 	private Integer id;// image id
 	private String imgName;
-	@Formula("status & 1")
 	private boolean hidden;
-	@Formula("status & 2")
 	private boolean personal;
-	@Formula("status & 4")
 	private boolean ugly;
-	@Formula("status & 8")
 	private boolean duplicate;
+	private boolean printable;
 	private int imageHeight;
 	private int imageWidth;
 	private String albumName;
@@ -49,15 +45,16 @@ public class AlbumPage implements ImageBasicInfo, ImageDimensions {
 	private String imagePath;
 
 	public AlbumPage(Integer id, String imgName, boolean hidden, boolean personal,
-	                 boolean ugly, boolean duplicate, int imageHeight, int imageWidth,
-	                 byte rating, Integer coverId, Date thumbLastModified, Date dateTime,
-	                 String albumName, Date imageLastUpdate) {
+	                 boolean ugly, boolean duplicate, boolean printable, int imageHeight,
+	                 int imageWidth, byte rating, Integer coverId, Date thumbLastModified,
+	                 Date dateTime, String albumName, Date imageLastUpdate) {
 		this.id = id;
 		this.imgName = imgName;
 		this.hidden = hidden;
 		this.personal = personal;
 		this.ugly = ugly;
 		this.duplicate = duplicate;
+		this.printable = printable;
 		this.imageHeight = imageHeight;
 		this.imageWidth = imageWidth;
 		this.rating = rating;
@@ -122,6 +119,14 @@ public class AlbumPage implements ImageBasicInfo, ImageDimensions {
 
 	public void setDuplicate(boolean duplicate) {
 		this.duplicate = duplicate;
+	}
+
+	public boolean isPrintable() {
+		return printable;
+	}
+
+	public void setPrintable(boolean printable) {
+		this.printable = printable;
 	}
 
 	public int getImageHeight() {

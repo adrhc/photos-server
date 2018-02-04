@@ -159,7 +159,7 @@ public class AlbumService {
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT new image.exifweb.album.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
+					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
 					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
 //					"thumbPath(a.name, i.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.thumbLastModified, i.name)) " +
@@ -173,7 +173,7 @@ public class AlbumService {
 		} else {
 			q = session.createQuery("SELECT new image.exifweb.album.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
+					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
 					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
 //					"thumbPath(a.name, i.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.thumbLastModified, i.name)) " +
