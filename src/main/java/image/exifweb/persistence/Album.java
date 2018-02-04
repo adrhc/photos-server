@@ -113,6 +113,7 @@ public class Album implements Serializable {
 	 * A version or timestamp property can never be null for a detached instance. Hibernate detects any instance with a null version or timestamp as transient, regardless of other unsaved-value strategies that you specify. Declaring a nullable version or timestamp property is an easy way to avoid problems with transitive reattachment in Hibernate, especially useful if you use assigned identifiers or composite keys.
 	 * <p>
 	 * Mysql by default saves without milliseconds; bad for optimistic locking!
+	 * <p>
 	 * DEFAULT CURRENT_TIMESTAMP -> desired
 	 * ON UPDATE CURRENT_TIMESTAMP -> very bad; overwrites the value set by hibernate
 	 */

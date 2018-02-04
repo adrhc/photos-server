@@ -121,11 +121,19 @@ public class Image implements ImageDimensions, Serializable {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")
 	private Album album;
-	/*
+	/**
+	 * nullable version or timestamp property is good:
+	 * A version or timestamp property can never be null for a detached instance. Hibernate detects any instance with a null version or timestamp as transient, regardless of other unsaved-value strategies that you specify. Declaring a nullable version or timestamp property is an easy way to avoid problems with transitive reattachment in Hibernate, especially useful if you use assigned identifiers or composite keys.
+	 * <p>
+	 * Mysql by default saves without milliseconds; bad for optimistic locking!
+	 * <p>
+	 * DEFAULT CURRENT_TIMESTAMP -> desired
+	 * ON UPDATE CURRENT_TIMESTAMP -> very bad; overwrites the value set by hibernate
+	 * <p>
 	 * related to db record -> rating, status, deleted change
 	 */
 	@Version
-	@Column(name = "last_update", nullable = false)
+	@Column(name = "last_update")
 	private Timestamp lastUpdate;
 
 	public Timestamp getLastUpdate() {

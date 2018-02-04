@@ -28,6 +28,8 @@ public class AlbumPage implements ImageBasicInfo, ImageDimensions {
 	private String albumName;
 	private byte rating;
 	private boolean isCover;
+	private String thumbPath;
+	private String imagePath;
 	/**
 	 * related to image file change
 	 * used for thumb's url (impact browser-cache)
@@ -36,13 +38,11 @@ public class AlbumPage implements ImageBasicInfo, ImageDimensions {
 	private Date thumbLastModified;
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date dateTime;
-	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	/*
 	 * related to db record -> rating, status, deleted change
 	 */
+	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date imageLastUpdate;
-	private String thumbPath;
-	private String imagePath;
 
 	public AlbumPage(Integer id, String imgName, boolean hidden, boolean personal,
 	                 boolean ugly, boolean duplicate, boolean printable, int imageHeight,

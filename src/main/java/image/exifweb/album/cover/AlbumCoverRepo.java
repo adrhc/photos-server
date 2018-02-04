@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by adr on 2/3/18.
@@ -22,13 +22,15 @@ public class AlbumCoverRepo {
 	 * Is about when AlbumCover was last modified.
 	 * A last-modified date change might set dirty to false
 	 * so while album is AlbumCover is no longer dirty.
+	 * <p>
+	 * returning Timestamp because Timestamp.getTime() adds nanos
 	 *
 	 * @return
 	 */
 	@Transactional(readOnly = true)
-	public Date getAlbumCoversLastUpdateDate() {
+	public Timestamp getAlbumCoversLastUpdateDate() {
 		Session session = sessionFactory.getCurrentSession();
-		return (Date) session.createCriteria(Album.class)
+		return (Timestamp) session.createCriteria(Album.class)
 				.setCacheable(true)
 				.setProjection(Projections.max("lastUpdate"))
 				.uniqueResult();
