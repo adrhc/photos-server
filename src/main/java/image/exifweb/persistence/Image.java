@@ -130,6 +130,8 @@ public class Image implements ImageDimensions, Serializable {
 	 * ON UPDATE CURRENT_TIMESTAMP -> very bad; overwrites the value set by hibernate
 	 * <p>
 	 * related to db record -> rating, status, deleted change
+	 * <p>
+	 * todo: java.sql.Timestamp keeps milliseconds which but Date keeps them too so I still have to make mysql to save milliseconds
 	 */
 	@Version
 	@Column(name = "last_update")
