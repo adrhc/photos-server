@@ -132,6 +132,8 @@ public class Image implements ImageDimensions, Serializable {
 	 * related to db record -> rating, status, deleted change
 	 * <p>
 	 * todo: java.sql.Timestamp keeps milliseconds which but Date keeps them too so I still have to make mysql to save milliseconds
+	 * Date represents a specific instant in time, with millisecond precision.
+	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
 	@Version
 	@Column(name = "last_update")
