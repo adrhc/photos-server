@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 public class ImageService {
 	private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 
 	@Inject
 	private SessionFactory sessionFactory;
@@ -61,7 +63,8 @@ public class ImageService {
 		}
 		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
-		logger.debug("before album.setDirty(true)");
+		logger.debug("before album.setDirty(true), {}",
+				sdf.format(image.getAlbum().getLastUpdate()));
 		image.getAlbum().setDirty(true);
 		logger.debug("END");
 		return true;
