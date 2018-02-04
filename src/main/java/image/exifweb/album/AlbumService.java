@@ -363,7 +363,7 @@ public class AlbumService {
 								removeAlbumCover(a.getId());
 							} catch (Exception e) {
 								logger.error(e.getMessage(), e);
-								logger.error("[DELETED, MARKED_DELETED] removeAlbumCover");
+								logger.error("[DELETED, MARKED_DELETED] removeAlbumCover\n", a.toString());
 							}
 						},
 						t -> {
@@ -388,7 +388,7 @@ public class AlbumService {
 						clearDirtyForAlbum(ae.getAlbum().getId());
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
-						logger.error("[JSON_UPDATED] clearDirtyForAlbum");
+						logger.error("[JSON_UPDATED] clearDirtyForAlbum\n", ae.getAlbum().toString());
 					}
 				},
 				t -> {
