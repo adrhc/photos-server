@@ -347,9 +347,9 @@ public class AlbumService {
 		albumEventsEmitter.subscribe(JSON_UPDATED,
 				ae -> {
 					if (ae.getAlbum() == null) {
-						logger.debug("album is null");
+						logger.debug("[JSON_UPDATED] album is null");
 					} else {
-						logger.debug("album id = {}, name = {}",
+						logger.debug("[JSON_UPDATED] album id = {}, name = {}",
 								ae.getAlbum().getId(), ae.getAlbum().getName());
 					}
 					clearDirtyForAlbum(ae.getAlbum().getId());
