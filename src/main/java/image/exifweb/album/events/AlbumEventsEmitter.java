@@ -1,7 +1,7 @@
 package image.exifweb.album.events;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import org.slf4j.Logger;
@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
+import java.util.EnumSet;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Created by adr on 1/28/18.
@@ -26,31 +29,26 @@ public class AlbumEventsEmitter {
 		albumEvents.onNext(albumEvent);
 	}
 
-	public Disposable subscribe(boolean filterByRequestId,
-	                            EAlbumEventType albumEventType,
-	                            Consumer<AlbumEvent> consumer) {
-		return albumEvents
-				.doOnNext(ae -> {
-					logger.debug(ae.getAlbum().toString());
-					logger.debug("type accepted = {}, filterByRequestId = {}",
-							albumEventType.name(), filterByRequestId);
-					logger.debug("ae.eventType = {}, filter by type result = {}\nrequestId = {}",
-							ae.getEventType().name(),
-							ae.getEventType().equals(albumEventType),
-							ae.getRequestId());
-				})
-				.filter(ae -> ae.getEventType().equals(albumEventType))
-				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(requestId.get()))
-				.subscribe(consumer);
-	}
-
 	public Disposable subscribe(EAlbumEventType albumEventType,
 	                            Consumer<AlbumEvent> consumer) {
-		return subscribe(false, albumEventType, consumer);
+		return albumEventsByTypes(false, EnumSet.of(albumEventType)).subscribe(consumer::accept);
 	}
 
-	public String requestId() {
-		return requestId.get();
+	public Observable<AlbumEvent> albumEventsByTypes(
+			boolean filterByRequestId,
+			EnumSet<EAlbumEventType> albumEventTypes) {
+		return albumEvents
+				.doOnNext(ae -> {
+					logger.debug("new album event received:\n{}", ae.getAlbum().toString());
+					logger.debug("accept: {}",
+							albumEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")));
+					logger.debug("received: {}, filter by type result = {}\nrequestId = {}",
+							ae.getEventType().name(),
+							albumEventTypes.contains(ae.getEventType()),
+							ae.getRequestId());
+				})
+				.filter(ae -> albumEventTypes.contains(ae.getEventType()))
+				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(requestId.get()));
 	}
 
 	@PreDestroy

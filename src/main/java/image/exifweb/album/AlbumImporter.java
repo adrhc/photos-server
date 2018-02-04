@@ -12,6 +12,7 @@ import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
 import image.exifweb.util.ValueHolder;
+import io.reactivex.disposables.Disposable;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -143,8 +144,9 @@ public class AlbumImporter {
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
 		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
-		imageEventsEmitter.imageEventsByType(true,
-				EnumSet.allOf(EImageEventType.class)).take(1L)
+		Disposable subscription = imageEventsEmitter
+				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
+				.take(1L)
 				.subscribe(ie -> existsAtLeast1ImageChange.setValue(true));
 		// at this point: album != null
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
@@ -167,6 +169,7 @@ public class AlbumImporter {
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
 		}
+		subscription.dispose();
 		sw.stop();
 		logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
 	}

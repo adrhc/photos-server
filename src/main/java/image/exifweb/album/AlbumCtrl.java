@@ -8,6 +8,7 @@ import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
+import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -20,10 +21,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,8 +58,10 @@ public class AlbumCtrl {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			List<Album> newAlbums = new ArrayList<>();
-			albumEventsEmitter.subscribe(true, EAlbumEventType.ALBUM_IMPORTED,
-					ae -> newAlbums.add(ae.getAlbum()));
+			Disposable subscription = albumEventsEmitter
+					.albumEventsByTypes(true, EnumSet.of(EAlbumEventType.ALBUM_IMPORTED))
+					.take(1L)
+					.subscribe(ae -> newAlbums.add(ae.getAlbum()));
 			albumImporter.importNewAlbumsOnly();
 			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
 			if (newAlbums.isEmpty()) {
@@ -71,6 +71,7 @@ public class AlbumCtrl {
 						newAlbums.stream().map(Album::getName)
 								.collect(Collectors.joining(", ")));
 			}
+			subscription.dispose();
 		}, asyncExecutor);
 	}
 

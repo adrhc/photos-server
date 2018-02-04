@@ -28,14 +28,13 @@ public class ImageEventsEmitter {
 	}
 
 	public Observable<ImageEvent> imageEventsByType(
-			boolean filterByRequestId,
-			EnumSet<EImageEventType> imageEventTypes) {
+			boolean filterByRequestId, EnumSet<EImageEventType> imageEventTypes) {
 		return imageEvents
 				.doOnNext(ae -> {
-					logger.debug(ae.getAlbum().toString());
-					logger.debug("types accepted: {}",
+					logger.debug("new image event received:\n{}", ae.getAlbum().toString());
+					logger.debug("accept: {}",
 							imageEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")));
-					logger.debug("ae.eventType = {}, filter by type result = {}\nrequestId = {}",
+					logger.debug("received: {}, filter by type result = {}\nrequestId = {}",
 							ae.getEventType().name(),
 							imageEventTypes.contains(ae.getEventType()),
 							ae.getRequestId());

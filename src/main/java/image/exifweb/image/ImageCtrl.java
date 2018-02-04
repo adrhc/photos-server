@@ -59,13 +59,18 @@ public class ImageCtrl {
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
 			Model model) {
-		return new CallablePageCount(albumId, model, viewHidden, viewOnlyPrintable, toSearch);
+		return () -> {
+			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
+			model.addAttribute(AlbumExporter.PAGE_COUNT,
+					albumService.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
+			return model;
+		};
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
 	@RequestMapping(value = "/page", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public CallablePage page(
+	public Callable<List<AlbumPage>> page(
 			@RequestParam(name = "albumId") Integer albumId,
 			@RequestParam(name = "pageNr") int pageNr,
 			@RequestParam(name = "sort", defaultValue = "asc") String sort,
@@ -73,82 +78,7 @@ public class ImageCtrl {
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
 			@RequestParam(name = "toSearch", required = false) String toSearch,
 			WebRequest webRequest) {
-		return new CallablePage(pageNr, sort, toSearch,
-				viewHidden, viewOnlyPrintable, albumId, webRequest);
-	}
-
-	@RequestMapping(value = "/changeStatus",
-			method = {RequestMethod.POST, RequestMethod.OPTIONS},
-			consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void changeStatus(@RequestBody ImageStatus imageStatus) {
-		imageService.changeStatus(imageStatus);
-	}
-
-	@RequestMapping(value = "/setRating",
-			method = {RequestMethod.POST, RequestMethod.OPTIONS},
-			consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void changeRating(@RequestBody ImageRating imageRating) {
-		imageService.changeRating(imageRating);
-	}
-
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@RequestMapping(value = "/putAlbumCover/{imageId}",
-			method = {RequestMethod.POST, RequestMethod.OPTIONS},
-			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void putAlbumCover(@PathVariable Integer imageId) throws IOException {
-		albumService.putAlbumCover(imageId);
-	}
-
-	protected class CallablePageCount implements Callable<Model> {
-		private Integer albumId;
-		private Model model;
-		private boolean viewHidden;
-		private boolean viewOnlyPrintable;
-		private String toSearch;
-
-		public CallablePageCount(Integer albumId, Model model, boolean viewHidden,
-		                         boolean viewOnlyPrintable, String toSearch) {
-			this.albumId = albumId;
-			this.model = model;
-			this.viewHidden = viewHidden;
-			this.viewOnlyPrintable = viewOnlyPrintable;
-			this.toSearch = toSearch;
-		}
-
-		@Override
-		public Model call() throws Exception {
-			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
-			model.addAttribute(AlbumExporter.PAGE_COUNT,
-					albumService.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
-			return model;
-		}
-	}
-
-	protected class CallablePage implements Callable<List<AlbumPage>> {
-		private WebRequest webRequest;
-		private Integer albumId;
-		private String sort;
-		private boolean viewHidden;
-		private boolean viewOnlyPrintable;
-		private String toSearch;
-		private int pageNr = -1;
-
-		public CallablePage(int pageNr, String sort, String toSearch,
-		                    boolean viewHidden, boolean viewOnlyPrintable,
-		                    Integer albumId, WebRequest webRequest) {
-			this.albumId = albumId;
-			this.pageNr = pageNr;
-			this.sort = sort;
-			this.viewHidden = viewHidden;
-			this.viewOnlyPrintable = viewOnlyPrintable;
-			this.toSearch = toSearch;
-			this.webRequest = webRequest;
-		}
-
-		@Override
-		public List<AlbumPage> call() throws Exception {
+		return () -> {
 			List<AlbumPage> albumPages =
 					albumService.getPage(pageNr, sort, toSearch, viewHidden, viewOnlyPrintable, albumId);
 			/*
@@ -176,6 +106,30 @@ public class ImageCtrl {
 							"viewOnlyPrintable = {}, albumId = {}, toSearch = {}",
 					pageNr, sort, viewHidden, viewOnlyPrintable, albumId, toSearch);
 			return albumPages;
-		}
+		};
+	}
+
+	@RequestMapping(value = "/changeStatus",
+			method = {RequestMethod.POST, RequestMethod.OPTIONS},
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void changeStatus(@RequestBody ImageStatus imageStatus) {
+		imageService.changeStatus(imageStatus);
+	}
+
+	@RequestMapping(value = "/setRating",
+			method = {RequestMethod.POST, RequestMethod.OPTIONS},
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void changeRating(@RequestBody ImageRating imageRating) {
+		imageService.changeRating(imageRating);
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/putAlbumCover/{imageId}",
+			method = {RequestMethod.POST, RequestMethod.OPTIONS},
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void putAlbumCover(@PathVariable Integer imageId) throws IOException {
+		albumService.putAlbumCover(imageId);
 	}
 }
