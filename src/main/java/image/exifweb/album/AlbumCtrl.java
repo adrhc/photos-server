@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/json/album")
 public class AlbumCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCtrl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject

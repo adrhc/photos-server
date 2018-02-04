@@ -32,7 +32,7 @@ import java.util.Date;
 @Service
 public class ImageExif {
 	private static final Logger logger = LoggerFactory.getLogger(ImageExif.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
 	@Value("${thumbs.dir}")

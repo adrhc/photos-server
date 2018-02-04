@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Service
 public class MailService {
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 
 	public boolean checkMailService() throws IOException, InterruptedException {
 		List<String> params = new ArrayList<String>();

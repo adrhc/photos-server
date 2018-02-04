@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class ImageService {
 	private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 
 	@Inject
 	private SessionFactory sessionFactory;

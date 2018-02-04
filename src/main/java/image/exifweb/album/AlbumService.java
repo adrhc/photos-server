@@ -41,7 +41,7 @@ import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 @Service
 public class AlbumService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	/**
 	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
 	 * <p>

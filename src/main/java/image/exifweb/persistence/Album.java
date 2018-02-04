@@ -6,10 +6,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -24,7 +27,8 @@ import java.util.List;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Album.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Album implements Serializable {
-//	private static final Logger logger = LoggerFactory.getLogger(Album.class);
+	private static final Logger logger = LoggerFactory.getLogger(Album.class);
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 
 	private Integer id;
 	private String name;
@@ -117,6 +121,7 @@ public class Album implements Serializable {
 	 * unei modificari a altei proprietati care oricum ar afecta cache la randu-i.
 	 */
 	public void setLastUpdate(Timestamp lastUpdate) {
+		logger.debug("new lastUpdate = {} for\n{}", sdf.format(lastUpdate), toString());
 		this.lastUpdate = lastUpdate;
 	}
 
@@ -145,7 +150,7 @@ public class Album implements Serializable {
 				", name='" + name + '\'' +
 				", dirty=" + dirty +
 				", cover=" + (cover == null ? null : cover.getId()) +
-				", lastUpdate=" + lastUpdate +
+				", lastUpdate=" + (lastUpdate == null ? null : sdf.format(lastUpdate)) +
 				", deleted=" + deleted +
 				'}';
 	}

@@ -33,7 +33,7 @@ import java.util.concurrent.Callable;
 @RequestMapping("/json/image")
 public class ImageCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(ImageCtrl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	@Inject
 	private AlbumService albumService;
 	@Inject
