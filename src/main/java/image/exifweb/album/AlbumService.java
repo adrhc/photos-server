@@ -102,7 +102,7 @@ public class AlbumService {
 	/**
 	 * This Album comes from a query-cache which is evicted by e.g. ImageService.changeRating.
 	 * <p>
-	 * Scenario:
+	 * Scenario (with browser cache disabled):
 	 * 1. ImageService.changeRating sets album.lastModified = 2018:02:04 20:25:34.240
 	 * 2. mysql saves 2018:02:04 20:25:34.000 instead of 2018:02:04 20:25:34.240
 	 * 3. AlbumCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
