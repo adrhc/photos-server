@@ -3,6 +3,7 @@ package image.exifweb.album;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverComp;
+import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
@@ -113,11 +114,11 @@ public class AlbumExporter {
 					albumService.getPage(i + 1, "desc", null, false, album.getId()));
 		}
 		logger.debug("done writing pages");
-		// todo: find the problem
-//		albumEventsEmitter.emit(AlbumEventBuilder
-//				.of(EAlbumEventType.JSON_UPDATED)
-//				.album(album).build());
-		albumService.clearDirtyForAlbum(album.getId());
+		// todo: find the problem cause
+//		albumService.clearDirtyForAlbum(album.getId());
+		albumEventsEmitter.emit(AlbumEventBuilder
+				.of(EAlbumEventType.JSON_UPDATED)
+				.album(album).build());
 		logger.debug("END {}", album.getName());
 	}
 
