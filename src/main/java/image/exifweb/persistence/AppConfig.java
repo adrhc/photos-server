@@ -59,6 +59,13 @@ public class AppConfig implements Serializable {
 		this.value = value == null || !value.equals("true") && !value.equals("false") ? value : value.intern();
 	}
 
+	/**
+	 * TIMESTAMP(3) supports milliseconds
+	 * last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3)
+	 * <p>
+	 * Date represents a specific instant in time, with millisecond precision.
+	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
+	 */
 	@JsonIgnore
 	@Version
 	@Column(name = "last_update")

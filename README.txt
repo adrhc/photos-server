@@ -95,3 +95,22 @@ CREATE DEFINER=`exifweb`@`%` TRIGGER `ALBUM_DIRTY_ON_RATING` AFTER UPDATE ON `Im
 
 java compiler/player/runner
 https://repl.it/@osteele/SimpleDateFormat-milliseconds
+
+TIMESTAMP(3) supports milliseconds
+
+SELECT now(6), DATE_FORMAT(now(6), '%H:%i:%S.%f');
+ALTER TABLE Album ADD COLUMN `last_update1` TIMESTAMP(3) NOT NULL DEFAULT now(3) AFTER `last_update`;
+UPDATE Album SET last_update1 = last_update;
+-- DROP INDEX `idx_album_last_update` ON `exifweb`.`Album`;
+-- ALTER TABLE `exifweb`.`Album` DROP COLUMN `last_update`;
+ALTER TABLE Album CHANGE COLUMN `last_update1` `last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3);
+
+ALTER TABLE Image ADD COLUMN `last_update1` TIMESTAMP(3) NOT NULL DEFAULT now(3) AFTER `last_update`;
+UPDATE Image SET last_update1 = last_update;
+-- ALTER TABLE Image DROP COLUMN `last_update`;
+ALTER TABLE Image CHANGE COLUMN `last_update1` `last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3);
+
+ALTER TABLE AppConfig ADD COLUMN `last_update1` TIMESTAMP(3) NOT NULL DEFAULT now(3) AFTER `last_update`;
+UPDATE AppConfig SET last_update1 = last_update;
+-- ALTER TABLE AppConfig DROP COLUMN `last_update`;
+ALTER TABLE AppConfig CHANGE COLUMN `last_update1` `last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3);

@@ -116,6 +116,12 @@ public class Album implements Serializable {
 	 * <p>
 	 * DEFAULT CURRENT_TIMESTAMP -> desired
 	 * ON UPDATE CURRENT_TIMESTAMP -> very bad; overwrites the value set by hibernate
+	 * <p>
+	 * TIMESTAMP(3) supports milliseconds
+	 * last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3)
+	 * <p>
+	 * Date represents a specific instant in time, with millisecond precision.
+	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
 	@Version
