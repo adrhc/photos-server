@@ -42,7 +42,19 @@ import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 public class AlbumService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-
+	/**
+	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
+	 * <p>
+	 * image0_.status=IF(false, image0_.status, image0_.status
+	 * -(image0_.status & 1)-(image0_.status & 2)-(image0_.status & 4)-(image0_.status & 8))
+	 */
+	private static final String VIEW_HIDDEN_SQL =
+			"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden - personal - ugly - duplicate) ";
+	/**
+	 * Shows only printable images.
+	 */
+	private static final String VIEW_PRINTABLE_SQL =
+			"AND i.status = IF(:viewOnlyPrintable, 16, i.status) ";
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
@@ -103,9 +115,7 @@ public class AlbumService {
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT count(i) FROM Image i " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
-//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
-					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
+					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"AND i.name LIKE :toSearch");
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
@@ -113,10 +123,8 @@ public class AlbumService {
 			q = session.createQuery("SELECT count(i) FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId " +
 					"AND i.deleted = 0 " +
-//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
-					"AND i.status = IF(:viewOnlyPrintable, 16, i.status)");
-			q.setCacheable(!viewHidden && !viewOnlyPrintable);
+					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
+					q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
 		if (albumId != -1) {
 			q.setInteger("albumId", albumId);
@@ -156,9 +164,7 @@ public class AlbumService {
 //					"imagePath(a.name, i.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
-//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
-					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
+					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"AND i.name LIKE :toSearch " +
 					"ORDER BY i.dateTimeOriginal " + sort);
 			// searches case-sensitive for name!
@@ -172,9 +178,7 @@ public class AlbumService {
 //					"imagePath(a.name, i.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
-//					image0_.status=IF(false, image0_.status, image0_.status-(image0_.status & 1))
-					"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden) " +
-					"AND i.status = IF(:viewOnlyPrintable, 16, i.status) " +
+					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"ORDER BY i.dateTimeOriginal " + sort);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
