@@ -49,7 +49,8 @@ public class AlbumService {
 	 * -(image0_.status & 1)-(image0_.status & 2)-(image0_.status & 4)-(image0_.status & 8))
 	 */
 	private static final String VIEW_HIDDEN_SQL =
-			"AND i.status = IF(:viewHidden, i.status, i.status - i.hidden - personal - ugly - duplicate) ";
+			"AND i.status = IF(:viewHidden, i.status, i.status " +
+					"- i.hidden - i.personal - i.ugly - i.duplicate) ";
 	/**
 	 * Shows only printable images.
 	 */
