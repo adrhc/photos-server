@@ -134,7 +134,7 @@ public class AlbumExporter {
 				},
 				t -> {
 					logger.error(t.getMessage(), t);
-					logger.error("[DELETED, MARKED_DELETED]");
+					logger.error("[ALBUM_IMPORTED]");
 				});
 		logger.debug("END");
 	}

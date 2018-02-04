@@ -150,7 +150,7 @@ public class AlbumImporter {
 						ie -> existsAtLeast1ImageChange.setValue(true),
 						t -> {
 							logger.error(t.getMessage(), t);
-							logger.error("[DELETED, MARKED_DELETED]");
+							logger.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
 						});
 		// at this point: album != null
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);

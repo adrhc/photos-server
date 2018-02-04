@@ -304,6 +304,7 @@ public class AlbumService {
 	@Transactional
 	public boolean removeAlbumCover(Integer albumId) {
 		Album album = getAlbumById(albumId);
+		// NPE when album is NULL
 		if (album.getCover() == null) {
 			return false;
 		}
@@ -354,14 +355,23 @@ public class AlbumService {
 				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
 				.map(ImageEvent::getAlbum)
 				.subscribe(
-						a -> removeAlbumCover(a.getId()),
+						a -> {
+							// on error the subscription will be disposed!
+							// this try ... catch protects against that
+							try {
+								removeAlbumCover(a.getId());
+							} catch (Exception e) {
+								logger.error(e.getMessage(), e);
+								logger.error("[DELETED, MARKED_DELETED] removeAlbumCover");
+							}
+						},
 						t -> {
 							logger.error(t.getMessage(), t);
 							logger.error("[DELETED, MARKED_DELETED]");
 						});
 		// cover image changed or deleted
 //		coverImgChanged.mergeWith(coverImgDeleted)
-//				.subscribe(album -> this.evictCoversCache());
+//				.subscribe(album -> this.evictCoversCache(), t -> ...);
 		// album's json files updated
 		albumEventsEmitter.subscribe(JSON_UPDATED,
 				ae -> {
@@ -371,7 +381,14 @@ public class AlbumService {
 						logger.debug("[JSON_UPDATED] album id = {}, name = {}",
 								ae.getAlbum().getId(), ae.getAlbum().getName());
 					}
-					clearDirtyForAlbum(ae.getAlbum().getId());
+					// on error the subscription will be disposed!
+					// this try ... catch protects against that
+					try {
+						clearDirtyForAlbum(ae.getAlbum().getId());
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						logger.error("[JSON_UPDATED] clearDirtyForAlbum");
+					}
 				},
 				t -> {
 					logger.error(t.getMessage(), t);

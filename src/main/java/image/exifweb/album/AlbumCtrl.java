@@ -64,7 +64,7 @@ public class AlbumCtrl {
 							ae -> newAlbums.add(ae.getAlbum()),
 							t -> {
 								logger.error(t.getMessage(), t);
-								logger.error("[DELETED, MARKED_DELETED]");
+								logger.error("[ALBUM_IMPORTED] newAlbums");
 							});
 			albumImporter.importNewAlbumsOnly();
 			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
