@@ -99,6 +99,18 @@ public class AlbumService {
 		return (Album) sessionFactory.getCurrentSession().get(Album.class, id);
 	}
 
+	/**
+	 * This Album comes from a query-cache which is evicted by e.g. ImageService.changeRating.
+	 * Scenario:
+	 * 1. ImageService.changeRating sets album.lastModified = 2018:02:04 20:25:34.240
+	 * 2. mysql saves 2018:02:04 20:25:34.000 instead of 2018:02:04 20:25:34.240
+	 * 3. AlbumCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
+	 * 3. getAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
+	 * 4. any change to Album from now on will fail with optimistic lock!
+	 *
+	 * @param name
+	 * @return
+	 */
 	@Transactional
 	public Album getAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
