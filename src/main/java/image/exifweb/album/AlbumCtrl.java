@@ -1,8 +1,5 @@
 package image.exifweb.album;
 
-import image.exifweb.album.cover.AlbumCover;
-import image.exifweb.album.cover.AlbumCoverComp;
-import image.exifweb.album.cover.AlbumCoverRepo;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
@@ -21,7 +18,10 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -40,10 +40,6 @@ public class AlbumCtrl {
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
 	private AlbumService albumService;
-	@Inject
-	private AlbumCoverRepo albumCoverRepo;
-	@Inject
-	private AlbumCoverComp albumCoverComp;
 	@Inject
 	private AlbumExporter albumExporter;
 	@Inject
@@ -149,26 +145,5 @@ public class AlbumCtrl {
 		}
 		logger.debug("album ({}) modified since: {}", name, sdf.format(album.getLastUpdate()));
 		return album;
-	}
-
-	/**
-	 * Pt a testa checkNotModified TREBUIE ca browser cache sa fie activat!
-	 *
-	 * @param webRequest
-	 * @return
-	 */
-	@RequestMapping(method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
-	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
-//		logger.debug("BEGIN");
-		Date albumCoversLastUpdateDate = albumCoverRepo.getAlbumCoversLastUpdateDate();
-		if (webRequest.checkNotModified(albumCoversLastUpdateDate.getTime())) {
-//			logger.debug("not modified since: {}",
-//					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
-			return null;
-		}
-		logger.debug("covers modified since: {}", sdf.format(albumCoversLastUpdateDate));
-		return albumCoverComp.getCovers();
 	}
 }

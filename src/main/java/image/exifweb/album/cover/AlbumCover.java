@@ -1,7 +1,10 @@
 package image.exifweb.album.cover;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import image.exifweb.image.ImageDimensions;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,9 +13,7 @@ import image.exifweb.image.ImageDimensions;
  * Time: 1:02 PM
  * To change this template use File | Settings | File Templates.
  */
-@JsonIgnoreProperties(ignoreUnknown = true,
-		value = {"hibernateLazyInitializer", "handler", "thumbLastModified"})
-public class AlbumCover implements ImageDimensions {
+public class AlbumCover implements ImageDimensions, Serializable {
 	private Integer id;
 	private String albumName;
 	private String imgName;
@@ -20,16 +21,19 @@ public class AlbumCover implements ImageDimensions {
 	private int imageWidth;
 	private boolean dirty;
 	private String thumbPath;
+	@JsonIgnore
+	private Date lastUpdate;
 
-	public AlbumCover(Integer albumId, String albumName, boolean dirty) {
+	public AlbumCover(Integer albumId, String albumName, boolean dirty, Date lastUpdate) {
 		this.id = albumId;
 		this.albumName = albumName;
 		this.dirty = dirty;
+		this.lastUpdate = lastUpdate;
 	}
 
 	public AlbumCover(Integer albumId, String albumName, String imgName,
-	                  int imageHeight, int imageWidth, boolean dirty) {
-		this(albumId, albumName, dirty);
+	                  int imageHeight, int imageWidth, boolean dirty, Date lastUpdate) {
+		this(albumId, albumName, dirty, lastUpdate);
 		this.imgName = imgName;
 		this.imageHeight = imageHeight;
 		this.imageWidth = imageWidth;
@@ -89,5 +93,13 @@ public class AlbumCover implements ImageDimensions {
 
 	public void setImgName(String imgName) {
 		this.imgName = imgName;
+	}
+
+	public Date getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 }

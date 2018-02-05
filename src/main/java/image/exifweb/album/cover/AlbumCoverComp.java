@@ -2,6 +2,7 @@ package image.exifweb.album.cover;
 
 import image.exifweb.album.AlbumService;
 import image.exifweb.image.ImageUtils;
+import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import org.springframework.stereotype.Component;
 
@@ -22,20 +23,33 @@ public class AlbumCoverComp {
 
 	public List<AlbumCover> getCovers() {
 		return albumService.getAlbums().stream()
-				.map(a -> {
-					Image cover = a.getCover();
-					AlbumCover ac;
-					if (cover == null) {
-						ac = new AlbumCover(a.getId(), a.getName(), a.isDirty());
-					} else {
-						ac = new AlbumCover(a.getId(), a.getName(), cover.getName(),
-								cover.getImageHeight(), cover.getImageWidth(), a.isDirty());
-						imageUtils.appendImageDimensions(ac);
-						imageUtils.appendImagePaths(ac, cover.getThumbLastModified().getTime());
-					}
-					return ac;
-				})
+				.map(this::convertAlbumToCover)
 				.collect(Collectors.toList());
 	}
 
+	public AlbumCover getCoverById(Integer albumId) {
+		Album album = albumService.getAlbumById(albumId);
+		return convertAlbumToCover(album);
+	}
+
+	public AlbumCover getCoverByName(String albumName) {
+		Album album = albumService.getAlbumByName(albumName);
+		return convertAlbumToCover(album);
+	}
+
+	private AlbumCover convertAlbumToCover(Album album) {
+		Image cover = album.getCover();
+		AlbumCover ac;
+		if (cover == null) {
+			ac = new AlbumCover(album.getId(), album.getName(),
+					album.isDirty(), album.getLastUpdate());
+		} else {
+			ac = new AlbumCover(album.getId(), album.getName(), cover.getName(),
+					cover.getImageHeight(), cover.getImageWidth(), album.isDirty(),
+					album.getLastUpdate());
+			imageUtils.appendImageDimensions(ac);
+			imageUtils.appendImagePaths(ac, cover.getThumbLastModified().getTime());
+		}
+		return ac;
+	}
 }
