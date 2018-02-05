@@ -1,7 +1,5 @@
 package image.exifweb.image;
 
-import java.io.Serializable;
-
 /**
  * Created with IntelliJ IDEA.
  * User: adr
