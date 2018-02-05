@@ -24,7 +24,10 @@ import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -199,26 +202,26 @@ public class AlbumImporter {
 	}
 
 	/**
-	 * Require compile time aspectj weaving!
-	 *
-	 * @param imgWithNewExif
+	 * Role:
+	 * - loads the Image by name and albumId (leverages the Image cache)
+	 * - updates accordingly the Image (leverages the Image cache)
 	 */
 	private void saveOrUpdateImage(Image imgWithNewExif) {
-		ImageIdAndDates imageIdAndDates = getImageIdAndDates(
+		Image image = getImageByNameAndAlbumId(
 				imgWithNewExif.getName(), imgWithNewExif.getAlbum().getId());
-		if (imageIdAndDates == null) {
+		if (image == null) {
 			persistImage(imgWithNewExif);
 			imageEventsEmitter.emit(ImageEventBuilder
 					.of(EImageEventType.CREATED)
 					.image(imgWithNewExif).build());
-		} else if (imageIdAndDates.dateTime.before(imgWithNewExif.getDateTime())) {
-			updateExifPropertiesInDB(imgWithNewExif, imageIdAndDates.id);
+		} else if (image.getDateTime().before(imgWithNewExif.getDateTime())) {
+			updateExifPropertiesInDB(imgWithNewExif, image.getId());
 			imageEventsEmitter.emit(ImageEventBuilder
 					.of(EImageEventType.EXIF_UPDATED)
 					.image(imgWithNewExif).build());
-		} else if (imageIdAndDates.thumbLastModified.before(imgWithNewExif.getThumbLastModified())) {
+		} else if (image.getThumbLastModified().before(imgWithNewExif.getThumbLastModified())) {
 			imageService.updateThumbLastModifiedForImg(
-					imgWithNewExif.getThumbLastModified(), imageIdAndDates.id);
+					imgWithNewExif.getThumbLastModified(), image.getId());
 			imageEventsEmitter.emit(ImageEventBuilder
 					.of(EImageEventType.THUMB_UPDATED)
 					.image(imgWithNewExif).build());
@@ -236,26 +239,33 @@ public class AlbumImporter {
 		imageExif.copyExifProperties(image, dbImage);
 	}
 
-	@Transactional(readOnly = true)
-	private ImageIdAndDates getImageIdAndDates(String name, Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q = session.createQuery("SELECT new image.exifweb.album.AlbumImporter$ImageIdAndDates" +
-				"(i.id, i.dateTime, i.thumbLastModified) FROM Image i " +
-				"WHERE i.name = :name AND i.album.id = :albumId").setCacheable(true);
-		q.setString("name", name);
-		q.setInteger("albumId", albumId);
-		return (ImageIdAndDates) q.uniqueResult();
+	/**
+	 * Role:
+	 * - search the imageId then leverage the Image cache
+	 *
+	 * @param name
+	 * @param albumId
+	 * @return
+	 */
+	@Transactional
+	private Image getImageByNameAndAlbumId(String name, Integer albumId) {
+		Integer imageId = getImageIdByNameAndAlbumId(name, albumId);
+		return getById(imageId);
 	}
 
-	private static class ImageIdAndDates {
-		private Integer id;
-		private Date dateTime;
-		private Date thumbLastModified;
+	@Transactional
+	public Image getById(Integer imageId) {
+		Session session = sessionFactory.getCurrentSession();
+		return (Image) session.get(Image.class, imageId);
+	}
 
-		public ImageIdAndDates(Integer id, Date dateTime, Date thumbLastModified) {
-			this.id = id;
-			this.dateTime = dateTime;
-			this.thumbLastModified = thumbLastModified;
-		}
+	@Transactional(readOnly = true)
+	private Integer getImageIdByNameAndAlbumId(String name, Integer albumId) {
+		Session session = sessionFactory.getCurrentSession();
+		Query q = session.createQuery("SELECT id FROM Image " +
+				"WHERE name = :name AND album.id = :albumId");
+		q.setString("name", name);
+		q.setInteger("albumId", albumId);
+		return (Integer) q.uniqueResult();
 	}
 }
