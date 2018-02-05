@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -79,6 +81,43 @@ public class AlbumImporter {
 		// album inexistent in DB deci nou
 		return true;
 	};
+
+	private TestAndResolution NEW_IMAGE = new TestAndResolution(
+			(newImg, dbImg) -> dbImg == null,
+			(newImg, dbImg) -> {
+				logger.debug("NEW_IMAGE");
+				persistImage(newImg);
+				imageEventsEmitter.emit(ImageEventBuilder
+						.of(EImageEventType.CREATED)
+						.image(newImg).build());
+			});
+
+	private TestAndResolution UPDATED_IMAGE_FILE = new TestAndResolution(
+			(newImg, dbImg) -> newImg.getDateTime().after(dbImg.getDateTime()),
+			(newImg, dbImg) -> {
+				logger.debug("UPDATED_IMAGE_FILE");
+				updateExifPropertiesInDB(newImg, dbImg.getId());
+				imageEventsEmitter.emit(ImageEventBuilder
+						.of(EImageEventType.EXIF_UPDATED)
+						.image(newImg).build());
+			}
+	);
+
+	private TestAndResolution UPDATED_THUMB_FILE = new TestAndResolution(
+			(newImg, dbImg) -> newImg.getThumbLastModified().after(dbImg.getThumbLastModified()),
+			(newImg, dbImg) -> {
+				logger.debug("UPDATED_THUMB_FILE");
+				imageService.updateThumbLastModifiedForImg(
+						newImg.getThumbLastModified(), dbImg.getId());
+				imageEventsEmitter.emit(ImageEventBuilder
+						.of(EImageEventType.THUMB_UPDATED)
+						.image(newImg).build());
+			});
+	/**
+	 * order matters; first action only is executed
+	 */
+	private List<TestAndResolution> actionsByImageStatus = Arrays.asList(
+			NEW_IMAGE, UPDATED_IMAGE_FILE, UPDATED_THUMB_FILE);
 
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
@@ -207,25 +246,13 @@ public class AlbumImporter {
 	 * - updates accordingly the Image (leverages the Image cache)
 	 */
 	private void saveOrUpdateImage(Image imgWithNewExif) {
-		Image image = getImageByNameAndAlbumId(
+		Image dbImage = getImageByNameAndAlbumId(
 				imgWithNewExif.getName(), imgWithNewExif.getAlbum().getId());
-		if (image == null) {
-			persistImage(imgWithNewExif);
-			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.CREATED)
-					.image(imgWithNewExif).build());
-		} else if (image.getDateTime().before(imgWithNewExif.getDateTime())) {
-			updateExifPropertiesInDB(imgWithNewExif, image.getId());
-			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.EXIF_UPDATED)
-					.image(imgWithNewExif).build());
-		} else if (image.getThumbLastModified().before(imgWithNewExif.getThumbLastModified())) {
-			imageService.updateThumbLastModifiedForImg(
-					imgWithNewExif.getThumbLastModified(), image.getId());
-			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.THUMB_UPDATED)
-					.image(imgWithNewExif).build());
-		}
+		actionsByImageStatus.stream()
+				.filter(tar -> tar.test.test(imgWithNewExif, dbImage))
+				.map(tar -> tar.resolution)
+				.limit(1L)
+				.forEach(r -> r.accept(imgWithNewExif, dbImage));
 	}
 
 	@Transactional
@@ -267,5 +294,15 @@ public class AlbumImporter {
 		q.setString("name", name);
 		q.setInteger("albumId", albumId);
 		return (Integer) q.uniqueResult();
+	}
+
+	private class TestAndResolution {
+		private BiPredicate<Image, Image> test;
+		private BiConsumer<Image, Image> resolution;
+
+		TestAndResolution(BiPredicate<Image, Image> test, BiConsumer<Image, Image> resolution) {
+			this.test = test;
+			this.resolution = resolution;
+		}
 	}
 }

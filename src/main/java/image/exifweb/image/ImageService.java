@@ -30,7 +30,7 @@ public class ImageService {
 	@Transactional
 	public void updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Integer.class, imageId);
+		Image image = (Image) session.load(Image.class, imageId);
 		image.setThumbLastModified(thumbLastModified);
 	}
 
