@@ -12,7 +12,7 @@
 
     <mvc:annotation-driven>
         <!-- albums re/importing takes a lot of time -->
-        <mvc:async-support default-timeout="1800000"/>
+        <mvc:async-support default-timeout="3600000"/>
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="hibernateAwareObjectMapper"/>
