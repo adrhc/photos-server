@@ -44,6 +44,7 @@ public class AlbumCtrl {
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			albumExporter.writeJsonForAlbumsPageSafe();
 			deferredResult.setResult("message", AlbumExporter.ALBUMS_PAGE_JSON + " updated!");
+			logger.debug("[updateJsonForAlbumsPage] END");
 		}, asyncExecutor);
 	}
 
@@ -63,6 +64,7 @@ public class AlbumCtrl {
 				case partial:
 					deferredResult.setResult("message", "Some JSON files updated some NOT!");
 			}
+			logger.debug("[updateJsonForAllAlbums] END");
 		}, asyncExecutor);
 	}
 
@@ -79,6 +81,7 @@ public class AlbumCtrl {
 				deferredResult.setResult("message",
 						"JSON files NOT updated for album " + jsonValue.getValue() + "!");
 			}
+			logger.debug("[updateJsonFor1Album] END");
 		}, asyncExecutor);
 	}
 
@@ -91,7 +94,7 @@ public class AlbumCtrl {
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
-		logger.debug("album ({}) modified since: {}", id, sdf.format(album.getLastUpdate()));
+		logger.debug("END album ({}) modified since: {}", id, sdf.format(album.getLastUpdate()));
 		return album;
 	}
 
@@ -104,7 +107,7 @@ public class AlbumCtrl {
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
-		logger.debug("album ({}) modified since: {}", name, sdf.format(album.getLastUpdate()));
+		logger.debug("END album ({}) modified since: {}", name, sdf.format(album.getLastUpdate()));
 		return album;
 	}
 }
