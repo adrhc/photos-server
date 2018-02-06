@@ -4,7 +4,7 @@ import image.exifweb.album.AlbumService;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
-import image.exifweb.exif.ImageExif;
+import image.exifweb.album.importer.exif.ImageExif;
 import image.exifweb.image.ImageService;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;

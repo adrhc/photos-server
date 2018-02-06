@@ -1,4 +1,4 @@
-package image.exifweb.exif;
+package image.exifweb.album.importer.exif;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
