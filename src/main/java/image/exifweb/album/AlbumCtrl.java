@@ -72,7 +72,7 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonValue jsonValue) {
-		logger.debug("BEGIN");
+		logger.debug("BEGIN {}", jsonValue.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (albumExporter.writeJsonForAlbumSafe(jsonValue.getValue())) {
 				deferredResult.setResult("message",
