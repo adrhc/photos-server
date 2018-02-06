@@ -24,10 +24,7 @@ import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -144,7 +141,7 @@ public class AlbumImporter {
 		if (files == null || files.length == 0) {
 			return;
 		}
-		Arrays.sort(files);
+		Arrays.sort(files, Collections.reverseOrder());
 		if (albumsFilter == null) {
 			Stream.of(files)
 					.forEach(this::importAlbumByPath);
