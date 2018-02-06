@@ -47,6 +47,7 @@ public class ExtractExifCtrl {
 				albumImporter.importAllFromAlbumsRoot();
 				deferredResult.setResult("message", "Reimported all albums");
 			}
+			logger.debug("[reImport] END {}", jsonValue.getValue());
 		}, asyncExecutor);
 	}
 }

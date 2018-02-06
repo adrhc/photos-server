@@ -126,6 +126,7 @@ public class AlbumImporter {
 	public void importAllFromAlbumsRoot() {
 		logger.debug("BEGIN");
 		importFromAlbumsRoot(null);
+		logger.debug("END");
 	}
 
 	public void importNewAlbumsOnly() {
