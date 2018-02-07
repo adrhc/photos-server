@@ -42,16 +42,19 @@
 
     <logger name="image" additivity="false">
         <level value="debug"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>
     </logger>
 
     <logger name="image.exifweb.persistence" additivity="false">
         <level value="info"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>
     </logger>
 
     <logger name="subtitles" additivity="false">
         <level value="debug"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="subtitles-extractor-file"/>
     </logger>
 
