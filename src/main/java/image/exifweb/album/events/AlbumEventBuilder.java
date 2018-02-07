@@ -17,11 +17,6 @@ public class AlbumEventBuilder {
 		return this;
 	}
 
-	public AlbumEventBuilder albumName(String albumName) {
-		albumEvent.setAlbumName(albumName);
-		return this;
-	}
-
 	public AlbumEventBuilder type(EAlbumEventType albumEventType) {
 		albumEvent.setEventType(albumEventType);
 		return this;

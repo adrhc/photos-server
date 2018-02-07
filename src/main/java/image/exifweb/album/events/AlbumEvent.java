@@ -33,14 +33,6 @@ public class AlbumEvent extends HashMap<EAlbumEventDetail, Object> {
 		put(EAlbumEventDetail.REQUEST_ID, requestId);
 	}
 
-	public String getAlbumName() {
-		return getValue(EAlbumEventDetail.ALBUM_NAME);
-	}
-
-	public void setAlbumName(String albumName) {
-		put(EAlbumEventDetail.ALBUM_NAME, albumName);
-	}
-
 	public EAlbumEventType getEventType() {
 		return eventType;
 	}

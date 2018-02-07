@@ -114,6 +114,7 @@ public class AlbumExporter {
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
 					albumService.getPage(i + 1, "desc", null, false, false, album.getId()));
 		}
+		albumService.clearDirtyForAlbum(album.getId());
 		logger.debug("END {}", album.getName());
 	}
 
@@ -121,28 +122,10 @@ public class AlbumExporter {
 	public void postConstruct() {
 		albumEventsEmitter.albumEventsByTypes(false, ALBUM_IMPORTED)
 				.observeOn(Schedulers.io())
-				.doOnNext((ae) -> {
-					// step 1
-					// writing album's pages json metadata
-					if (ae.getAlbum() == null) {
-						writeJsonForAlbumSafe(ae.getAlbumName());
-					} else {
-						writeJsonForAlbumSafe(ae.getAlbum());
-					}
-				})
-				.subscribe(ae -> {
-					// step 2
-					// on error the subscription would be disposed!
-					// this try ... catch protects against that
-					try {
-						albumService.clearDirtyForAlbum(ae.getAlbum().getId());
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-						logger.error("[JSON_UPDATED] clearDirtyForAlbum\n", ae.toString());
-					}
-				}, t -> {
-					logger.error(t.getMessage(), t);
-					logger.error("[{}]", ALBUM_IMPORTED.name());
-				});
+				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),
+						t -> {
+							logger.error(t.getMessage(), t);
+							logger.error("[{}]", ALBUM_IMPORTED.name());
+						});
 	}
 }
