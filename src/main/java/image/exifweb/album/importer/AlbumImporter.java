@@ -80,20 +80,20 @@ public class AlbumImporter {
 		return true;
 	};
 
-	private TestAndResolution NEW_IMAGE = new TestAndResolution(
+	private TestAndResolution IS_NEW_IMAGE = new TestAndResolution(
 			(newImg, dbImg) -> dbImg == null,
 			(newImg, dbImg) -> {
-				logger.debug("NEW_IMAGE");
+				logger.debug("IS_NEW_IMAGE");
 				persistImage(newImg);
 				imageEventsEmitter.emit(ImageEventBuilder
 						.of(EImageEventType.CREATED)
 						.image(newImg).build());
 			});
 
-	private TestAndResolution UPDATED_IMAGE_FILE = new TestAndResolution(
+	private TestAndResolution UPDATED_IMAGE_FILE_EXISTS = new TestAndResolution(
 			(newImg, dbImg) -> newImg.getDateTime().after(dbImg.getDateTime()),
 			(newImg, dbImg) -> {
-				logger.debug("UPDATED_IMAGE_FILE");
+				logger.debug("UPDATED_IMAGE_FILE_EXISTS");
 				updateExifPropertiesInDB(newImg, dbImg.getId());
 				imageEventsEmitter.emit(ImageEventBuilder
 						.of(EImageEventType.EXIF_UPDATED)
@@ -101,21 +101,21 @@ public class AlbumImporter {
 			}
 	);
 
-	private TestAndResolution UPDATED_THUMB_FILE = new TestAndResolution(
+	private TestAndResolution UPDATED_THUMB_FILE_EXISTS = new TestAndResolution(
 			(newImg, dbImg) -> newImg.getThumbLastModified().after(dbImg.getThumbLastModified()),
 			(newImg, dbImg) -> {
-				logger.debug("UPDATED_THUMB_FILE");
+				logger.debug("UPDATED_THUMB_FILE_EXISTS");
 				imageService.updateThumbLastModifiedForImg(
 						newImg.getThumbLastModified(), dbImg.getId());
 				imageEventsEmitter.emit(ImageEventBuilder
-						.of(EImageEventType.THUMB_UPDATED)
+						.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
 						.image(newImg).build());
 			});
 	/**
 	 * order matters; first action only is executed
 	 */
 	private List<TestAndResolution> actionsByImageStatus = Arrays.asList(
-			NEW_IMAGE, UPDATED_IMAGE_FILE, UPDATED_THUMB_FILE);
+			IS_NEW_IMAGE, UPDATED_IMAGE_FILE_EXISTS, UPDATED_THUMB_FILE_EXISTS);
 
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));

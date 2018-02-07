@@ -346,7 +346,7 @@ public class AlbumService {
 	public void postConstruct() {
 		// cover image changed (dealt with below)
 //		Observable<Album> coverImgChanged = imageEventsEmitter
-//				.imageEventsByType(EnumSet.of(THUMB_UPDATED, EXIF_UPDATED))
+//				.imageEventsByType(EnumSet.of(THUMB_LAST_MODIF_DATE_UPDATED, EXIF_UPDATED))
 //				.filter(ie -> isCoverImage(ie.getImage()))
 //				.map(ie -> ie.getImage().getAlbum());
 		// cover image deleted
