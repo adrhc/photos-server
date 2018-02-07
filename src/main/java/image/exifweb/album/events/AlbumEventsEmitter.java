@@ -14,7 +14,6 @@ import javax.annotation.PreDestroy;
 import java.util.EnumSet;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Created by adr on 1/28/18.
@@ -32,43 +31,19 @@ public class AlbumEventsEmitter {
 		albumEvents.onNext(albumEvent);
 	}
 
-	public Disposable subscribeAsync(EAlbumEventType albumEventType,
-	                                 Consumer<AlbumEvent> onNext) {
-		return albumEventsByTypes(false, EnumSet.of(albumEventType))
-				.observeOn(Schedulers.io())
-				.subscribe(onNext::accept,
-						t -> {
-							logger.error(t.getMessage(), t);
-							logger.error("[{}]", albumEventType.name());
-						});
-	}
-
-	public Disposable subscribeAsync(EAlbumEventType albumEventType,
-	                                 Predicate<AlbumEvent> filter,
-	                                 Consumer<AlbumEvent> onNext) {
-		return albumEventsByTypes(false, EnumSet.of(albumEventType))
-				.observeOn(Schedulers.io())
-				.filter(filter)
-				.subscribe(onNext::accept,
-						t -> {
-							logger.error(t.getMessage(), t);
-							logger.error("[{}]", albumEventType.name());
-						});
-	}
-
 	public Observable<AlbumEvent> albumEventsByTypes(
 			boolean filterByRequestId,
-			EnumSet<EAlbumEventType> albumEventTypes) {
+			EAlbumEventType albumEventType) {
 		return albumEvents
 				.doOnNext(ae -> {
 					logger.debug("album event received:\n\t{}", ae.getAlbum().toString());
 					logger.debug("received: {}", ae.getEventType().name());
 					logger.debug("accept: {}, acceptable: {}\n\trequestId = {}",
-							albumEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")),
-							albumEventTypes.contains(ae.getEventType()),
+							albumEventType.name(),
+							albumEventType.equals(ae.getEventType()),
 							ae.getRequestId());
 				})
-				.filter(ae -> albumEventTypes.contains(ae.getEventType()))
+				.filter(ae -> albumEventType.equals(ae.getEventType()))
 				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(requestId.get()));
 	}
 

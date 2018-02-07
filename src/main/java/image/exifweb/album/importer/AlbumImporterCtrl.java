@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
+
 /**
  * Created by adr on 2/6/18.
  */
@@ -64,7 +66,7 @@ public class AlbumImporterCtrl {
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			List<Album> newAlbums = new ArrayList<>();
 			Disposable subscription = albumEventsEmitter
-					.albumEventsByTypes(true, EnumSet.of(EAlbumEventType.ALBUM_IMPORTED))
+					.albumEventsByTypes(true, ALBUM_IMPORTED)
 					.take(1L)
 					.subscribe(
 							ae -> newAlbums.add(ae.getAlbum()),

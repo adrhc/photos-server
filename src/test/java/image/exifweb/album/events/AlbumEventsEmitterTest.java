@@ -8,13 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
-import static image.exifweb.album.events.EAlbumEventType.JSON_UPDATED;
 
 /**
  * Created by adr on 2/7/18.
@@ -39,7 +37,7 @@ public class AlbumEventsEmitterTest {
 		List<Album> newAlbums = new ArrayList<>();
 
 		Disposable subscription = albumEventsEmitter
-				.albumEventsByTypes(true, EnumSet.allOf(EAlbumEventType.class))
+				.albumEventsByTypes(true, ALBUM_IMPORTED)
 //				.subscribeOn(Schedulers.io())
 				.observeOn(Schedulers.io())
 				.doOnNext(ae -> logger.debug("[subscription.doOnNext] {}", ae.getAlbum().getName()))
@@ -48,7 +46,7 @@ public class AlbumEventsEmitterTest {
 						ae -> {
 							logger.debug("[subscribe] {}", ae.getAlbum().getName());
 							newAlbums.add(ae.getAlbum());
-							if (ae.getEventType().equals(JSON_UPDATED)) {
+							if (ae.getAlbum().getName().equals("kent")) {
 								mainThread.interrupt();
 							}
 						},
@@ -63,7 +61,7 @@ public class AlbumEventsEmitterTest {
 		IntStream.range(1, 1000).forEach(i -> albumEventsEmitter.emit(AlbumEventBuilder
 				.of(ALBUM_IMPORTED).album(new Album("gigi " + i)).build()));
 		albumEventsEmitter.emit(AlbumEventBuilder
-				.of(JSON_UPDATED).album(new Album("kent")).build());
+				.of(ALBUM_IMPORTED).album(new Album("kent")).build());
 		logger.debug("after emission");
 //		});
 

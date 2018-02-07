@@ -20,12 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static image.exifweb.album.events.EAlbumEventType.JSON_UPDATED;
 import static image.exifweb.image.events.EImageEventType.DELETED;
 import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 
@@ -348,32 +346,5 @@ public class AlbumService {
 
 	private boolean isImageTheCoverForAlbum(Image image, Album album) {
 		return album.getCover() != null && album.getCover().getId().equals(image.getId());
-	}
-
-	@PostConstruct
-	public void postConstruct() {
-		// album's json files updated
-		albumEventsEmitter.subscribeAsync(JSON_UPDATED,
-				ae -> {
-					if (ae.getAlbum() == null) {
-						logger.error("[JSON_UPDATED] album is null");
-						return false;
-					} else {
-						logger.debug("[JSON_UPDATED] album id = {}, name = {}",
-								ae.getAlbum().getId(), ae.getAlbum().getName());
-						return true;
-					}
-				},
-				ae -> {
-					// on error the subscription will be disposed!
-					// this try ... catch protects against that
-					try {
-						clearDirtyForAlbum(ae.getAlbum().getId());
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-						logger.error("[JSON_UPDATED] clearDirtyForAlbum\n", ae.toString());
-					}
-				});
-		logger.debug("END");
 	}
 }

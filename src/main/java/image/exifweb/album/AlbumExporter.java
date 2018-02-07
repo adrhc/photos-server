@@ -3,10 +3,10 @@ package image.exifweb.album;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverComp;
-import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.sys.AppConfigService;
+import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
-import static image.exifweb.album.events.EAlbumEventType.JSON_UPDATED;
 
 /**
  * Created by adr on 1/28/18.
@@ -115,24 +114,35 @@ public class AlbumExporter {
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
 					albumService.getPage(i + 1, "desc", null, false, false, album.getId()));
 		}
-		logger.debug("done writing pages");
-		// todo: find the problem cause
-//		albumService.clearDirtyForAlbum(album.getId());
-		albumEventsEmitter.emit(AlbumEventBuilder
-				.of(JSON_UPDATED).album(album).build());
 		logger.debug("END {}", album.getName());
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		albumEventsEmitter.subscribeAsync(ALBUM_IMPORTED,
-				(ae) -> {
+		albumEventsEmitter.albumEventsByTypes(false, ALBUM_IMPORTED)
+				.observeOn(Schedulers.io())
+				.doOnNext((ae) -> {
+					// step 1
+					// writing album's pages json metadata
 					if (ae.getAlbum() == null) {
 						writeJsonForAlbumSafe(ae.getAlbumName());
 					} else {
 						writeJsonForAlbumSafe(ae.getAlbum());
 					}
+				})
+				.subscribe(ae -> {
+					// step 2
+					// on error the subscription would be disposed!
+					// this try ... catch protects against that
+					try {
+						albumService.clearDirtyForAlbum(ae.getAlbum().getId());
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						logger.error("[JSON_UPDATED] clearDirtyForAlbum\n", ae.toString());
+					}
+				}, t -> {
+					logger.error(t.getMessage(), t);
+					logger.error("[{}]", ALBUM_IMPORTED.name());
 				});
-		logger.debug("END");
 	}
 }
