@@ -40,11 +40,10 @@ public class AlbumEventsEmitter {
 			EnumSet<EAlbumEventType> albumEventTypes) {
 		return albumEvents
 				.doOnNext(ae -> {
-					logger.debug("new album event received:\n{}", ae.getAlbum().toString());
-					logger.debug("accept: {}",
-							albumEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")));
-					logger.debug("received: {}, filter by type result = {}\nrequestId = {}",
-							ae.getEventType().name(),
+					logger.debug("album event received:\n\t{}", ae.getAlbum().toString());
+					logger.debug("received: {}", ae.getEventType().name());
+					logger.debug("accept: {}, acceptable: {}\n\trequestId = {}",
+							albumEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")),
 							albumEventTypes.contains(ae.getEventType()),
 							ae.getRequestId());
 				})
