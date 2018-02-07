@@ -52,6 +52,18 @@
         <appender-ref ref="exifweb-file"/>
     </logger>
 
+    <logger name="image.exifweb.album.events" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
+    <logger name="image.exifweb.image.events" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
     <logger name="subtitles" additivity="false">
         <level value="debug"/>
         <appender-ref ref="console"/>

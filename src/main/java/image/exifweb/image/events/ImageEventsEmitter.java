@@ -31,12 +31,11 @@ public class ImageEventsEmitter {
 			boolean filterByRequestId, EnumSet<EImageEventType> imageEventTypes) {
 		return imageEvents
 				.doOnNext(ie -> {
-					logger.debug("new image event received:\nid = {}, name: {}",
+					logger.debug("image event received:\n\tid = {}, name: {}",
 							ie.getImage().getId(), ie.getImage().getName());
-					logger.debug("accept: {}",
-							imageEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")));
-					logger.debug("received: {}, filter by type result = {}\nrequestId = {}",
-							ie.getEventType().name(),
+					logger.debug("received: {}", ie.getEventType().name());
+					logger.debug("accept: {}, acceptable: {}\n\trequestId = {}",
+							imageEventTypes.stream().map(Enum::name).collect(Collectors.joining(", ")),
 							imageEventTypes.contains(ie.getEventType()),
 							ie.getRequestId());
 				})
@@ -47,10 +46,6 @@ public class ImageEventsEmitter {
 	public Observable<ImageEvent> imageEventsByType(
 			EnumSet<EImageEventType> imageEventTypes) {
 		return imageEventsByType(false, imageEventTypes);
-	}
-
-	public String requestId() {
-		return requestId.get();
 	}
 
 	@PreDestroy
