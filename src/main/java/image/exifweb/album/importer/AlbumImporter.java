@@ -209,12 +209,13 @@ public class AlbumImporter {
 		if (!isNewAlbum) {
 			albumService.deleteNotFoundImages(imageNames, album);
 		}
+		// todo: make sure to dispose even when an exception occurs
+		subscription.dispose();
 		if (existsAtLeast1ImageChange.getValue()) {
 			albumEventsEmitter.emit(AlbumEventBuilder
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
 		}
-		subscription.dispose();
 		sw.stop();
 		logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
 	}

@@ -65,7 +65,8 @@ public class AlbumImporterCtrl {
 			List<Album> newAlbums = new ArrayList<>();
 			Disposable subscription = albumEventsEmitter
 					.albumEventsByTypes(true, EnumSet.of(EAlbumEventType.ALBUM_IMPORTED))
-					.take(1L).subscribe(
+					.take(1L)
+					.subscribe(
 							ae -> newAlbums.add(ae.getAlbum()),
 							t -> {
 								logger.error(t.getMessage(), t);
@@ -80,6 +81,7 @@ public class AlbumImporterCtrl {
 						newAlbums.stream().map(Album::getName)
 								.collect(Collectors.joining(", ")));
 			}
+			// todo: make sure to dispose even when an exception occurs
 			subscription.dispose();
 			logger.debug("[importNewAlbumsOnly] END");
 		}, asyncExecutor);

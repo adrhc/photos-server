@@ -2,6 +2,8 @@ package image.exifweb.album.events;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import org.slf4j.Logger;
@@ -24,15 +26,34 @@ public class AlbumEventsEmitter {
 	private Subject<AlbumEvent> albumEvents = PublishSubject.<AlbumEvent>create().toSerialized();
 //	private PublishSubject<AlbumEvent> albumEvents = PublishSubject.create();
 
+
 	public void emit(AlbumEvent albumEvent) {
 		albumEvent.setRequestId(requestId.get());
 		albumEvents.onNext(albumEvent);
 	}
 
-	public Disposable subscribe(EAlbumEventType albumEventType,
-	                            Consumer<AlbumEvent> onNext, Consumer<? super Throwable> onError) {
+	public Disposable subscribeAsync(EAlbumEventType albumEventType,
+	                                 Consumer<AlbumEvent> onNext) {
 		return albumEventsByTypes(false, EnumSet.of(albumEventType))
-				.subscribe(onNext::accept, onError::accept);
+				.observeOn(Schedulers.io())
+				.subscribe(onNext::accept,
+						t -> {
+							logger.error(t.getMessage(), t);
+							logger.error("[{}]", albumEventType.name());
+						});
+	}
+
+	public Disposable subscribeAsync(EAlbumEventType albumEventType,
+	                                 Predicate<AlbumEvent> filter,
+	                                 Consumer<AlbumEvent> onNext) {
+		return albumEventsByTypes(false, EnumSet.of(albumEventType))
+				.observeOn(Schedulers.io())
+				.filter(filter)
+				.subscribe(onNext::accept,
+						t -> {
+							logger.error(t.getMessage(), t);
+							logger.error("[{}]", albumEventType.name());
+						});
 	}
 
 	public Observable<AlbumEvent> albumEventsByTypes(

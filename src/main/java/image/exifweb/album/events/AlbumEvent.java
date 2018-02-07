@@ -52,4 +52,11 @@ public class AlbumEvent extends HashMap<EAlbumEventDetail, Object> {
 	public <T> T getValue(EAlbumEventDetail key) {
 		return (T) get(key);
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "\nAlbumEvent{" +
+				"eventType=" + eventType +
+				'}';
+	}
 }

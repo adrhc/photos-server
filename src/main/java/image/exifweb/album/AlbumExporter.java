@@ -5,7 +5,6 @@ import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverComp;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
-import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
 import image.exifweb.sys.AppConfigService;
 import org.slf4j.Logger;
@@ -19,6 +18,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
+import static image.exifweb.album.events.EAlbumEventType.JSON_UPDATED;
 
 /**
  * Created by adr on 1/28/18.
@@ -117,24 +119,19 @@ public class AlbumExporter {
 		// todo: find the problem cause
 //		albumService.clearDirtyForAlbum(album.getId());
 		albumEventsEmitter.emit(AlbumEventBuilder
-				.of(EAlbumEventType.JSON_UPDATED)
-				.album(album).build());
+				.of(JSON_UPDATED).album(album).build());
 		logger.debug("END {}", album.getName());
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		albumEventsEmitter.subscribe(EAlbumEventType.ALBUM_IMPORTED,
+		albumEventsEmitter.subscribeAsync(ALBUM_IMPORTED,
 				(ae) -> {
 					if (ae.getAlbum() == null) {
 						writeJsonForAlbumSafe(ae.getAlbumName());
 					} else {
 						writeJsonForAlbumSafe(ae.getAlbum());
 					}
-				},
-				t -> {
-					logger.error(t.getMessage(), t);
-					logger.error("[ALBUM_IMPORTED]");
 				});
 		logger.debug("END");
 	}

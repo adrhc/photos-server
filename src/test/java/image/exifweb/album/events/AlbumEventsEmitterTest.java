@@ -40,10 +40,10 @@ public class AlbumEventsEmitterTest {
 
 		Disposable subscription = albumEventsEmitter
 				.albumEventsByTypes(true, EnumSet.allOf(EAlbumEventType.class))
-//				.subscribeOn(Schedulers.newThread())
-				.observeOn(Schedulers.newThread())
+//				.subscribeOn(Schedulers.io())
+				.observeOn(Schedulers.io())
 				.doOnNext(ae -> logger.debug("[subscription.doOnNext] {}", ae.getAlbum().getName()))
-				.observeOn(Schedulers.newThread())
+				.observeOn(Schedulers.io())
 				.subscribe(
 						ae -> {
 							logger.debug("[subscribe] {}", ae.getAlbum().getName());

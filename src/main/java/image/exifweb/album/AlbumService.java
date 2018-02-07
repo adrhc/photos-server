@@ -374,26 +374,26 @@ public class AlbumService {
 //		coverImgChanged.mergeWith(coverImgDeleted)
 //				.subscribe(album -> this.evictCoversCache(), t -> ...);
 		// album's json files updated
-		albumEventsEmitter.subscribe(JSON_UPDATED,
+		albumEventsEmitter.subscribeAsync(JSON_UPDATED,
 				ae -> {
 					if (ae.getAlbum() == null) {
-						logger.debug("[JSON_UPDATED] album is null");
+						logger.error("[JSON_UPDATED] album is null");
+						return false;
 					} else {
 						logger.debug("[JSON_UPDATED] album id = {}, name = {}",
 								ae.getAlbum().getId(), ae.getAlbum().getName());
+						return true;
 					}
+				},
+				ae -> {
 					// on error the subscription will be disposed!
 					// this try ... catch protects against that
 					try {
 						clearDirtyForAlbum(ae.getAlbum().getId());
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
-						logger.error("[JSON_UPDATED] clearDirtyForAlbum\n", ae.getAlbum().toString());
+						logger.error("[JSON_UPDATED] clearDirtyForAlbum\n", ae.toString());
 					}
-				},
-				t -> {
-					logger.error(t.getMessage(), t);
-					logger.error("[JSON_UPDATED]");
 				});
 		logger.debug("END");
 	}

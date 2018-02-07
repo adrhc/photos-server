@@ -1,3 +1,5 @@
+package image.exifweb.picture;
+
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
