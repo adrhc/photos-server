@@ -4,7 +4,6 @@ import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.image.ImageService;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.image.events.EImageEventType;
-import image.exifweb.image.events.ImageEvent;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
@@ -24,7 +23,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.EnumSet;
 import java.util.List;
 
 import static image.exifweb.album.events.EAlbumEventType.JSON_UPDATED;
@@ -247,12 +245,14 @@ public class AlbumService {
 			if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
+				checkAndRemoveAlbumCover(image, album);
 				imageService.removeNoTx(image);
 				imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
+			checkAndRemoveAlbumCover(image, album);
 			image.setDeleted(true);
 			imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
 		});
@@ -334,45 +334,24 @@ public class AlbumService {
 		return true;
 	}
 
-	private boolean isCoverImageForAlbum(Image image, Album album) {
-		return album.getCover().getId().equals(image.getId());
+	private void checkAndRemoveAlbumCover(Image image, Album album) {
+		if (!isImageTheCoverForAlbum(image, album)) {
+			return;
+		}
+		try {
+			removeAlbumCover(album.getId());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			logger.error("[DELETED, MARKED_DELETED] removeAlbumCover\n", album.toString());
+		}
 	}
 
-	private boolean isCoverImage(Image image) {
-		return isCoverImageForAlbum(image, image.getAlbum());
+	private boolean isImageTheCoverForAlbum(Image image, Album album) {
+		return album.getCover() != null && album.getCover().getId().equals(image.getId());
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		// cover image changed (dealt with below)
-//		Observable<Album> coverImgChanged = imageEventsEmitter
-//				.imageEventsByType(EnumSet.of(THUMB_LAST_MODIF_DATE_UPDATED, EXIF_UPDATED))
-//				.filter(ie -> isCoverImage(ie.getImage()))
-//				.map(ie -> ie.getImage().getAlbum());
-		// cover image deleted
-		imageEventsEmitter
-				.imageEventsByType(EnumSet.of(DELETED, MARKED_DELETED))
-				.filter(ie -> ie.getAlbum().getCover() != null)
-				.filter(ie -> isCoverImageForAlbum(ie.getImage(), ie.getAlbum()))
-				.map(ImageEvent::getAlbum)
-				.subscribe(
-						a -> {
-							// on error the subscription will be disposed!
-							// this try ... catch protects against that
-							try {
-								removeAlbumCover(a.getId());
-							} catch (Exception e) {
-								logger.error(e.getMessage(), e);
-								logger.error("[DELETED, MARKED_DELETED] removeAlbumCover\n", a.toString());
-							}
-						},
-						t -> {
-							logger.error(t.getMessage(), t);
-							logger.error("[DELETED, MARKED_DELETED]");
-						});
-		// cover image changed or deleted
-//		coverImgChanged.mergeWith(coverImgDeleted)
-//				.subscribe(album -> this.evictCoversCache(), t -> ...);
 		// album's json files updated
 		albumEventsEmitter.subscribeAsync(JSON_UPDATED,
 				ae -> {

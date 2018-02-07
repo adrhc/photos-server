@@ -43,11 +43,6 @@ public class ImageEventsEmitter {
 				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(requestId.get()));
 	}
 
-	public Observable<ImageEvent> imageEventsByType(
-			EnumSet<EImageEventType> imageEventTypes) {
-		return imageEventsByType(false, imageEventTypes);
-	}
-
 	@PreDestroy
 	public void preDestroy() {
 		imageEvents.onComplete();
