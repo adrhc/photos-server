@@ -1,7 +1,6 @@
 package image.exifweb.album.importer;
 
 import image.exifweb.album.events.AlbumEventsEmitter;
-import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.persistence.Album;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
@@ -20,7 +19,6 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

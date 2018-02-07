@@ -1,9 +1,6 @@
 package image.exifweb.album.events;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 import org.slf4j.Logger;
@@ -11,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.util.EnumSet;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * Created by adr on 1/28/18.
