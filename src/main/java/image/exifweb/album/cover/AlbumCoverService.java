@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
  * Created by adr on 2/2/18.
  */
 @Component
-public class AlbumCoverComp {
-	//	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverComp.class);
+public class AlbumCoverService {
+	//	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverService.class);
 	@Inject
 	private AlbumService albumService;
 	@Inject

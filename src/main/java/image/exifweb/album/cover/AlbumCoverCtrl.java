@@ -23,7 +23,7 @@ public class AlbumCoverCtrl {
 	@Inject
 	private AlbumCoverRepo albumCoverRepo;
 	@Inject
-	private AlbumCoverComp albumCoverComp;
+	private AlbumCoverService albumCoverService;
 
 	/**
 	 * Pt a testa checkNotModified TREBUIE ca browser cache sa fie activat!
@@ -42,14 +42,14 @@ public class AlbumCoverCtrl {
 			return null;
 		}
 		logger.debug("covers modified since: {}", sdf.format(albumCoversLastUpdateDate));
-		return albumCoverComp.getCovers();
+		return albumCoverService.getCovers();
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public AlbumCover getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		AlbumCover albumCover = albumCoverComp.getCoverById(id);
+		AlbumCover albumCover = albumCoverService.getCoverById(id);
 		if (webRequest.checkNotModified(albumCover.getLastUpdate().getTime())) {
 			return null;
 		}
@@ -61,7 +61,7 @@ public class AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public AlbumCover search(@RequestParam String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		AlbumCover albumCover = albumCoverComp.getCoverByName(name);
+		AlbumCover albumCover = albumCoverService.getCoverByName(name);
 		if (webRequest.checkNotModified(albumCover.getLastUpdate().getTime())) {
 			return null;
 		}

@@ -2,7 +2,7 @@ package image.exifweb.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.album.cover.AlbumCover;
-import image.exifweb.album.cover.AlbumCoverComp;
+import image.exifweb.album.cover.AlbumCoverService;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.sys.AppConfigService;
@@ -39,7 +39,7 @@ public class AlbumExporter {
 	@Inject
 	private ObjectMapper jsonMapper;
 	@Inject
-	private AlbumCoverComp albumCoverComp;
+	private AlbumCoverService albumCoverService;
 
 	public boolean writeJsonForAlbumSafe(String name) {
 		Album album = albumService.getAlbumByName(name);
@@ -82,7 +82,7 @@ public class AlbumExporter {
 	public boolean writeJsonForAlbumsPageSafe() {
 		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
-		List<AlbumCover> albums = albumCoverComp.getCovers();
+		List<AlbumCover> albums = albumCoverService.getCovers();
 		try {
 			jsonMapper.writeValue(file, albums);
 			return true;
