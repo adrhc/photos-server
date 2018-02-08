@@ -4,7 +4,7 @@ import image.exifweb.album.AlbumService;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
-import image.exifweb.album.importer.exif.ImageExif;
+import image.exifweb.album.importer.exif.ExifExtractorService;
 import image.exifweb.image.ImageService;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;
@@ -46,7 +46,7 @@ public class AlbumImporterService {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private ImageExif imageExif;
+	private ExifExtractorService exifExtractorService;
 	@Inject
 	private ImageService imageService;
 	@Inject
@@ -230,7 +230,7 @@ public class AlbumImporterService {
 			logger.error("Wrong path (is a directory):\n{}", path.getPath());
 			throw new UnsupportedOperationException("Wrong path (is a directory):\n" + path.getPath());
 		}
-		Image image = imageExif.extractExif(path);
+		Image image = exifExtractorService.extractExif(path);
 		if (image == null) {
 			logger.info("{} no longer exists!", path.getPath());
 			return false;
@@ -263,7 +263,7 @@ public class AlbumImporterService {
 	@Transactional
 	private void updateExifPropertiesInDB(Image image, Integer imageId) {
 		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
-		imageExif.copyExifProperties(image, dbImage);
+		exifExtractorService.copyExifProperties(image, dbImage);
 	}
 
 	/**

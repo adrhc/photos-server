@@ -30,8 +30,8 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ImageExif {
-	private static final Logger logger = LoggerFactory.getLogger(ImageExif.class);
+public class ExifExtractorService {
+	private static final Logger logger = LoggerFactory.getLogger(ExifExtractorService.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
