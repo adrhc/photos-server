@@ -169,7 +169,7 @@ public class AlbumRepository {
 		Session session = sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
-			q = session.createQuery("SELECT new image.exifweb.album.AlbumPage(" +
+			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
 					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
@@ -183,7 +183,7 @@ public class AlbumRepository {
 			// searches case-sensitive for name!
 			q.setString("toSearch", "%" + toSearch + "%");
 		} else {
-			q = session.createQuery("SELECT new image.exifweb.album.AlbumPage(" +
+			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
 					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +

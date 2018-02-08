@@ -28,7 +28,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-@RequestMapping("/json/album")
+@RequestMapping("/json/exporter")
 public class AlbumExporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterCtrl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
