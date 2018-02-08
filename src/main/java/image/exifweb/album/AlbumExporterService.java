@@ -25,11 +25,11 @@ import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
  * Created by adr on 1/28/18.
  */
 @Service
-public class AlbumExporter {
+public class AlbumExporterService {
 	public static final String ALBUMS_PAGE_JSON = "albums.json";
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
-	private static final Logger logger = LoggerFactory.getLogger(AlbumExporter.class);
+	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject

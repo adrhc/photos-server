@@ -34,7 +34,7 @@ public class AlbumCtrl {
 	@Inject
 	private AlbumRepository albumRepository;
 	@Inject
-	private AlbumExporter albumExporter;
+	private AlbumExporterService albumExporterService;
 
 	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -42,8 +42,8 @@ public class AlbumCtrl {
 	public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			albumExporter.writeJsonForAlbumsPageSafe();
-			deferredResult.setResult("message", AlbumExporter.ALBUMS_PAGE_JSON + " updated!");
+			albumExporterService.writeJsonForAlbumsPageSafe();
+			deferredResult.setResult("message", AlbumExporterService.ALBUMS_PAGE_JSON + " updated!");
 			logger.debug("[updateJsonForAlbumsPage] END");
 		}, asyncExecutor);
 	}
@@ -54,7 +54,7 @@ public class AlbumCtrl {
 	public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			switch (albumExporter.writeJsonForAllAlbumsSafe()) {
+			switch (albumExporterService.writeJsonForAllAlbumsSafe()) {
 				case fail:
 					deferredResult.setResult("message", "All JSON files NOT updated!");
 					break;
@@ -74,7 +74,7 @@ public class AlbumCtrl {
 	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonValue jsonValue) {
 		logger.debug("BEGIN {}", jsonValue.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			if (albumExporter.writeJsonForAlbumSafe(jsonValue.getValue())) {
+			if (albumExporterService.writeJsonForAlbumSafe(jsonValue.getValue())) {
 				deferredResult.setResult("message",
 						"JSON files updated for album " + jsonValue.getValue() + "!");
 			} else {

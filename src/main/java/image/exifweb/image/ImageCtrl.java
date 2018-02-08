@@ -1,6 +1,6 @@
 package image.exifweb.image;
 
-import image.exifweb.album.AlbumExporter;
+import image.exifweb.album.AlbumExporterService;
 import image.exifweb.album.AlbumPage;
 import image.exifweb.album.AlbumRepository;
 import image.exifweb.persistence.Image;
@@ -60,8 +60,8 @@ public class ImageCtrl {
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
 			Model model) {
 		return () -> {
-			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
-			model.addAttribute(AlbumExporter.PAGE_COUNT,
+			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
+			model.addAttribute(AlbumExporterService.PAGE_COUNT,
 					albumRepository.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
 			return model;
 		};
