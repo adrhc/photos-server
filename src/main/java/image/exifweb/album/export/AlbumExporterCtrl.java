@@ -1,6 +1,7 @@
 package image.exifweb.album.export;
 
 import image.exifweb.album.AlbumRepository;
+import image.exifweb.album.E3ResultTypes;
 import image.exifweb.persistence.Album;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -30,6 +32,12 @@ import java.util.Map;
 public class AlbumExporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterCtrl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
+	private static final Map<E3ResultTypes, String> ALL_ALBUMS_JSON_UPDATE_MSG =
+			new HashMap<E3ResultTypes, String>() {{
+				put(E3ResultTypes.success, "All JSON files updated!");
+				put(E3ResultTypes.partial, "Some JSON files updated some NOT!");
+				put(E3ResultTypes.fail, "All JSON files NOT updated!");
+			}};
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
@@ -55,16 +63,8 @@ public class AlbumExporterCtrl {
 	public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			switch (albumExporterService.writeJsonForAllAlbumsSafe()) {
-				case fail:
-					deferredResult.setResult("message", "All JSON files NOT updated!");
-					break;
-				case success:
-					deferredResult.setResult("message", "All JSON files updated!");
-					break;
-				case partial:
-					deferredResult.setResult("message", "Some JSON files updated some NOT!");
-			}
+			E3ResultTypes e3Result = albumExporterService.writeJsonForAllAlbumsSafe();
+			deferredResult.setResult("message", ALL_ALBUMS_JSON_UPDATE_MSG.get(e3Result));
 			logger.debug("[updateJsonForAllAlbums] END");
 		}, asyncExecutor);
 	}
