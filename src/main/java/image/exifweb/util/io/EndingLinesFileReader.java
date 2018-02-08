@@ -1,6 +1,6 @@
 package image.exifweb.util.io;
 
-import image.exifweb.sys.AppConfigService;
+import image.exifweb.appconfig.AppConfigService;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

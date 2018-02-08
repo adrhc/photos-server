@@ -1,7 +1,7 @@
 package image.exifweb.album.page;
 
 import image.exifweb.album.export.AlbumExporterService;
-import image.exifweb.sys.AppConfigService;
+import image.exifweb.appconfig.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

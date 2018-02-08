@@ -10,7 +10,7 @@ import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
-import image.exifweb.sys.AppConfigService;
+import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.util.ValueHolder;
 import io.reactivex.disposables.Disposable;
 import org.hibernate.Query;

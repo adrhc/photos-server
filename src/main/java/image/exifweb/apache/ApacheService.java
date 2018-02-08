@@ -1,6 +1,6 @@
 package image.exifweb.apache;
 
-import image.exifweb.sys.AppConfigService;
+import image.exifweb.appconfig.AppConfigService;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
