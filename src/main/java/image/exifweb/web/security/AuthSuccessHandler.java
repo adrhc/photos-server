@@ -1,6 +1,6 @@
 package image.exifweb.web.security;
 
-import image.exifweb.util.frameworks.hbm.HibernateAwareObjectMapper;
+import image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper;
 import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;

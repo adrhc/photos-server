@@ -2,7 +2,7 @@ package image.exifweb.album.importer;
 
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.persistence.Album;
-import image.exifweb.util.frameworks.deferredresult.KeyValueDeferredResult;
+import image.exifweb.util.frameworks.spring.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonStringValue;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;

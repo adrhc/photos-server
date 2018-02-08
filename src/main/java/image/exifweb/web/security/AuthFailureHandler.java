@@ -1,6 +1,6 @@
 package image.exifweb.web.security;
 
-import image.exifweb.util.frameworks.hbm.HibernateAwareObjectMapper;
+import image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
