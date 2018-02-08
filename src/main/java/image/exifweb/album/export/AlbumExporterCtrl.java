@@ -33,9 +33,9 @@ public class AlbumExporterCtrl {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	private static final Map<E3ResultTypes, String> ALL_ALBUMS_JSON_UPDATE_MSG =
 			new HashMap<E3ResultTypes, String>() {{
-				put(E3ResultTypes.success, "All JSON files updated!");
-				put(E3ResultTypes.partial, "Some JSON files updated some NOT!");
-				put(E3ResultTypes.fail, "All JSON files NOT updated!");
+				put(E3ResultTypes.SUCCESS, "All JSON files updated!");
+				put(E3ResultTypes.PARTIAL, "Some JSON files updated some NOT!");
+				put(E3ResultTypes.FAIL, "All JSON files NOT updated!");
 			}};
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;

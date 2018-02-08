@@ -71,9 +71,9 @@ public class AlbumExporterService {
 		}
 		if (existsFail) {
 			return existsSuccess ?
-					E3ResultTypes.partial : E3ResultTypes.fail;
+					E3ResultTypes.PARTIAL : E3ResultTypes.FAIL;
 		} else {
-			return E3ResultTypes.success;
+			return E3ResultTypes.SUCCESS;
 		}
 	}
 

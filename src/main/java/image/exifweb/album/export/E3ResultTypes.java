@@ -7,5 +7,5 @@ package image.exifweb.album.export;
  * Created by adr on 1/27/18.
  */
 public enum E3ResultTypes {
-	success, fail, partial
+	SUCCESS, FAIL, PARTIAL
 }
