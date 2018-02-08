@@ -102,7 +102,7 @@ public class AlbumRepository {
 	 * Scenario (with browser cache disabled):
 	 * 1. ImageService.changeRating sets album.lastModified = 2018:02:04 20:25:34.240
 	 * 2. mysql saves 2018:02:04 20:25:34.000 (without 240 milliseconds!)
-	 * 3. AlbumCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
+	 * 3. AlbumExporterCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
 	 * 3. getAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
 	 * 4. AlbumRepository.clearDirtyForAlbum will fail with optimistic lock because is using 2018:02:04 20:25:34.240!
 	 * 5. I guess there's a rule that invalidates the cache for the specific entity (Album for this case) involved with a failed transaction.
