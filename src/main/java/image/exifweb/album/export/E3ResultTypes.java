@@ -1,4 +1,4 @@
-package image.exifweb.album;
+package image.exifweb.album.export;
 
 /**
  * Role:
