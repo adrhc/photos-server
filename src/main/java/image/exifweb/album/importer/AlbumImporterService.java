@@ -11,7 +11,7 @@ import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.util.ValueHolder;
+import image.exifweb.util.MutableValueHolder;
 import io.reactivex.disposables.Disposable;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -183,7 +183,7 @@ public class AlbumImporterService {
 		}
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
-		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
+		MutableValueHolder<Boolean> existsAtLeast1ImageChange = MutableValueHolder.of(false);
 		Disposable subscription = imageEventsEmitter
 				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
