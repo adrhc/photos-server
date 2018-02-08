@@ -32,7 +32,7 @@ public class AlbumCtrl {
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
-	private AlbumService albumService;
+	private AlbumRepository albumRepository;
 	@Inject
 	private AlbumExporter albumExporter;
 
@@ -90,7 +90,7 @@ public class AlbumCtrl {
 	@ResponseBody
 	public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		Album album = albumService.getAlbumById(id);
+		Album album = albumRepository.getAlbumById(id);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
@@ -103,7 +103,7 @@ public class AlbumCtrl {
 	@ResponseBody
 	public Album getAlbumByName(@PathVariable String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		Album album = albumService.getAlbumByName(name);
+		Album album = albumRepository.getAlbumByName(name);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}

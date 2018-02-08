@@ -35,8 +35,8 @@ import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumService {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumService.class);
+public class AlbumRepository {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumRepository.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	/**
 	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
@@ -103,7 +103,7 @@ public class AlbumService {
 	 * 2. mysql saves 2018:02:04 20:25:34.000 (without 240 milliseconds!)
 	 * 3. AlbumCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
 	 * 3. getAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
-	 * 4. AlbumService.clearDirtyForAlbum will fail with optimistic lock because is using 2018:02:04 20:25:34.240!
+	 * 4. AlbumRepository.clearDirtyForAlbum will fail with optimistic lock because is using 2018:02:04 20:25:34.240!
 	 * 5. I guess there's a rule that invalidates the cache for the specific entity (Album for this case) involved with a failed transaction.
 	 * 6. Next time the same Album is required it is loaded from DB (so it has the DB value, e.g. 2018:02:04 20:25:34.000).
 	 *

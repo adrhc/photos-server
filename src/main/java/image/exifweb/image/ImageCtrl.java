@@ -2,7 +2,7 @@ package image.exifweb.image;
 
 import image.exifweb.album.AlbumExporter;
 import image.exifweb.album.AlbumPage;
-import image.exifweb.album.AlbumService;
+import image.exifweb.album.AlbumRepository;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ImageCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(ImageCtrl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	@Inject
-	private AlbumService albumService;
+	private AlbumRepository albumRepository;
 	@Inject
 	private ImageService imageService;
 	@Inject
@@ -62,7 +62,7 @@ public class ImageCtrl {
 		return () -> {
 			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
 			model.addAttribute(AlbumExporter.PAGE_COUNT,
-					albumService.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
+					albumRepository.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
 			return model;
 		};
 	}
@@ -80,7 +80,7 @@ public class ImageCtrl {
 			WebRequest webRequest) {
 		return () -> {
 			List<AlbumPage> albumPages =
-					albumService.getPage(pageNr, sort, toSearch, viewHidden, viewOnlyPrintable, albumId);
+					albumRepository.getPage(pageNr, sort, toSearch, viewHidden, viewOnlyPrintable, albumId);
 			/*
 			 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 			 * location /photos/app/
@@ -130,6 +130,6 @@ public class ImageCtrl {
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void putAlbumCover(@PathVariable Integer imageId) throws IOException {
-		albumService.putAlbumCover(imageId);
+		albumRepository.putAlbumCover(imageId);
 	}
 }

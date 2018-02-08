@@ -1,6 +1,6 @@
 package image.exifweb.album.cover;
 
-import image.exifweb.album.AlbumService;
+import image.exifweb.album.AlbumRepository;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
@@ -17,23 +17,23 @@ import java.util.stream.Collectors;
 public class AlbumCoverService {
 	//	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverService.class);
 	@Inject
-	private AlbumService albumService;
+	private AlbumRepository albumRepository;
 	@Inject
 	private ImageUtils imageUtils;
 
 	public List<AlbumCover> getCovers() {
-		return albumService.getAlbums().stream()
+		return albumRepository.getAlbums().stream()
 				.map(this::convertAlbumToCover)
 				.collect(Collectors.toList());
 	}
 
 	public AlbumCover getCoverById(Integer albumId) {
-		Album album = albumService.getAlbumById(albumId);
+		Album album = albumRepository.getAlbumById(albumId);
 		return convertAlbumToCover(album);
 	}
 
 	public AlbumCover getCoverByName(String albumName) {
-		Album album = albumService.getAlbumByName(albumName);
+		Album album = albumRepository.getAlbumByName(albumName);
 		return convertAlbumToCover(album);
 	}
 

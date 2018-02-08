@@ -1,6 +1,6 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.album.AlbumService;
+import image.exifweb.album.AlbumRepository;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
@@ -50,7 +50,7 @@ public class AlbumImporterService {
 	@Inject
 	private ImageService imageService;
 	@Inject
-	private AlbumService albumService;
+	private AlbumRepository albumRepository;
 	@Inject
 	private AlbumEventsEmitter albumEventsEmitter;
 	@Inject
@@ -71,7 +71,7 @@ public class AlbumImporterService {
 			logger.warn("{} este gol!", albumPath.getPath());
 			return false;
 		}
-		Album album = albumService.getAlbumByName(albumPath.getName());
+		Album album = albumRepository.getAlbumByName(albumPath.getName());
 		if (album != null) {
 			// albumPath este un album deja importat deci NU nou
 			return false;
@@ -170,7 +170,7 @@ public class AlbumImporterService {
 		if (!noFiles) {
 			Arrays.sort(files);
 		}
-		Album album = albumService.getAlbumByName(path.getName());
+		Album album = albumRepository.getAlbumByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
 			// album inexistent in DB deci nou
@@ -180,7 +180,7 @@ public class AlbumImporterService {
 				return;
 			}
 			// creem un nou album (dir aferent are poze)
-			album = albumService.create(path.getName());
+			album = albumRepository.create(path.getName());
 		}
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
@@ -207,7 +207,7 @@ public class AlbumImporterService {
 			}
 		}
 		if (!isNewAlbum) {
-			albumService.deleteNotFoundImages(imageNames, album);
+			albumRepository.deleteNotFoundImages(imageNames, album);
 		}
 		// todo: make sure to dispose even when an exception occurs
 		subscription.dispose();
