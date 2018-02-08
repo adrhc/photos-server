@@ -35,7 +35,7 @@ public class AlbumImporterCtrl {
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
-	private AlbumImporter albumImporter;
+	private AlbumImporterService albumImporterService;
 	@Inject
 	private AlbumEventsEmitter albumEventsEmitter;
 
@@ -46,10 +46,10 @@ public class AlbumImporterCtrl {
 		logger.debug("BEGIN {}", json1Value.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (StringUtils.hasText(json1Value.getValue())) {
-				albumImporter.importAlbumByName(json1Value.getValue());
+				albumImporterService.importAlbumByName(json1Value.getValue());
 				deferredResult.setResult("message", "Reimported " + json1Value.getValue());
 			} else {
-				albumImporter.importAllFromAlbumsRoot();
+				albumImporterService.importAllFromAlbumsRoot();
 				deferredResult.setResult("message", "Reimported all albums");
 			}
 			logger.debug("[reImport] END {}", json1Value.getValue());
@@ -72,7 +72,7 @@ public class AlbumImporterCtrl {
 								logger.error(t.getMessage(), t);
 								logger.error("[ALBUM_IMPORTED] newAlbums");
 							});
-			albumImporter.importNewAlbumsOnly();
+			albumImporterService.importNewAlbumsOnly();
 			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
 			if (newAlbums.isEmpty()) {
 				deferredResult.setResult("message", "No new album to import!");

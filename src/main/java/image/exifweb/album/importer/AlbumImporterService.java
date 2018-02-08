@@ -39,8 +39,8 @@ import java.util.stream.Stream;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumImporter {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumImporter.class);
+public class AlbumImporterService {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterService.class);
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
