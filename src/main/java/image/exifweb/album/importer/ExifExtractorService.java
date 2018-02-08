@@ -10,7 +10,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
 import image.exifweb.persistence.Image;
-import image.exifweb.sys.ProcessInfoService;
+import image.exifweb.util.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
