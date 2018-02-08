@@ -1,4 +1,4 @@
-package image.exifweb.album;
+package image.exifweb.album.page;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

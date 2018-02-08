@@ -1,6 +1,7 @@
 package image.exifweb.album;
 
 import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.album.page.AlbumPage;
 import image.exifweb.image.ImageService;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.image.events.EImageEventType;

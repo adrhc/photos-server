@@ -1,7 +1,7 @@
 package image.exifweb.image;
 
 import image.exifweb.album.AlbumExporterService;
-import image.exifweb.album.AlbumPage;
+import image.exifweb.album.page.AlbumPage;
 import image.exifweb.album.AlbumRepository;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
