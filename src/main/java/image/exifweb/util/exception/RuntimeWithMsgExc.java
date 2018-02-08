@@ -1,4 +1,4 @@
-package image.exifweb.frameworks.exception;
+package image.exifweb.util.exception;
 
 /**
  * Created with IntelliJ IDEA.
