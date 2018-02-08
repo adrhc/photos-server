@@ -1,5 +1,6 @@
 package image.exifweb.album;
 
+import image.exifweb.album.export.AlbumExporterService;
 import image.exifweb.persistence.Album;
 import image.exifweb.util.deferredresult.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonValue;
