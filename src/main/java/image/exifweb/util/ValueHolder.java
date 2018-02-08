@@ -1,9 +1,11 @@
 package image.exifweb.util;
 
+import java.io.Serializable;
+
 /**
  * Created by adr on 1/30/18.
  */
-public class ValueHolder<T> {
+public class ValueHolder<T extends Serializable> implements Serializable {
 	private T value;
 
 	public ValueHolder() {
@@ -13,7 +15,7 @@ public class ValueHolder<T> {
 		this.value = value;
 	}
 
-	public static <T> ValueHolder<T> of(T value) {
+	public static <T1 extends Serializable> ValueHolder<T1> of(T1 value) {
 		return new ValueHolder<>(value);
 	}
 

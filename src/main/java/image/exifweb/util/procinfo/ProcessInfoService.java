@@ -1,8 +1,7 @@
-package image.exifweb.util;
+package image.exifweb.util.procinfo;
 
 import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.appconfig.CPUMemSummaryDeferredResult;
-import image.exifweb.sys.process.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
