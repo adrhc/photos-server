@@ -1,16 +1,11 @@
 package image.exifweb.album;
 
-import image.exifweb.album.events.AlbumEventsEmitter;
-import image.exifweb.album.page.AlbumPage;
 import image.exifweb.image.ImageService;
-import image.exifweb.image.ImageUtils;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
-import image.exifweb.sys.AppConfigService;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -19,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
@@ -39,32 +33,12 @@ import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
 public class AlbumRepository {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepository.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
-	/**
-	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
-	 * <p>
-	 * image0_.status=IF(false, image0_.status, image0_.status
-	 * -(image0_.status & 1)-(image0_.status & 2)-(image0_.status & 4)-(image0_.status & 8))
-	 */
-	private static final String VIEW_HIDDEN_SQL =
-			"AND i.status = IF(:viewHidden, i.status, i.status " +
-					"- i.hidden - i.personal - i.ugly - i.duplicate) ";
-	/**
-	 * Shows only printable images.
-	 */
-	private static final String VIEW_PRINTABLE_SQL =
-			"AND i.status = IF(:viewOnlyPrintable, 16, i.status) ";
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private AppConfigService appConfigService;
-	@Inject
 	private ImageService imageService;
 	@Inject
-	private AlbumEventsEmitter albumEventsEmitter;
-	@Inject
 	private ImageEventsEmitter imageEventsEmitter;
-	@Inject
-	private ImageUtils imageUtils;
 
 	@Transactional
 	public List<Album> getAlbums() {
@@ -118,101 +92,6 @@ public class AlbumRepository {
 		return (Album) session.createCriteria(Album.class)
 				.setCacheable(true).add(Restrictions.eq("name", name))
 				.uniqueResult();
-	}
-
-	@Transactional(readOnly = true)
-	public int getPageCount(String toSearch, boolean viewHidden,
-	                        boolean viewOnlyPrintable, Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q;
-		if (StringUtils.hasText(toSearch)) {
-			q = session.createQuery("SELECT count(i) FROM Image i " +
-					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"AND i.name LIKE :toSearch");
-			// searches case-sensitive for name!
-			q.setParameter("toSearch", "%" + toSearch + "%");
-		} else {
-			q = session.createQuery("SELECT count(i) FROM Image i JOIN i.album a " +
-					"WHERE a.id = :albumId " +
-					"AND i.deleted = 0 " +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL);
-			q.setCacheable(!viewHidden && !viewOnlyPrintable);
-		}
-		if (albumId != -1) {
-			q.setInteger("albumId", albumId);
-		}
-		q.setBoolean("viewHidden", viewHidden);
-		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
-		return Double.valueOf(Math.ceil(((Number) q.uniqueResult()).doubleValue() /
-				appConfigService.getPhotosPerPage())).intValue();
-
-	}
-
-	/**
-	 * http://www.baeldung.com/hibernate-second-level-cache
-	 * - For all tables that are queried as part of cacheable queries, Hibernate keeps last update timestamps ...
-	 * <p>
-	 * ehcache logs for Album update:
-	 * - Pre-invalidating space [Album], timestamp: 6216125958041600
-	 * - Invalidating space [Album], timestamp: 6216125712445440
-	 * ehcache logs for a page-count query:
-	 * - Checking query spaces are up-to-date: [Album, Image]
-	 * - [Album] last update timestamp: 6216125712445440, result set timestamp: 6216124363251712
-	 * -         Cached query results were not up-to-date
-	 * so when Album or Image cache is not up to date this query becomes invalid.
-	 */
-	@Transactional(readOnly = true)
-	public List<AlbumPage> getPageFromDb(int pageNr, String sort, String toSearch,
-	                                     boolean viewHidden, boolean viewOnlyPrintable,
-	                                     Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query q;
-		if (StringUtils.hasText(toSearch)) {
-			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
-					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
-					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
-//					"thumbPath(a.name, i.thumbLastModified, i.name), " +
-//					"imagePath(a.name, i.thumbLastModified, i.name)) " +
-					"FROM Image i JOIN i.album a " +
-					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"AND i.name LIKE :toSearch " +
-					"ORDER BY i.dateTimeOriginal " + sort);
-			// searches case-sensitive for name!
-			q.setString("toSearch", "%" + toSearch + "%");
-		} else {
-			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
-					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
-					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
-//					"thumbPath(a.name, i.thumbLastModified, i.name), " +
-//					"imagePath(a.name, i.thumbLastModified, i.name)) " +
-					"FROM Image i JOIN i.album a " +
-					"WHERE a.id = :albumId AND i.deleted = 0 " +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"ORDER BY i.dateTimeOriginal " + sort);
-			q.setCacheable(!viewHidden && !viewOnlyPrintable);
-		}
-		if (albumId != -1) {
-			q.setInteger("albumId", albumId);
-		}
-		q.setBoolean("viewHidden", viewHidden);
-		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
-		q.setFirstResult((pageNr - 1) * appConfigService.getPhotosPerPage());
-		q.setMaxResults(appConfigService.getPhotosPerPage());
-		return q.list();
-	}
-
-	public List<AlbumPage> getPage(int pageNr, String sort, String toSearch,
-	                               boolean viewHidden, boolean viewOnlyPrintable,
-	                               Integer albumId) {
-		List<AlbumPage> thumbs = getPageFromDb(pageNr, sort,
-				toSearch, viewHidden, viewOnlyPrintable, albumId);
-		imageUtils.appendImageDimensions(thumbs);
-		imageUtils.appendImagePaths(thumbs);
-		return thumbs;
 	}
 
 	/**
@@ -324,8 +203,7 @@ public class AlbumRepository {
 		Album album = getAlbumById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
-			logger.debug("END dirty update cancelled (already false), {}",
-					sdf.format(album.getLastUpdate()));
+			logger.debug("END dirty update cancelled (already false)");
 			return false;
 		}
 		album.setDirty(false);
@@ -333,6 +211,12 @@ public class AlbumRepository {
 		return true;
 	}
 
+	/**
+	 * When image is cover for album then remove album's cover (set it to null).
+	 *
+	 * @param image
+	 * @param album
+	 */
 	private void checkAndRemoveAlbumCover(Image image, Album album) {
 		if (!isImageTheCoverForAlbum(image, album)) {
 			return;

@@ -5,6 +5,8 @@ import image.exifweb.album.AlbumRepository;
 import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverService;
 import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.album.page.AlbumPageRepository;
+import image.exifweb.album.page.AlbumPageService;
 import image.exifweb.persistence.Album;
 import image.exifweb.sys.AppConfigService;
 import io.reactivex.schedulers.Schedulers;
@@ -34,7 +36,11 @@ public class AlbumExporterService {
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
+	private AlbumPageRepository albumPageRepository;
+	@Inject
 	private AlbumRepository albumRepository;
+	@Inject
+	private AlbumPageService albumPageService;
 	@Inject
 	private AlbumEventsEmitter albumEventsEmitter;
 	@Inject
@@ -96,7 +102,7 @@ public class AlbumExporterService {
 
 	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
-		int pageCount = albumRepository.getPageCount(null, false, false, album.getId());
+		int pageCount = albumPageRepository.getPageCount(null, false, false, album.getId());
 		int photosPerPage = appConfigService.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
@@ -110,10 +116,10 @@ public class AlbumExporterService {
 		for (int i = 0; i < pageCount; i++) {
 			logger.debug("write page {} asc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
-					albumRepository.getPage(i + 1, "asc", null, false, false, album.getId()));
+					albumPageService.getPage(i + 1, "asc", null, false, false, album.getId()));
 			logger.debug("write page {} desc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
-					albumRepository.getPage(i + 1, "desc", null, false, false, album.getId()));
+					albumPageService.getPage(i + 1, "desc", null, false, false, album.getId()));
 		}
 		albumRepository.clearDirtyForAlbum(album.getId());
 		logger.debug("END {}", album.getName());

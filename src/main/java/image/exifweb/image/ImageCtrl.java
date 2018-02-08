@@ -1,8 +1,10 @@
 package image.exifweb.image;
 
+import image.exifweb.album.AlbumRepository;
 import image.exifweb.album.export.AlbumExporterService;
 import image.exifweb.album.page.AlbumPage;
-import image.exifweb.album.AlbumRepository;
+import image.exifweb.album.page.AlbumPageRepository;
+import image.exifweb.album.page.AlbumPageService;
 import image.exifweb.persistence.Image;
 import image.exifweb.sys.AppConfigService;
 import org.slf4j.Logger;
@@ -35,6 +37,10 @@ public class ImageCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(ImageCtrl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	@Inject
+	private AlbumPageRepository albumPageRepository;
+	@Inject
+	private AlbumPageService albumPageService;
+	@Inject
 	private AlbumRepository albumRepository;
 	@Inject
 	private ImageService imageService;
@@ -62,7 +68,7 @@ public class ImageCtrl {
 		return () -> {
 			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
 			model.addAttribute(AlbumExporterService.PAGE_COUNT,
-					albumRepository.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
+					albumPageRepository.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
 			return model;
 		};
 	}
@@ -80,7 +86,7 @@ public class ImageCtrl {
 			WebRequest webRequest) {
 		return () -> {
 			List<AlbumPage> albumPages =
-					albumRepository.getPage(pageNr, sort, toSearch, viewHidden, viewOnlyPrintable, albumId);
+					albumPageService.getPage(pageNr, sort, toSearch, viewHidden, viewOnlyPrintable, albumId);
 			/*
 			 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 			 * location /photos/app/
