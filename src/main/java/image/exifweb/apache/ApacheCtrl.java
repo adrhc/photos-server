@@ -1,6 +1,6 @@
 package image.exifweb.apache;
 
-import image.exifweb.util.json.JsonValue;
+import image.exifweb.util.json.JsonStringValue;
 import org.apache.commons.io.FileUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,8 +28,8 @@ public class ApacheCtrl {
 	@RequestMapping(value = "/getApacheLog", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ResponseBody
-	public JsonValue getApacheLog(@RequestParam String type,
-	                              WebRequest webRequest) throws IOException {
+	public JsonStringValue getApacheLog(@RequestParam String type,
+	                                    WebRequest webRequest) throws IOException {
 		File file;
 		if (type.equalsIgnoreCase(LOG_TYPE_ACCESS)) {
 			file = apacheService.getAccessLogFile();
@@ -39,6 +39,6 @@ public class ApacheCtrl {
 		if (webRequest.checkNotModified(file.lastModified())) {
 			return null;
 		}
-		return new JsonValue(FileUtils.readFileToString(file, "UTF-8"));
+		return new JsonStringValue(FileUtils.readFileToString(file, "UTF-8"));
 	}
 }

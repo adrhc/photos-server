@@ -1,6 +1,6 @@
 package image.exifweb.web.reqexchandler;
 
-import image.exifweb.sys.exception.RuntimeWithMsgExc;
+import image.exifweb.frameworks.exception.RuntimeWithMsgExc;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

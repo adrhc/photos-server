@@ -2,8 +2,8 @@ package image.exifweb.album.export;
 
 import image.exifweb.album.AlbumRepository;
 import image.exifweb.persistence.Album;
-import image.exifweb.util.deferredresult.KeyValueDeferredResult;
-import image.exifweb.util.json.JsonValue;
+import image.exifweb.frameworks.deferredresult.KeyValueDeferredResult;
+import image.exifweb.util.json.JsonStringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -71,15 +71,15 @@ public class AlbumExporterCtrl {
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonValue jsonValue) {
-		logger.debug("BEGIN {}", jsonValue.getValue());
+	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonStringValue jsonStringValue) {
+		logger.debug("BEGIN {}", jsonStringValue.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			if (albumExporterService.writeJsonForAlbumSafe(jsonValue.getValue())) {
+			if (albumExporterService.writeJsonForAlbumSafe(jsonStringValue.getValue())) {
 				deferredResult.setResult("message",
-						"JSON files updated for album " + jsonValue.getValue() + "!");
+						"JSON files updated for album " + jsonStringValue.getValue() + "!");
 			} else {
 				deferredResult.setResult("message",
-						"JSON files NOT updated for album " + jsonValue.getValue() + "!");
+						"JSON files NOT updated for album " + jsonStringValue.getValue() + "!");
 			}
 			logger.debug("[updateJsonFor1Album] END");
 		}, asyncExecutor);

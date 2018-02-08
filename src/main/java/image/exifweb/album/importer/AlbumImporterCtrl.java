@@ -2,8 +2,8 @@ package image.exifweb.album.importer;
 
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.persistence.Album;
-import image.exifweb.util.deferredresult.KeyValueDeferredResult;
-import image.exifweb.util.json.JsonValue;
+import image.exifweb.frameworks.deferredresult.KeyValueDeferredResult;
+import image.exifweb.util.json.JsonStringValue;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class AlbumImporterCtrl {
 	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonValue json1Value) {
+	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonStringValue json1Value) {
 		logger.debug("BEGIN {}", json1Value.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			if (StringUtils.hasText(json1Value.getValue())) {

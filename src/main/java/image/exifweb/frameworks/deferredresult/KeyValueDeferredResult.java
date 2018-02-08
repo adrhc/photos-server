@@ -1,4 +1,4 @@
-package image.exifweb.util.deferredresult;
+package image.exifweb.frameworks.deferredresult;
 
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.context.request.async.DeferredResult;
