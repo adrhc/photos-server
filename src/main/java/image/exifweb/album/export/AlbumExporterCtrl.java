@@ -40,7 +40,7 @@ public class AlbumExporterCtrl {
 				put(E3ResultTypes.PARTIAL, "Some JSON files updated some NOT!");
 				put(E3ResultTypes.FAIL, "No JSON file updated!");
 			}};
-	private static MessageFormat ALBUM_JSON_UPDATE_MSG_PATTERN =
+	private static final MessageFormat ALBUM_JSON_UPDATE_MSG_PATTERN =
 			new MessageFormat("JSON files {0}updated for album {1}!");
 	private static final Map<Boolean, Function<String, String>> ALBUM_JSON_UPDATE_MSG =
 			new HashMap<Boolean, Function<String, String>>() {{

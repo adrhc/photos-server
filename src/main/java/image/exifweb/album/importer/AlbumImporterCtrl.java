@@ -18,12 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Created by adr on 2/6/18.
@@ -32,10 +37,28 @@ import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
 @RequestMapping("/json/import")
 public class AlbumImporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterCtrl.class);
+	private static final MessageFormat REIMPORT_MSG_PATTERN = new MessageFormat("Reimported {0}");
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
 	private AlbumImporterService albumImporterService;
+	/**
+	 * Boolean = "albumName is empty?"
+	 */
+	private final Map<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>>
+			REIMPORT_CHOICES =
+			new HashMap<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>>() {{
+				put(TRUE, (albumName, deferredResult) -> {
+					albumImporterService.importAlbumByName(albumName);
+					deferredResult.setResult("message",
+							REIMPORT_MSG_PATTERN.format(new Object[]{albumName}));
+				});
+				put(FALSE, (albumName, deferredResult) -> {
+					albumImporterService.importAllFromAlbumsRoot();
+					deferredResult.setResult("message",
+							REIMPORT_MSG_PATTERN.format(new Object[]{"all albums"}));
+				});
+			}};
 	@Inject
 	private AlbumEventsEmitter albumEventsEmitter;
 
@@ -45,13 +68,9 @@ public class AlbumImporterCtrl {
 	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonStringValue json1Value) {
 		logger.debug("BEGIN {}", json1Value.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			if (StringUtils.hasText(json1Value.getValue())) {
-				albumImporterService.importAlbumByName(json1Value.getValue());
-				deferredResult.setResult("message", "Reimported " + json1Value.getValue());
-			} else {
-				albumImporterService.importAllFromAlbumsRoot();
-				deferredResult.setResult("message", "Reimported all albums");
-			}
+			String albumName = json1Value.getValue();
+			REIMPORT_CHOICES.get(StringUtils.hasText(albumName))
+					.accept(albumName, deferredResult);
 			logger.debug("[reImport] END {}", json1Value.getValue());
 		}, asyncExecutor);
 	}
