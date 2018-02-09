@@ -1,6 +1,5 @@
 package image.exifweb.album.export;
 
-import image.exifweb.album.AlbumRepository;
 import image.exifweb.util.frameworks.spring.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonStringValue;
 import org.slf4j.Logger;
@@ -15,9 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,9 +38,15 @@ public class AlbumExporterCtrl {
 			new HashMap<E3ResultTypes, String>() {{
 				put(E3ResultTypes.SUCCESS, "All JSON files updated!");
 				put(E3ResultTypes.PARTIAL, "Some JSON files updated some NOT!");
-				put(E3ResultTypes.FAIL, "All JSON files NOT updated!");
+				put(E3ResultTypes.FAIL, "No JSON file updated!");
 			}};
-
+	private static MessageFormat ALBUM_JSON_UPDATE_MSG_PATTERN =
+			new MessageFormat("JSON files {0}updated for album {1}!");
+	private static final Map<Boolean, Function<String, String>> ALBUM_JSON_UPDATE_MSG =
+			new HashMap<Boolean, Function<String, String>>() {{
+				put(TRUE, albumName -> ALBUM_JSON_UPDATE_MSG_PATTERN.format(new Object[]{"", albumName}));
+				put(FALSE, albumName -> ALBUM_JSON_UPDATE_MSG_PATTERN.format(new Object[]{"NOT ", albumName}));
+			}};
 	@Inject
 	private ThreadPoolTaskExecutor asyncExecutor;
 	@Inject
@@ -73,13 +82,10 @@ public class AlbumExporterCtrl {
 	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonStringValue jsonStringValue) {
 		logger.debug("BEGIN {}", jsonStringValue.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			if (albumExporterService.writeJsonForAlbumSafe(jsonStringValue.getValue())) {
-				deferredResult.setResult("message",
-						"JSON files updated for album " + jsonStringValue.getValue() + "!");
-			} else {
-				deferredResult.setResult("message",
-						"JSON files NOT updated for album " + jsonStringValue.getValue() + "!");
-			}
+			Boolean success = albumExporterService
+					.writeJsonForAlbumSafe(jsonStringValue.getValue());
+			deferredResult.setResult("message",
+					ALBUM_JSON_UPDATE_MSG.get(success).apply(jsonStringValue.getValue()));
 			logger.debug("[updateJsonFor1Album] END");
 		}, asyncExecutor);
 	}

@@ -45,9 +45,11 @@ public class AlbumPageCtrl {
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
 			Model model) {
 		return () -> {
-			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
+			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE,
+					appConfigService.getPhotosPerPage());
 			model.addAttribute(AlbumExporterService.PAGE_COUNT,
-					albumPageRepository.getPageCount(toSearch, viewHidden, viewOnlyPrintable, albumId));
+					albumPageRepository.getPageCount(toSearch,
+							viewHidden, viewOnlyPrintable, albumId));
 			return model;
 		};
 	}
@@ -82,8 +84,7 @@ public class AlbumPageCtrl {
 				if (webRequest.checkNotModified(imageLastUpdate.get().getTime())) {
 					return null;
 				}
-				logger.debug("page modified since: {}",
-						sdf.format(imageLastUpdate.get()));
+				logger.debug("page modified since: {}", sdf.format(imageLastUpdate.get()));
 			} else {
 				logger.debug("page modified since ever");
 			}

@@ -1,5 +1,6 @@
 package image.exifweb.album.cover;
 
+import image.exifweb.util.frameworks.spring.web.controller.INotModifiedChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -7,8 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,56 +15,35 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/json/cover")
-public class AlbumCoverCtrl {
+public class AlbumCoverCtrl implements INotModifiedChecker {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverCtrl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 
 	@Inject
 	private AlbumCoverRepo albumCoverRepo;
 	@Inject
 	private AlbumCoverService albumCoverService;
 
-	/**
-	 * Pt a testa checkNotModified TREBUIE ca browser cache sa fie activat!
-	 *
-	 * @param webRequest
-	 * @return
-	 */
 	@RequestMapping(method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
-//		logger.debug("BEGIN");
-		Date albumCoversLastUpdateDate = albumCoverRepo.getAlbumCoversLastUpdateDate();
-		if (webRequest.checkNotModified(albumCoversLastUpdateDate.getTime())) {
-//			logger.debug("not modified since: {}",
-//					sdf.format(albumService.getAlbumCoversLastUpdateDate()));
-			return null;
-		}
-		logger.debug("covers modified since: {}", sdf.format(albumCoversLastUpdateDate));
-		return albumCoverService.getCovers();
+		logger.debug("BEGIN");
+		return checkNotModified(albumCoverRepo::getAlbumCoversLastUpdateDate,
+				albumCoverService::getCovers, webRequest);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public AlbumCover getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
+	public AlbumCover getAlbumCoverById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		AlbumCover albumCover = albumCoverService.getCoverById(id);
-		if (webRequest.checkNotModified(albumCover.getLastUpdate().getTime())) {
-			return null;
-		}
-		logger.debug("album ({}) modified since: {}", id, sdf.format(albumCover.getLastUpdate()));
-		return albumCover;
+		return checkNotModified(() -> albumCoverService.getCoverById(id),
+				AlbumCover::getLastUpdate, webRequest);
 	}
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public AlbumCover search(@RequestParam String name, WebRequest webRequest) {
+	public AlbumCover searchAlbumCover(@RequestParam String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		AlbumCover albumCover = albumCoverService.getCoverByName(name);
-		if (webRequest.checkNotModified(albumCover.getLastUpdate().getTime())) {
-			return null;
-		}
-		logger.debug("album ({}) modified since: {}", name, sdf.format(albumCover.getLastUpdate()));
-		return albumCover;
+		return checkNotModified(() -> albumCoverService.getCoverByName(name),
+				AlbumCover::getLastUpdate, webRequest);
 	}
 }
