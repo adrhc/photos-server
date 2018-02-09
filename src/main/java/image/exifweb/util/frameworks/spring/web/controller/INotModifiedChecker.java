@@ -21,7 +21,7 @@ public interface INotModifiedChecker {
 	default <T> T checkNotModified(Supplier<Date> lastUpdateSupplier,
 	                               Supplier<T> valueSupplier, WebRequest webRequest) {
 		Date lastUpdate = lastUpdateSupplier.get();
-		if (webRequest.checkNotModified(lastUpdate.getTime())) {
+		if (lastUpdate != null && webRequest.checkNotModified(lastUpdate.getTime())) {
 			logger.trace("browser cache valid since: {}", sdf.format(lastUpdate));
 			return null;
 		}
@@ -34,7 +34,7 @@ public interface INotModifiedChecker {
 	                               WebRequest webRequest) {
 		T value = valueSupplier.get();
 		Date lastUpdate = lastUpdateFunction.apply(value);
-		if (webRequest.checkNotModified(lastUpdate.getTime())) {
+		if (lastUpdate != null && webRequest.checkNotModified(lastUpdate.getTime())) {
 			logger.trace("browser cache valid since: {}", sdf.format(lastUpdate));
 			return null;
 		}
