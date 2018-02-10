@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.system.persistence.entities.AppConfig;
 import image.exifweb.util.MailService;
-import image.exifweb.util.procinfo.ProcessInfoService;
 import image.exifweb.util.procinfo.ProcStatPercent;
+import image.exifweb.util.procinfo.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -42,6 +42,8 @@ public class AppConfigCtrl implements IAppConfigCache {
 	private ProcessInfoService processInfoService;
 	@Inject
 	private MailService mailService;
+	@Inject
+	private AppConfigRepository appConfigRepository;
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
@@ -152,7 +154,7 @@ public class AppConfigCtrl implements IAppConfigCache {
 	@RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void update(@RequestBody List<AppConfig> appConfigs, Model model) throws IOException {
-		appConfigService.update(appConfigs);
+		appConfigRepository.update(appConfigs);
 		appConfigService.writeJsonForAppConfigs();
 		model.addAttribute("message", "App configs updated!");
 	}
@@ -185,24 +187,24 @@ public class AppConfigCtrl implements IAppConfigCache {
 //        List<AppConfig> appConfigs = appConfigService.getAppConfigs();
 //        logger.debug("modified:\n{}", ArrayUtils.toString(appConfigs));
 //        return appConfigs;
-		return appConfigService.getAppConfigs();
+		return appConfigRepository.getAppConfigs();
 	}
 
 	@RequestMapping(value = "testGetNoCacheableOrderedAppConfigs",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
-		return appConfigService.testGetNoCacheableOrderedAppConfigs();
+		return appConfigRepository.testGetNoCacheableOrderedAppConfigs();
 	}
 
 	@RequestMapping(value = "testGetNoCacheableAppConfigByName",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public AppConfig testGetNoCacheableAppConfigByName() {
-		return appConfigService.testGetNoCacheableAppConfigByName("albums_path");
+		return appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		testRAMObjectToJson = appConfigService.getAppConfigs();
+		testRAMObjectToJson = appConfigRepository.getAppConfigs();
 		try {
 			testRAMString = objectMapper.writeValueAsString(testRAMObjectToJson);
 		} catch (JsonProcessingException e) {
