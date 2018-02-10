@@ -30,8 +30,6 @@ public class AlbumRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private ImageRepository imageRepository;
-	@Inject
 	private ImageEventsEmitter imageEventsEmitter;
 
 	@Transactional
@@ -43,7 +41,7 @@ public class AlbumRepository {
 	}
 
 	@Transactional
-	public Album create(String name) {
+	public Album createAlbum(String name) {
 		Album album = new Album(name);
 		sessionFactory.getCurrentSession().persist(album);
 		return album;
@@ -144,27 +142,5 @@ public class AlbumRepository {
 		album.setDirty(false);
 		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
 		return true;
-	}
-
-	/**
-	 * Remove album's cover (set it to null) when image is album's cover.
-	 *
-	 * @param image
-	 * @param album
-	 */
-	public void checkAndRemoveAlbumCover(Image image, Album album) {
-		if (!isImageTheCoverForAlbum(image, album)) {
-			return;
-		}
-		try {
-			removeAlbumCover(album.getId());
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			logger.error("[DELETED, MARKED_DELETED] removeAlbumCover\n", album.toString());
-		}
-	}
-
-	public boolean isImageTheCoverForAlbum(Image image, Album album) {
-		return album.getCover() != null && album.getCover().getId().equals(image.getId());
 	}
 }

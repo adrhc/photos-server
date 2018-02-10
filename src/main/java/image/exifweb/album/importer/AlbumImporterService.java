@@ -1,24 +1,21 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.system.persistence.repositories.ImageRepository;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
+import image.exifweb.system.persistence.repositories.ImageRepository;
 import image.exifweb.util.MutableValueHolder;
 import io.reactivex.disposables.Disposable;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StopWatch;
 
 import javax.inject.Inject;
@@ -41,8 +38,6 @@ import static image.exifweb.util.io.FileUtils.changeToOppositeExtensionCase;
 @Service
 public class AlbumImporterService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterService.class);
-	@Inject
-	private SessionFactory sessionFactory;
 	@Inject
 	private ExifExtractorService exifExtractorService;
 	@Inject
@@ -146,7 +141,7 @@ public class AlbumImporterService {
 				return;
 			}
 			// creem un nou album (dir aferent are poze)
-			album = albumRepository.create(path.getName());
+			album = albumRepository.createAlbum(path.getName());
 		}
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
@@ -254,10 +249,8 @@ public class AlbumImporterService {
 	 *
 	 * @param foundImageNames
 	 */
-	@Transactional
 	public void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		logger.debug("BEGIN {}", album.getName());
-		Session session = sessionFactory.getCurrentSession();
 		List<Image> images = imageRepository.getImagesByAlbumId(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
@@ -272,23 +265,22 @@ public class AlbumImporterService {
 			if (fsNameIdx >= 0) {
 				logger.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				image.setName(oppositeExtensionCase);
+				imageRepository.changeName(oppositeExtensionCase, image.getId());
 				imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
 				return;
 			}
 			if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				albumRepository.checkAndRemoveAlbumCover(image, album);
-				session.delete(image);
+				imageRepository.deleteImage(image.getId());
 				imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-			albumRepository.checkAndRemoveAlbumCover(image, album);
-			image.setDeleted(true);
-			imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
+			if (imageRepository.markDeleted(image.getId())) {
+				imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
+			}
 		});
 		logger.debug("END {}", album.getName());
 	}

@@ -4,6 +4,7 @@ import image.exifweb.album.importer.ExifExtractorService;
 import image.exifweb.album.importer.ImageMetadata;
 import image.exifweb.image.ImageRating;
 import image.exifweb.image.ImageStatus;
+import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -13,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -100,6 +102,51 @@ public class ImageRepository {
 	@Transactional
 	public void persistImage(Image image) {
 		sessionFactory.getCurrentSession().persist(image);
+	}
+
+	@Transactional
+	public boolean markDeleted(Integer imageId) {
+		Image image = (Image) sessionFactory.getCurrentSession().get(Image.class, imageId);
+		if (image.isDeleted()) {
+			return false;
+		}
+		checkAndRemoveAlbumCover(image);
+		image.setDeleted(true);
+		return true;
+	}
+
+	@Transactional
+	public void deleteImage(Integer imageId) {
+		Image image = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
+		checkAndRemoveAlbumCover(image);
+		sessionFactory.getCurrentSession().delete(image);
+	}
+
+	/**
+	 * Remove album's cover (set it to null) when image is its album's cover.
+	 *
+	 * @param image
+	 * @return whether change occurred or not in DB
+	 */
+	@Transactional(propagation = Propagation.MANDATORY)
+	private void checkAndRemoveAlbumCover(Image image) {
+		Album album = image.getAlbum();
+		if (album.getCover() == null || !album.getCover().getId().equals(image.getId())) {
+			// image is not cover for its album
+			return;
+		}
+		if (album.getCover() == null) {
+			// cover is already missing
+			return;
+		}
+		// removing cover
+		album.setCover(null);
+	}
+
+	@Transactional
+	public void changeName(String name, Integer imageId) {
+		Image image = (Image) sessionFactory.getCurrentSession().get(Image.class, imageId);
+		image.setName(name);
 	}
 
 	/**
