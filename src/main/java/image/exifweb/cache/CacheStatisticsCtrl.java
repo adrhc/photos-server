@@ -1,5 +1,6 @@
 package image.exifweb.cache;
 
+import image.exifweb.system.persistence.entities.Album;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ public class CacheStatisticsCtrl {
 	@Transactional
 	public void printCacheStatistics() {
 		Map cacheEntries = sessionFactory.getStatistics()
-				.getSecondLevelCacheStatistics("Album")
+				.getSecondLevelCacheStatistics(Album.class.getName())
 				.getEntries();
 		logger.debug("END {}", cacheEntries);
 	}

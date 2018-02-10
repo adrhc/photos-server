@@ -11,6 +11,8 @@ import java.util.Date;
  */
 @Embeddable
 public class ImageMetadata implements Serializable {
+	@Embedded
+	private ExifData exifData = new ExifData();
 	/**
 	 * utilizat in url-ul imaginii si cu impact in browser-cache
 	 */
@@ -26,8 +28,6 @@ public class ImageMetadata implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "thumb_last_modified", nullable = false)
 	private Date thumbLastModified;
-	@Embedded
-	private ExifData exifData = new ExifData();
 
 	/**
 	 * required by hibernate

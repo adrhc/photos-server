@@ -1,5 +1,6 @@
 package image.exifweb.image;
 
+import image.exifweb.image.dto.ExifInfo;
 import image.exifweb.image.dto.ImageRating;
 import image.exifweb.image.dto.ImageStatus;
 import image.exifweb.system.persistence.entities.Image;
@@ -27,6 +28,8 @@ public class ImageCtrl {
 	private AlbumRepository albumRepository;
 	@Inject
 	private ImageRepository imageRepository;
+	private ImageMetadataEntityToDTOConverter metadataEntityToDTOConverter =
+			new ImageMetadataEntityToDTOConverter();
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
@@ -36,6 +39,16 @@ public class ImageCtrl {
 			return null;
 		}
 		return image;
+	}
+
+	@RequestMapping(value = "/exif/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	public ExifInfo getExifById(@PathVariable Integer id, WebRequest webRequest) {
+		Image image = imageRepository.getImageById(id);
+		if (webRequest.checkNotModified(
+				image.getImageMetadata().getDateTime().getTime())) {
+			return null;
+		}
+		return metadataEntityToDTOConverter.convert(image);
 	}
 
 	@RequestMapping(value = "/changeStatus",
