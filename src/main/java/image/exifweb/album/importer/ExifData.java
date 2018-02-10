@@ -247,4 +247,33 @@ public class ExifData implements IImageDimensions, Serializable {
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
 	}
+
+	@Override
+	public String toString() {
+		return "ExifData{" +
+				"imageHeight=" + imageHeight +
+				", imageWidth=" + imageWidth +
+				", apertureValue='" + apertureValue + '\'' +
+				", contrast='" + contrast + '\'' +
+				", dateTimeOriginal=" + dateTimeOriginal +
+				", lensModel='" + lensModel + '\'' +
+				", meteringMode='" + meteringMode + '\'' +
+				", model='" + model + '\'' +
+				", saturation='" + saturation + '\'' +
+				", sceneCaptureType='" + sceneCaptureType + '\'' +
+				", sharpness='" + sharpness + '\'' +
+				", shutterSpeedValue='" + shutterSpeedValue + '\'' +
+				", subjectDistanceRange='" + subjectDistanceRange + '\'' +
+				", whiteBalanceMode='" + whiteBalanceMode + '\'' +
+				", exposureBiasValue='" + exposureBiasValue + '\'' +
+				", exposureMode='" + exposureMode + '\'' +
+				", exposureProgram='" + exposureProgram + '\'' +
+				", exposureTime='" + exposureTime + '\'' +
+				", fNumber='" + fNumber + '\'' +
+				", flash='" + flash + '\'' +
+				", focalLength='" + focalLength + '\'' +
+				", gainControl='" + gainControl + '\'' +
+				", isoSpeedRatings=" + isoSpeedRatings +
+				'}';
+	}
 }

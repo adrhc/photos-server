@@ -72,6 +72,7 @@ public class AlbumEventsEmitterTest {
 			logger.debug("done");
 		}
 
+		// todo: make sure to dispose even when an exception occurs
 		subscription.dispose();
 		logger.debug(newAlbums.stream().map(Album::getName).collect(Collectors.joining(", ")));
 	}

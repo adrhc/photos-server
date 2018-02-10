@@ -101,13 +101,6 @@
         </dependency>
 
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.io}</version>
@@ -286,6 +279,21 @@
             </exclusions>
         </dependency>
 
+        <!--
+            ERROR
+                Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
+            SOLUTION
+                Let this dependency the last!
+
+            see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
+        -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/junit/junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -348,36 +356,36 @@
                 While the unidirectional @OneToOne association can be fetched lazily, the parent-side of a bidirectional @OneToOne association is not. Even when specifying that the association is not optional and we have the FetchType.LAZY, the parent-side association behaves like a FetchType.EAGER relationship.
             -->
             <!--<plugin>-->
-                <!--<groupId>org.hibernate.orm.tooling</groupId>-->
-                <!--<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
-                <!--<version>${hibernate.version}</version>-->
-                <!--<dependencies>-->
-                    <!--&lt;!&ndash;-->
-                        <!--version determined by jackson-datatype-hibernate4.version-->
+            <!--<groupId>org.hibernate.orm.tooling</groupId>-->
+            <!--<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
+            <!--<version>${hibernate.version}</version>-->
+            <!--<dependencies>-->
+            <!--&lt;!&ndash;-->
+            <!--version determined by jackson-datatype-hibernate4.version-->
 
-                        <!--see mvn dependency:tree | grep -B3 jackson-->
-                    <!--&ndash;&gt;-->
-                    <!--<dependency>-->
-                        <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-                        <!--<artifactId>jackson-annotations</artifactId>-->
-                        <!--<version>${jackson-annotations.version}</version>-->
-                    <!--</dependency>-->
-                <!--</dependencies>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<configuration>-->
-                            <!--&lt;!&ndash;<dir>${project.build.outputDirectory}</dir>&ndash;&gt;-->
-                            <!--<failOnError>true</failOnError>-->
-                            <!--<enableLazyInitialization>true</enableLazyInitialization>-->
-                            <!--<enableDirtyTracking>true</enableDirtyTracking>-->
-                            <!--<enableAssociationManagement>true</enableAssociationManagement>-->
-                            <!--<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>enhance</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
+            <!--see mvn dependency:tree | grep -B3 jackson-->
+            <!--&ndash;&gt;-->
+            <!--<dependency>-->
+            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--<artifactId>jackson-annotations</artifactId>-->
+            <!--<version>${jackson-annotations.version}</version>-->
+            <!--</dependency>-->
+            <!--</dependencies>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<configuration>-->
+            <!--&lt;!&ndash;<dir>${project.build.outputDirectory}</dir>&ndash;&gt;-->
+            <!--<failOnError>true</failOnError>-->
+            <!--<enableLazyInitialization>true</enableLazyInitialization>-->
+            <!--<enableDirtyTracking>true</enableDirtyTracking>-->
+            <!--<enableAssociationManagement>true</enableAssociationManagement>-->
+            <!--<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
+            <!--</configuration>-->
+            <!--<goals>-->
+            <!--<goal>enhance</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
             <!--</plugin>-->
 
             <!--

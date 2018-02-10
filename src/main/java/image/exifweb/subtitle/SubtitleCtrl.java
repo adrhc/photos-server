@@ -1,9 +1,9 @@
 package image.exifweb.subtitle;
 
 import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.util.procinfo.ProcessInfoService;
 import image.exifweb.util.io.EndingLinesFileReader;
 import image.exifweb.util.json.JsonStringValue;
+import image.exifweb.util.procinfo.ProcessInfoService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

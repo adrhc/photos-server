@@ -165,4 +165,22 @@ public class Image implements Serializable {
 	public void setImageMetadata(ImageMetadata imageMetadata) {
 		this.imageMetadata = imageMetadata;
 	}
+
+	@Override
+	public String toString() {
+		return "Image{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", imageMetadata=" + imageMetadata.toString() +
+				", status=" + status +
+				", deleted=" + deleted +
+				", hidden=" + hidden +
+				", personal=" + personal +
+				", ugly=" + ugly +
+				", duplicate=" + duplicate +
+				", printable=" + printable +
+				", rating=" + rating +
+				", lastUpdate=" + lastUpdate +
+				'}';
+	}
 }

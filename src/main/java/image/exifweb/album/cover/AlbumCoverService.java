@@ -1,9 +1,9 @@
 package image.exifweb.album.cover;
 
-import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

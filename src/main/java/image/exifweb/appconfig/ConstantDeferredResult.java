@@ -1,7 +1,7 @@
 package image.exifweb.appconfig;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.context.request.async.DeferredResult;
 
 /**

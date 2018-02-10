@@ -6,23 +6,13 @@ import java.util.Date;
  * Created by adr on 14-Apr-15.
  */
 public interface IImageBasicInfo {
-	public String getThumbPath();
+	void setThumbPath(String imagePath);
 
-	public void setThumbPath(String imagePath);
+	void setImagePath(String imagePath);
 
-	public String getImagePath();
+	String getImgName();
 
-	public void setImagePath(String imagePath);
+	String getAlbumName();
 
-	public String getImgName();
-
-	public void setImgName(String imgName);
-
-	public String getAlbumName();
-
-	public void setAlbumName(String albumName);
-
-	public Date getThumbLastModified();
-
-	public void setThumbLastModified(Date thumbLastModified);
+	Date getThumbLastModified();
 }

@@ -178,7 +178,6 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 		this.dateTime = dateTime;
 	}
 
-	@Override
 	public String getThumbPath() {
 		return thumbPath;
 	}

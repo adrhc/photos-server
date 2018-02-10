@@ -8,11 +8,11 @@ package image.exifweb.image;
  * To change this template use File | Settings | File Templates.
  */
 public interface IImageDimensions {
-	public int getImageHeight();
+	int getImageHeight();
 
-	public void setImageHeight(int imageHeight);
+	void setImageHeight(int imageHeight);
 
-	public int getImageWidth();
+	int getImageWidth();
 
-	public void setImageWidth(int imageWidth);
+	void setImageWidth(int imageWidth);
 }

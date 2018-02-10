@@ -62,4 +62,13 @@ public class ImageMetadata implements Serializable {
 	public void setExifData(ExifData exifData) {
 		this.exifData = exifData;
 	}
+
+	@Override
+	public String toString() {
+		return "ImageMetadata{" +
+				"dateTime=" + dateTime +
+				", thumbLastModified=" + thumbLastModified +
+				", exifData=" + exifData.toString() +
+				'}';
+	}
 }

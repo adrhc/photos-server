@@ -1,7 +1,9 @@
 package image.exifweb.image;
 
-import image.exifweb.system.persistence.repositories.AlbumRepository;
+import image.exifweb.image.dto.ImageRating;
+import image.exifweb.image.dto.ImageStatus;
 import image.exifweb.system.persistence.entities.Image;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.system.persistence.repositories.ImageRepository;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
