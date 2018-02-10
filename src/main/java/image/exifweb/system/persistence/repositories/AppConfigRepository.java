@@ -1,4 +1,4 @@
-package image.exifweb.appconfig;
+package image.exifweb.system.persistence.repositories;
 
 import image.exifweb.system.persistence.entities.AppConfig;
 import org.hibernate.Session;

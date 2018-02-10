@@ -1,5 +1,6 @@
-package image.exifweb.album.page;
+package image.exifweb.system.persistence.repositories;
 
+import image.exifweb.album.page.AlbumPage;
 import image.exifweb.appconfig.AppConfigService;
 import org.hibernate.Query;
 import org.hibernate.Session;

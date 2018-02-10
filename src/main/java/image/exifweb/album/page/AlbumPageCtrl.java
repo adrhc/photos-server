@@ -2,6 +2,7 @@ package image.exifweb.album.page;
 
 import image.exifweb.album.export.AlbumExporterService;
 import image.exifweb.appconfig.AppConfigService;
+import image.exifweb.system.persistence.repositories.AlbumPageRepository;
 import image.exifweb.util.frameworks.spring.web.controller.INotModifiedChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,11 +1,11 @@
 package image.exifweb.album.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.album.AlbumRepository;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverService;
 import image.exifweb.album.events.AlbumEventsEmitter;
-import image.exifweb.album.page.AlbumPageRepository;
+import image.exifweb.system.persistence.repositories.AlbumPageRepository;
 import image.exifweb.album.page.AlbumPageService;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.appconfig.AppConfigService;

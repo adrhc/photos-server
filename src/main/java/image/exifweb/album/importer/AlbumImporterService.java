@@ -1,11 +1,11 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.album.AlbumRepository;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.album.events.AlbumEventBuilder;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.events.EAlbumEventType;
 import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.image.ImageRepository;
+import image.exifweb.system.persistence.repositories.ImageRepository;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;

@@ -1,6 +1,5 @@
-package image.exifweb.album;
+package image.exifweb.system.persistence.repositories;
 
-import image.exifweb.image.ImageRepository;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;

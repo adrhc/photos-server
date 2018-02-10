@@ -1,7 +1,9 @@
-package image.exifweb.image;
+package image.exifweb.system.persistence.repositories;
 
 import image.exifweb.album.importer.ExifExtractorService;
 import image.exifweb.album.importer.ImageMetadata;
+import image.exifweb.image.ImageRating;
+import image.exifweb.image.ImageStatus;
 import image.exifweb.system.persistence.entities.Image;
 import org.hibernate.Criteria;
 import org.hibernate.Query;

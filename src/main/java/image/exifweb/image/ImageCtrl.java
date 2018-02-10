@@ -1,7 +1,8 @@
 package image.exifweb.image;
 
-import image.exifweb.album.AlbumRepository;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.system.persistence.entities.Image;
+import image.exifweb.system.persistence.repositories.ImageRepository;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

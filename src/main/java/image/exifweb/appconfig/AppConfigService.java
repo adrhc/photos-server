@@ -3,6 +3,7 @@ package image.exifweb.appconfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.system.persistence.entities.AppConfig;
 import image.exifweb.system.persistence.entities.enums.AppConfigEnum;
+import image.exifweb.system.persistence.repositories.AppConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

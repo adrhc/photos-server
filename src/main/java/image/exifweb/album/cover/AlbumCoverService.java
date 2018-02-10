@@ -1,6 +1,6 @@
 package image.exifweb.album.cover;
 
-import image.exifweb.album.AlbumRepository;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;

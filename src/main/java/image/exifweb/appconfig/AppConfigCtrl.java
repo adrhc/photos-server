@@ -3,6 +3,7 @@ package image.exifweb.appconfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.system.persistence.entities.AppConfig;
+import image.exifweb.system.persistence.repositories.AppConfigRepository;
 import image.exifweb.util.MailService;
 import image.exifweb.util.procinfo.ProcStatPercent;
 import image.exifweb.util.procinfo.ProcessInfoService;
