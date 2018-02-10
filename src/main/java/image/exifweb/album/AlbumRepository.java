@@ -42,8 +42,8 @@ public class AlbumRepository {
 
 	@Transactional
 	public List<Album> getAlbumsOrderedByName() {
-		return sessionFactory.getCurrentSession().createCriteria(Album.class)
-				.setCacheable(true)
+		return sessionFactory.getCurrentSession()
+				.createCriteria(Album.class).setCacheable(true)
 				.add(Restrictions.eq("deleted", false))
 				.addOrder(Order.desc("name")).list();
 	}
