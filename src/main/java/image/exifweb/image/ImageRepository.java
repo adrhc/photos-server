@@ -2,7 +2,6 @@ package image.exifweb.image;
 
 import image.exifweb.album.importer.ExifExtractorService;
 import image.exifweb.album.importer.ImageMetadata;
-import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -97,13 +96,8 @@ public class ImageRepository {
 	}
 
 	@Transactional
-	public Image createImage(String name, ImageMetadata imageMetadata, Album album) {
-		Image image = new Image();
-		image.setImageMetadata(imageMetadata);
-		image.setName(name);
-		image.setAlbum(album);
+	public void persistImage(Image image) {
 		sessionFactory.getCurrentSession().persist(image);
-		return image;
 	}
 
 	/**

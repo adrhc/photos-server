@@ -196,39 +196,59 @@ public class AlbumImporterService {
 		Image dbImage = imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
-			ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
-			if (imageMetadata == null) {
-				logger.info("{} no longer exists!", imgFile.getPath());
+			if (!createImageFromFile(imgFile, album)) {
+				// failed to create image
 				return false;
 			}
-			logger.debug("insert {}/{}", album.getName(), imgFile.getName());
-			Image newImg = imageRepository.createImage(imgFile.getName(), imageMetadata, album);
-			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.CREATED)
-					.image(newImg).build());
 		} else if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
-			logger.debug("update EXIF for {}/{}", album.getName(), dbImage.getName());
-			ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
-			Image imgWithUpdatedMetadata = imageRepository
-					.updateImageMetadata(imageMetadata, dbImage.getId());
-			imageEventsEmitter.emit(ImageEventBuilder
-					.of(EImageEventType.EXIF_UPDATED)
-					.image(imgWithUpdatedMetadata).build());
+			updateImageMetadataFromFile(imgFile, dbImage);
 		} else {
 			Date thumbLastModified = thumbUtils
 					.getThumbLastModified(imgFile, dbImage.getImageMetadata().getDateTime());
 			if (thumbLastModified.after(dbImage.getImageMetadata().getThumbLastModified())) {
 				// check lastModified for thumb then update in DB lastModified date only
-				logger.debug("update thumb's lastModified for {}/{}",
-						album.getName(), dbImage.getName());
-				Image updatedDbImg = imageRepository.updateThumbLastModifiedForImg(
-						thumbLastModified, dbImage.getId());
-				imageEventsEmitter.emit(ImageEventBuilder
-						.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
-						.image(updatedDbImg).build());
+				updateThumbLastModifiedForImgFile(thumbLastModified, dbImage.getId());
 			}
 		}
+		return true;
+	}
+
+	private void updateThumbLastModifiedForImgFile(Date thumbLastModified, Integer imageId) {
+		Image updatedDbImg = imageRepository
+				.updateThumbLastModifiedForImg(thumbLastModified, imageId);
+		logger.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
+		imageEventsEmitter.emit(ImageEventBuilder
+				.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
+				.image(updatedDbImg).build());
+	}
+
+	private void updateImageMetadataFromFile(File imgFile, Image dbImage) {
+		logger.debug("update EXIF for {}/{}",
+				imgFile.getParentFile().getName(), dbImage.getName());
+		ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
+		Image imgWithUpdatedMetadata = imageRepository
+				.updateImageMetadata(imageMetadata, dbImage.getId());
+		imageEventsEmitter.emit(ImageEventBuilder
+				.of(EImageEventType.EXIF_UPDATED)
+				.image(imgWithUpdatedMetadata).build());
+	}
+
+	private boolean createImageFromFile(File imgFile, Album album) {
+		ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
+		if (imageMetadata == null) {
+			logger.info("{} no longer exists!", imgFile.getPath());
+			return false;
+		}
+		logger.debug("insert {}/{}", album.getName(), imgFile.getName());
+		Image newImg = new Image();
+		newImg.setImageMetadata(imageMetadata);
+		newImg.setName(imgFile.getName());
+		newImg.setAlbum(album);
+		imageRepository.persistImage(newImg);
+		imageEventsEmitter.emit(ImageEventBuilder
+				.of(EImageEventType.CREATED)
+				.image(newImg).build());
 		return true;
 	}
 
