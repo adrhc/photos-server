@@ -54,8 +54,15 @@ public class ExifExtractorService {
 			// path no longer exists
 			return null;
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			logger.error("{}: {}", imgFile.getParentFile().getName(), imgFile.getName());
+		}
+
+		if (imageMetadata.getExifData().getDateTimeOriginal() == null) {
 			imageMetadata.getExifData().setDateTimeOriginal(imageMetadata.getDateTime());
+		}
+		if (imageMetadata.getExifData().getImageHeight() == 0 ||
+				imageMetadata.getExifData().getImageWidth() == 0) {
 			loadDimensions(imageMetadata.getExifData(), imgFile.getPath());
 		}
 
@@ -83,31 +90,50 @@ public class ExifExtractorService {
 
 		directory = metadata.getDirectory(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-		exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription());
-		exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription());
-		exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription());
-		exifData.setIsoSpeedRatings(Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription()));
-		exifData.setDateTimeOriginal(sdf.parse(
-				exifSubIFDDescriptor.getDescription(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
-		exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription());
-		exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription());
-		exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription());
-		exifData.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription());
-		exifData.setFlash(exifSubIFDDescriptor.getFlashDescription());
-		exifData.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription());
-		exifData.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription());
-		exifData.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription());
-		exifData.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription());
-		exifData.setGainControl(exifSubIFDDescriptor.getGainControlDescription());
-		exifData.setContrast(exifSubIFDDescriptor.getContrastDescription());
-		exifData.setSaturation(exifSubIFDDescriptor.getSaturationDescription());
-		exifData.setSharpness(exifSubIFDDescriptor.getSharpnessDescription());
-		exifData.setSubjectDistanceRange(exifSubIFDDescriptor.getSubjectDistanceRangeDescription());
-		exifData.setLensModel(exifSubIFDDescriptor.getDescription(ExifSubIFDDirectory.TAG_LENS_MODEL));
+		safeCall(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
+		safeCall(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
+		safeCall(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
+		safeCall(() -> exifData.setIsoSpeedRatings(
+				Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription())));
+		safeCall(() -> exifData.setDateTimeOriginal(safeDateParse(exifSubIFDDescriptor
+				.getDescription(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))));
+		safeCall(() -> exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription()));
+		safeCall(() -> exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription()));
+		safeCall(() -> exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription()));
+		safeCall(() -> exifData.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription()));
+		safeCall(() -> exifData.setFlash(exifSubIFDDescriptor.getFlashDescription()));
+		safeCall(() -> exifData.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription()));
+		safeCall(() -> exifData.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription()));
+		safeCall(() -> exifData.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription()));
+		safeCall(() -> exifData.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription()));
+		safeCall(() -> exifData.setGainControl(exifSubIFDDescriptor.getGainControlDescription()));
+		safeCall(() -> exifData.setContrast(exifSubIFDDescriptor.getContrastDescription()));
+		safeCall(() -> exifData.setSaturation(exifSubIFDDescriptor.getSaturationDescription()));
+		safeCall(() -> exifData.setSharpness(exifSubIFDDescriptor.getSharpnessDescription()));
+		safeCall(() -> exifData.setSubjectDistanceRange(exifSubIFDDescriptor
+				.getSubjectDistanceRangeDescription()));
+		safeCall(() -> exifData.setLensModel(exifSubIFDDescriptor
+				.getDescription(ExifSubIFDDirectory.TAG_LENS_MODEL)));
 
 		directory = metadata.getDirectory(ExifIFD0Directory.class);
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
-		exifData.setModel(exifIFD0Descriptor.getDescription(ExifIFD0Directory.TAG_MODEL));
+		safeCall(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifIFD0Directory.TAG_MODEL)));
+	}
+
+	private Date safeDateParse(String s) {
+		try {
+			return sdf.parse(s);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private void safeCall(Runnable c) {
+		try {
+			c.run();
+		} catch (Exception e) {
+			logger.trace(e.getMessage(), e);
+		}
 	}
 
 	private void loadDimensions(IImageDimensions imageDimensions, String path) {
