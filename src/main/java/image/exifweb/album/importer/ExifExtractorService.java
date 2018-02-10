@@ -9,7 +9,7 @@ import com.drew.metadata.exif.ExifSubIFDDescriptor;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import image.exifweb.image.ImageDimensions;
+import image.exifweb.image.IImageDimensions;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +108,7 @@ public class ExifExtractorService {
 		exifData.setModel(exifIFD0Descriptor.getDescription(ExifIFD0Directory.TAG_MODEL));
 	}
 
-	private void loadDimensions(ImageDimensions imageDimensions, String path) {
+	private void loadDimensions(IImageDimensions imageDimensions, String path) {
 		try {
 //			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 //					"/home/adr/x.sh", "image_dims", path);

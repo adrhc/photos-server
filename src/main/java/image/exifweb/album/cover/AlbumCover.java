@@ -1,7 +1,7 @@
 package image.exifweb.album.cover;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import image.exifweb.image.ImageDimensions;
+import image.exifweb.image.IImageDimensions;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: 1:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AlbumCover implements ImageDimensions, Serializable {
+public class AlbumCover implements IImageDimensions, Serializable {
 	private Integer id;
 	private String albumName;
 	private String imgName;

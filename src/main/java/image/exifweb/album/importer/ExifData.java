@@ -1,7 +1,7 @@
 package image.exifweb.album.importer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import image.exifweb.image.ImageDimensions;
+import image.exifweb.image.IImageDimensions;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,7 +14,7 @@ import java.util.Date;
  * Created by adr on 2/10/18.
  */
 @Embeddable
-public class ExifData implements ImageDimensions, Serializable {
+public class ExifData implements IImageDimensions, Serializable {
 	@Column(nullable = false)
 	private int imageHeight;
 	@Column(nullable = false)

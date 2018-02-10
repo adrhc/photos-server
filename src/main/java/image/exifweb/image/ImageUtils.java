@@ -57,13 +57,13 @@ public class ImageUtils {
 				new Object[]{thumbsDir, albumLastModifImg}));
 	}
 
-	public void appendImageDimensions(List<? extends ImageDimensions> imageDimensions) {
-		for (ImageDimensions entity : imageDimensions) {
+	public void appendImageDimensions(List<? extends IImageDimensions> imageDimensions) {
+		for (IImageDimensions entity : imageDimensions) {
 			appendImageDimensions(entity);
 		}
 	}
 
-	public void appendImageDimensions(ImageDimensions entity) {
+	public void appendImageDimensions(IImageDimensions entity) {
 		if (entity.getImageHeight() < entity.getImageWidth()) {
 			entity.setImageHeight((int)
 					Math.floor(maxThumbSize * entity.getImageHeight() / entity.getImageWidth()));
