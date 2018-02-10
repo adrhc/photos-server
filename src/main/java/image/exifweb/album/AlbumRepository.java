@@ -41,7 +41,7 @@ public class AlbumRepository {
 	private ImageEventsEmitter imageEventsEmitter;
 
 	@Transactional
-	public List<Album> getAlbums() {
+	public List<Album> getAlbumsOrderedByName() {
 		return sessionFactory.getCurrentSession().createCriteria(Album.class)
 				.setCacheable(true)
 				.add(Restrictions.eq("deleted", false))

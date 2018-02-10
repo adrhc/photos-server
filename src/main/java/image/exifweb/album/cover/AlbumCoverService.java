@@ -22,7 +22,7 @@ public class AlbumCoverService {
 	private ImageUtils imageUtils;
 
 	public List<AlbumCover> getCovers() {
-		return albumRepository.getAlbums().stream()
+		return albumRepository.getAlbumsOrderedByName().stream()
 				.map(this::convertAlbumToCover)
 				.collect(Collectors.toList());
 	}

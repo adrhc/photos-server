@@ -68,7 +68,7 @@ public class AlbumExporterService {
 	}
 
 	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<Album> albums = albumRepository.getAlbums();
+		List<Album> albums = albumRepository.getAlbumsOrderedByName();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (Album album : albums) {
 			successForAlbum = writeJsonForAlbumSafe(album);
