@@ -30,11 +30,19 @@ public class ImageRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
+	/**
+	 * Update only thumbLastModified but not ratings or status.
+	 *
+	 * @param thumbLastModified
+	 * @param imageId
+	 * @return
+	 */
 	@Transactional
-	public void updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
+	public Image updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageId);
+		Image image = (Image) session.get(Image.class, imageId);
 		image.setThumbLastModified(thumbLastModified);
+		return image;
 	}
 
 	@Transactional
@@ -91,9 +99,15 @@ public class ImageRepository {
 		sessionFactory.getCurrentSession().persist(image);
 	}
 
+	/**
+	 * Update only EXIF data but not ratings or status.
+	 *
+	 * @param image
+	 */
 	@Transactional
-	public Image updateImage(Image image) {
-		return (Image) sessionFactory.getCurrentSession().merge(image);
+	public void updateExif(Image image) {
+		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, image.getId());
+		exifExtractorService.copyExifProperties(image, dbImage);
 	}
 
 	/**
@@ -107,6 +121,9 @@ public class ImageRepository {
 	@Transactional
 	public Image getImageByNameAndAlbumId(String name, Integer albumId) {
 		Integer imageId = getImageIdByNameAndAlbumId(name, albumId);
+		if (imageId == null) {
+			return null;
+		}
 		return getImageById(imageId);
 	}
 

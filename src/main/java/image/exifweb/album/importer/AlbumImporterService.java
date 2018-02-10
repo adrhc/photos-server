@@ -24,8 +24,6 @@ import org.springframework.util.StopWatch;
 import javax.inject.Inject;
 import java.io.File;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -82,43 +80,8 @@ public class AlbumImporterService {
 		return true;
 	};
 
-	private TestAndResolution IS_NEW_IMAGE = new TestAndResolution(
-			(newImg, dbImg) -> dbImg == null,
-			(newImg, dbImg) -> {
-				logger.debug("IS_NEW_IMAGE");
-				imageRepository.persistImage(newImg);
-				imageEventsEmitter.emit(ImageEventBuilder
-						.of(EImageEventType.CREATED)
-						.image(newImg).build());
-			});
-
-	private TestAndResolution UPDATED_IMAGE_FILE_EXISTS = new TestAndResolution(
-			(newImg, dbImg) -> newImg.getDateTime().after(dbImg.getDateTime()),
-			(newImg, dbImg) -> {
-				logger.debug("UPDATED_IMAGE_FILE_EXISTS");
-				newImg.setId(dbImg.getId());
-				imageRepository.updateImage(newImg);
-				imageEventsEmitter.emit(ImageEventBuilder
-						.of(EImageEventType.EXIF_UPDATED)
-						.image(newImg).build());
-			}
-	);
-
-	private TestAndResolution UPDATED_THUMB_FILE_EXISTS = new TestAndResolution(
-			(newImg, dbImg) -> newImg.getThumbLastModified().after(dbImg.getThumbLastModified()),
-			(newImg, dbImg) -> {
-				logger.debug("UPDATED_THUMB_FILE_EXISTS");
-				imageRepository.updateThumbLastModifiedForImg(
-						newImg.getThumbLastModified(), dbImg.getId());
-				imageEventsEmitter.emit(ImageEventBuilder
-						.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
-						.image(newImg).build());
-			});
-	/**
-	 * order matters; first action only is executed
-	 */
-	private List<TestAndResolution> actionsByImageStatus = Arrays.asList(
-			IS_NEW_IMAGE, UPDATED_IMAGE_FILE_EXISTS, UPDATED_THUMB_FILE_EXISTS);
+	@Inject
+	private ThumbUtils thumbUtils;
 
 	public void importAlbumByName(String albumName) {
 		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
@@ -224,22 +187,49 @@ public class AlbumImporterService {
 	}
 
 	/**
-	 * @param path
+	 * @param imgFile
 	 * @param album
-	 * @return true = EXIF processed, false = file no longer exists
+	 * @return true = file still exists, false = file no longer exists
 	 */
-	private boolean importImageFromFile(File path, Album album) {
-		if (path.isDirectory()) {
-			logger.error("Wrong path (is a directory):\n{}", path.getPath());
-			throw new UnsupportedOperationException("Wrong path (is a directory):\n" + path.getPath());
+	private boolean importImageFromFile(File imgFile, Album album) {
+		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
+		Image dbImage = imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
+		if (dbImage == null) {
+			// not found in DB? then add it
+			Image newImg = exifExtractorService.extractExif(imgFile);
+			if (newImg == null) {
+				logger.info("{} no longer exists!", imgFile.getPath());
+				return false;
+			}
+			logger.debug("insert {}/{}", album.getName(), newImg.getName());
+			newImg.setAlbum(album);
+			imageRepository.persistImage(newImg);
+			imageEventsEmitter.emit(ImageEventBuilder
+					.of(EImageEventType.CREATED)
+					.image(newImg).build());
+		} else if (imgFile.lastModified() > dbImage.getDateTime().getTime()) {
+			// check lastModified for image then extract EXIF and update
+			logger.debug("update EXIF for {}/{}", album.getName(), dbImage.getName());
+			Image imgWithUpdatedEXIF = exifExtractorService.extractExif(imgFile);
+			imgWithUpdatedEXIF.setId(dbImage.getId());
+			imgWithUpdatedEXIF.setAlbum(album);
+			imageRepository.updateExif(imgWithUpdatedEXIF);
+			imageEventsEmitter.emit(ImageEventBuilder
+					.of(EImageEventType.EXIF_UPDATED)
+					.image(imgWithUpdatedEXIF).build());
+		} else {
+			Date thumbLastModified = thumbUtils.getThumbLastModified(imgFile, dbImage.getDateTime());
+			if (thumbLastModified.after(dbImage.getThumbLastModified())) {
+				// check lastModified for thumb then update in DB lastModified date only
+				logger.debug("update thumb's lastModified for {}/{}",
+						album.getName(), dbImage.getName());
+				Image updatedDbImg = imageRepository.updateThumbLastModifiedForImg(
+						thumbLastModified, dbImage.getId());
+				imageEventsEmitter.emit(ImageEventBuilder
+						.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
+						.image(updatedDbImg).build());
+			}
 		}
-		Image image = exifExtractorService.extractExif(path);
-		if (image == null) {
-			logger.info("{} no longer exists!", path.getPath());
-			return false;
-		}
-		image.setAlbum(album);
-		saveOrUpdateImage(image);
 		return true;
 	}
 
@@ -285,30 +275,5 @@ public class AlbumImporterService {
 			imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
 		});
 		logger.debug("END {}", album.getName());
-	}
-
-	/**
-	 * Role:
-	 * - loads the Image by name and albumId (leverages the Image cache)
-	 * - updates accordingly the Image (leverages the Image cache)
-	 */
-	private void saveOrUpdateImage(Image newImage) {
-		Image dbImage = imageRepository.getImageByNameAndAlbumId(
-				newImage.getName(), newImage.getAlbum().getId());
-		actionsByImageStatus.stream()
-				.filter(tar -> tar.test.test(newImage, dbImage))
-				.map(tar -> tar.resolution)
-				.limit(1L)
-				.forEach(r -> r.accept(newImage, dbImage));
-	}
-
-	private class TestAndResolution {
-		private BiPredicate<Image, Image> test;
-		private BiConsumer<Image, Image> resolution;
-
-		TestAndResolution(BiPredicate<Image, Image> test, BiConsumer<Image, Image> resolution) {
-			this.test = test;
-			this.resolution = resolution;
-		}
 	}
 }

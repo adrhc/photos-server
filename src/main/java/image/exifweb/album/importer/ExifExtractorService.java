@@ -35,14 +35,12 @@ public class ExifExtractorService {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
-	@Value("${thumbs.dir}")
-	private String thumbsDir;
-	@Value("${albums.dir}")
-	private String albumsDir;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 	@Inject
 	private ProcessInfoService processInfoService;
+	@Inject
+	private ThumbUtils thumbUtils;
 
 	public Image extractExif(File imgFile) {
 		Image image = new Image();
@@ -60,7 +58,8 @@ public class ExifExtractorService {
 			prepareImageDimensions(image, imgFile.getPath());
 		}
 
-		updateThumbLastModified(image, imgFile);
+		Date thumbLastModified = thumbUtils.getThumbLastModified(imgFile, image.getDateTime());
+		image.setThumbLastModified(thumbLastModified);
 
 		return image;
 	}
@@ -103,19 +102,6 @@ public class ExifExtractorService {
 		image.setDateTime(new Date(imgFile.lastModified()));
 	}
 
-	private void updateThumbLastModified(Image image, File imgFile) {
-		File thumb = getThumbFileForImgFile(imgFile);
-		if (thumb.exists()) {
-			image.setThumbLastModified(new Date(thumb.lastModified()));
-		} else {
-			image.setThumbLastModified(image.getDateTime());
-		}
-	}
-
-	private File getThumbFileForImgFile(File imgFile) {
-		return new File(imgFile.getPath().replaceFirst(albumsDir, thumbsDir));
-	}
-
 	private void prepareImageDimensions(Image image, String path) {
 		try {
 //			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
@@ -133,5 +119,39 @@ public class ExifExtractorService {
 			image.setImageWidth(maxThumbSizeInt);
 			image.setImageHeight(maxThumbSizeInt);
 		}
+	}
+
+	/**
+	 * Includes all properties touched by extractExif.
+	 *
+	 * @param from
+	 * @param to
+	 */
+	public void copyExifProperties(Image from, Image to) {
+		to.setImageHeight(from.getImageHeight());
+		to.setImageWidth(from.getImageWidth());
+		to.setExposureTime(from.getExposureTime());
+		to.setfNumber(from.getfNumber());
+		to.setExposureProgram(from.getExposureProgram());
+		to.setIsoSpeedRatings(from.getIsoSpeedRatings());
+		to.setDateTimeOriginal(from.getDateTimeOriginal());
+		to.setShutterSpeedValue(from.getShutterSpeedValue());
+		to.setApertureValue(from.getApertureValue());
+		to.setExposureBiasValue(from.getExposureBiasValue());
+		to.setMeteringMode(from.getMeteringMode());
+		to.setFlash(from.getFlash());
+		to.setFocalLength(from.getFocalLength());
+		to.setExposureMode(from.getExposureMode());
+		to.setWhiteBalanceMode(from.getWhiteBalanceMode());
+		to.setSceneCaptureType(from.getSceneCaptureType());
+		to.setGainControl(from.getGainControl());
+		to.setContrast(from.getContrast());
+		to.setSaturation(from.getSaturation());
+		to.setSharpness(from.getSharpness());
+		to.setSubjectDistanceRange(from.getSubjectDistanceRange());
+		to.setLensModel(from.getLensModel());
+		to.setModel(from.getModel());
+		to.setDateTime(from.getDateTime());
+		to.setThumbLastModified(from.getThumbLastModified());
 	}
 }
