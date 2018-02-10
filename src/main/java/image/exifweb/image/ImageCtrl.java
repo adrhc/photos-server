@@ -23,11 +23,11 @@ public class ImageCtrl {
 	@Inject
 	private AlbumRepository albumRepository;
 	@Inject
-	private ImageService imageService;
+	private ImageRepository imageRepository;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
-		Image image = imageService.getById(id);
+		Image image = imageRepository.getImageById(id);
 		if (webRequest.checkNotModified(image.getDateTime().getTime())) {
 			return null;
 		}
@@ -39,7 +39,7 @@ public class ImageCtrl {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void changeStatus(@RequestBody ImageStatus imageStatus) {
-		imageService.changeStatus(imageStatus);
+		imageRepository.changeStatus(imageStatus);
 	}
 
 	@RequestMapping(value = "/setRating",
@@ -47,7 +47,7 @@ public class ImageCtrl {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void changeRating(@RequestBody ImageRating imageRating) {
-		imageService.changeRating(imageRating);
+		imageRepository.changeRating(imageRating);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

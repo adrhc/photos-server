@@ -1,8 +1,6 @@
 package image.exifweb.album;
 
-import image.exifweb.image.ImageService;
-import image.exifweb.image.events.EImageEventType;
-import image.exifweb.image.events.ImageEventBuilder;
+import image.exifweb.image.ImageRepository;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
@@ -19,9 +17,6 @@ import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static image.exifweb.image.events.EImageEventType.DELETED;
-import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
-
 /**
  * Created with IntelliJ IDEA.
  * User: adr
@@ -36,7 +31,7 @@ public class AlbumRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private ImageService imageService;
+	private ImageRepository imageRepository;
 	@Inject
 	private ImageEventsEmitter imageEventsEmitter;
 
@@ -92,65 +87,6 @@ public class AlbumRepository {
 		return (Album) session.createCriteria(Album.class)
 				.setCacheable(true).add(Restrictions.eq("name", name))
 				.uniqueResult();
-	}
-
-	/**
-	 * Cached Album is detached so can't be used as persistent as required in this method.
-	 *
-	 * @param foundImageNames
-	 */
-	@Transactional
-	public void deleteNotFoundImages(List<String> foundImageNames, Album album) {
-		logger.debug("BEGIN {}", album.getName());
-		List<Image> images = imageService.getImagesByAlbumId(album.getId());
-		images.forEach(image -> {
-			String dbName = image.getName();
-			int fsNameIdx = foundImageNames.indexOf(dbName);
-			if (fsNameIdx >= 0) {
-				// imagine existenta in DB cu acelas nume ca in file system
-				return;
-			}
-			String oppositeExtensionCase = toFileNameWithOppositeExtensionCase(dbName);
-			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
-			ImageEventBuilder imgEvBuilder = new ImageEventBuilder().album(album).image(image);
-			if (fsNameIdx >= 0) {
-				logger.debug("poza din DB ({}) cu nume diferit in file system ({}): actualizez in DB cu {}",
-						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				image.setName(oppositeExtensionCase);
-				imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
-				return;
-			}
-			if (image.getStatus().equals(Image.DEFAULT_STATUS)) {
-				// status = 0
-				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				checkAndRemoveAlbumCover(image, album);
-				imageService.removeNoTx(image);
-				imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
-				return;
-			}
-			// status != 0 (adica e o imagine "prelucrata")
-			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-			checkAndRemoveAlbumCover(image, album);
-			image.setDeleted(true);
-			imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
-		});
-		logger.debug("END {}", album.getName());
-	}
-
-	private String toFileNameWithOppositeExtensionCase(String fileName) {
-		StringBuilder sb = new StringBuilder(fileName);
-		int idx = sb.lastIndexOf(".");
-		if (idx <= 0) {
-			return fileName;
-		}
-		sb.append(fileName.substring(0, idx));
-		String pointAndExtension = fileName.substring(idx);
-		if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
-			sb.append(pointAndExtension.toUpperCase());
-		} else {
-			sb.append(pointAndExtension.toLowerCase());
-		}
-		return sb.toString();
 	}
 
 	@Transactional
@@ -212,12 +148,12 @@ public class AlbumRepository {
 	}
 
 	/**
-	 * When image is cover for album then remove album's cover (set it to null).
+	 * Remove album's cover (set it to null) when image is album's cover.
 	 *
 	 * @param image
 	 * @param album
 	 */
-	private void checkAndRemoveAlbumCover(Image image, Album album) {
+	public void checkAndRemoveAlbumCover(Image image, Album album) {
 		if (!isImageTheCoverForAlbum(image, album)) {
 			return;
 		}
@@ -229,7 +165,7 @@ public class AlbumRepository {
 		}
 	}
 
-	private boolean isImageTheCoverForAlbum(Image image, Album album) {
+	public boolean isImageTheCoverForAlbum(Image image, Album album) {
 		return album.getCover() != null && album.getCover().getId().equals(image.getId());
 	}
 }

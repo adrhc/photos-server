@@ -1,14 +1,15 @@
 package image.exifweb.image;
 
+import image.exifweb.album.importer.ExifExtractorService;
 import image.exifweb.persistence.Image;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -20,10 +21,12 @@ import java.util.List;
  * Created by adrianpetre on 29.01.2018.
  */
 @Service
-public class ImageService {
-	private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+public class ImageRepository {
+	private static final Logger logger = LoggerFactory.getLogger(ImageRepository.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 
+	@Inject
+	private ExifExtractorService exifExtractorService;
 	@Inject
 	private SessionFactory sessionFactory;
 
@@ -32,24 +35,6 @@ public class ImageService {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageId);
 		image.setThumbLastModified(thumbLastModified);
-	}
-
-	/**
-	 * We should already be in a transactional context!
-	 *
-	 * @param image must be a persistent one
-	 * @return
-	 */
-	@Transactional(propagation = Propagation.MANDATORY)
-	public void removeNoTx(Image image) {
-		Session session = sessionFactory.getCurrentSession();
-		session.delete(image);
-	}
-
-	@Transactional
-	public Image getById(Integer imageId) {
-		Session session = sessionFactory.getCurrentSession();
-		return (Image) session.get(Image.class, imageId);
 	}
 
 	@Transactional
@@ -99,5 +84,45 @@ public class ImageService {
 		// gets only the image
 //		return session.createQuery("FROM Image WHERE album.id = :albumId")
 //				.setParameter("albumId", albumId).list();
+	}
+
+	@Transactional
+	public void persistImage(Image image) {
+		sessionFactory.getCurrentSession().persist(image);
+	}
+
+	@Transactional
+	public Image updateImage(Image image) {
+		return (Image) sessionFactory.getCurrentSession().merge(image);
+	}
+
+	/**
+	 * Role:
+	 * - search the imageId then leverage the Image cache
+	 *
+	 * @param name
+	 * @param albumId
+	 * @return
+	 */
+	@Transactional
+	public Image getImageByNameAndAlbumId(String name, Integer albumId) {
+		Integer imageId = getImageIdByNameAndAlbumId(name, albumId);
+		return getImageById(imageId);
+	}
+
+	@Transactional
+	public Image getImageById(Integer imageId) {
+		Session session = sessionFactory.getCurrentSession();
+		return (Image) session.get(Image.class, imageId);
+	}
+
+	@Transactional(readOnly = true)
+	private Integer getImageIdByNameAndAlbumId(String name, Integer albumId) {
+		Session session = sessionFactory.getCurrentSession();
+		Query q = session.createQuery("SELECT id FROM Image " +
+				"WHERE name = :name AND album.id = :albumId");
+		q.setString("name", name);
+		q.setInteger("albumId", albumId);
+		return (Integer) q.uniqueResult();
 	}
 }

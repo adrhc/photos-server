@@ -134,38 +134,4 @@ public class ExifExtractorService {
 			image.setImageHeight(maxThumbSizeInt);
 		}
 	}
-
-	/**
-	 * Includes all properties touched by extractExif.
-	 *
-	 * @param from
-	 * @param to
-	 */
-	public void copyExifProperties(Image from, Image to) {
-		to.setImageHeight(from.getImageHeight());
-		to.setImageWidth(from.getImageWidth());
-		to.setExposureTime(from.getExposureTime());
-		to.setfNumber(from.getfNumber());
-		to.setExposureProgram(from.getExposureProgram());
-		to.setIsoSpeedRatings(from.getIsoSpeedRatings());
-		to.setDateTimeOriginal(from.getDateTimeOriginal());
-		to.setShutterSpeedValue(from.getShutterSpeedValue());
-		to.setApertureValue(from.getApertureValue());
-		to.setExposureBiasValue(from.getExposureBiasValue());
-		to.setMeteringMode(from.getMeteringMode());
-		to.setFlash(from.getFlash());
-		to.setFocalLength(from.getFocalLength());
-		to.setExposureMode(from.getExposureMode());
-		to.setWhiteBalanceMode(from.getWhiteBalanceMode());
-		to.setSceneCaptureType(from.getSceneCaptureType());
-		to.setGainControl(from.getGainControl());
-		to.setContrast(from.getContrast());
-		to.setSaturation(from.getSaturation());
-		to.setSharpness(from.getSharpness());
-		to.setSubjectDistanceRange(from.getSubjectDistanceRange());
-		to.setLensModel(from.getLensModel());
-		to.setModel(from.getModel());
-		to.setDateTime(from.getDateTime());
-		to.setThumbLastModified(from.getThumbLastModified());
-	}
 }
