@@ -36,7 +36,7 @@
         <source.version>1.8</source.version>
         <commons.io>2.4</commons.io>
         <mysql.connector>5.1.38</mysql.connector>
-        <metadata.extractor>2.6.2</metadata.extractor>
+        <metadata.extractor>2.11.0</metadata.extractor>
         <net.sf.json>2.4</net.sf.json>
         <javax.inject>1</javax.inject>
         <jstl>1.2</jstl>

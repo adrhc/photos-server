@@ -34,7 +34,7 @@ import java.util.Date;
 @Service
 public class ExifExtractorService {
 	private static final Logger logger = LoggerFactory.getLogger(ExifExtractorService.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
 	@Value("${max.thumb.size}")
@@ -82,13 +82,13 @@ public class ExifExtractorService {
 	 */
 	private void loadExifFromImgFile(ExifData exifData, File imgFile) throws Exception {
 		Metadata metadata = ImageMetadataReader.readMetadata(imgFile);
-		Directory directory = metadata.getDirectory(JpegDirectory.class);
+		Directory directory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
 
 		JpegDescriptor jpegDescriptor = new JpegDescriptor((JpegDirectory) directory);
 		exifData.setImageHeight(Integer.parseInt(jpegDescriptor.getImageHeightDescription().replace(" pixels", "")));
 		exifData.setImageWidth(Integer.parseInt(jpegDescriptor.getImageWidthDescription().replace(" pixels", "")));
 
-		directory = metadata.getDirectory(ExifSubIFDDirectory.class);
+		directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
 		safeCall(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
 		safeCall(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
@@ -115,7 +115,7 @@ public class ExifExtractorService {
 		safeCall(() -> exifData.setLensModel(exifSubIFDDescriptor
 				.getDescription(ExifSubIFDDirectory.TAG_LENS_MODEL)));
 
-		directory = metadata.getDirectory(ExifIFD0Directory.class);
+		directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
 		safeCall(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifIFD0Directory.TAG_MODEL)));
 	}
