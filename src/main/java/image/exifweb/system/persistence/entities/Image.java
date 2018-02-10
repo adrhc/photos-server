@@ -3,7 +3,7 @@ package image.exifweb.system.persistence.entities;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import image.exifweb.album.importer.ImageMetadata;
+import image.exifweb.system.persistence.entities.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
 

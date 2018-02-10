@@ -1,7 +1,7 @@
 package image.exifweb.image.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import image.exifweb.album.importer.ExifData;
+import image.exifweb.system.persistence.entities.image.ExifData;
 
 import javax.persistence.Column;
 import javax.persistence.Temporal;

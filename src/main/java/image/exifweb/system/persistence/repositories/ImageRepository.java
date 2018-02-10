@@ -1,7 +1,7 @@
 package image.exifweb.system.persistence.repositories;
 
 import image.exifweb.album.importer.ExifExtractorService;
-import image.exifweb.album.importer.ImageMetadata;
+import image.exifweb.system.persistence.entities.image.ImageMetadata;
 import image.exifweb.image.dto.ImageRating;
 import image.exifweb.image.dto.ImageStatus;
 import image.exifweb.system.persistence.entities.Album;

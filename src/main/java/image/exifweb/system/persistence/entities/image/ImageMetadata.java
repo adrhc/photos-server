@@ -1,4 +1,4 @@
-package image.exifweb.album.importer;
+package image.exifweb.system.persistence.entities.image;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

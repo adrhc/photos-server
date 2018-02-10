@@ -9,6 +9,7 @@ import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;
+import image.exifweb.system.persistence.entities.image.ImageMetadata;
 import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.system.persistence.repositories.ImageRepository;
 import image.exifweb.util.MutableValueHolder;
