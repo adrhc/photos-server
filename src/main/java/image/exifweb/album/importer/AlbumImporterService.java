@@ -196,10 +196,7 @@ public class AlbumImporterService {
 		Image dbImage = imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
-			if (!createImageFromFile(imgFile, album)) {
-				// failed to create image
-				return false;
-			}
+			return createImageFromFile(imgFile, album);
 		} else if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
 			updateImageMetadataFromFile(imgFile, dbImage);
