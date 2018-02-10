@@ -9,8 +9,8 @@ import image.exifweb.image.ImageRepository;
 import image.exifweb.image.events.EImageEventType;
 import image.exifweb.image.events.ImageEventBuilder;
 import image.exifweb.image.events.ImageEventsEmitter;
-import image.exifweb.persistence.Album;
-import image.exifweb.persistence.Image;
+import image.exifweb.system.persistence.entities.Album;
+import image.exifweb.system.persistence.entities.Image;
 import image.exifweb.util.MutableValueHolder;
 import io.reactivex.disposables.Disposable;
 import org.hibernate.Session;
@@ -270,7 +270,7 @@ public class AlbumImporterService {
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
 			ImageEventBuilder imgEvBuilder = new ImageEventBuilder().album(album).image(image);
 			if (fsNameIdx >= 0) {
-				logger.debug("poza din DB ({}) cu nume diferit in file system ({}): actualizez in DB cu {}",
+				logger.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				image.setName(oppositeExtensionCase);
 				imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());

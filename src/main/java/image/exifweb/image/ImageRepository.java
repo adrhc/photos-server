@@ -2,7 +2,7 @@ package image.exifweb.image;
 
 import image.exifweb.album.importer.ExifExtractorService;
 import image.exifweb.album.importer.ImageMetadata;
-import image.exifweb.persistence.Image;
+import image.exifweb.system.persistence.entities.Image;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;

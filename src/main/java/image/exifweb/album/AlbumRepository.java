@@ -2,8 +2,8 @@ package image.exifweb.album;
 
 import image.exifweb.image.ImageRepository;
 import image.exifweb.image.events.ImageEventsEmitter;
-import image.exifweb.persistence.Album;
-import image.exifweb.persistence.Image;
+import image.exifweb.system.persistence.entities.Album;
+import image.exifweb.system.persistence.entities.Image;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;

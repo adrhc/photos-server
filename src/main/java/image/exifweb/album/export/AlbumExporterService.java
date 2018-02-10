@@ -7,7 +7,7 @@ import image.exifweb.album.cover.AlbumCoverService;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.page.AlbumPageRepository;
 import image.exifweb.album.page.AlbumPageService;
-import image.exifweb.persistence.Album;
+import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.appconfig.AppConfigService;
 import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;

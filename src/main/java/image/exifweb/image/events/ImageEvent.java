@@ -1,7 +1,7 @@
 package image.exifweb.image.events;
 
-import image.exifweb.persistence.Album;
-import image.exifweb.persistence.Image;
+import image.exifweb.system.persistence.entities.Album;
+import image.exifweb.system.persistence.entities.Image;
 
 import java.util.HashMap;
 

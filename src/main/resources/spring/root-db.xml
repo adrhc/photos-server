@@ -47,7 +47,7 @@
 		<!--<value>classpath:/hibernate/**/*.hbm.xml</value>-->
 		<!--</list>-->
 		<!--</property>-->
-		<property name="packagesToScan" value="image.exifweb.persistence"/>
+		<property name="packagesToScan" value="image.exifweb.system.persistence"/>
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>

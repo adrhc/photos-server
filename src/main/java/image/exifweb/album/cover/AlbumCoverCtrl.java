@@ -19,7 +19,7 @@ public class AlbumCoverCtrl implements INotModifiedChecker {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverCtrl.class);
 
 	@Inject
-	private AlbumCoverRepo albumCoverRepo;
+	private AlbumCoverRepository albumCoverRepository;
 	@Inject
 	private AlbumCoverService albumCoverService;
 
@@ -27,7 +27,7 @@ public class AlbumCoverCtrl implements INotModifiedChecker {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
-		return checkNotModified(albumCoverRepo::getAlbumCoversLastUpdateDate,
+		return checkNotModified(albumCoverRepository::getAlbumCoversLastUpdateDate,
 				albumCoverService::getCovers, webRequest);
 	}
 

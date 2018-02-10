@@ -47,7 +47,7 @@
         <!--<appender-ref ref="exifweb-file"/>-->
     </logger>
 
-    <logger name="image.exifweb.persistence" additivity="false">
+    <logger name="image.exifweb.system.persistence" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
         <!--<appender-ref ref="exifweb-file"/>-->

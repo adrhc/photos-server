@@ -1,8 +1,8 @@
 package image.exifweb.appconfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.persistence.AppConfig;
-import image.exifweb.persistence.enums.AppConfigEnum;
+import image.exifweb.system.persistence.entities.AppConfig;
+import image.exifweb.system.persistence.entities.enums.AppConfigEnum;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;

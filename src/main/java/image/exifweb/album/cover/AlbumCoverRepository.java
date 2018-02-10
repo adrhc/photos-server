@@ -1,6 +1,6 @@
 package image.exifweb.album.cover;
 
-import image.exifweb.persistence.Album;
+import image.exifweb.system.persistence.entities.Album;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
@@ -14,7 +14,7 @@ import java.util.Date;
  * Created by adr on 2/3/18.
  */
 @Component
-public class AlbumCoverRepo {
+public class AlbumCoverRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 

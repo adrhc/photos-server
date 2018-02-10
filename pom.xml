@@ -337,8 +337,8 @@
 
             <!--
                 ERROR
-                    EnhancementException: Unable to enhance persistent attribute [image.exifweb.persistence.Album:cover]
-                    Caused by: javassist.NotFoundException: image.exifweb.persistence.Image
+                    EnhancementException: Unable to enhance persistent attribute [image.exifweb.systemtem.persistence.entities.Album:cover]
+                    Caused by: javassist.NotFoundException: image.exifweb.systemtem.persistence.entities.Image
                 PROBLEM?
                     Album depends on Image which depends on Album
 
