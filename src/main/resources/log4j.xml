@@ -72,7 +72,7 @@
     </logger>
 
     <logger name="image.exifweb.util.frameworks.spring.web.controller" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>
     </logger>
