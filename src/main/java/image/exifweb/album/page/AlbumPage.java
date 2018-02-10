@@ -2,7 +2,7 @@ package image.exifweb.album.page;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import image.exifweb.image.ImageBasicInfo;
+import image.exifweb.image.IImageBasicInfo;
 import image.exifweb.image.IImageDimensions;
 
 import java.io.Serializable;
@@ -16,7 +16,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"thumbLastModified"})
-public class AlbumPage implements ImageBasicInfo, IImageDimensions, Serializable {
+public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializable {
 	private Integer id;// image id
 	private String imgName;
 	private boolean hidden;

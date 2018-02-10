@@ -23,8 +23,8 @@ public class ImageUtils {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 
-	public void appendImagePaths(List<? extends ImageBasicInfo> imageBasicInfos) {
-		for (ImageBasicInfo basicInfo : imageBasicInfos) {
+	public void appendImagePaths(List<? extends IImageBasicInfo> imageBasicInfos) {
+		for (IImageBasicInfo basicInfo : imageBasicInfos) {
 			if (basicInfo.getImgName() == null) {
 				continue;
 			}
@@ -32,7 +32,7 @@ public class ImageUtils {
 		}
 	}
 
-	public void appendImagePaths(ImageBasicInfo basicInfo) {
+	public void appendImagePaths(IImageBasicInfo basicInfo) {
 		String albumName = basicInfo.getAlbumName();
 		Long thumbLastModified = basicInfo.getThumbLastModified().getTime();
 		String imgName = basicInfo.getImgName();

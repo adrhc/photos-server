@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by adr on 14-Apr-15.
  */
-public interface ImageBasicInfo {
+public interface IImageBasicInfo {
 	public String getThumbPath();
 
 	public void setThumbPath(String imagePath);
