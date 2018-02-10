@@ -45,10 +45,11 @@ public class AlbumCoverService {
 					album.isDirty(), album.getLastUpdate());
 		} else {
 			ac = new AlbumCover(album.getId(), album.getName(), cover.getName(),
-					cover.getImageHeight(), cover.getImageWidth(), album.isDirty(),
-					album.getLastUpdate());
+					cover.getImageMetadata().getExifData().getImageHeight(),
+					cover.getImageMetadata().getExifData().getImageWidth(),
+					album.isDirty(), album.getLastUpdate());
 			imageUtils.appendImageDimensions(ac);
-			imageUtils.appendImagePaths(ac, cover.getThumbLastModified().getTime());
+			imageUtils.appendImagePaths(ac, cover.getImageMetadata().getThumbLastModified().getTime());
 		}
 		return ac;
 	}

@@ -1,6 +1,8 @@
 package image.exifweb.image;
 
 import image.exifweb.album.importer.ExifExtractorService;
+import image.exifweb.album.importer.ImageMetadata;
+import image.exifweb.persistence.Album;
 import image.exifweb.persistence.Image;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -41,7 +43,7 @@ public class ImageRepository {
 	public Image updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.get(Image.class, imageId);
-		image.setThumbLastModified(thumbLastModified);
+		image.getImageMetadata().setThumbLastModified(thumbLastModified);
 		return image;
 	}
 
@@ -95,19 +97,25 @@ public class ImageRepository {
 	}
 
 	@Transactional
-	public void persistImage(Image image) {
+	public Image createImage(String name, ImageMetadata imageMetadata, Album album) {
+		Image image = new Image();
+		image.setImageMetadata(imageMetadata);
+		image.setName(name);
+		image.setAlbum(album);
 		sessionFactory.getCurrentSession().persist(image);
+		return image;
 	}
 
 	/**
-	 * Update only EXIF data but not ratings or status.
+	 * Update only metadata data but not ratings or status.
 	 *
-	 * @param image
+	 * @param imageMetadata
 	 */
 	@Transactional
-	public void updateExif(Image image) {
-		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, image.getId());
-		exifExtractorService.copyExifProperties(image, dbImage);
+	public Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
+		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
+		dbImage.setImageMetadata(imageMetadata);
+		return dbImage;
 	}
 
 	/**

@@ -86,28 +86,32 @@ public class AlbumPageRepository {
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
-					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
-//					"thumbPath(a.name, i.thumbLastModified, i.name), " +
-//					"imagePath(a.name, i.thumbLastModified, i.name)) " +
+					"i.printable, i.imageMetadata.exifData.imageHeight, " +
+					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
+					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
+					"a.name, i.lastUpdate) " +
+//					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
+//					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					(albumId == -1 ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"AND i.name LIKE :toSearch " +
-					"ORDER BY i.dateTimeOriginal " + sort);
+					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort);
 			// searches case-sensitive for name!
 			q.setString("toSearch", "%" + toSearch + "%");
 		} else {
 			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.printable, i.imageHeight, i.imageWidth, i.rating, a.cover.id, " +
-					"i.thumbLastModified, i.dateTime, a.name, i.lastUpdate) " +
-//					"thumbPath(a.name, i.thumbLastModified, i.name), " +
-//					"imagePath(a.name, i.thumbLastModified, i.name)) " +
+					"i.printable, i.imageMetadata.exifData.imageHeight, " +
+					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
+					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
+					"a.name, i.lastUpdate) " +
+//					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
+//					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId AND i.deleted = 0 " +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"ORDER BY i.dateTimeOriginal " + sort);
+					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
 		if (albumId != -1) {

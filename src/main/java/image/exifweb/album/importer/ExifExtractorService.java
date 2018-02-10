@@ -9,7 +9,7 @@ import com.drew.metadata.exif.ExifSubIFDDescriptor;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import image.exifweb.persistence.Image;
+import image.exifweb.image.ImageDimensions;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,116 +42,88 @@ public class ExifExtractorService {
 	@Inject
 	private ThumbUtils thumbUtils;
 
-	public Image extractExif(File imgFile) {
-		Image image = new Image();
-		image.setName(imgFile.getName());
+	public ImageMetadata extractMetadata(File imgFile) {
+		ImageMetadata imageMetadata =
+				new ImageMetadata(new Date(imgFile.lastModified()));
 
 		try {
-			loadExifFromImgFile(image, imgFile);
+			loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
 		} catch (FileNotFoundException e) {
 			// path no longer exists
 			return null;
 		} catch (Exception e) {
 			logger.error("{}: {}", imgFile.getParentFile().getName(), imgFile.getName());
-			image.setDateTime(new Date(imgFile.lastModified()));
-			image.setDateTimeOriginal(image.getDateTime());
-			prepareImageDimensions(image, imgFile.getPath());
+			imageMetadata.getExifData().setDateTimeOriginal(imageMetadata.getDateTime());
+			loadDimensions(imageMetadata.getExifData(), imgFile.getPath());
 		}
 
-		Date thumbLastModified = thumbUtils.getThumbLastModified(imgFile, image.getDateTime());
-		image.setThumbLastModified(thumbLastModified);
+		Date thumbLastModified = thumbUtils.getThumbLastModified(
+				imgFile, imageMetadata.getDateTime());
+		imageMetadata.setThumbLastModified(thumbLastModified);
 
-		return image;
+		return imageMetadata;
 	}
 
-	private void loadExifFromImgFile(Image image, File imgFile) throws Exception {
+	/**
+	 * https://github.com/drewnoakes/metadata-extractor/wiki/SampleOutput
+	 *
+	 * @param exifData
+	 * @param imgFile
+	 * @throws Exception
+	 */
+	private void loadExifFromImgFile(ExifData exifData, File imgFile) throws Exception {
 		Metadata metadata = ImageMetadataReader.readMetadata(imgFile);
 		Directory directory = metadata.getDirectory(JpegDirectory.class);
 
 		JpegDescriptor jpegDescriptor = new JpegDescriptor((JpegDirectory) directory);
-		image.setImageHeight(Integer.parseInt(jpegDescriptor.getImageHeightDescription().replace(" pixels", "")));
-		image.setImageWidth(Integer.parseInt(jpegDescriptor.getImageWidthDescription().replace(" pixels", "")));
+		exifData.setImageHeight(Integer.parseInt(jpegDescriptor.getImageHeightDescription().replace(" pixels", "")));
+		exifData.setImageWidth(Integer.parseInt(jpegDescriptor.getImageWidthDescription().replace(" pixels", "")));
 
 		directory = metadata.getDirectory(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-		image.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription());
-		image.setfNumber(exifSubIFDDescriptor.getFNumberDescription());
-		image.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription());
-		image.setIsoSpeedRatings(Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription()));
-		image.setDateTimeOriginal(sdf.parse(exifSubIFDDescriptor.getDescription(36867)));
-		image.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription());
-		image.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription());
-		image.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription());
-		image.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription());
-		image.setFlash(exifSubIFDDescriptor.getFlashDescription());
-		image.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription());
-		image.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription());
-		image.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription());
-		image.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription());
-		image.setGainControl(exifSubIFDDescriptor.getGainControlDescription());
-		image.setContrast(exifSubIFDDescriptor.getContrastDescription());
-		image.setSaturation(exifSubIFDDescriptor.getSaturationDescription());
-		image.setSharpness(exifSubIFDDescriptor.getSharpnessDescription());
-		image.setSubjectDistanceRange(exifSubIFDDescriptor.getSubjectDistanceRangeDescription());
-		image.setLensModel(exifSubIFDDescriptor.getDescription(42036));
+		exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription());
+		exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription());
+		exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription());
+		exifData.setIsoSpeedRatings(Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription()));
+		exifData.setDateTimeOriginal(sdf.parse(
+				exifSubIFDDescriptor.getDescription(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)));
+		exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription());
+		exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription());
+		exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription());
+		exifData.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription());
+		exifData.setFlash(exifSubIFDDescriptor.getFlashDescription());
+		exifData.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription());
+		exifData.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription());
+		exifData.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription());
+		exifData.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription());
+		exifData.setGainControl(exifSubIFDDescriptor.getGainControlDescription());
+		exifData.setContrast(exifSubIFDDescriptor.getContrastDescription());
+		exifData.setSaturation(exifSubIFDDescriptor.getSaturationDescription());
+		exifData.setSharpness(exifSubIFDDescriptor.getSharpnessDescription());
+		exifData.setSubjectDistanceRange(exifSubIFDDescriptor.getSubjectDistanceRangeDescription());
+		exifData.setLensModel(exifSubIFDDescriptor.getDescription(ExifSubIFDDirectory.TAG_LENS_MODEL));
 
 		directory = metadata.getDirectory(ExifIFD0Directory.class);
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
-		image.setModel(exifIFD0Descriptor.getDescription(272));
-		// utilizat in url-ul imaginii si cu impact in browser-cache
-		image.setDateTime(new Date(imgFile.lastModified()));
+		exifData.setModel(exifIFD0Descriptor.getDescription(ExifIFD0Directory.TAG_MODEL));
 	}
 
-	private void prepareImageDimensions(Image image, String path) {
+	private void loadDimensions(ImageDimensions imageDimensions, String path) {
 		try {
 //			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 //					"/home/adr/x.sh", "image_dims", path);
 			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 					"identify", "-format", "%[fx:w] %[fx:h]", path);
-			String dimensions = processInfoService.getProcessOutput(identifyImgDimensions);
+			String sDimensions = processInfoService.getProcessOutput(identifyImgDimensions);
 //            logger.debug("dimensions {} for:\n{}", dimensions, path);
-			String[] dims = dimensions.split("\\s");
-			image.setImageWidth(Integer.parseInt(dims[WIDTH]));
-			image.setImageHeight(Integer.parseInt(dims[HEIGHT]));
+			String[] dims = sDimensions.split("\\s");
+			imageDimensions.setImageWidth(Integer.parseInt(dims[WIDTH]));
+			imageDimensions.setImageHeight(Integer.parseInt(dims[HEIGHT]));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			logger.error("Using default dimensions: {}x{}", maxThumbSizeInt, maxThumbSizeInt);
-			image.setImageWidth(maxThumbSizeInt);
-			image.setImageHeight(maxThumbSizeInt);
+			imageDimensions.setImageWidth(maxThumbSizeInt);
+			imageDimensions.setImageHeight(maxThumbSizeInt);
 		}
-	}
-
-	/**
-	 * Includes all properties touched by extractExif.
-	 *
-	 * @param from
-	 * @param to
-	 */
-	public void copyExifProperties(Image from, Image to) {
-		to.setImageHeight(from.getImageHeight());
-		to.setImageWidth(from.getImageWidth());
-		to.setExposureTime(from.getExposureTime());
-		to.setfNumber(from.getfNumber());
-		to.setExposureProgram(from.getExposureProgram());
-		to.setIsoSpeedRatings(from.getIsoSpeedRatings());
-		to.setDateTimeOriginal(from.getDateTimeOriginal());
-		to.setShutterSpeedValue(from.getShutterSpeedValue());
-		to.setApertureValue(from.getApertureValue());
-		to.setExposureBiasValue(from.getExposureBiasValue());
-		to.setMeteringMode(from.getMeteringMode());
-		to.setFlash(from.getFlash());
-		to.setFocalLength(from.getFocalLength());
-		to.setExposureMode(from.getExposureMode());
-		to.setWhiteBalanceMode(from.getWhiteBalanceMode());
-		to.setSceneCaptureType(from.getSceneCaptureType());
-		to.setGainControl(from.getGainControl());
-		to.setContrast(from.getContrast());
-		to.setSaturation(from.getSaturation());
-		to.setSharpness(from.getSharpness());
-		to.setSubjectDistanceRange(from.getSubjectDistanceRange());
-		to.setLensModel(from.getLensModel());
-		to.setModel(from.getModel());
-		to.setDateTime(from.getDateTime());
-		to.setThumbLastModified(from.getThumbLastModified());
 	}
 }

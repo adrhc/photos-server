@@ -196,30 +196,29 @@ public class AlbumImporterService {
 		Image dbImage = imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
-			Image newImg = exifExtractorService.extractExif(imgFile);
-			if (newImg == null) {
+			ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
+			if (imageMetadata == null) {
 				logger.info("{} no longer exists!", imgFile.getPath());
 				return false;
 			}
-			logger.debug("insert {}/{}", album.getName(), newImg.getName());
-			newImg.setAlbum(album);
-			imageRepository.persistImage(newImg);
+			logger.debug("insert {}/{}", album.getName(), imgFile.getName());
+			Image newImg = imageRepository.createImage(imgFile.getName(), imageMetadata, album);
 			imageEventsEmitter.emit(ImageEventBuilder
 					.of(EImageEventType.CREATED)
 					.image(newImg).build());
-		} else if (imgFile.lastModified() > dbImage.getDateTime().getTime()) {
+		} else if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
 			logger.debug("update EXIF for {}/{}", album.getName(), dbImage.getName());
-			Image imgWithUpdatedEXIF = exifExtractorService.extractExif(imgFile);
-			imgWithUpdatedEXIF.setId(dbImage.getId());
-			imgWithUpdatedEXIF.setAlbum(album);
-			imageRepository.updateExif(imgWithUpdatedEXIF);
+			ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
+			Image imgWithUpdatedMetadata = imageRepository
+					.updateImageMetadata(imageMetadata, dbImage.getId());
 			imageEventsEmitter.emit(ImageEventBuilder
 					.of(EImageEventType.EXIF_UPDATED)
-					.image(imgWithUpdatedEXIF).build());
+					.image(imgWithUpdatedMetadata).build());
 		} else {
-			Date thumbLastModified = thumbUtils.getThumbLastModified(imgFile, dbImage.getDateTime());
-			if (thumbLastModified.after(dbImage.getThumbLastModified())) {
+			Date thumbLastModified = thumbUtils
+					.getThumbLastModified(imgFile, dbImage.getImageMetadata().getDateTime());
+			if (thumbLastModified.after(dbImage.getImageMetadata().getThumbLastModified())) {
 				// check lastModified for thumb then update in DB lastModified date only
 				logger.debug("update thumb's lastModified for {}/{}",
 						album.getName(), dbImage.getName());

@@ -123,7 +123,7 @@ public class Album implements Serializable {
 	 * Date represents a specific instant in time, with millisecond precision.
 	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss", timezone = "Europe/Bucharest")
+	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
 	@Version
 	@Column(name = "last_update")
 	public Date getLastUpdate() {
