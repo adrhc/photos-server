@@ -1,9 +1,9 @@
 package image.exifweb.subtitle;
 
-import image.exifweb.sys.AppConfigService;
-import image.exifweb.sys.ProcessInfoService;
+import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.util.io.EndingLinesFileReader;
-import image.exifweb.util.json.JsonValue;
+import image.exifweb.util.json.JsonStringValue;
+import image.exifweb.util.procinfo.ProcessInfoService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -61,11 +61,11 @@ public class SubtitleCtrl {
 
 	@RequestMapping(value = "/extractSubtitles", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public synchronized void extractSubtitles(@RequestBody JsonValue jsonValue, Model model) throws IOException, InterruptedException {
-		boolean mkvExtractStarted = subtitleService.extractSubtitles(jsonValue.getValue(), true);
+	public synchronized void extractSubtitles(@RequestBody JsonStringValue jsonStringValue, Model model) throws IOException, InterruptedException {
+		boolean mkvExtractStarted = subtitleService.extractSubtitles(jsonStringValue.getValue(), true);
 		if (mkvExtractStarted) {
-			if (StringUtils.hasText(jsonValue.getValue())) {
-				model.addAttribute("message", "extractSubtitles started for " + jsonValue.getValue() + " !");
+			if (StringUtils.hasText(jsonStringValue.getValue())) {
+				model.addAttribute("message", "extractSubtitles started for " + jsonStringValue.getValue() + " !");
 			} else {
 				model.addAttribute("message", "extractSubtitles started for all videos !");
 			}
@@ -90,7 +90,7 @@ public class SubtitleCtrl {
 
 	@RequestMapping(value = "/videoFolders", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	public List<JsonValue> videoFolders(WebRequest webRequest) throws IOException {
+	public List<JsonStringValue> videoFolders(WebRequest webRequest) throws IOException {
 		File videoRoot = new File(appConfigService.getConfig("video root folder"));
 		File[] videoRootFolders = videoRoot.listFiles(new FileFilter() {
 			@Override
@@ -98,10 +98,10 @@ public class SubtitleCtrl {
 				return pathname.isDirectory();
 			}
 		});
-		List<JsonValue> directDirKids = new ArrayList<>(videoRootFolders.length);
+		List<JsonStringValue> directDirKids = new ArrayList<>(videoRootFolders.length);
 		long lastModified = 0;
 		for (File path : videoRootFolders) {
-			directDirKids.add(new JsonValue(path.getName()));
+			directDirKids.add(new JsonStringValue(path.getName()));
 			if (lastModified < path.lastModified()) {
 				lastModified = path.lastModified();
 			}

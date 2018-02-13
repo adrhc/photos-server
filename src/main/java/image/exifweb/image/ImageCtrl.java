@@ -1,26 +1,18 @@
 package image.exifweb.image;
 
-import image.exifweb.album.AlbumExporter;
-import image.exifweb.album.AlbumService;
-import image.exifweb.album.PhotoThumb;
-import image.exifweb.persistence.Image;
-import image.exifweb.sys.AppConfigService;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import image.exifweb.image.dto.ExifInfo;
+import image.exifweb.image.dto.ImageRating;
+import image.exifweb.image.dto.ImageStatus;
+import image.exifweb.system.persistence.entities.Image;
+import image.exifweb.system.persistence.repositories.AlbumRepository;
+import image.exifweb.system.persistence.repositories.ImageRepository;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,72 +21,50 @@ import java.util.concurrent.Callable;
  * Time: 3:00 PM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
+@RestController
 @RequestMapping("/json/image")
 public class ImageCtrl {
-	private static final Logger logger = LoggerFactory.getLogger(ImageCtrl.class);
 	@Inject
-	private AlbumService albumService;
+	private AlbumRepository albumRepository;
 	@Inject
-	private AppConfigService appConfigService;
-	@Inject
-	private SessionFactory sessionFactory;
+	private ImageRepository imageRepository;
+	private ImageMetadataEntityToDTOConverter metadataEntityToDTOConverter =
+			new ImageMetadataEntityToDTOConverter();
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	@Transactional(readOnly = true)
-	public Image get(@PathVariable Integer id, WebRequest webRequest) {
-		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.get(Image.class, id);
-		if (webRequest.checkNotModified(image.getDateTime().getTime())) {
+	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
+		Image image = imageRepository.getImageById(id);
+		if (webRequest.checkNotModified(
+				image.getImageMetadata().getDateTime().getTime())) {
 			return null;
 		}
 		return image;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
-	@RequestMapping(value = "/countPages", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public Callable<Model> pageCount(@RequestParam Integer albumId, Model model,
-	                                 @RequestParam(defaultValue = "false") boolean viewHidden,
-	                                 @RequestParam(required = false) String toSearch) {
-		return new CallablePageCount(albumId, model, viewHidden, toSearch);
-	}
-
-	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
-	@RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	@ResponseBody
-	public CallablePage page(@RequestParam Integer albumId,
-	                         @RequestParam int pageNr,
-	                         @RequestParam(defaultValue = "asc") String sort,
-	                         @RequestParam(defaultValue = "false") boolean viewHidden,
-	                         @RequestParam(required = false) String toSearch) {
-		return new CallablePage(pageNr, sort, toSearch, viewHidden, albumId);
+	@RequestMapping(value = "/exif/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	public ExifInfo getExifById(@PathVariable Integer id, WebRequest webRequest) {
+		Image image = imageRepository.getImageById(id);
+		if (webRequest.checkNotModified(
+				image.getImageMetadata().getDateTime().getTime())) {
+			return null;
+		}
+		return metadataEntityToDTOConverter.convert(image);
 	}
 
 	@RequestMapping(value = "/changeStatus",
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	@CacheEvict(value = "covers", allEntries = true)
-	@Transactional
 	public void changeStatus(@RequestBody ImageStatus imageStatus) {
-		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageStatus.getId());
-		image.setStatus(imageStatus.getStatus());
-		image.getAlbum().setDirty(true);
+		imageRepository.changeStatus(imageStatus);
 	}
 
 	@RequestMapping(value = "/setRating",
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-//	@CacheEvict(value = "covers", allEntries = true)
-	@Transactional
-	public void setRating(@RequestBody ImageRating imageRating) {
-		Session session = sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageRating.getId());
-		image.setRating(imageRating.getRating());
-		image.getAlbum().setDirty(true);
+	public void changeRating(@RequestBody ImageRating imageRating) {
+		imageRepository.changeRating(imageRating);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -102,49 +72,6 @@ public class ImageCtrl {
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void putAlbumCover(@PathVariable Integer imageId) throws IOException {
-		albumService.putAlbumCover(imageId);
-	}
-
-	protected class CallablePageCount implements Callable<Model> {
-		private Integer albumId;
-		private Model model;
-		private boolean viewHidden;
-		private String toSearch;
-
-		public CallablePageCount(Integer albumId, Model model, boolean viewHidden, String toSearch) {
-			this.albumId = albumId;
-			this.model = model;
-			this.viewHidden = viewHidden;
-			this.toSearch = toSearch;
-		}
-
-		@Override
-		public Model call() throws Exception {
-			model.addAttribute(AlbumExporter.PHOTOS_PER_PAGE, appConfigService.getPhotosPerPage());
-			model.addAttribute(AlbumExporter.PAGE_COUNT,
-					albumService.getPageCount(toSearch, viewHidden, albumId));
-			return model;
-		}
-	}
-
-	protected class CallablePage implements Callable<List<PhotoThumb>> {
-		private Integer albumId;
-		private String sort;
-		private boolean viewHidden;
-		private String toSearch;
-		private int pageNr = -1;
-
-		public CallablePage(int pageNr, String sort, String toSearch, boolean viewHidden, Integer albumId) {
-			this.albumId = albumId;
-			this.pageNr = pageNr;
-			this.sort = sort;
-			this.viewHidden = viewHidden;
-			this.toSearch = toSearch;
-		}
-
-		@Override
-		public List<PhotoThumb> call() throws Exception {
-			return albumService.getPage(pageNr, sort, toSearch, viewHidden, albumId);
-		}
+		albumRepository.putAlbumCover(imageId);
 	}
 }

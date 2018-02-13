@@ -28,7 +28,7 @@
 
     <listener>
         <listener-class>
-            org.springframework.web.context.ContextLoaderListenerEx
+            image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx
         </listener-class>
     </listener>
 
@@ -44,6 +44,10 @@
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
+
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

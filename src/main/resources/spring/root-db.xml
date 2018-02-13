@@ -47,14 +47,23 @@
 		<!--<value>classpath:/hibernate/**/*.hbm.xml</value>-->
 		<!--</list>-->
 		<!--</property>-->
-		<property name="packagesToScan" value="image.exifweb.persistence"/>
+		<property name="packagesToScan" value="image.exifweb.system.persistence"/>
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
 				<prop key="hibernate.jdbc.batch_size">20</prop>
-				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.validator.autoregister_listeners">false</prop>
+
+                <!-- http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x -->
+                <!-- http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache -->
+                <!--<prop key="hibernate.generate_statistics">true</prop>-->
+                <!--<prop key="hibernate.cache.use_structured_entries">true</prop>-->
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+
 				<!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
 				<!--
 				<prop key="hibernate.id.new_generator_mappings">true</prop>

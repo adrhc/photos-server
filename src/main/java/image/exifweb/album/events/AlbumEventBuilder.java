@@ -1,6 +1,6 @@
 package image.exifweb.album.events;
 
-import image.exifweb.persistence.Album;
+import image.exifweb.system.persistence.entities.Album;
 
 /**
  * Created by adr on 1/28/18.
@@ -14,11 +14,6 @@ public class AlbumEventBuilder {
 
 	public AlbumEventBuilder album(Album album) {
 		albumEvent.setAlbum(album);
-		return this;
-	}
-
-	public AlbumEventBuilder albumName(String albumName) {
-		albumEvent.setAlbumName(albumName);
 		return this;
 	}
 

@@ -13,8 +13,8 @@
         <param name="Threshold" value="debug"/>
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <!--<param name="ConversionPattern" value="%-5p: %c - %m%n" /> -->
-            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>
+            <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
+            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
         </layout>
     </appender>
 
@@ -25,7 +25,7 @@
         <!-- Keep one backup file -->
         <param name="MaxBackupIndex" value="1"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>
+            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
         </layout>
     </appender>
 
@@ -36,21 +36,54 @@
         <!-- Keep one backup file -->
         <param name="MaxBackupIndex" value="3"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>
+            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
         </layout>
     </appender>
 
+    <!-- app -->
     <logger name="image" additivity="false">
         <level value="debug"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
+    <logger name="image.exifweb.album.cover" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
+    <logger name="image.exifweb.album.events" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
+    <logger name="image.exifweb.image.events" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
+    <logger name="image.exifweb.system.persistence" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
+    </logger>
+
+    <logger name="image.exifweb.util.frameworks.spring.web.controller" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>
     </logger>
 
     <logger name="subtitles" additivity="false">
         <level value="debug"/>
+        <appender-ref ref="console"/>
         <appender-ref ref="subtitles-extractor-file"/>
     </logger>
 
-    <!-- 3rdparty Loggers -->
+    <!-- springframework -->
     <logger name="org.springframework">
         <level value="info"/>
     </logger>
@@ -61,11 +94,18 @@
     <!-- Hibernate -->
     <!--log just the SQL -->
     <logger name="org.hibernate.SQL">
-        <level value="warn"/>
+        <level value="info"/>
     </logger>
     <!--log JDBC bind parameters -->
     <logger name="org.hibernate.type">
         <level value="error"/>
+    </logger>
+
+    <logger name="org.hibernate.cache">
+        <level value="info"/>
+    </logger>
+    <logger name="net.sf.ehcache">
+        <level value="info"/>
     </logger>
 
     <!-- Root Logger -->

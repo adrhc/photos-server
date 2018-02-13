@@ -1,6 +1,6 @@
 package image.exifweb.album.events;
 
-import image.exifweb.persistence.Album;
+import image.exifweb.system.persistence.entities.Album;
 
 import java.util.HashMap;
 
@@ -33,14 +33,6 @@ public class AlbumEvent extends HashMap<EAlbumEventDetail, Object> {
 		put(EAlbumEventDetail.REQUEST_ID, requestId);
 	}
 
-	public String getAlbumName() {
-		return getValue(EAlbumEventDetail.ALBUM_NAME);
-	}
-
-	public void setAlbumName(String albumName) {
-		put(EAlbumEventDetail.ALBUM_NAME, albumName);
-	}
-
 	public EAlbumEventType getEventType() {
 		return eventType;
 	}
@@ -51,5 +43,12 @@ public class AlbumEvent extends HashMap<EAlbumEventDetail, Object> {
 
 	public <T> T getValue(EAlbumEventDetail key) {
 		return (T) get(key);
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "\nAlbumEvent{" +
+				"eventType=" + eventType +
+				'}';
 	}
 }

@@ -2,14 +2,13 @@ package image.exifweb.appconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.persistence.AppConfig;
-import image.exifweb.sys.AppConfigService;
-import image.exifweb.sys.MailService;
-import image.exifweb.sys.ProcessInfoService;
-import image.exifweb.sys.process.ProcStatPercent;
+import image.exifweb.system.persistence.entities.AppConfig;
+import image.exifweb.system.persistence.repositories.AppConfigRepository;
+import image.exifweb.util.MailService;
+import image.exifweb.util.procinfo.ProcStatPercent;
+import image.exifweb.util.procinfo.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,12 +37,14 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/json/appconfig")
-public class AppConfigCtrl {
+public class AppConfigCtrl implements IAppConfigCache {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigCtrl.class);
 	@Inject
 	private ProcessInfoService processInfoService;
 	@Inject
 	private MailService mailService;
+	@Inject
+	private AppConfigRepository appConfigRepository;
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
@@ -146,15 +147,15 @@ public class AppConfigCtrl {
 
 	@RequestMapping(value = "/reloadParams", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@CacheEvict(value = "appConfig", allEntries = true)
 	public void reloadParams(Model model) {
+		evictAppConfigCache();
 		model.addAttribute("message", "App params reloaded!");
 	}
 
 	@RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void update(@RequestBody List<AppConfig> appConfigs, Model model) throws IOException {
-		appConfigService.update(appConfigs);
+		appConfigRepository.update(appConfigs);
 		appConfigService.writeJsonForAppConfigs();
 		model.addAttribute("message", "App configs updated!");
 	}
@@ -187,24 +188,24 @@ public class AppConfigCtrl {
 //        List<AppConfig> appConfigs = appConfigService.getAppConfigs();
 //        logger.debug("modified:\n{}", ArrayUtils.toString(appConfigs));
 //        return appConfigs;
-		return appConfigService.getAppConfigs();
+		return appConfigRepository.getAppConfigs();
 	}
 
 	@RequestMapping(value = "testGetNoCacheableOrderedAppConfigs",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
-		return appConfigService.testGetNoCacheableOrderedAppConfigs();
+		return appConfigRepository.testGetNoCacheableOrderedAppConfigs();
 	}
 
 	@RequestMapping(value = "testGetNoCacheableAppConfigByName",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public AppConfig testGetNoCacheableAppConfigByName() {
-		return appConfigService.testGetNoCacheableAppConfigByName("albums_path");
+		return appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		testRAMObjectToJson = appConfigService.getAppConfigs();
+		testRAMObjectToJson = appConfigRepository.getAppConfigs();
 		try {
 			testRAMString = objectMapper.writeValueAsString(testRAMObjectToJson);
 		} catch (JsonProcessingException e) {
