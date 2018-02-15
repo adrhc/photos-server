@@ -2,7 +2,7 @@
 source env.sh
 
 export EXIFWEB_PORT=8080
-export EXIFWEB_DIR=/home/adr/Projects/exifweb/trunk/target/exifweb
+export EXIFWEB_DIR=/home/adr/Projects/git.exifweb/exifweb/target/exifweb
 #echo "EXIFWEB_PORT = $EXIFWEB_PORT"
 #echo "EXIFWEB_DIR = $EXIFWEB_DIR"
 #echo "cp: $EXIFWEB_DIR/WEB-INF/classes:$EXIFWEB_DIR/WEB-INF/lib/*"
