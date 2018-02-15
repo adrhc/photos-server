@@ -15,7 +15,7 @@
         <mvc:async-support default-timeout="7200000"/>
         <mvc:message-converters register-defaults="true">
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="objectMapper" ref="hibernateAwareObjectMapper"/>
+                <property name="objectMapper" ref="objectMapper"/>
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>

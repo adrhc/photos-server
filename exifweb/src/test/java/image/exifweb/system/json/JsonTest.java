@@ -2,7 +2,6 @@ package image.exifweb.system.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.system.persistence.entities.Image;
-import image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +23,9 @@ public class JsonTest {
 	@Test
 	public void objectToMap() throws IOException {
 		/**
-		 * see also image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper
+		 * see also WebConfig.objectMapper
 		 */
-		ObjectMapper mapper = new HibernateAwareObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 //		ObjectMapper om = new ObjectMapper() {{
 //			setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
 //		}};

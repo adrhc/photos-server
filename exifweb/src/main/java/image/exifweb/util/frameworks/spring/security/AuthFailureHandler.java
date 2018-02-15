@@ -1,6 +1,6 @@
 package image.exifweb.util.frameworks.spring.security;
 
-import image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -23,7 +23,7 @@ import java.util.Map;
 @Service
 public class AuthFailureHandler implements AuthenticationFailureHandler {
 	@Autowired
-	private HibernateAwareObjectMapper hibernateAwareObjectMapper;
+	private ObjectMapper objectMapper;
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -32,6 +32,6 @@ public class AuthFailureHandler implements AuthenticationFailureHandler {
 		success.put("success", "false");
 		success.put("error", "true");
 		response.setContentType("application/json");
-		hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
+		objectMapper.writeValue(response.getOutputStream(), success);
 	}
 }

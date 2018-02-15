@@ -1,6 +1,6 @@
 package image.exifweb.util.frameworks.spring.security;
 
-import image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class LogoutSuccessHandler implements
 		org.springframework.security.web.authentication.logout.LogoutSuccessHandler {
 	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
 	@Autowired
-	private HibernateAwareObjectMapper hibernateAwareObjectMapper;
+	private ObjectMapper objectMapper;
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -36,6 +36,6 @@ public class LogoutSuccessHandler implements
 		success.put("success", "true");
 		success.put("error", "false");
 		response.setContentType("application/json");
-		hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
+		objectMapper.writeValue(response.getOutputStream(), success);
 	}
 }
