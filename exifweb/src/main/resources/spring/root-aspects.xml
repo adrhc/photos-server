@@ -1,0 +1,45 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.2.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--
+        Parametrii de tip String pot fi injectati in java cu @Value("${property}".
+        Parametrii de tip String pot fi injectati in xhtml folosind varianta ...StringFactoryBean.
+
+        ATENTIE: daca nu se pune declaratia si in dispatcher-servlet.xml atunci nu se mai injecteaza @Value !!!
+    -->
+    <context:property-placeholder order="1" ignore-resource-not-found="true" ignore-unresolvable="true"
+                                  location="classpath*:exifweb-overwrite.properties"/>
+    <context:property-placeholder order="9"
+                                  location="classpath:exifweb.properties,classpath:subs-extract-app-config.properties"/>
+
+    <!-- tomcat -->
+    <!--<context:load-time-weaver aspectj-weaving="off" />-->
+    <!-- jetty -->
+    <!--<context:load-time-weaver aspectj-weaving="off"-->
+                              <!--weaver-class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />-->
+
+    <context:annotation-config/>
+
+    <global-method-security pre-post-annotations="enabled" mode="aspectj"/>
+
+    <context:component-scan base-package="image.exifweb" use-default-filters="true">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <context:component-scan base-package="subtitles" use-default-filters="true">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+        <context:exclude-filter type="assignable" expression="subtitles.App"/>
+    </context:component-scan>
+
+</beans:beans>

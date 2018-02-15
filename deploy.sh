@@ -5,6 +5,6 @@ source env.sh
 # cp -v /home/adr/.m2/repository/org/springframework/spring-instrument-tomcat/4.2.9.RELEASE/spring-instrument-tomcat-4.2.9.RELEASE.jar ~/apps/opt/tomcat/lib
 
 ./undeploy.sh
-cp -r target/exifweb $HOME/apps/opt/tomcat/webapps
+cp -r exifweb/target/exifweb $HOME/apps/opt/tomcat/webapps
 echo "touched web.xml"
 touch $HOME/apps/opt/tomcat/webapps/exifweb/WEB-INF/web.xml

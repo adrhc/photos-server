@@ -1,12 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>image</groupId>
     <artifactId>exifweb</artifactId>
-    <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>exifweb Maven Webapp</name>
-    <url>http://maven.apache.org</url>
+    <packaging>pom</packaging>
+    <name>exifweb</name>
+
     <properties>
         <tomcat.version>7.0.64</tomcat.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,372 +63,377 @@
         </repository>
     </repositories>
 
-    <dependencies>
-        <!--<dependency>-->
-        <!--<groupId>org.springframework</groupId>-->
-        <!--<artifactId>spring-instrument-tomcat</artifactId>-->
-        <!--&lt;!&ndash;<version>4.2.9.RELEASE</version>&ndash;&gt;-->
-        <!--<version>4.3.13.RELEASE</version>-->
-        <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+    <dependencyManagement>
+        <dependencies>
+            <!--<dependency>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-instrument-tomcat</artifactId>-->
+            <!--&lt;!&ndash;<version>4.2.9.RELEASE</version>&ndash;&gt;-->
+            <!--<version>4.3.13.RELEASE</version>-->
+            <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp</artifactId>
-            <version>0.8.0.RELEASE</version>
-            <scope>${run-jetty}</scope>
-        </dependency>
+            <dependency>
+                <groupId>com.jolbox</groupId>
+                <artifactId>bonecp</artifactId>
+                <version>0.8.0.RELEASE</version>
+            </dependency>
 
-        <dependency>
-            <groupId>subtitles</groupId>
-            <artifactId>subtitles-extractor</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <dependency>
+                <groupId>subtitles</groupId>
+                <artifactId>subtitles-extractor</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>2.1.9</version>
-        </dependency>
+            <dependency>
+                <groupId>io.reactivex.rxjava2</groupId>
+                <artifactId>rxjava</artifactId>
+                <version>2.1.9</version>
+            </dependency>
 
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons.io}</version>
-        </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-
-        <!--
-        	ERROR (at compilation when missing aspectjrt):
-        		couldn't find aspectjrt.jar on classpath, checked ...
-        -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectjrt.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.connector}</version>
-            <scope>${run-jetty}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.drewnoakes</groupId>
-            <artifactId>metadata-extractor</artifactId>
-            <version>${metadata.extractor}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>${javax.inject}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${springframework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${springframework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
-            <version>${springframework.version}</version>
-        </dependency>
-
-        <!-- depends on hibernate-core -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson-datatype-hibernate4.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson-datatype-hibernate4.version}</version>
-        </dependency>
-        <!--
-            jackson-datatype-hibernate4 depends on:
-                jackson-core -> jackson-databind -> jackson-annotations
-            version determined by jackson-datatype-hibernate4.version
-
-            see mvn dependency:tree | grep -B3 jackson
-        -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson-annotations.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hibernate4</artifactId>
-            <version>${jackson-datatype-hibernate4.version}</version>
-        </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>javax.servlet</groupId>-->
-        <!--<artifactId>jstl</artifactId>-->
-        <!--<version>${jstl}</version>-->
-        <!--</dependency>-->
-
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>${spring-security.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-expression</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${spring-security.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-aspects</artifactId>
-            <version>${spring-security.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--
-            ERROR
-                Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
-            SOLUTION
-                Let this dependency the last!
-
-            see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
-        -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee-api.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-    <build>
-        <defaultGoal>install</defaultGoal>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${source.version}</source>
-                    <target>${source.version}</target>
-                </configuration>
-            </plugin>
-
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin-->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
 
             <!--
-                http://tomcat.apache.org/maven-plugin-2.2/
+                ERROR (at compilation when missing aspectjrt):
+                    couldn't find aspectjrt.jar on classpath, checked ...
             -->
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <url>http://192.168.1.31:8080/manager</url>
-                    <server>TomcatServer</server>
-                    <path>/${project.build.finalName}</path>
-                </configuration>
-            </plugin>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>${aspectjrt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.drewnoakes</groupId>
+                <artifactId>metadata-extractor</artifactId>
+                <version>${metadata.extractor}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax.inject}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+
+            <!-- depends on hibernate-core -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson-datatype-hibernate4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-datatype-hibernate4.version}</version>
+            </dependency>
+            <!--
+                jackson-datatype-hibernate4 depends on:
+                    jackson-core -> jackson-databind -> jackson-annotations
+                version determined by jackson-datatype-hibernate4.version
+
+                see mvn dependency:tree | grep -B3 jackson
+            -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-hibernate4</artifactId>
+                <version>${jackson-datatype-hibernate4.version}</version>
+            </dependency>
+
+            <!--<dependency>-->
+            <!--<groupId>javax.servlet</groupId>-->
+            <!--<artifactId>jstl</artifactId>-->
+            <!--<version>${jstl}</version>-->
+            <!--</dependency>-->
+
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-expression</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-aspects</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
             <!--
                 ERROR
-                    EnhancementException: Unable to enhance persistent attribute [image.exifweb.systemtem.persistence.entities.Album:cover]
-                    Caused by: javassist.NotFoundException: image.exifweb.systemtem.persistence.entities.Image
-                PROBLEM?
-                    Album depends on Image which depends on Album
+                    Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
+                SOLUTION
+                    Let this dependency the last!
 
-                https://docs.jboss.org/hibernate/orm/5.0/topical/html/bytecode/BytecodeEnhancement.html#_build_time_enhancement
-
-                https://vladmihalcea.com/how-to-enable-bytecode-enhancement-dirty-checking-in-hibernate/
-                While the unidirectional @OneToOne association can be fetched lazily, the parent-side of a bidirectional @OneToOne association is not. Even when specifying that the association is not optional and we have the FetchType.LAZY, the parent-side association behaves like a FetchType.EAGER relationship.
+                see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
             -->
-            <!--<plugin>-->
-            <!--<groupId>org.hibernate.orm.tooling</groupId>-->
-            <!--<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
-            <!--<version>${hibernate.version}</version>-->
-            <!--<dependencies>-->
-            <!--&lt;!&ndash;-->
-            <!--version determined by jackson-datatype-hibernate4.version-->
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee-api.version}</version>
+            </dependency>
 
-            <!--see mvn dependency:tree | grep -B3 jackson-->
-            <!--&ndash;&gt;-->
-            <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-annotations</artifactId>-->
-            <!--<version>${jackson-annotations.version}</version>-->
-            <!--</dependency>-->
-            <!--</dependencies>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<configuration>-->
-            <!--&lt;!&ndash;<dir>${project.build.outputDirectory}</dir>&ndash;&gt;-->
-            <!--<failOnError>true</failOnError>-->
-            <!--<enableLazyInitialization>true</enableLazyInitialization>-->
-            <!--<enableDirtyTracking>true</enableDirtyTracking>-->
-            <!--<enableAssociationManagement>true</enableAssociationManagement>-->
-            <!--<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
-            <!--</configuration>-->
-            <!--<goals>-->
-            <!--<goal>enhance</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
+            <!-- https://mvnrepository.com/artifact/junit/junit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
 
-            <!--
-                order matters: put this after hibernate-enhance-maven-plugin
+        </dependencies>
+    </dependencyManagement>
 
-                https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-                multiple goals bound to a phase are executed in the same order as they are declared in the POM
-            -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>${aspectj-maven-plugin.version}</version>
-                <configuration>
-                    <verbose>false</verbose>
-                    <showWeaveInfo>false</showWeaveInfo>
-                    <privateScope>true</privateScope>
-                    <source>${source.version}</source>
-                    <target>${source.version}</target>
-                    <complianceLevel>${source.version}</complianceLevel>
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>spring-aspects</artifactId>
-                        </aspectLibrary>
-                        <aspectLibrary>
-                            <groupId>org.springframework.security</groupId>
-                            <artifactId>spring-security-aspects</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${source.version}</source>
+                        <target>${source.version}</target>
+                    </configuration>
+                </plugin>
 
-        </plugins>
-        <finalName>exifweb</finalName>
+                <!--plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.4</version>
+                    <configuration>
+                        <archive>
+                            <index>true</index>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin-->
+
+                <!--
+                    http://tomcat.apache.org/maven-plugin-2.2/
+                -->
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <url>http://192.168.1.31:8080/manager</url>
+                        <server>TomcatServer</server>
+                        <path>/${project.build.finalName}</path>
+                    </configuration>
+                </plugin>
+
+                <!--
+                    ERROR
+                        EnhancementException: Unable to enhance persistent attribute [image.exifweb.systemtem.persistence.entities.Album:cover]
+                        Caused by: javassist.NotFoundException: image.exifweb.systemtem.persistence.entities.Image
+                    PROBLEM?
+                        Album depends on Image which depends on Album
+
+                    https://docs.jboss.org/hibernate/orm/5.0/topical/html/bytecode/BytecodeEnhancement.html#_build_time_enhancement
+
+                    https://vladmihalcea.com/how-to-enable-bytecode-enhancement-dirty-checking-in-hibernate/
+                    While the unidirectional @OneToOne association can be fetched lazily, the parent-side of a bidirectional @OneToOne association is not. Even when specifying that the association is not optional and we have the FetchType.LAZY, the parent-side association behaves like a FetchType.EAGER relationship.
+                -->
+                <!--<plugin>-->
+                <!--<groupId>org.hibernate.orm.tooling</groupId>-->
+                <!--<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
+                <!--<version>${hibernate.version}</version>-->
+                <!--<dependencies>-->
+                <!--&lt;!&ndash;-->
+                <!--version determined by jackson-datatype-hibernate4.version-->
+
+                <!--see mvn dependency:tree | grep -B3 jackson-->
+                <!--&ndash;&gt;-->
+                <!--<dependency>-->
+                <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                <!--<artifactId>jackson-annotations</artifactId>-->
+                <!--<version>${jackson-annotations.version}</version>-->
+                <!--</dependency>-->
+                <!--</dependencies>-->
+                <!--<executions>-->
+                <!--<execution>-->
+                <!--<configuration>-->
+                <!--&lt;!&ndash;<dir>${project.build.outputDirectory}</dir>&ndash;&gt;-->
+                <!--<failOnError>true</failOnError>-->
+                <!--<enableLazyInitialization>true</enableLazyInitialization>-->
+                <!--<enableDirtyTracking>true</enableDirtyTracking>-->
+                <!--<enableAssociationManagement>true</enableAssociationManagement>-->
+                <!--<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
+                <!--</configuration>-->
+                <!--<goals>-->
+                <!--<goal>enhance</goal>-->
+                <!--</goals>-->
+                <!--</execution>-->
+                <!--</executions>-->
+                <!--</plugin>-->
+
+                <!--
+                    order matters: put this after hibernate-enhance-maven-plugin
+
+                    https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+                    multiple goals bound to a phase are executed in the same order as they are declared in the POM
+                -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>aspectj-maven-plugin</artifactId>
+                    <version>${aspectj-maven-plugin.version}</version>
+                    <configuration>
+                        <verbose>false</verbose>
+                        <showWeaveInfo>false</showWeaveInfo>
+                        <privateScope>true</privateScope>
+                        <source>${source.version}</source>
+                        <target>${source.version}</target>
+                        <complianceLevel>${source.version}</complianceLevel>
+                        <aspectLibraries>
+                            <aspectLibrary>
+                                <groupId>org.springframework</groupId>
+                                <artifactId>spring-aspects</artifactId>
+                            </aspectLibrary>
+                            <aspectLibrary>
+                                <groupId>org.springframework.security</groupId>
+                                <artifactId>spring-security-aspects</artifactId>
+                            </aspectLibrary>
+                        </aspectLibraries>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>test-compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
+
+    <modules>
+        <module>cdm</module>
+        <module>storage-api</module>
+        <module>storage-sql</module>
+        <module>exifweb</module>
+    </modules>
 </project>
