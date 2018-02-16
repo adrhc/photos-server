@@ -1,6 +1,6 @@
 package image.exifweb.util.frameworks.spring.security;
 
-import image.exifweb.util.frameworks.hibernate.HibernateAwareObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
 	@Autowired
-	private HibernateAwareObjectMapper hibernateAwareObjectMapper;
+	private ObjectMapper objectMapper;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -42,7 +42,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 		Map<String, Object> success = prepareSessionData();
 		success.put("success", "true");
 		success.put("error", "false");
-		hibernateAwareObjectMapper.writeValue(response.getOutputStream(), success);
+		objectMapper.writeValue(response.getOutputStream(), success);
 	}
 
 	public Map<String, Object> prepareSessionData() {
