@@ -14,10 +14,10 @@ import javax.servlet.Filter;
  * Created by adr on 2/14/18.
  */
 public class ExifwebWebApplicationInitializer extends AbstractDispatcherServletInitializer {
-	@Override
-	protected Filter[] getServletFilters() {
-		return new Filter[]{new DelegatingFilterProxy("springSecurityFilterChain")};
-	}
+//	@Override
+//	protected Filter[] getServletFilters() {
+//		return new Filter[]{new DelegatingFilterProxy("springSecurityFilterChain")};
+//	}
 
 	@Override
 	protected WebApplicationContext createServletApplicationContext() {

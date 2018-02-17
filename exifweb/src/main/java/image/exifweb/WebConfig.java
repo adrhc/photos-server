@@ -30,7 +30,8 @@ import java.util.*;
  */
 @Configuration
 @Import({AsyncAndSchedulingConfig.class,
-		SpringCacheConfig.class, WebSecurityConfig.class})
+		SpringCacheConfig.class})
+//		WebSecurityConfig.class})
 @EnableWebMvc
 @ComponentScan(basePackageClasses = WebConfig.class, useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),
@@ -51,7 +52,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //		return p;
 //	}
 
-	@Bean(name = {"msg", "messages"})
+	/**
+	 * somehow when not using "messageSource" then
+	 * RequestExceptionHandler can't find this bean
+	 *
+	 * @return
+	 */
+	@Bean(name = {"msg", "messages", "messageSource"})
 	public MessageSource messageSource() {
 		ReloadableResourceBundleMessageSource ms =
 				new ReloadableResourceBundleMessageSource();

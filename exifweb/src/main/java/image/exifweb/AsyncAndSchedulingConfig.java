@@ -34,7 +34,7 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	}
 
 	@Bean
-	public Executor asyncExecutor() {
+	public ThreadPoolTaskExecutor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(1);
 		executor.setMaxPoolSize(4);
