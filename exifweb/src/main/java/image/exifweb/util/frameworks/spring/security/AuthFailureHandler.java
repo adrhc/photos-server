@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
@@ -20,18 +21,18 @@ import java.util.Map;
  * Time: 1:51 AM
  * To change this template use File | Settings | File Templates.
  */
-@Service
+@Component
 public class AuthFailureHandler implements AuthenticationFailureHandler {
-	@Autowired
-	private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-	@Override
-	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-	                                    AuthenticationException exception) throws IOException, ServletException {
-		Map<String, String> success = new HashMap<String, String>();
-		success.put("success", "false");
-		success.put("error", "true");
-		response.setContentType("application/json");
-		objectMapper.writeValue(response.getOutputStream(), success);
-	}
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException, ServletException {
+        Map<String, String> success = new HashMap<String, String>();
+        success.put("success", "false");
+        success.put("error", "true");
+        response.setContentType("application/json");
+        objectMapper.writeValue(response.getOutputStream(), success);
+    }
 }
