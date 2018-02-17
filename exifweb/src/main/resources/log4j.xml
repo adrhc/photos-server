@@ -87,6 +87,9 @@
     <logger name="org.springframework">
         <level value="info"/>
     </logger>
+    <logger name="org.springframework.security">
+        <level value="info"/>
+    </logger>
     <logger name="org.springframework.cache">
         <level value="warn"/>
     </logger>

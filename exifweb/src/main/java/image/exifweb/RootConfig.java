@@ -23,8 +23,6 @@ import java.text.SimpleDateFormat;
 		excludeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class),
 				@ComponentScan.Filter(Configuration.class)})
-//				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-//						classes = subtitles.App.class)})
 public class RootConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer

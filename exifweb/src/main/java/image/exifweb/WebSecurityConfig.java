@@ -4,10 +4,10 @@ import image.exifweb.util.frameworks.spring.security.AuthFailureHandler;
 import image.exifweb.util.frameworks.spring.security.AuthSuccessHandler;
 import image.exifweb.util.frameworks.spring.security.LogoutSuccessHandler;
 import image.exifweb.util.frameworks.spring.security.RestAuthenticationEntryPoint;
-import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,8 +21,6 @@ import javax.sql.DataSource;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true,
-		mode = AdviceMode.ASPECTJ, securedEnabled = true)
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
@@ -36,8 +34,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
 	private LogoutSuccessHandler logoutSuccessHandler;
 
+	/**
+	 * "@Bean" usage: see javadoc for this override
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService());
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable();
 		http.requiresChannel()
 				.antMatchers("/app/https/*").requiresSecure();
 		http.authorizeRequests()
@@ -50,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.passwordParameter("password").usernameParameter("userName")
 				.successHandler(authSuccessHandler).failureHandler(authFailureHandler);
 		http.rememberMe()
-				.userDetailsService(userDetailsServiceBean())
+				.userDetailsService(userDetailsService())
 				.tokenValiditySeconds(1296000)
 				.key("kOQoW357t8HwbeRh7oxSXoXSGmVERKMcGENOxm2qrLZFOF8bxJB4GaIqSoTu9yy");
 		http.logout()
@@ -58,12 +74,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE");
 	}
 
+	/**
+	 * according to javadoc I should use "@Bean @Override userDetailsServiceBean()"
+	 * but that would allow for this method to be called 2x
+	 *
+	 * @return
+	 */
 	@Bean
-	@Override
-	public UserDetailsService userDetailsServiceBean() throws Exception {
-		return super.userDetailsServiceBean();
-	}
-
 	@Override
 	protected UserDetailsService userDetailsService() {
 		JdbcDaoImpl jdbcDao = new JdbcDaoImpl();
