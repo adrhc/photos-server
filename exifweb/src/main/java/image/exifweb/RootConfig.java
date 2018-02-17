@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true, mode = AdviceMode.ASPECTJ)
 @EnableCaching(mode = AdviceMode.ASPECTJ)
-@Import(DBConfig.class)
+@Import(SqlDBConfig.class)
 @ComponentScan(basePackageClasses = WebConfig.class, basePackages = "subtitles",
 		excludeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class),

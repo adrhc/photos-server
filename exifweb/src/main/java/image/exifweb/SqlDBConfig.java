@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
-public class DBConfig {
+public class SqlDBConfig {
 	@Value("${jndi.name}")
 	String jndiName;
 
