@@ -1,12 +1,12 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -23,7 +23,7 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import java.text.SimpleDateFormat;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -31,11 +31,13 @@ import java.util.*;
  */
 @Configuration
 @EnableWebMvc
-@ImportResource("classpath*:/org/springframework/jdbc/support/sql-error-codes.xml")
 @ComponentScan(basePackageClasses = WebConfig.class, useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
 public class WebConfig extends WebMvcConfigurerAdapter {
+	@Inject
+	private ObjectMapper objectMapper;
+
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer
 	propertySourcesPlaceholderConfigurer() {
@@ -48,6 +50,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		return p;
 	}
 
+	@Bean(name = {"msg", "messages"})
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource ms =
+				new ReloadableResourceBundleMessageSource();
+		ms.setBasenames("classpath:text/messages",
+				"classpath:org/hibernate/validator/ValidationMessages");
+		ms.setDefaultEncoding("UTF-8");
+		ms.setFallbackToSystemLocale(true);
+		return ms;
+	}
+
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
 		configurer.setDefaultTimeout(7200000);
@@ -56,7 +69,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
+		converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
 	}
 
 	@Bean
@@ -90,17 +103,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public MappingJackson2JsonView jacksonConverter() {
-		return new MappingJackson2JsonView(objectMapper());
-	}
-
-	@Bean
-	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
-		Hibernate4Module hm = new Hibernate4Module();
-		hm.disable(Hibernate4Module.Feature.FORCE_LAZY_LOADING);
-		hm.disable(Hibernate4Module.Feature.USE_TRANSIENT_ANNOTATION);
-		objectMapper.registerModule(hm);
-		return objectMapper;
+		return new MappingJackson2JsonView(objectMapper);
 	}
 }

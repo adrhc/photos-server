@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/task
        http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 
-    <bean id="messageSource" name="msg,messages,messageSource"
+    <bean id="messageSource" name="msg,messages"
           class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
             <list>
@@ -20,7 +20,7 @@
     </bean>
 
     <task:annotation-driven mode="aspectj" executor="asyncExecutor" scheduler="scheduler"/>
-    <task:executor id="asyncExecutor" pool-size="1-4" queue-capacity="1024" keep-alive="30"/>
+    <task:executor id="asyncExecutor" pool-size="1-4" queue-capacity="128" keep-alive="30"/>
     <task:scheduler id="scheduler" pool-size="1"/>
     <!--task:scheduled-tasks scheduler="scheduler">
         <task:scheduled ref="httpdCheck" method="checkHttpd"
