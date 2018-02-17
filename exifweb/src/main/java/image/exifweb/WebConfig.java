@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -41,17 +39,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Inject
 	private ObjectMapper objectMapper;
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer
-	propertySourcesPlaceholderConfigurer() {
-		PropertySourcesPlaceholderConfigurer p =
-				new PropertySourcesPlaceholderConfigurer();
-		p.setLocations(new ClassPathResource("exifweb.properties"),
-				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
-		p.setIgnoreResourceNotFound(true);
-		p.setIgnoreUnresolvablePlaceholders(true);
-		return p;
-	}
+//	@Bean
+//	public static PropertySourcesPlaceholderConfigurer
+//	propertySourcesPlaceholderConfigurer() {
+//		PropertySourcesPlaceholderConfigurer p =
+//				new PropertySourcesPlaceholderConfigurer();
+//		p.setLocations(new ClassPathResource("exifweb.properties"),
+//				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
+//		p.setIgnoreResourceNotFound(true);
+//		p.setIgnoreUnresolvablePlaceholders(true);
+//		return p;
+//	}
 
 	@Bean(name = {"msg", "messages"})
 	public MessageSource messageSource() {

@@ -85,7 +85,7 @@
 
     <!-- springframework -->
     <logger name="org.springframework">
-        <level value="info"/>
+        <level value="debug"/>
     </logger>
     <logger name="org.springframework.cache">
         <level value="warn"/>
