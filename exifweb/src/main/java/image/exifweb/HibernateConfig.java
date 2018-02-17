@@ -1,4 +1,4 @@
-package image;
+package image.exifweb;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
-public class SqlDBConfig {
+public class HibernateConfig {
 	@Value("${jndi.name}")
 	private String jndiName;
 

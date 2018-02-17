@@ -1,10 +1,10 @@
 package image.exifweb.util.frameworks.spring.web.config;
 
-import image.WebConfig;
+import image.exifweb.RootConfig;
+import image.exifweb.WebConfig;
 import image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;
 
@@ -33,10 +33,13 @@ public class ExifwebWebApplicationInitializer extends AbstractDispatcherServletI
 
 	@Override
 	protected WebApplicationContext createRootApplicationContext() {
-		XmlWebApplicationContext cxt = new XmlWebApplicationContext();
-		ContextLoaderListenerEx.wac = cxt;
-		cxt.setConfigLocations("classpath:spring/root-*.xml", "classpath*:/org/springframework/jdbc/support/sql-error-codes.xml");
-//		cxt.setConfigLocations("classpath:spring/root-*.xml");
-		return cxt;
+		AnnotationConfigWebApplicationContext acwac = new AnnotationConfigWebApplicationContext();
+		acwac.register(RootConfig.class);
+		ContextLoaderListenerEx.wac = acwac;
+		return acwac;
+//		XmlWebApplicationContext cxt = new XmlWebApplicationContext();
+//		ContextLoaderListenerEx.wac = cxt;
+//		cxt.setConfigLocations("classpath:spring/root-*.xml", "classpath*:/org/springframework/jdbc/support/sql-error-codes.xml");
+//		return cxt;
 	}
 }

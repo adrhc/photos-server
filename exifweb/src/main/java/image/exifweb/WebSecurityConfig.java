@@ -1,4 +1,4 @@
-package image;
+package image.exifweb;
 
 import image.exifweb.util.frameworks.spring.security.AuthFailureHandler;
 import image.exifweb.util.frameworks.spring.security.AuthSuccessHandler;

@@ -1,4 +1,4 @@
-package image;
+package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.MessageSource;
@@ -31,7 +31,8 @@ import java.util.*;
  * Created by adr on 2/15/18.
  */
 @Configuration
-@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
+@Import({AsyncAndSchedulingConfig.class,
+		SpringCacheConfig.class, WebSecurityConfig.class})
 @EnableWebMvc
 @ComponentScan(basePackageClasses = WebConfig.class, useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),

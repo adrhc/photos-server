@@ -1,4 +1,4 @@
-package image;
+package image.exifweb;
 
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
  * Created by adr on 2/16/18.
  */
 @Configuration
-@Import(SqlDBConfig.class)
+@Import(HibernateConfig.class)
 @ComponentScan(basePackageClasses = RootConfig.class,
 		basePackages = "subtitles",
 		excludeFilters = {@ComponentScan.Filter(Controller.class),

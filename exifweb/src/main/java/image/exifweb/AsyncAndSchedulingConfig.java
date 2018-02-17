@@ -1,4 +1,4 @@
-package image;
+package image.exifweb;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.AdviceMode;
