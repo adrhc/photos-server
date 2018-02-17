@@ -1,6 +1,6 @@
 package image.exifweb.album.export;
 
-import image.exifweb.util.frameworks.spring.KeyValueDeferredResult;
+import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonStringValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

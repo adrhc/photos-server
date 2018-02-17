@@ -1,4 +1,4 @@
-package image.exifweb.util.frameworks.spring.security;
+package image.exifweb.web.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

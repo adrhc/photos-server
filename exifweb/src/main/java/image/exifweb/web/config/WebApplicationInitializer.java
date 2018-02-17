@@ -1,9 +1,9 @@
-package image.exifweb.util.frameworks.spring.web.config;
+package image.exifweb.web.config;
 
 import image.exifweb.RootConfig;
 import image.exifweb.WebConfig;
 import image.exifweb.WebSecurityConfig;
-import image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx;
+import image.exifweb.web.context.ContextLoaderListenerEx;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.support.AbstractDispatcherServletInitializer;

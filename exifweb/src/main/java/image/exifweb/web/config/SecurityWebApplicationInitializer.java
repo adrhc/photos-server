@@ -1,4 +1,4 @@
-package image.exifweb.util.frameworks.spring.web.config;
+package image.exifweb.web.config;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 

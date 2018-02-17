@@ -1,4 +1,4 @@
-package image.exifweb.util.frameworks.spring.security;
+package image.exifweb.web.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

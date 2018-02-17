@@ -1,7 +1,7 @@
 package image.exifweb.album.cover;
 
 import image.exifweb.system.persistence.repositories.AlbumCoverRepository;
-import image.exifweb.util.frameworks.spring.web.controller.INotModifiedChecker;
+import image.exifweb.web.controller.INotModifiedChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

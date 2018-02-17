@@ -1,9 +1,9 @@
 package image.exifweb;
 
-import image.exifweb.util.frameworks.spring.security.AuthFailureHandler;
-import image.exifweb.util.frameworks.spring.security.AuthSuccessHandler;
-import image.exifweb.util.frameworks.spring.security.LogoutSuccessHandler;
-import image.exifweb.util.frameworks.spring.security.RestAuthenticationEntryPoint;
+import image.exifweb.web.security.AuthFailureHandler;
+import image.exifweb.web.security.AuthSuccessHandler;
+import image.exifweb.web.security.LogoutSuccessHandler;
+import image.exifweb.web.security.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

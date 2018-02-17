@@ -1,4 +1,4 @@
-package image.exifweb.util.frameworks.spring;
+package image.exifweb.web.config;
 
 import image.exifweb.util.exception.RuntimeWithMsgExc;
 import org.apache.commons.lang.exception.ExceptionUtils;
