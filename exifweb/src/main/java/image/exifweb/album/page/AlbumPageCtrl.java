@@ -70,7 +70,7 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 				() -> albumPageService.getPage(pageNr, sort, toSearch,
 						viewHidden, viewOnlyPrintable, albumId),
 				albumPages -> {
-					/*
+	                /*
 					 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 					 * location /photos/app/
 					 * location /photosj/app/

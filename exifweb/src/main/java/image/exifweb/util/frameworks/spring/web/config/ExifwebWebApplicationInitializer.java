@@ -1,6 +1,6 @@
 package image.exifweb.util.frameworks.spring.web.config;
 
-import image.exifweb.WebConfig;
+import image.WebConfig;
 import image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;

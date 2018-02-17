@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,36 +29,36 @@ import java.util.Map;
  */
 @Component
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
-    private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
-    @Autowired
-    private ObjectMapper objectMapper;
+	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
+	@Autowired
+	private ObjectMapper objectMapper;
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
-        logger.debug("Log on user: {}",
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        response.setContentType("application/json");
-        Map<String, Object> success = prepareSessionData();
-        success.put("success", "true");
-        success.put("error", "false");
-        objectMapper.writeValue(response.getOutputStream(), success);
-    }
+	@Override
+	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+	                                    Authentication authentication) throws IOException, ServletException {
+		logger.debug("Log on user: {}",
+				SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		response.setContentType("application/json");
+		Map<String, Object> success = prepareSessionData();
+		success.put("success", "true");
+		success.put("error", "false");
+		objectMapper.writeValue(response.getOutputStream(), success);
+	}
 
-    public Map<String, Object> prepareSessionData() {
-        Map<String, Object> success = new HashMap<>(3, 1);
-        AbstractAuthenticationToken up = (AbstractAuthenticationToken)
-                SecurityContextHolder.getContext().getAuthentication();
-        success.put("userName", up.getName());
-        success.put("authorities", getAuthorities());
-        return success;
-    }
+	public Map<String, Object> prepareSessionData() {
+		Map<String, Object> success = new HashMap<>(3, 1);
+		AbstractAuthenticationToken up = (AbstractAuthenticationToken)
+				SecurityContextHolder.getContext().getAuthentication();
+		success.put("userName", up.getName());
+		success.put("authorities", getAuthorities());
+		return success;
+	}
 
-    private Collection<String> getAuthorities() {
-        BeanToPropertyValueTransformer transformer =
-                new BeanToPropertyValueTransformer("authority");
-        return CollectionUtils.collect(
-                SecurityContextHolder.getContext().getAuthentication().getAuthorities(),
-                transformer);
-    }
+	private Collection<String> getAuthorities() {
+		BeanToPropertyValueTransformer transformer =
+				new BeanToPropertyValueTransformer("authority");
+		return CollectionUtils.collect(
+				SecurityContextHolder.getContext().getAuthentication().getAuthorities(),
+				transformer);
+	}
 }
