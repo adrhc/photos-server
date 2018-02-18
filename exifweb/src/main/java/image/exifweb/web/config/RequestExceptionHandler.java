@@ -1,6 +1,6 @@
 package image.exifweb.web.config;
 
-import image.exifweb.util.exception.RuntimeWithMsgExc;
+import image.exifweb.system.exception.RuntimeWithMsgExc;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

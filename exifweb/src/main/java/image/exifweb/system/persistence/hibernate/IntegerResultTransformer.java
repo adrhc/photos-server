@@ -1,4 +1,4 @@
-package image.exifweb.util.hibernate;
+package image.exifweb.system.persistence.hibernate;
 
 import org.hibernate.transform.ResultTransformer;
 
