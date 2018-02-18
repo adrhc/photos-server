@@ -1,6 +1,6 @@
 package image.exifweb.cache;
 
-import image.exifweb.system.persistence.entities.Album;
+import image.persistence.entity.Album;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

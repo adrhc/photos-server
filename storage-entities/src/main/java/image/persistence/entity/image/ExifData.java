@@ -1,7 +1,4 @@
-package image.exifweb.system.persistence.entities.image;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import image.cdm.image.IImageDimensions;
+package image.persistence.entity.image;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,7 +11,7 @@ import java.util.Date;
  * Created by adr on 2/10/18.
  */
 @Embeddable
-public class ExifData implements IImageDimensions, Serializable {
+public class ExifData implements Serializable {
 	@Column(nullable = false)
 	private int imageHeight;
 	@Column(nullable = false)
@@ -23,7 +20,6 @@ public class ExifData implements IImageDimensions, Serializable {
 	private String apertureValue;
 	@Column
 	private String contrast;
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date dateTimeOriginal;

@@ -48,9 +48,9 @@ iar in tomcat/conf/context.xml:
 
 CacheStatisticsCtrl.printCacheStatistics
 ((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getCollectionRoleNames();
-((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getCollectionStatistics("image.exifweb.system.persistence.entities.Album.images");
+((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getCollectionStatistics("image.persistence.entity.Album.images");
 ((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getSecondLevelCacheStatistics("Album");
-((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getEntityStatistics("image.exifweb.system.persistence.entities.Album");
+((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getEntityStatistics("image.persistence.entity.Album");
 ((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getNaturalIdCacheStatistics("Album");
 ((CacheStatisticsCtrl)ajc$this).sessionFactory.getStatistics().getQueries();
 

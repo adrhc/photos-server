@@ -1,11 +1,11 @@
 package image.exifweb.image;
 
+import image.cdm.image.ExifInfo;
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
-import image.exifweb.image.dto.ExifInfo;
-import image.exifweb.system.persistence.entities.Image;
 import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.system.persistence.repositories.ImageRepository;
+import image.persistence.entity.Image;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

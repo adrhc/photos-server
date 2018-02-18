@@ -1,4 +1,4 @@
-package image.exifweb.system.persistence.entities.enums;
+package image.persistence.entity.enums;
 
 /**
  * Created with IntelliJ IDEA.

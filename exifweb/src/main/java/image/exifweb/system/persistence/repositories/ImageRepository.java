@@ -1,11 +1,11 @@
 package image.exifweb.system.persistence.repositories;
 
-import image.exifweb.album.importer.ExifExtractorService;
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
-import image.exifweb.system.persistence.entities.Album;
-import image.exifweb.system.persistence.entities.Image;
-import image.exifweb.system.persistence.entities.image.ImageMetadata;
+import image.exifweb.album.importer.ExifExtractorService;
+import image.persistence.entity.Album;
+import image.persistence.entity.Image;
+import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;

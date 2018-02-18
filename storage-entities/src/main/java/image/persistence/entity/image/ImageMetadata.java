@@ -1,6 +1,4 @@
-package image.exifweb.system.persistence.entities.image;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+package image.persistence.entity.image;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +14,6 @@ public class ImageMetadata implements Serializable {
 	/**
 	 * utilizat in url-ul imaginii si cu impact in browser-cache
 	 */
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date dateTime;
@@ -24,7 +21,6 @@ public class ImageMetadata implements Serializable {
 	 * related to image file change
 	 * used for thumb's url (impact browser-cache)
 	 */
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "thumb_last_modified", nullable = false)
 	private Date thumbLastModified;

@@ -1,5 +1,6 @@
 package image.exifweb;
 
+import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ public class HibernateConfig {
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource());
-		localSessionFactoryBean.setPackagesToScan("image.exifweb.system.persistence");
+		localSessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
 		localSessionFactoryBean.setHibernateProperties(hibernateProperties());
 		return localSessionFactoryBean;
 	}

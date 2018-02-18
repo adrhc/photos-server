@@ -1,4 +1,4 @@
-package image.exifweb.system.persistence.entities;
+package image.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -1,7 +1,7 @@
 package image.exifweb.system.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.system.persistence.entities.Image;
+import image.persistence.entity.Image;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

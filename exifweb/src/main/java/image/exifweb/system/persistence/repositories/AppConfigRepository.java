@@ -1,6 +1,6 @@
 package image.exifweb.system.persistence.repositories;
 
-import image.exifweb.system.persistence.entities.AppConfig;
+import image.persistence.entity.AppConfig;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;

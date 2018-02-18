@@ -1,6 +1,6 @@
 package image.exifweb.album.events;
 
-import image.exifweb.system.persistence.entities.Album;
+import image.persistence.entity.Album;
 
 import java.util.HashMap;
 

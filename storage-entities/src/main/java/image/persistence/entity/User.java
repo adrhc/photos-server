@@ -1,4 +1,4 @@
-package image.exifweb.system.persistence.entities;
+package image.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "user")
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = AppConfig.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = User.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
 	@Id

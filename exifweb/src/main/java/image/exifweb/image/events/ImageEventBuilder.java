@@ -1,7 +1,7 @@
 package image.exifweb.image.events;
 
-import image.exifweb.system.persistence.entities.Album;
-import image.exifweb.system.persistence.entities.Image;
+import image.persistence.entity.Album;
+import image.persistence.entity.Image;
 
 /**
  * Created by adr on 1/28/18.

@@ -1,11 +1,8 @@
-package image.exifweb.image.dto;
+package image.cdm.image;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import image.exifweb.system.persistence.entities.image.ExifData;
+import image.persistence.entity.image.ExifData;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Date;
 
 /**
@@ -15,19 +12,20 @@ public class ExifInfo extends ExifData {
 	private Integer id;
 	private String name;
 	/**
+	 * overrides ExifData.dateTimeOriginal in order to use JsonFormat
+	 */
+	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+	private Date dateTimeOriginal;
+	/**
 	 * utilizat in url-ul imaginii si cu impact in browser-cache
 	 */
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
 	private Date dateTime;
 	/**
 	 * related to image file change
 	 * used for thumb's url (impact browser-cache)
 	 */
 	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "thumb_last_modified", nullable = false)
 	private Date thumbLastModified;
 
 	public Integer getId() {
@@ -60,5 +58,13 @@ public class ExifInfo extends ExifData {
 
 	public void setThumbLastModified(Date thumbLastModified) {
 		this.thumbLastModified = thumbLastModified;
+	}
+
+	public Date getDateTimeOriginal() {
+		return dateTimeOriginal;
+	}
+
+	public void setDateTimeOriginal(Date dateTimeOriginal) {
+		this.dateTimeOriginal = dateTimeOriginal;
 	}
 }

@@ -1,13 +1,7 @@
-package image.exifweb.system.persistence.entities;
+package image.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -23,11 +17,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Album.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Album implements Serializable {
-	private static final Logger logger = LoggerFactory.getLogger(Album.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 
 	private Integer id;
@@ -123,7 +114,6 @@ public class Album implements Serializable {
 	 * Date represents a specific instant in time, with millisecond precision.
 	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
 	@Version
 	@Column(name = "last_update")
 	public Date getLastUpdate() {
@@ -136,7 +126,6 @@ public class Album implements Serializable {
 	 * unei modificari a altei proprietati care oricum ar afecta cache la randu-i.
 	 */
 	public void setLastUpdate(Date lastUpdate) {
-		logger.debug("new lastUpdate = {} for\n{}", sdf.format(lastUpdate), toString());
 		this.lastUpdate = lastUpdate;
 	}
 
