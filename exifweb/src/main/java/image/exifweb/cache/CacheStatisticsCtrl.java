@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.Map;
 
 /**
@@ -23,7 +22,6 @@ public class CacheStatisticsCtrl {
 	private CacheStatisticsRepository statisticsRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
-	@Transactional
 	public void printCacheStatistics() {
 		Map cacheEntries = statisticsRepository
 				.getSecondLevelCacheStatistics(Album.class.getName());
