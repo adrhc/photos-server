@@ -1,9 +1,10 @@
 package image.exifweb.album.page;
 
+import image.cdm.album.page.AlbumPage;
 import image.exifweb.album.export.AlbumExporterService;
-import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.system.persistence.repositories.AlbumPageRepository;
 import image.exifweb.web.controller.INotModifiedChecker;
+import image.persistence.repository.AlbumPageRepository;
+import image.persistence.repository.AppConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 	@Inject
 	private AlbumPageRepository albumPageRepository;
 	@Inject
-	private AppConfigService appConfigService;
+	private AppConfigRepository appConfigRepository;
 	@Inject
 	private AlbumPageService albumPageService;
 
@@ -46,7 +47,7 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 			Model model) {
 		return () -> {
 			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE,
-					appConfigService.getPhotosPerPage());
+					appConfigRepository.getPhotosPerPage());
 			model.addAttribute(AlbumExporterService.PAGE_COUNT,
 					albumPageRepository.getPageCount(toSearch,
 							viewHidden, viewOnlyPrintable, albumId));
@@ -70,7 +71,7 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 				() -> albumPageService.getPage(pageNr, sort, toSearch,
 						viewHidden, viewOnlyPrintable, albumId),
 				albumPages -> {
-		            /*
+				    /*
 					 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 					 * location /photos/app/
 					 * location /photosj/app/

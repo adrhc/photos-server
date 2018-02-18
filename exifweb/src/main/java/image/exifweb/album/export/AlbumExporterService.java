@@ -1,14 +1,15 @@
 package image.exifweb.album.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.album.cover.AlbumCover;
+import image.cdm.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverService;
-import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.page.AlbumPageService;
 import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.system.persistence.entities.Album;
-import image.exifweb.system.persistence.repositories.AlbumPageRepository;
-import image.exifweb.system.persistence.repositories.AlbumRepository;
+import image.exifweb.system.events.album.AlbumEventsEmitter;
+import image.persistence.entity.Album;
+import image.persistence.repository.AlbumPageRepository;
+import image.persistence.repository.AlbumRepository;
+import image.persistence.repository.AppConfigRepository;
 import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
+import static image.exifweb.system.events.album.EAlbumEventType.ALBUM_IMPORTED;
 
 /**
  * Created by adr on 1/28/18.
@@ -33,6 +34,8 @@ public class AlbumExporterService {
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
+	@Inject
+	private AppConfigRepository appConfigRepository;
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
@@ -103,7 +106,7 @@ public class AlbumExporterService {
 	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
 		int pageCount = albumPageRepository.getPageCount(null, false, false, album.getId());
-		int photosPerPage = appConfigService.getPhotosPerPage();
+		int photosPerPage = appConfigRepository.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);

@@ -9,10 +9,9 @@ import com.drew.metadata.exif.ExifSubIFDDescriptor;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import image.exifweb.image.IImageDimensions;
-import image.exifweb.system.persistence.entities.image.ExifData;
-import image.exifweb.system.persistence.entities.image.ImageMetadata;
 import image.exifweb.util.procinfo.ProcessInfoService;
+import image.persistence.entity.image.ExifData;
+import image.persistence.entity.image.ImageMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -136,7 +135,7 @@ public class ExifExtractorService {
 		}
 	}
 
-	private void loadDimensions(IImageDimensions imageDimensions, String path) {
+	private void loadDimensions(ExifData imageDimensions, String path) {
 		try {
 //			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 //					"/home/adr/x.sh", "image_dims", path);

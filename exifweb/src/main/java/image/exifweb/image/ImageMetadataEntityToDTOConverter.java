@@ -1,7 +1,7 @@
 package image.exifweb.image;
 
-import image.exifweb.image.dto.ExifInfo;
-import image.exifweb.system.persistence.entities.Image;
+import image.cdm.image.ExifInfo;
+import image.persistence.entity.Image;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

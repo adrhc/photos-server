@@ -1,6 +1,8 @@
 package image.exifweb.image;
 
-import image.exifweb.album.cover.AlbumCover;
+import image.cdm.album.cover.AlbumCover;
+import image.cdm.image.IImageBasicInfo;
+import image.cdm.image.IImageDimensions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

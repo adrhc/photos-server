@@ -2,6 +2,8 @@ package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import image.persistence.HibernateConfig;
+import image.persistence.SqlPersistenceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,7 @@ import java.text.SimpleDateFormat;
  * Created by adr on 2/16/18.
  */
 @Configuration
-@Import(HibernateConfig.class)
+@Import(SqlPersistenceConfig.class)
 @ComponentScan(basePackageClasses = RootConfig.class,
 		basePackages = "subtitles",
 		excludeFilters = {@ComponentScan.Filter(Controller.class),

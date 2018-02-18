@@ -1,9 +1,9 @@
 package image.exifweb.appconfig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.system.persistence.entities.AppConfig;
-import image.exifweb.system.persistence.entities.enums.AppConfigEnum;
-import image.exifweb.system.persistence.repositories.AppConfigRepository;
+import image.persistence.entity.AppConfig;
+import image.persistence.entity.enums.AppConfigEnum;
+import image.persistence.repository.AppConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,31 +30,11 @@ public class AppConfigService {
 	private AppConfigRepository appConfigRepository;
 
 	public Integer getConfigInteger(AppConfigEnum ace) {
-		String s = getConfig(ace);
+		String s = appConfigRepository.getConfig(ace);
 		if (s == null) {
 			return null;
 		}
 		return new Integer(s);
-	}
-
-	public int getPhotosPerPage() {
-		return getConfigInt(AppConfigEnum.PHOTOS_PER_PAGE);
-	}
-
-	public String getLinuxAlbumPath() {
-		return getConfig(AppConfigEnum.LINUX_ALBUMS_PATH);
-	}
-
-	public Integer getConfigInt(AppConfigEnum ace) {
-		String s = getConfig(ace);
-		if (s == null) {
-			return 0;
-		}
-		return Integer.parseInt(s);
-	}
-
-	public String getConfig(AppConfigEnum appConfigEnum) {
-		return appConfigRepository.getAppConfigById(appConfigEnum.getValue()).getValue();
 	}
 
 	public boolean getConfigBool(String name) {
