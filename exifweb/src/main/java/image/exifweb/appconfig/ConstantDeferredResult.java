@@ -1,8 +1,9 @@
 package image.exifweb.appconfig;
 
 import image.exifweb.web.context.ContextLoaderListenerEx;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.concurrent.Executor;
 
 /**
  * Created by adr on 10/27/16.
@@ -15,7 +16,7 @@ public class ConstantDeferredResult<T> extends DeferredResult<T> implements Runn
 			throw new RuntimeException("Constant result already set!");
 		}
 		this.result = result;
-		ContextLoaderListenerEx.wac.getBean(ThreadPoolTaskExecutor.class).execute(this);
+		ContextLoaderListenerEx.wac.getBean(Executor.class).execute(this);
 		return this;
 	}
 
