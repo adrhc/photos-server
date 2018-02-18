@@ -1,18 +1,18 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.system.events.album.AlbumEventBuilder;
 import image.exifweb.system.events.album.AlbumEventsEmitter;
 import image.exifweb.system.events.album.EAlbumEventType;
 import image.exifweb.system.events.image.EImageEventType;
 import image.exifweb.system.events.image.ImageEventBuilder;
 import image.exifweb.system.events.image.ImageEventsEmitter;
-import image.exifweb.system.persistence.repositories.AlbumRepository;
-import image.exifweb.system.persistence.repositories.ImageRepository;
 import image.exifweb.util.MutableValueHolder;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
+import image.persistence.repository.AlbumRepository;
+import image.persistence.repository.AppConfigRepository;
+import image.persistence.repository.ImageRepository;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ public class AlbumImporterService {
 	@Inject
 	private ExifExtractorService exifExtractorService;
 	@Inject
-	private AppConfigService appConfigService;
+	private AppConfigRepository appConfigRepository;
 	@Inject
 	private ImageRepository imageRepository;
 	@Inject
@@ -80,7 +80,7 @@ public class AlbumImporterService {
 	private ThumbUtils thumbUtils;
 
 	public void importAlbumByName(String albumName) {
-		importAlbumByPath(new File(appConfigService.getLinuxAlbumPath(), albumName));
+		importAlbumByPath(new File(appConfigRepository.getLinuxAlbumPath(), albumName));
 	}
 
 	public void importAllFromAlbumsRoot() {
@@ -99,7 +99,7 @@ public class AlbumImporterService {
 	 * @param albumsFilter
 	 */
 	private void importFromAlbumsRoot(Predicate<File> albumsFilter) {
-		File albumsRoot = new File(appConfigService.getLinuxAlbumPath());
+		File albumsRoot = new File(appConfigRepository.getLinuxAlbumPath());
 		File[] files = albumsRoot.listFiles();
 		if (files == null || files.length == 0) {
 			return;

@@ -1,7 +1,6 @@
-package image.exifweb.system.persistence.repositories;
+package image.persistence.repository;
 
 import image.cdm.album.page.AlbumPage;
-import image.exifweb.appconfig.AppConfigService;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -34,7 +33,7 @@ public class AlbumPageRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private AppConfigService appConfigService;
+	private AppConfigRepository appConfigRepository;
 
 	@Transactional(readOnly = true)
 	public int getPageCount(String toSearch, boolean viewHidden,
@@ -61,7 +60,7 @@ public class AlbumPageRepository {
 		q.setBoolean("viewHidden", viewHidden);
 		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
 		return Double.valueOf(Math.ceil(((Number) q.uniqueResult()).doubleValue() /
-				appConfigService.getPhotosPerPage())).intValue();
+				appConfigRepository.getPhotosPerPage())).intValue();
 
 	}
 
@@ -120,8 +119,8 @@ public class AlbumPageRepository {
 		}
 		q.setBoolean("viewHidden", viewHidden);
 		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
-		q.setFirstResult((pageNr - 1) * appConfigService.getPhotosPerPage());
-		q.setMaxResults(appConfigService.getPhotosPerPage());
+		q.setFirstResult((pageNr - 1) * appConfigRepository.getPhotosPerPage());
+		q.setMaxResults(appConfigRepository.getPhotosPerPage());
 		return q.list();
 	}
 }

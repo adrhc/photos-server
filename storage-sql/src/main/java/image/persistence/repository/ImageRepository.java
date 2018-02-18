@@ -1,8 +1,7 @@
-package image.exifweb.system.persistence.repositories;
+package image.persistence.repository;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
-import image.exifweb.album.importer.ExifExtractorService;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -30,8 +29,6 @@ public class ImageRepository {
 	private static final Logger logger = LoggerFactory.getLogger(ImageRepository.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 
-	@Inject
-	private ExifExtractorService exifExtractorService;
 	@Inject
 	private SessionFactory sessionFactory;
 

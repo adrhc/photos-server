@@ -2,7 +2,7 @@ package image.exifweb.album.page;
 
 import image.cdm.album.page.AlbumPage;
 import image.exifweb.image.ImageUtils;
-import image.exifweb.system.persistence.repositories.AlbumPageRepository;
+import image.persistence.repository.AlbumPageRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

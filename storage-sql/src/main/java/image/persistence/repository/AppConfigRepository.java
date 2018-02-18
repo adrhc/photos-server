@@ -1,6 +1,7 @@
-package image.exifweb.system.persistence.repositories;
+package image.persistence.repository;
 
 import image.persistence.entity.AppConfig;
+import image.persistence.entity.enums.AppConfigEnum;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -19,6 +20,26 @@ import java.util.List;
 public class AppConfigRepository {
 	@Inject
 	private SessionFactory sessionFactory;
+
+	public Integer getConfigInt(AppConfigEnum ace) {
+		String s = getConfig(ace);
+		if (s == null) {
+			return 0;
+		}
+		return Integer.parseInt(s);
+	}
+
+	public String getConfig(AppConfigEnum appConfigEnum) {
+		return getAppConfigById(appConfigEnum.getValue()).getValue();
+	}
+
+	public int getPhotosPerPage() {
+		return getConfigInt(AppConfigEnum.PHOTOS_PER_PAGE);
+	}
+
+	public String getLinuxAlbumPath() {
+		return getConfig(AppConfigEnum.LINUX_ALBUMS_PATH);
+	}
 
 	@Transactional
 	public AppConfig getAppConfigById(Integer id) {

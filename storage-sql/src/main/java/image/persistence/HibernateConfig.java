@@ -1,4 +1,4 @@
-package image.exifweb;
+package image.persistence;
 
 import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
@@ -17,6 +17,9 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
+ * @EnableTransactionManagement applicable
+ * everywhere where is included (even transitive)!
+ * <p>
  * Created by adr on 2/17/18.
  */
 @Configuration

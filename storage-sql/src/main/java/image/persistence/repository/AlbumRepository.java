@@ -1,6 +1,5 @@
-package image.exifweb.system.persistence.repositories;
+package image.persistence.repository;
 
-import image.exifweb.system.events.image.ImageEventsEmitter;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import org.hibernate.Session;
@@ -29,8 +28,6 @@ public class AlbumRepository {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
 	@Inject
 	private SessionFactory sessionFactory;
-	@Inject
-	private ImageEventsEmitter imageEventsEmitter;
 
 	@Transactional
 	public List<Album> getAlbumsOrderedByName() {

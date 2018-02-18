@@ -1,4 +1,4 @@
-package image.exifweb.system.persistence.repositories;
+package image.persistence.repository;
 
 import image.persistence.entity.Album;
 import org.hibernate.Session;
