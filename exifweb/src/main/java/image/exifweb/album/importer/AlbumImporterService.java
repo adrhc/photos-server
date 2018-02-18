@@ -1,12 +1,12 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.album.events.AlbumEventBuilder;
-import image.exifweb.album.events.AlbumEventsEmitter;
-import image.exifweb.album.events.EAlbumEventType;
+import image.exifweb.system.events.album.AlbumEventBuilder;
+import image.exifweb.system.events.album.AlbumEventsEmitter;
+import image.exifweb.system.events.album.EAlbumEventType;
 import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.image.events.EImageEventType;
-import image.exifweb.image.events.ImageEventBuilder;
-import image.exifweb.image.events.ImageEventsEmitter;
+import image.exifweb.system.events.image.EImageEventType;
+import image.exifweb.system.events.image.ImageEventBuilder;
+import image.exifweb.system.events.image.ImageEventsEmitter;
 import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.system.persistence.repositories.ImageRepository;
 import image.exifweb.util.MutableValueHolder;
@@ -25,8 +25,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static image.exifweb.image.events.EImageEventType.DELETED;
-import static image.exifweb.image.events.EImageEventType.MARKED_DELETED;
+import static image.exifweb.system.events.image.EImageEventType.DELETED;
+import static image.exifweb.system.events.image.EImageEventType.MARKED_DELETED;
 import static image.exifweb.util.io.FileUtils.changeToOppositeExtensionCase;
 
 /**

@@ -3,7 +3,7 @@ package image.exifweb.album.export;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverService;
-import image.exifweb.album.events.AlbumEventsEmitter;
+import image.exifweb.system.events.album.AlbumEventsEmitter;
 import image.exifweb.album.page.AlbumPageService;
 import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.system.persistence.repositories.AlbumPageRepository;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
+import static image.exifweb.system.events.album.EAlbumEventType.ALBUM_IMPORTED;
 
 /**
  * Created by adr on 1/28/18.

@@ -1,5 +1,7 @@
-package image.exifweb.album.events;
+package image.exifweb.system.events;
 
+import image.exifweb.system.events.album.AlbumEventBuilder;
+import image.exifweb.system.events.album.AlbumEventsEmitter;
 import image.persistence.entity.Album;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static image.exifweb.album.events.EAlbumEventType.ALBUM_IMPORTED;
+import static image.exifweb.system.events.album.EAlbumEventType.ALBUM_IMPORTED;
 
 /**
  * Created by adr on 2/7/18.
