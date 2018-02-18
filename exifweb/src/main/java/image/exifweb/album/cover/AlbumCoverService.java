@@ -1,5 +1,6 @@
 package image.exifweb.album.cover;
 
+import image.cdm.album.cover.AlbumCover;
 import image.exifweb.image.ImageUtils;
 import image.exifweb.system.persistence.entities.Album;
 import image.exifweb.system.persistence.entities.Image;

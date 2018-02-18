@@ -1,7 +1,7 @@
 package image.exifweb.system.persistence.entities.image;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import image.exifweb.image.IImageDimensions;
+import image.cdm.image.IImageDimensions;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

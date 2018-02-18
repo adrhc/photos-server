@@ -1,4 +1,4 @@
-package image.exifweb.image.dto;
+package image.cdm.image;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package image.exifweb.image;
+package image.cdm.image;
 
 /**
  * Created with IntelliJ IDEA.

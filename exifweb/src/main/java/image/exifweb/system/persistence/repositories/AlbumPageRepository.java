@@ -1,6 +1,6 @@
 package image.exifweb.system.persistence.repositories;
 
-import image.exifweb.album.page.AlbumPage;
+import image.cdm.album.page.AlbumPage;
 import image.exifweb.appconfig.AppConfigService;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -85,7 +85,7 @@ public class AlbumPageRepository {
 		Session session = sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
-			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
+			q = session.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.printable, i.imageMetadata.exifData.imageHeight, " +
 					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
@@ -101,7 +101,7 @@ public class AlbumPageRepository {
 			// searches case-sensitive for name!
 			q.setString("toSearch", "%" + toSearch + "%");
 		} else {
-			q = session.createQuery("SELECT new image.exifweb.album.page.AlbumPage(" +
+			q = session.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
 					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
 					"i.printable, i.imageMetadata.exifData.imageHeight, " +
 					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +

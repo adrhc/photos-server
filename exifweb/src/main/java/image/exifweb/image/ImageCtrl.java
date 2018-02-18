@@ -1,8 +1,8 @@
 package image.exifweb.image;
 
+import image.cdm.image.ImageRating;
+import image.cdm.image.ImageStatus;
 import image.exifweb.image.dto.ExifInfo;
-import image.exifweb.image.dto.ImageRating;
-import image.exifweb.image.dto.ImageStatus;
 import image.exifweb.system.persistence.entities.Image;
 import image.exifweb.system.persistence.repositories.AlbumRepository;
 import image.exifweb.system.persistence.repositories.ImageRepository;

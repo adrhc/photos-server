@@ -1,7 +1,7 @@
 package image.exifweb.album.export;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.album.cover.AlbumCover;
+import image.cdm.album.cover.AlbumCover;
 import image.exifweb.album.cover.AlbumCoverService;
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.album.page.AlbumPageService;

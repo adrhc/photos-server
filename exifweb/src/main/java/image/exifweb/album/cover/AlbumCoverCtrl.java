@@ -1,5 +1,6 @@
 package image.exifweb.album.cover;
 
+import image.cdm.album.cover.AlbumCover;
 import image.exifweb.system.persistence.repositories.AlbumCoverRepository;
 import image.exifweb.web.controller.INotModifiedChecker;
 import org.slf4j.Logger;

@@ -21,6 +21,11 @@
         <!--</dependency>-->
 
         <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>cdm</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.jolbox</groupId>
             <artifactId>bonecp</artifactId>
             <scope>${run-jetty}</scope>

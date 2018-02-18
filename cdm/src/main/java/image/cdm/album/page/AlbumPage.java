@@ -1,9 +1,9 @@
-package image.exifweb.album.page;
+package image.cdm.album.page;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import image.exifweb.image.IImageBasicInfo;
-import image.exifweb.image.IImageDimensions;
+import image.cdm.image.IImageBasicInfo;
+import image.cdm.image.IImageDimensions;
 
 import java.io.Serializable;
 import java.util.Date;

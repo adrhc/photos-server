@@ -1,5 +1,6 @@
 package image.exifweb.album.page;
 
+import image.cdm.album.page.AlbumPage;
 import image.exifweb.album.export.AlbumExporterService;
 import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.system.persistence.repositories.AlbumPageRepository;

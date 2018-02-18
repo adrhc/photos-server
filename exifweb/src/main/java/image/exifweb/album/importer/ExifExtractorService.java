@@ -9,7 +9,7 @@ import com.drew.metadata.exif.ExifSubIFDDescriptor;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import image.exifweb.image.IImageDimensions;
+import image.cdm.image.IImageDimensions;
 import image.exifweb.system.persistence.entities.image.ExifData;
 import image.exifweb.system.persistence.entities.image.ImageMetadata;
 import image.exifweb.util.procinfo.ProcessInfoService;

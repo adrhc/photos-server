@@ -1,7 +1,7 @@
-package image.exifweb.album.cover;
+package image.cdm.album.cover;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import image.exifweb.image.IImageDimensions;
+import image.cdm.image.IImageDimensions;
 
 import java.io.Serializable;
 import java.util.Date;

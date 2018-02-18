@@ -1,4 +1,4 @@
-package image.exifweb.image;
+package image.cdm.image;
 
 import java.util.Date;
 
