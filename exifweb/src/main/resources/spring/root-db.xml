@@ -11,9 +11,9 @@
         http://www.springframework.org/schema/jee/spring-jee-4.0.xsd">
 
 	<!--
-		context.xml: <Resource ... />
+		In tomcat's context.xml define: <Resource ... />
 	-->
-	<jee:jndi-lookup id="dataSource" jndi-name="exifweb" />
+	<jee:jndi-lookup id="dataSource" jndi-name="${jndi.name}" />
 
     <!-- dataSource for embedded tomcat -->
 	<!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/exifweb" resource-ref="false" />-->

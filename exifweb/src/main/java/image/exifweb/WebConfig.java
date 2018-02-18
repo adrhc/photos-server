@@ -1,16 +1,13 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -23,29 +20,52 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import java.text.SimpleDateFormat;
+import javax.inject.Inject;
 import java.util.*;
 
 /**
  * Created by adr on 2/15/18.
  */
 @Configuration
+@Import({AsyncAndSchedulingConfig.class,
+		SpringCacheConfig.class})
 @EnableWebMvc
-@ImportResource("classpath*:/org/springframework/jdbc/support/sql-error-codes.xml")
+@EnableGlobalMethodSecurity(prePostEnabled = true,
+		mode = AdviceMode.ASPECTJ, securedEnabled = true)
 @ComponentScan(basePackageClasses = WebConfig.class, useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
 public class WebConfig extends WebMvcConfigurerAdapter {
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer
-	propertySourcesPlaceholderConfigurer() {
-		PropertySourcesPlaceholderConfigurer p =
-				new PropertySourcesPlaceholderConfigurer();
-		p.setLocations(new ClassPathResource("exifweb.properties"),
-				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
-		p.setIgnoreResourceNotFound(true);
-		p.setIgnoreUnresolvablePlaceholders(true);
-		return p;
+	@Inject
+	private ObjectMapper objectMapper;
+
+//	@Bean
+//	public static PropertySourcesPlaceholderConfigurer
+//	propertySourcesPlaceholderConfigurer() {
+//		PropertySourcesPlaceholderConfigurer p =
+//				new PropertySourcesPlaceholderConfigurer();
+//		p.setLocations(new ClassPathResource("exifweb.properties"),
+//				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
+//		p.setIgnoreResourceNotFound(true);
+//		p.setIgnoreUnresolvablePlaceholders(true);
+//		return p;
+//	}
+
+	/**
+	 * somehow when not using "messageSource" then
+	 * RequestExceptionHandler can't find this bean
+	 *
+	 * @return
+	 */
+	@Bean(name = {"msg", "messages", "messageSource"})
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource ms =
+				new ReloadableResourceBundleMessageSource();
+		ms.setBasenames("classpath:text/messages",
+				"classpath:org/hibernate/validator/ValidationMessages");
+		ms.setDefaultEncoding("UTF-8");
+		ms.setFallbackToSystemLocale(true);
+		return ms;
 	}
 
 	@Override
@@ -56,7 +76,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter(objectMapper()));
+		converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
 	}
 
 	@Bean
@@ -90,17 +110,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public MappingJackson2JsonView jacksonConverter() {
-		return new MappingJackson2JsonView(objectMapper());
-	}
-
-	@Bean
-	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
-		Hibernate4Module hm = new Hibernate4Module();
-		hm.disable(Hibernate4Module.Feature.FORCE_LAZY_LOADING);
-		hm.disable(Hibernate4Module.Feature.USE_TRANSIENT_ANNOTATION);
-		objectMapper.registerModule(hm);
-		return objectMapper;
+		return new MappingJackson2JsonView(objectMapper);
 	}
 }

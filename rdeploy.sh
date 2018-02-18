@@ -8,5 +8,5 @@ source env.sh
 # cp -r target/exifweb /home/adr/apps/opt/tomcat/webapps
 
 RSYNCB="rsync -cEhikLmrtz"
-$RSYNCB --delete-after target/exifweb -e "ssh" adr@adrhc.go.ro:/home/adr/apps/opt/tomcat/webapps/
+$RSYNCB --delete-after exifweb/target/exifweb -e "ssh" adr@adrhc.go.ro:/home/adr/apps/opt/tomcat/webapps/
 # $RSYNCB --delete-after target/exifweb -e "ssh -p 443" adr@adrhc.go.ro:/home/adr/apps/opt/tomcat/webapps/

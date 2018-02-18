@@ -1,11 +1,11 @@
 package image.exifweb.appconfig;
 
-import image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import image.exifweb.web.context.ContextLoaderListenerEx;
 import org.springframework.ui.Model;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Vector;
+import java.util.concurrent.Executor;
 
 /**
  * See also: ProcessInfoService.syncCPUMemInfo
@@ -22,7 +22,7 @@ public class CPUMemSummaryDeferredResult extends DeferredResult<Model> implement
 	public CPUMemSummaryDeferredResult(Vector<CPUMemSummaryDeferredResult> asyncSubscribers) {
 		this.asyncSubscribers = asyncSubscribers;
 		this.asyncSubscribers.add(this);
-		ContextLoaderListenerEx.wac.getBean(ThreadPoolTaskExecutor.class).execute(this);
+		ContextLoaderListenerEx.wac.getBean(Executor.class).execute(this);
 	}
 
 	@Override

@@ -2,11 +2,11 @@ package image.exifweb.appconfig;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.inject.Inject;
+import java.util.concurrent.Executor;
 
 /**
  * Created by adr on 10/27/16.
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class StringConstDeferredResult extends DeferredResult<String> implements Runnable {
 	@Inject
-	private ThreadPoolTaskExecutor asyncExecutor;
+	private Executor asyncExecutor;
 	private String string;
 
 	public StringConstDeferredResult setString(String string) {

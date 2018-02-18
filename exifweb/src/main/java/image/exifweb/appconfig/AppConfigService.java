@@ -25,7 +25,7 @@ import java.util.List;
 public class AppConfigService {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
 	@Inject
-	private ObjectMapper json;
+	private ObjectMapper objectMapper;
 	@Inject
 	private AppConfigRepository appConfigRepository;
 
@@ -97,7 +97,7 @@ public class AppConfigService {
 		List<AppConfig> appConfigs = appConfigRepository.getAppConfigs();
 //        logger.debug(ArrayUtils.toString(appConfigs));
 //        logger.debug("lastUpdatedAppConfigs = {}", getLastUpdatedAppConfigs());
-		json.writeValue(file, appConfigs);
+		objectMapper.writeValue(file, appConfigs);
 	}
 
 	public long getLastUpdatedAppConfigs() {

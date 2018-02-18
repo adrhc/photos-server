@@ -1,10 +1,10 @@
-package image.exifweb.util.frameworks.spring;
+package image.exifweb.web.controller;
 
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /**
@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 public class KeyValueDeferredResult<K, V> extends DeferredResult<Map<K, V>> {
 	public static <K1, V1> KeyValueDeferredResult<K1, V1> of(
 			Consumer<KeyValueDeferredResult<K1, V1>> asyncProcessing,
-			ThreadPoolTaskExecutor asyncExecutor) {
+			Executor asyncExecutor) {
 		KeyValueDeferredResult<K1, V1> deferredResult = new KeyValueDeferredResult<>();
 		asyncExecutor.execute(() -> asyncProcessing.accept(deferredResult));
 		return deferredResult;

@@ -1,11 +1,10 @@
 package image.exifweb.album.export;
 
-import image.exifweb.util.frameworks.spring.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonStringValue;
+import image.exifweb.web.controller.KeyValueDeferredResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,7 @@ import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 import static java.lang.Boolean.FALSE;
@@ -48,7 +48,7 @@ public class AlbumExporterCtrl {
 				put(FALSE, albumName -> ALBUM_JSON_UPDATE_MSG_PATTERN.format(new Object[]{"NOT ", albumName}));
 			}};
 	@Inject
-	private ThreadPoolTaskExecutor asyncExecutor;
+	private Executor asyncExecutor;
 	@Inject
 	private AlbumExporterService albumExporterService;
 

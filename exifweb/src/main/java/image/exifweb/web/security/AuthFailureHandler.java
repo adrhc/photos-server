@@ -1,10 +1,10 @@
-package image.exifweb.util.frameworks.spring.security;
+package image.exifweb.web.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.util.Map;
  * Time: 1:51 AM
  * To change this template use File | Settings | File Templates.
  */
-@Service
+@Component
 public class AuthFailureHandler implements AuthenticationFailureHandler {
 	@Autowired
 	private ObjectMapper objectMapper;

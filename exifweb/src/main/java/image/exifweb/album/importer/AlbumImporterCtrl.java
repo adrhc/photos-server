@@ -2,13 +2,12 @@ package image.exifweb.album.importer;
 
 import image.exifweb.album.events.AlbumEventsEmitter;
 import image.exifweb.system.persistence.entities.Album;
-import image.exifweb.util.frameworks.spring.KeyValueDeferredResult;
 import image.exifweb.util.json.JsonStringValue;
+import image.exifweb.web.controller.KeyValueDeferredResult;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public class AlbumImporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterCtrl.class);
 	private static final MessageFormat REIMPORT_MSG_PATTERN = new MessageFormat("Reimported {0}");
 	@Inject
-	private ThreadPoolTaskExecutor asyncExecutor;
+	private Executor asyncExecutor;
 	@Inject
 	private AlbumImporterService albumImporterService;
 	/**

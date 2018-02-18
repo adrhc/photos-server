@@ -5,7 +5,6 @@ import image.exifweb.util.procinfo.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
@@ -66,7 +65,6 @@ public class SubtitleService {
 		return true;
 	}
 
-	@Async
 	private void doExtractSubtitles(String startVideoDir, boolean appendVideoRoot) {
 		if (!StringUtils.hasText(startVideoDir)) {
 			startVideoDir = appConfigService.getConfig("video root folder");
@@ -88,7 +86,6 @@ public class SubtitleService {
 		logger.debug(ac.getBean(RuntimeStatus.class).toString());
 	}
 
-	@Async
 	private void startExtractSubtitles(String startVideoDir) {
 		ProcessBuilder mkvExtractor1;
 		if (startVideoDir == null) {

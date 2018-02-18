@@ -71,7 +71,7 @@
         <appender-ref ref="exifweb-file"/>
     </logger>
 
-    <logger name="image.exifweb.util.frameworks.spring.web.controller" additivity="false">
+    <logger name="image.exifweb.web.controller" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>
@@ -85,6 +85,9 @@
 
     <!-- springframework -->
     <logger name="org.springframework">
+        <level value="info"/>
+    </logger>
+    <logger name="org.springframework.security">
         <level value="info"/>
     </logger>
     <logger name="org.springframework.cache">

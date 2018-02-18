@@ -1,4 +1,4 @@
-package image.exifweb.util.frameworks.spring.security;
+package image.exifweb.web.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.BeanToPropertyValueTransformer;
@@ -10,7 +10,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ import java.util.Map;
  * Time: 9:49 PM
  * To change this template use File | Settings | File Templates.
  */
-@Service
+@Component
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
 	@Autowired

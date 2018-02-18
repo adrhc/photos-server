@@ -28,7 +28,7 @@
 
     <!--<listener>-->
         <!--<listener-class>-->
-            <!--image.exifweb.util.frameworks.spring.web.context.ContextLoaderListenerEx-->
+            <!--image.exifweb.web.context.ContextLoaderListenerEx-->
         <!--</listener-class>-->
     <!--</listener>-->
 

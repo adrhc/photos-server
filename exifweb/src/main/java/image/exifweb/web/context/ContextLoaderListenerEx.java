@@ -1,4 +1,4 @@
-package image.exifweb.util.frameworks.spring.web.context;
+package image.exifweb.web.context;
 
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;

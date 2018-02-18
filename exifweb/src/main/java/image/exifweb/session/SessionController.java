@@ -1,6 +1,6 @@
 package image.exifweb.session;
 
-import image.exifweb.util.frameworks.spring.security.AuthSuccessHandler;
+import image.exifweb.web.security.AuthSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
