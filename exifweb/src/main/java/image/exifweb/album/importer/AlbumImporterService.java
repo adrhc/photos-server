@@ -1,9 +1,9 @@
 package image.exifweb.album.importer;
 
+import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.system.events.album.AlbumEventBuilder;
 import image.exifweb.system.events.album.AlbumEventsEmitter;
 import image.exifweb.system.events.album.EAlbumEventType;
-import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.system.events.image.EImageEventType;
 import image.exifweb.system.events.image.ImageEventBuilder;
 import image.exifweb.system.events.image.ImageEventsEmitter;
