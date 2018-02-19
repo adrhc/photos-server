@@ -10,7 +10,7 @@
     </parent>
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
-    <name>exifweb Maven Webapp</name>
+    <name>webapp</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>

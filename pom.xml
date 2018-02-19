@@ -480,6 +480,6 @@
         <module>cdm</module>
         <module>storage-api</module>
         <module>storage-impl-hbm</module>
-        <module>exifweb</module>
+        <module>webapp</module>
     </modules>
 </project>
