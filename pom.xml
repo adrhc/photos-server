@@ -477,9 +477,11 @@
 
     <modules>
         <module>storage-entities</module>
+        <!-- cdm = common data model -->
         <module>cdm</module>
         <module>storage-api</module>
         <module>storage-impl-hbm</module>
+        <module>photos</module>
         <module>webapp</module>
     </modules>
 </project>
