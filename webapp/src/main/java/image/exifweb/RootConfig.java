@@ -5,10 +5,7 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import image.exifweb.web.security.WebSecurityComponent;
 import image.persistence.HibernateConfig;
 import image.photos.PhotosConfig;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -20,14 +17,14 @@ import java.text.SimpleDateFormat;
  * Created by adr on 2/16/18.
  */
 @Configuration
-@Import({HibernateConfig.class, PhotosConfig.class,
-		WebSecurityConfig.class})
+@Import({HibernateConfig.class, PhotosConfig.class, WebSecurityConfig.class})
 @ComponentScan(basePackageClasses = RootConfig.class,
 		basePackages = "subtitles",
 		excludeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class),
 				@ComponentScan.Filter(WebSecurityComponent.class),
 				@ComponentScan.Filter(Configuration.class)})
+@DependsOn("annotationTransactionAspect")
 public class RootConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer

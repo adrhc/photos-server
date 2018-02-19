@@ -9,7 +9,9 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -28,12 +30,22 @@ public class HibernateConfig {
 	@Value("${jndi.name}")
 	private String jndiName;
 
-	@Bean
 	@Autowired
+	@Bean
 	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory);
 		return txManager;
+	}
+
+	@Lazy(false)
+	@Autowired
+	@Bean
+	public AnnotationTransactionAspect annotationTransactionAspect(
+			PlatformTransactionManager transactionManager) {
+		AnnotationTransactionAspect bean = AnnotationTransactionAspect.aspectOf();
+		bean.setTransactionManager(transactionManager);
+		return bean;
 	}
 
 	@Bean
