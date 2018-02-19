@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @ComponentScan(basePackageClasses = WebSecurityConfig.class,
+		useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(WebSecurityComponent.class)})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
