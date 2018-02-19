@@ -6,6 +6,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -145,6 +146,14 @@ public class Album implements Serializable {
 //				images == null ? null : images.size(),
 //				this.images == images);
 		this.images = images;
+	}
+
+	public void addImage(Image image) {
+		if (images == null) {
+			images = new ArrayList<>();
+		}
+		images.add(image);
+		image.setAlbum(this);
 	}
 
 	@Override

@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>exifweb</groupId>
-            <artifactId>storage-sql</artifactId>
+            <artifactId>storage-impl-hbm</artifactId>
         </dependency>
 
         <dependency>
@@ -37,18 +37,13 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>subtitles</groupId>
             <artifactId>subtitles-extractor</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

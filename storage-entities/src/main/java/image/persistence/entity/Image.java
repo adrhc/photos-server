@@ -39,7 +39,7 @@ public class Image implements Serializable {
 	 * see DEFAULT_STATUS = 0 defined above
 	 */
 	@Column(nullable = false)
-	private Byte status = DEFAULT_STATUS;
+	private byte status = DEFAULT_STATUS;
 	@Column(nullable = false)
 	private boolean deleted;
 	@Formula("(status & 1)")
@@ -114,11 +114,11 @@ public class Image implements Serializable {
 		this.album = album;
 	}
 
-	public Byte getStatus() {
+	public byte getStatus() {
 		return status;
 	}
 
-	public void setStatus(Byte status) {
+	public void setStatus(byte status) {
 		this.status = status;
 	}
 

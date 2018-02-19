@@ -69,7 +69,7 @@ public class ImageRepository {
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageStatus.getId());
-		if (image.getStatus().equals(imageStatus.getStatus())) {
+		if (image.getStatus() == imageStatus.getStatus()) {
 			return false;
 		}
 		image.setStatus(imageStatus.getStatus());
