@@ -38,7 +38,6 @@ public class RootConfig {
 				new ClassPathResource("subs-extract-app-config"),
 				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
 		p.setIgnoreResourceNotFound(true);
-		p.setIgnoreUnresolvablePlaceholders(true);
 		return p;
 	}
 
