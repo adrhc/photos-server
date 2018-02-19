@@ -86,7 +86,19 @@
 
             <dependency>
                 <groupId>exifweb</groupId>
+                <artifactId>storage-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
                 <artifactId>storage-impl-hbm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
+                <artifactId>photos</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
