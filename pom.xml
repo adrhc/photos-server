@@ -482,7 +482,7 @@
                     <version>${aspectj-maven-plugin.version}</version>
                     <configuration>
                         <verbose>false</verbose>
-                        <showWeaveInfo>true</showWeaveInfo>
+                        <showWeaveInfo>false</showWeaveInfo>
                         <privateScope>true</privateScope>
                         <source>${source.version}</source>
                         <target>${source.version}</target>

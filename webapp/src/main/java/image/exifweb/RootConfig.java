@@ -34,9 +34,9 @@ public class RootConfig {
 	propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer p =
 				new PropertySourcesPlaceholderConfigurer();
-		p.setLocations(new ClassPathResource("exifweb.properties"),
-				new ClassPathResource("subs-extract-app-config"),
-				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
+		p.setLocations(new ClassPathResource("/exifweb.properties"),
+				new ClassPathResource("/subs-extract-app-config.properties"),
+				new ClassPathResource("/exifweb-overwrite.properties"));
 		p.setIgnoreResourceNotFound(true);
 		return p;
 	}
