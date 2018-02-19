@@ -1,4 +1,4 @@
-package image.exifweb.system.events.image;
+package image.photos.events.image;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;

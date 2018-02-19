@@ -1,4 +1,4 @@
-package image.exifweb.appconfig;
+package image.photos.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;

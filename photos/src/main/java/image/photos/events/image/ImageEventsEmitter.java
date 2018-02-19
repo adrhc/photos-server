@@ -1,4 +1,4 @@
-package image.exifweb.system.events.image;
+package image.photos.events.image;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;

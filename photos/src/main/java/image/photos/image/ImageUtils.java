@@ -1,4 +1,4 @@
-package image.exifweb.image;
+package image.photos.image;
 
 import image.cdm.album.cover.AlbumCover;
 import image.cdm.image.IImageBasicInfo;

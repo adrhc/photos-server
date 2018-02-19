@@ -1,4 +1,4 @@
-package image.exifweb.system.events.album;
+package image.photos.events.album;
 
 /**
  * Created by adr on 1/28/18.

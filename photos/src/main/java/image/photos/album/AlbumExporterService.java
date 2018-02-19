@@ -1,15 +1,14 @@
-package image.exifweb.album.export;
+package image.photos.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
-import image.exifweb.album.cover.AlbumCoverService;
-import image.exifweb.album.page.AlbumPageService;
-import image.exifweb.appconfig.AppConfigService;
-import image.exifweb.system.events.album.AlbumEventsEmitter;
+import image.photos.config.AppConfigService;
+import image.photos.events.album.AlbumEventsEmitter;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
+import image.photos.util.status.E3ResultTypes;
 import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static image.exifweb.system.events.album.EAlbumEventType.ALBUM_IMPORTED;
+import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
 
 /**
  * Created by adr on 1/28/18.

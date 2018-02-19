@@ -24,12 +24,10 @@
             <groupId>exifweb</groupId>
             <artifactId>cdm</artifactId>
         </dependency>
-
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-impl-hbm</artifactId>
         </dependency>
-
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>photos</artifactId>
@@ -49,11 +47,6 @@
         <dependency>
             <groupId>subtitles</groupId>
             <artifactId>subtitles-extractor</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
         </dependency>
 
         <dependency>
@@ -88,11 +81,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>${run-jetty}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.drewnoakes</groupId>
-            <artifactId>metadata-extractor</artifactId>
         </dependency>
 
         <dependency>

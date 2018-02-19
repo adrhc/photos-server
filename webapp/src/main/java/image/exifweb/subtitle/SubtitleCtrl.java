@@ -1,6 +1,6 @@
 package image.exifweb.subtitle;
 
-import image.exifweb.appconfig.AppConfigService;
+import image.photos.config.AppConfigService;
 import image.exifweb.util.io.EndingLinesFileReader;
 import image.exifweb.util.json.JsonStringValue;
 import image.exifweb.util.procinfo.ProcessInfoService;

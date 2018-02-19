@@ -1,6 +1,6 @@
 package image.exifweb.httpdcheck;
 
-import image.exifweb.appconfig.AppConfigService;
+import image.photos.config.AppConfigService;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

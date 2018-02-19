@@ -1,4 +1,4 @@
-package image.exifweb.album.importer;
+package image.photos.image;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
@@ -9,9 +9,9 @@ import com.drew.metadata.exif.ExifSubIFDDescriptor;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import image.exifweb.util.procinfo.ProcessInfoService;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
+import image.photos.util.process.ProcessRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +39,7 @@ public class ExifExtractorService {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 	@Inject
-	private ProcessInfoService processInfoService;
+	private ProcessRunner processRunner;
 	@Inject
 	private ThumbUtils thumbUtils;
 
@@ -141,7 +141,7 @@ public class ExifExtractorService {
 //					"/home/adr/x.sh", "image_dims", path);
 			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 					"identify", "-format", "%[fx:w] %[fx:h]", path);
-			String sDimensions = processInfoService.getProcessOutput(identifyImgDimensions);
+			String sDimensions = processRunner.getProcessOutput(identifyImgDimensions);
 //            logger.debug("dimensions {} for:\n{}", dimensions, path);
 			String[] dims = sDimensions.split("\\s");
 			imageDimensions.setImageWidth(Integer.parseInt(dims[WIDTH]));
