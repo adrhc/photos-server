@@ -1,8 +1,8 @@
 package image.photos.album;
 
 import image.cdm.album.page.AlbumPage;
-import image.photos.image.ImageUtils;
 import image.persistence.repository.AlbumPageRepository;
+import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

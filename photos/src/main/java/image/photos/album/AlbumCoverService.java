@@ -1,10 +1,10 @@
 package image.photos.album;
 
 import image.cdm.album.cover.AlbumCover;
-import image.photos.image.ImageUtils;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
+import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

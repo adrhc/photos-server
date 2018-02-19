@@ -2,12 +2,12 @@ package image.photos.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
-import image.photos.config.AppConfigService;
-import image.photos.events.album.AlbumEventsEmitter;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
+import image.photos.config.AppConfigService;
+import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.util.status.E3ResultTypes;
 import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;

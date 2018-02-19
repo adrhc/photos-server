@@ -1,11 +1,5 @@
 package image.exifweb.album.importer;
 
-import image.photos.events.album.AlbumEventBuilder;
-import image.photos.events.album.AlbumEventsEmitter;
-import image.photos.events.album.EAlbumEventType;
-import image.photos.events.image.EImageEventType;
-import image.photos.events.image.ImageEventBuilder;
-import image.photos.events.image.ImageEventsEmitter;
 import image.exifweb.util.MutableValueHolder;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
@@ -13,6 +7,12 @@ import image.persistence.entity.image.ImageMetadata;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.ImageRepository;
+import image.photos.events.album.AlbumEventBuilder;
+import image.photos.events.album.AlbumEventsEmitter;
+import image.photos.events.album.EAlbumEventType;
+import image.photos.events.image.EImageEventType;
+import image.photos.events.image.ImageEventBuilder;
+import image.photos.events.image.ImageEventsEmitter;
 import image.photos.image.ExifExtractorService;
 import image.photos.image.ThumbUtils;
 import io.reactivex.disposables.Disposable;
@@ -27,9 +27,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static image.exifweb.util.io.FileUtils.changeToOppositeExtensionCase;
 import static image.photos.events.image.EImageEventType.DELETED;
 import static image.photos.events.image.EImageEventType.MARKED_DELETED;
-import static image.exifweb.util.io.FileUtils.changeToOppositeExtensionCase;
 
 /**
  * Created with IntelliJ IDEA.

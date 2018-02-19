@@ -1,7 +1,7 @@
 package image.exifweb.subtitle;
 
-import image.photos.config.AppConfigService;
 import image.exifweb.util.procinfo.ProcessInfoService;
+import image.photos.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
