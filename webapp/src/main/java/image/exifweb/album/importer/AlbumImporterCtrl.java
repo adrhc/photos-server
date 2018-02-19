@@ -3,6 +3,7 @@ package image.exifweb.album.importer;
 import image.exifweb.util.json.JsonStringValue;
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.persistence.entity.Album;
+import image.photos.album.AlbumImporterService;
 import image.photos.events.album.AlbumEventsEmitter;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;

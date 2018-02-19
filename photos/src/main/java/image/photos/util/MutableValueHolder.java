@@ -1,4 +1,4 @@
-package image.exifweb.util;
+package image.photos.util;
 
 import java.io.Serializable;
 

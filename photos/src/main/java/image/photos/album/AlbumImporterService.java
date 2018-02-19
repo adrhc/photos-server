@@ -1,6 +1,5 @@
-package image.exifweb.album.importer;
+package image.photos.album;
 
-import image.exifweb.util.MutableValueHolder;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -14,7 +13,9 @@ import image.photos.events.image.EImageEventType;
 import image.photos.events.image.ImageEventBuilder;
 import image.photos.events.image.ImageEventsEmitter;
 import image.photos.image.ExifExtractorService;
+import image.photos.image.ImageUtils;
 import image.photos.image.ThumbUtils;
+import image.photos.util.MutableValueHolder;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static image.exifweb.util.io.FileUtils.changeToOppositeExtensionCase;
 import static image.photos.events.image.EImageEventType.DELETED;
 import static image.photos.events.image.EImageEventType.MARKED_DELETED;
 
@@ -41,6 +41,8 @@ import static image.photos.events.image.EImageEventType.MARKED_DELETED;
 @Service
 public class AlbumImporterService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterService.class);
+	@Inject
+	private ImageUtils imageUtils;
 	@Inject
 	private ExifExtractorService exifExtractorService;
 	@Inject
@@ -262,7 +264,7 @@ public class AlbumImporterService {
 				// imagine existenta in DB cu acelas nume ca in file system
 				return;
 			}
-			String oppositeExtensionCase = changeToOppositeExtensionCase(dbName);
+			String oppositeExtensionCase = imageUtils.changeToOppositeExtensionCase(dbName);
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
 			ImageEventBuilder imgEvBuilder = new ImageEventBuilder().album(album).image(image);
 			if (fsNameIdx >= 0) {

@@ -76,4 +76,20 @@ public class ImageUtils {
 			entity.setImageHeight(maxThumbSizeInt);
 		}
 	}
+
+	public String changeToOppositeExtensionCase(String fileName) {
+		StringBuilder sb = new StringBuilder(fileName);
+		int idx = sb.lastIndexOf(".");
+		if (idx <= 0) {
+			return fileName;
+		}
+		sb.append(fileName.substring(0, idx));
+		String pointAndExtension = fileName.substring(idx);
+		if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
+			sb.append(pointAndExtension.toUpperCase());
+		} else {
+			sb.append(pointAndExtension.toLowerCase());
+		}
+		return sb.toString();
+	}
 }
