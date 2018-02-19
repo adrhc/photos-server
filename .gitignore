@@ -12,3 +12,4 @@ nohup.out
 *.ipr
 *.iws
 /.project
+dependency.txt
