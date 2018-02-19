@@ -65,7 +65,7 @@ public class AppConfigRepository {
 		}
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true).list();

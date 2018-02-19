@@ -21,7 +21,7 @@ import java.util.Map;
  * Time: 1:02 AM
  * To change this template use File | Settings | File Templates.
  */
-@Component
+@WebSecurityComponent
 public class LogoutSuccessHandler implements
 		org.springframework.security.web.authentication.logout.LogoutSuccessHandler {
 	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);

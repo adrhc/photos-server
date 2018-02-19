@@ -20,7 +20,7 @@ import java.util.Map;
  * Time: 1:51 AM
  * To change this template use File | Settings | File Templates.
  */
-@Component
+@WebSecurityComponent
 public class AuthFailureHandler implements AuthenticationFailureHandler {
 	@Autowired
 	private ObjectMapper objectMapper;

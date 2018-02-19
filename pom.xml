@@ -339,6 +339,12 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>2.7.7</version>
+            </dependency>
+
             <!--
                 ERROR
                     Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
@@ -358,6 +364,13 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${springframework.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -461,7 +474,7 @@
                     <version>${aspectj-maven-plugin.version}</version>
                     <configuration>
                         <verbose>false</verbose>
-                        <showWeaveInfo>false</showWeaveInfo>
+                        <showWeaveInfo>true</showWeaveInfo>
                         <privateScope>true</privateScope>
                         <source>${source.version}</source>
                         <target>${source.version}</target>

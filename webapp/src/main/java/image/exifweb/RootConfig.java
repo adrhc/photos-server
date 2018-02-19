@@ -2,7 +2,9 @@ package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import image.persistence.SqlPersistenceConfig;
+import image.exifweb.web.security.WebSecurityComponent;
+import image.persistence.HibernateConfig;
+import image.photos.PhotosConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +20,13 @@ import java.text.SimpleDateFormat;
  * Created by adr on 2/16/18.
  */
 @Configuration
-@Import(SqlPersistenceConfig.class)
+@Import({HibernateConfig.class, PhotosConfig.class,
+		WebSecurityConfig.class})
 @ComponentScan(basePackageClasses = RootConfig.class,
 		basePackages = "subtitles",
 		excludeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class),
+				@ComponentScan.Filter(WebSecurityComponent.class),
 				@ComponentScan.Filter(Configuration.class)})
 public class RootConfig {
 	@Bean

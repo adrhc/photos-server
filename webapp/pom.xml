@@ -97,12 +97,6 @@
             <artifactId>spring-aspects</artifactId>
         </dependency>
 
-        <!-- depends on hibernate-core -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>

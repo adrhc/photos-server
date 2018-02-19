@@ -27,7 +27,7 @@ import java.util.Map;
  * Time: 9:49 PM
  * To change this template use File | Settings | File Templates.
  */
-@Component
+@WebSecurityComponent
 public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 	private static final Logger logger = LoggerFactory.getLogger(AuthSuccessHandler.class);
 	@Autowired

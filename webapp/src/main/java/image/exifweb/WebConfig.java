@@ -32,7 +32,8 @@ import java.util.*;
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true,
 		mode = AdviceMode.ASPECTJ, securedEnabled = true)
-@ComponentScan(basePackageClasses = WebConfig.class, useDefaultFilters = false,
+@ComponentScan(basePackageClasses = WebConfig.class,
+		useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
 public class WebConfig extends WebMvcConfigurerAdapter {

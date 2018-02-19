@@ -2,7 +2,6 @@ package image.exifweb.web.config;
 
 import image.exifweb.RootConfig;
 import image.exifweb.WebConfig;
-import image.exifweb.WebSecurityConfig;
 import image.exifweb.web.context.ContextLoaderListenerEx;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -13,7 +12,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class WebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[]{RootConfig.class, WebSecurityConfig.class};
+		return new Class[]{RootConfig.class};
 	}
 
 	@Override

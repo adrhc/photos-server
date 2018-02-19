@@ -4,9 +4,7 @@ import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -24,6 +22,8 @@ import java.util.Properties;
  */
 @Configuration
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+@ComponentScan(basePackageClasses = HibernateConfig.class,
+		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
 	@Value("${jndi.name}")
 	private String jndiName;
@@ -52,6 +52,7 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
+	@Profile("!test")
 	@Bean
 	public DataSource dataSource() {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();

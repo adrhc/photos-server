@@ -15,7 +15,7 @@ import java.io.IOException;
  * Time: 5:00 PM
  * To change this template use File | Settings | File Templates.
  */
-@Component
+@WebSecurityComponent
 public final class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 	@Override
 	public void commence(final HttpServletRequest request,
