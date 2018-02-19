@@ -481,6 +481,7 @@
         <module>cdm</module>
         <module>storage-api</module>
         <module>storage-impl-hbm</module>
+        <!-- photos = business logic -->
         <module>photos</module>
         <module>webapp</module>
     </modules>
