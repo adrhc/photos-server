@@ -5,13 +5,12 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -23,12 +22,19 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
+@PropertySource("classpath:/datasource.properties")
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
 	@Value("${jndi.name}")
 	private String jndiName;
+
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer
+	propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 
 	@Autowired
 	@Bean
@@ -38,15 +44,14 @@ public class HibernateConfig {
 		return txManager;
 	}
 
-	@Lazy(false)
-	@Autowired
-	@Bean
-	public AnnotationTransactionAspect annotationTransactionAspect(
-			PlatformTransactionManager transactionManager) {
-		AnnotationTransactionAspect bean = AnnotationTransactionAspect.aspectOf();
-		bean.setTransactionManager(transactionManager);
-		return bean;
-	}
+//	@Autowired
+//	@Bean
+//	public AnnotationTransactionAspect annotationTransactionAspect(
+//			PlatformTransactionManager transactionManager) {
+//		AnnotationTransactionAspect bean = AnnotationTransactionAspect.aspectOf();
+//		bean.setTransactionManager(transactionManager);
+//		return bean;
+//	}
 
 	@Bean
 	public LocalSessionFactoryBean sessionFactory() {

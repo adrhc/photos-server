@@ -11,7 +11,6 @@ import image.photos.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +38,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/json/appconfig")
-@DependsOn("annotationTransactionAspect")
+//@DependsOn("annotationTransactionAspect")
 public class AppConfigCtrl implements IAppConfigCache {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigCtrl.class);
 	@Inject

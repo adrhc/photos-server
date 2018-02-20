@@ -3,7 +3,6 @@ package image.persistence;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import javax.sql.DataSource;
 
@@ -13,16 +12,10 @@ import javax.sql.DataSource;
  * Created by adr on 2/19/18.
  */
 @Configuration
-@PropertySource("/test.properties")
+@PropertySource("/test-datasource.properties")
 @Import(HibernateConfig.class)
 @Profile("test")
 public class TestConfig {
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer
-	propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
-
 	@Bean
 	public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl,
 	                             @Value("${jdbc.userName}") String userName,
