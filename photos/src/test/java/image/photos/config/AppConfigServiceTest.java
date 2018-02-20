@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by adr on 2/20/18.
@@ -29,13 +30,21 @@ public class AppConfigServiceTest {
 
 	@Test
 	public void getConfigs() {
-		Integer subtitlesExtractorLines = appConfigService.getConfigInt("subtitles-extractor-lines");
-		Assert.assertTrue(subtitlesExtractorLines > 0);
-		logger.debug("subtitlesExtractorLines = {}", subtitlesExtractorLines);
-
 		String photosJsonFSPath = appConfigService.getConfig("photos json FS path");
 		assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
 		logger.debug("photosJsonFSPath = {}", photosJsonFSPath);
+
+		// nothing to check here
+		boolean bStopHttpdChecking = appConfigService.getConfigBool("stop_httpd_checking");
+		logger.debug("bStopHttpdChecking = {}", bStopHttpdChecking);
+
+		Boolean stopHttpdChecking = appConfigService.getConfigBoolean("stop_httpd_checking");
+		assertNotNull(stopHttpdChecking);
+		logger.debug("stopHttpdChecking = {}", stopHttpdChecking);
+
+		Integer subtitlesExtractorLines = appConfigService.getConfigInteger("subtitles-extractor-lines");
+		Assert.assertTrue(subtitlesExtractorLines > 0);
+		logger.debug("subtitlesExtractorLines = {}", subtitlesExtractorLines);
 	}
 
 	@Test

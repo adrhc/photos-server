@@ -21,7 +21,7 @@ public class AppConfigRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
-	public Integer getConfigInt(AppConfigEnum ace) {
+	public Integer getConfigInteger(AppConfigEnum ace) {
 		String s = getConfig(ace);
 		if (s == null) {
 			return 0;
@@ -34,7 +34,7 @@ public class AppConfigRepository {
 	}
 
 	public int getPhotosPerPage() {
-		return getConfigInt(AppConfigEnum.PHOTOS_PER_PAGE);
+		return getConfigInteger(AppConfigEnum.PHOTOS_PER_PAGE);
 	}
 
 	public String getLinuxAlbumPath() {

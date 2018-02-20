@@ -37,7 +37,7 @@ public class EndingLinesFileReader {
 	@PostConstruct
 	public void postConstruct() {
 		this.videoFolder = appConfigService.getConfig("video root folder");
-		this.linesToRead = appConfigService.getConfigInt("subtitles-extractor-lines");
+		this.linesToRead = appConfigService.getConfigInteger("subtitles-extractor-lines");
 		this.path = getLastModifiedPath(appConfigService.getConfig("subtitles-extractor.log"));
 	}
 

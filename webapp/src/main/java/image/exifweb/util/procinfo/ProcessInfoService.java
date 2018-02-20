@@ -101,7 +101,7 @@ public class ProcessInfoService {
 		prepareCPUMemSummary(model, procStatInfos);
 //        List<ProcStatPercent> procStatInfos = getCPUDetailUsingPsAx();
 		List<ProcStatPercent> memProcInfos = getMemDetailUsingPs();
-		int linesLimit = appConfigService.getConfigInt("linux_process_status_lines_limit");
+		int linesLimit = appConfigService.getConfigInteger("linux_process_status_lines_limit");
 		if (linesLimit > 0 && procStatInfos.size() > linesLimit) {
 			model.addAttribute("procStat", procStatInfos.subList(0, linesLimit));
 		} else {

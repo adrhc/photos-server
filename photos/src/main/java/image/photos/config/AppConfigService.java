@@ -2,7 +2,6 @@ package image.photos.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
-import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.integration.repository.AppConfigRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +28,6 @@ public class AppConfigService {
 	@Inject
 	private AppConfigRepository appConfigRepository;
 
-	public Integer getConfigInteger(AppConfigEnum ace) {
-		String s = appConfigRepository.getConfig(ace);
-		if (s == null) {
-			return null;
-		}
-		return new Integer(s);
-	}
-
 	public boolean getConfigBool(String name) {
 		String s = getConfig(name);
 		return Boolean.parseBoolean(s);
@@ -47,12 +38,12 @@ public class AppConfigService {
 		return Boolean.valueOf(s);
 	}
 
-	public Integer getConfigInt(String name) {
+	public Integer getConfigInteger(String name) {
 		String s = getConfig(name);
 		if (s == null) {
 			return 0;
 		}
-		return Integer.parseInt(s);
+		return new Integer(s);
 	}
 
 	public String getConfig(String name) {
