@@ -53,7 +53,7 @@
 
     <!-- 3rdparty Loggers -->
     <logger name="org.springframework">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
     <logger name="org.springframework.cache">
         <level value="warn"/>
@@ -62,7 +62,7 @@
     <!-- Hibernate -->
     <!--log just the SQL -->
     <logger name="org.hibernate.SQL">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
     <!--log JDBC bind parameters -->
     <logger name="org.hibernate.type">
@@ -70,10 +70,10 @@
     </logger>
 
     <logger name="org.hibernate.cache">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
     <logger name="net.sf.ehcache">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
 
     <!-- Root Logger -->

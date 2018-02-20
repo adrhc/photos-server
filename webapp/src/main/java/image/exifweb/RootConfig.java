@@ -1,7 +1,5 @@
 package image.exifweb;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import image.exifweb.web.security.WebSecurityComponent;
 import image.persistence.HibernateConfig;
 import image.photos.PhotosConfig;
@@ -14,8 +12,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Created by adr on 2/16/18.
@@ -40,16 +36,5 @@ public class RootConfig {
 				new ClassPathResource("/exifweb-overwrite.properties"));
 		p.setIgnoreResourceNotFound(true);
 		return p;
-	}
-
-	@Bean
-	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
-		Hibernate4Module hm = new Hibernate4Module();
-		hm.disable(Hibernate4Module.Feature.FORCE_LAZY_LOADING);
-		hm.disable(Hibernate4Module.Feature.USE_TRANSIENT_ANNOTATION);
-		objectMapper.registerModule(hm);
-		return objectMapper;
 	}
 }

@@ -13,10 +13,10 @@ import javax.sql.DataSource;
  * Created by adr on 2/19/18.
  */
 @Configuration
-@PropertySource("/test-datasource.properties")
+@PropertySource("/test-jdbc-datasource.properties")
 @Import(HibernateConfig.class)
 @Profile("test-integration")
-public class TestConfig {
+public class TestHibernateConfig {
 	@Bean
 	public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl,
 	                             @Value("${jdbc.userName}") String userName,
