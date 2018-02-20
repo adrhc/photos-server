@@ -100,6 +100,9 @@ public class HibernateConfig {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
+	/**
+	 * doesn't search WEB-INF/lib/*.jar
+	 */
 	@Bean
 	public PropertiesFactoryBean hibernateProperties() {
 		PropertiesFactoryBean p = new PropertiesFactoryBean();
