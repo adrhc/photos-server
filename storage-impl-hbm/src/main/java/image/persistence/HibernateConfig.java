@@ -53,10 +53,11 @@ public class HibernateConfig {
 		return txManager;
 	}
 
+	@Autowired
 	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
+	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
-		localSessionFactoryBean.setDataSource(dataSource());
+		localSessionFactoryBean.setDataSource(dataSource);
 		localSessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
 		localSessionFactoryBean.setHibernateProperties(hibernateProperties());
 		return localSessionFactoryBean;
@@ -71,18 +72,22 @@ public class HibernateConfig {
 	 */
 	@Profile({"!test*", "!jdbc-datasource"})
 	@Bean
-	public DataSource dataSource() {
+	public DataSource jndiDataSource() {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 		return lookup.getDataSource(jndiName);
 	}
 
+	/**
+	 * When using same name (e.g. dataSource) for jdbc and jndi datasources
+	 * though they have different @Profile still won't work (none will be found).
+	 */
 	@Profile("jdbc-datasource")
 	@Bean
-	public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl,
-	                             @Value("${jdbc.userName}") String userName,
-	                             @Value("${jdbc.password}") String password,
-	                             @Value("${jdbc.minimumIdle}") int minimumIdle,
-	                             @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
+	public DataSource jdbcDataSource(@Value("${jdbc.url}") String jdbcUrl,
+	                                 @Value("${jdbc.userName}") String userName,
+	                                 @Value("${jdbc.password}") String password,
+	                                 @Value("${jdbc.minimumIdle}") int minimumIdle,
+	                                 @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl(jdbcUrl);
 		ds.setUsername(userName);
