@@ -69,7 +69,7 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
-	@Profile("!test")
+	@Profile("!test*")
 	@Bean
 	public DataSource dataSource() {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();

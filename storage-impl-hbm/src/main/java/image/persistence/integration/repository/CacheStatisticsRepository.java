@@ -1,4 +1,4 @@
-package image.persistence.repository;
+package image.persistence.integration.repository;
 
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;

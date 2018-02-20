@@ -1,4 +1,4 @@
-package image.persistence.repository;
+package image.persistence.integration.repository;
 
 import image.cdm.album.page.AlbumPage;
 import org.hibernate.Query;

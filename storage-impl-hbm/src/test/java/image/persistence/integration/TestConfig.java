@@ -1,6 +1,7 @@
-package image.persistence;
+package image.persistence.integration;
 
 import com.zaxxer.hikari.HikariDataSource;
+import image.persistence.HibernateConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
@@ -14,7 +15,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("/test-datasource.properties")
 @Import(HibernateConfig.class)
-@Profile("test")
+@Profile("test-integration")
 public class TestConfig {
 	@Bean
 	public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl,

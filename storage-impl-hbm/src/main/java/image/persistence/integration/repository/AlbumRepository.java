@@ -1,4 +1,4 @@
-package image.persistence.repository;
+package image.persistence.integration.repository;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;

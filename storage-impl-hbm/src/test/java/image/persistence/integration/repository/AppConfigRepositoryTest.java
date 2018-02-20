@@ -1,6 +1,6 @@
-package image.persistence.repository;
+package image.persistence.integration.repository;
 
-import image.persistence.TestConfig;
+import image.persistence.integration.TestConfig;
 import image.persistence.entity.AppConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.hasSize;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
 @TestPropertySource(properties = "jndi.name=dummy")
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 public class AppConfigRepositoryTest {
 	@Autowired
 	private AppConfigRepository appConfigRepository;
