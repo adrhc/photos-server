@@ -1,11 +1,7 @@
 package image.photos;
 
-import com.zaxxer.hikari.HikariDataSource;
 import image.persistence.HibernateConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-
-import javax.sql.DataSource;
 
 /**
  * Using TestPropertySource
@@ -13,23 +9,8 @@ import javax.sql.DataSource;
  * Created by adr on 2/19/18.
  */
 @Configuration
-@PropertySource("/test-jdbc-datasource.properties")
+@PropertySource("classpath:/jdbc-datasource.properties")
 @Import({HibernateConfig.class, PhotosConfig.class})
-@Profile("test-integration")
+@Profile("integration-tests")
 public class TestPhotosConfig {
-	@Bean
-	public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl,
-	                             @Value("${jdbc.userName}") String userName,
-	                             @Value("${jdbc.password}") String password,
-	                             @Value("${jdbc.minimumIdle}") int minimumIdle,
-	                             @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
-		HikariDataSource ds = new HikariDataSource();
-		ds.setJdbcUrl(jdbcUrl);
-		ds.setUsername(userName);
-		ds.setPassword(password);
-		ds.setAutoCommit(false);
-		ds.setMinimumIdle(minimumIdle);
-		ds.setMaximumPoolSize(maximumPoolSize);
-		return ds;
-	}
 }

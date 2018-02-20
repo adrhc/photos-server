@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestPhotosConfig.class)
-@ActiveProfiles("test-integration")
+@ActiveProfiles({"integration-tests", "jdbc-datasource"})
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);
 

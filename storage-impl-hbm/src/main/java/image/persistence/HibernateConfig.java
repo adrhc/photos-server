@@ -1,5 +1,6 @@
 package image.persistence;
 
+import com.zaxxer.hikari.HikariDataSource;
 import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@PropertySource("classpath:/datasource.properties")
+@PropertySource("classpath:/jndi-datasource.properties")
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
@@ -44,15 +45,6 @@ public class HibernateConfig {
 		return txManager;
 	}
 
-//	@Autowired
-//	@Bean
-//	public AnnotationTransactionAspect annotationTransactionAspect(
-//			PlatformTransactionManager transactionManager) {
-//		AnnotationTransactionAspect bean = AnnotationTransactionAspect.aspectOf();
-//		bean.setTransactionManager(transactionManager);
-//		return bean;
-//	}
-
 	@Bean
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
@@ -69,11 +61,28 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
-	@Profile("!test*")
+	@Profile({"!test*", "!jdbc-datasource"})
 	@Bean
 	public DataSource dataSource() {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 		return lookup.getDataSource(jndiName);
+	}
+
+	@Profile("jdbc-datasource")
+	@Bean
+	public DataSource dataSource(@Value("${jdbc.url}") String jdbcUrl,
+	                             @Value("${jdbc.userName}") String userName,
+	                             @Value("${jdbc.password}") String password,
+	                             @Value("${jdbc.minimumIdle}") int minimumIdle,
+	                             @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
+		HikariDataSource ds = new HikariDataSource();
+		ds.setJdbcUrl(jdbcUrl);
+		ds.setUsername(userName);
+		ds.setPassword(password);
+		ds.setAutoCommit(false);
+		ds.setMinimumIdle(minimumIdle);
+		ds.setMaximumPoolSize(maximumPoolSize);
+		return ds;
 	}
 
 	/**

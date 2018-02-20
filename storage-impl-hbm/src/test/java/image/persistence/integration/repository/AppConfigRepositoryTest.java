@@ -4,6 +4,8 @@ import image.persistence.entity.AppConfig;
 import image.persistence.integration.TestHibernateConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,8 +25,10 @@ import static org.hamcrest.Matchers.hasSize;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestHibernateConfig.class)
 @TestPropertySource(properties = "jndi.name=dummy")
-@ActiveProfiles("test-integration")
+@ActiveProfiles({"integration-tests", "jdbc-datasource"})
 public class AppConfigRepositoryTest {
+	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
+
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 
@@ -32,5 +36,6 @@ public class AppConfigRepositoryTest {
 	public void getAppConfigs() {
 		List<AppConfig> appConfigs = appConfigRepository.getAppConfigs();
 		assertThat(appConfigs, hasSize(greaterThan(0)));
+		logger.debug("appConfigs:\n{}", appConfigs.toString());
 	}
 }
