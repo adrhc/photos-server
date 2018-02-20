@@ -25,7 +25,9 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@PropertySource("classpath:/jndi-datasource.properties")
+@PropertySource(value = {"classpath:/jndi-datasource.properties",
+		"classpath*:/jndi-datasource-overridden.properties"},
+		ignoreResourceNotFound = true)
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
@@ -102,7 +104,7 @@ public class HibernateConfig {
 	public PropertiesFactoryBean hibernateProperties() {
 		PropertiesFactoryBean p = new PropertiesFactoryBean();
 		p.setLocations(new ClassPathResource("classpath:/hibernate.properties"),
-				new ClassPathResource("classpath*:/hibernate-overwrite.properties"));
+				new ClassPathResource("classpath*:/hibernate-overridden.properties"));
 		p.setIgnoreResourceNotFound(true);
 		return p;
 	}
