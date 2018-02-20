@@ -38,7 +38,6 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/json/appconfig")
-//@DependsOn("annotationTransactionAspect")
 public class AppConfigCtrl implements IAppConfigCache {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigCtrl.class);
 	@Inject
