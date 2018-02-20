@@ -26,14 +26,14 @@ public class AppConfigServiceTest {
 	@Test
 	public void getLastUpdatedAppConfigs() {
 		long lastUpdatedAppConfigs = appConfigService.getLastUpdatedAppConfigs();
-		logger.debug("lastUpdatedAppConfigs = {}", lastUpdatedAppConfigs);
 		Assert.assertTrue(lastUpdatedAppConfigs > 0);
+		logger.debug("lastUpdatedAppConfigs = {}", lastUpdatedAppConfigs);
 	}
 
 	@Test
 	public void canUseJsonFilesLastUpdate() {
 		long canUseJsonFilesLastUpdate = appConfigService.canUseJsonFilesLastUpdate();
-		logger.debug("canUseJsonFilesLastUpdate = {}", canUseJsonFilesLastUpdate);
 		Assert.assertTrue(canUseJsonFilesLastUpdate > 0);
+		logger.debug("canUseJsonFilesLastUpdate = {}", canUseJsonFilesLastUpdate);
 	}
 }
