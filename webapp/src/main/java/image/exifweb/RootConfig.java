@@ -33,7 +33,7 @@ public class RootConfig {
 				new PropertySourcesPlaceholderConfigurer();
 		p.setLocations(new ClassPathResource("/exifweb.properties"),
 				new ClassPathResource("/subs-extract-app-config.properties"),
-				new ClassPathResource("/exifweb-overwrite.properties"));
+				new ClassPathResource("/exifweb-overridden.properties"));
 		p.setIgnoreResourceNotFound(true);
 		return p;
 	}

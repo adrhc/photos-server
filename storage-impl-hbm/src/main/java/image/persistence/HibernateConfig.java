@@ -5,10 +5,9 @@ import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -28,12 +27,17 @@ import java.util.Properties;
 @PropertySource(value = {"classpath:/jndi-datasource.properties",
 		"classpath*:/jndi-datasource-overridden.properties"},
 		ignoreResourceNotFound = true)
+@PropertySource(value = {"classpath:/hibernate.properties",
+		"classpath*:/hibernate-overridden.properties"},
+		ignoreResourceNotFound = true)
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
 	@Value("${jndi.name}")
 	private String jndiName;
+	@Autowired
+	private Environment env;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer
@@ -50,12 +54,11 @@ public class HibernateConfig {
 	}
 
 	@Bean
-	public LocalSessionFactoryBean sessionFactory(
-			@Value("#{hibernateProperties}") Properties hibernateProperties) {
+	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource());
 		localSessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
-		localSessionFactoryBean.setHibernateProperties(hibernateProperties);
+		localSessionFactoryBean.setHibernateProperties(hibernateProperties());
 		return localSessionFactoryBean;
 	}
 
@@ -100,15 +103,34 @@ public class HibernateConfig {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
-	/**
-	 * doesn't search WEB-INF/lib/*.jar
-	 */
-	@Bean
-	public PropertiesFactoryBean hibernateProperties() {
-		PropertiesFactoryBean p = new PropertiesFactoryBean();
-		p.setLocations(new ClassPathResource("classpath:/hibernate.properties"),
-				new ClassPathResource("classpath*:/hibernate-overridden.properties"));
-		p.setIgnoreResourceNotFound(true);
-		return p;
+	private Properties hibernateProperties() {
+		return new Properties() {
+			{
+				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.jdbc.batch_size",
+						env.getProperty("hibernate.jdbc.batch_size"));
+				setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+				setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
+				setProperty("hibernate.validator.autoregister_listeners",
+						env.getProperty("hibernate.validator.autoregister_listeners"));
+
+				// http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x
+				// http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache
+				// setProperty("hibernate.generate_statistics", "true");
+				// setProperty("hibernate.cache.use_structured_entries", "true");
+
+				setProperty("hibernate.cache.use_second_level_cache",
+						env.getProperty("hibernate.cache.use_second_level_cache"));
+				setProperty("hibernate.cache.use_query_cache",
+						env.getProperty("hibernate.cache.use_query_cache"));
+				setProperty("hibernate.cache.region.factory_class",
+						env.getProperty("hibernate.cache.region.factory_class"));
+
+				// setProperty("hibernate.hbm2ddl.auto", "update");
+				// setProperty("hibernate.id.new_generator_mappings", "true");
+				// setProperty("hibernate.current_session_context_class", "jta");
+				// setProperty("javax.persistence.validation.mode", "");
+			}
+		};
 	}
 }

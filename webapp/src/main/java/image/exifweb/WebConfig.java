@@ -48,7 +48,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //		PropertySourcesPlaceholderConfigurer p =
 //				new PropertySourcesPlaceholderConfigurer();
 //		p.setLocations(new ClassPathResource("exifweb.properties"),
-//				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
+//				new ClassPathResource("classpath*:exifweb-overridden.properties"));
 //		p.setIgnoreResourceNotFound(true);
 //		p.setIgnoreUnresolvablePlaceholders(true);
 //		return p;
