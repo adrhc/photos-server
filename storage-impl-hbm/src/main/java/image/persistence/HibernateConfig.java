@@ -103,7 +103,7 @@ public class HibernateConfig {
 	@Bean
 	public PropertiesFactoryBean hibernateProperties() {
 		PropertiesFactoryBean p = new PropertiesFactoryBean();
-		p.setLocations(new ClassPathResource("classpath*:/hibernate.properties"),
+		p.setLocations(new ClassPathResource("classpath:/hibernate.properties"),
 				new ClassPathResource("classpath*:/hibernate-overridden.properties"));
 		p.setIgnoreResourceNotFound(true);
 		return p;
