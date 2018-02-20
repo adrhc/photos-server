@@ -5,8 +5,10 @@ import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -46,11 +48,12 @@ public class HibernateConfig {
 	}
 
 	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
+	public LocalSessionFactoryBean sessionFactory(
+			@Value("#{hibernateProperties}") Properties hibernateProperties) {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		localSessionFactoryBean.setDataSource(dataSource());
 		localSessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
-		localSessionFactoryBean.setHibernateProperties(hibernateProperties());
+		localSessionFactoryBean.setHibernateProperties(hibernateProperties);
 		return localSessionFactoryBean;
 	}
 
@@ -95,30 +98,12 @@ public class HibernateConfig {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
-	private Properties hibernateProperties() {
-		return new Properties() {
-			{
-				setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
-				setProperty("hibernate.jdbc.batch_size", "20");
-				setProperty("hibernate.show_sql", "true");
-				setProperty("hibernate.format_sql", "true");
-				setProperty("hibernate.validator.autoregister_listeners", "false");
-
-				// http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x
-				// http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache
-				// setProperty("hibernate.generate_statistics", "true");
-				// setProperty("hibernate.cache.use_structured_entries", "true");
-
-				setProperty("hibernate.cache.use_second_level_cache", "true");
-				setProperty("hibernate.cache.use_query_cache", "true");
-				setProperty("hibernate.cache.region.factory_class",
-						"org.hibernate.cache.ehcache.EhCacheRegionFactory");
-
-				// setProperty("hibernate.hbm2ddl.auto", "update");
-				// setProperty("hibernate.id.new_generator_mappings", "true");
-				// setProperty("hibernate.current_session_context_class", "jta");
-				// setProperty("javax.persistence.validation.mode", "");
-			}
-		};
+	@Bean("hibernateProperties")
+	public PropertiesFactoryBean hibernateProperties() {
+		PropertiesFactoryBean p = new PropertiesFactoryBean();
+		p.setLocations(new ClassPathResource("classpath:/hibernate.properties"),
+				new ClassPathResource("classpath*:/hibernate-overwrite.properties"));
+		p.setIgnoreResourceNotFound(true);
+		return p;
 	}
 }

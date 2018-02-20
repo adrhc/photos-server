@@ -11,6 +11,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.not;
+
 /**
  * Created by adr on 2/20/18.
  */
@@ -22,6 +26,17 @@ public class AppConfigServiceTest {
 
 	@Autowired
 	private AppConfigService appConfigService;
+
+	@Test
+	public void getConfigs() {
+		Integer subtitlesExtractorLines = appConfigService.getConfigInt("subtitles-extractor-lines");
+		Assert.assertTrue(subtitlesExtractorLines > 0);
+		logger.debug("subtitlesExtractorLines = {}", subtitlesExtractorLines);
+
+		String photosJsonFSPath = appConfigService.getConfig("photos json FS path");
+		assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
+		logger.debug("photosJsonFSPath = {}", photosJsonFSPath);
+	}
 
 	@Test
 	public void getLastUpdatedAppConfigs() {
