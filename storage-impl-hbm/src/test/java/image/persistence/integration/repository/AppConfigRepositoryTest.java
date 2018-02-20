@@ -1,7 +1,7 @@
 package image.persistence.integration.repository;
 
+import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
-import image.persistence.integration.TestHibernateConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
  * Created by adr on 2/19/18.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestHibernateConfig.class)
+@ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "jndi.name=dummy")
 @ActiveProfiles({"integration-tests", "jdbc-datasource"})
 public class AppConfigRepositoryTest {

@@ -24,6 +24,9 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
+@PropertySource(value = {"classpath:/jdbc-datasource.properties",
+		"classpath*:/jdbc-datasource-overridden.properties"},
+		ignoreResourceNotFound = true)
 @PropertySource(value = {"classpath:/jndi-datasource.properties",
 		"classpath*:/jndi-datasource-overridden.properties"},
 		ignoreResourceNotFound = true)
@@ -70,7 +73,7 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
-	@Profile({"!test*", "!jdbc-datasource"})
+	@Profile("!jdbc-datasource")
 	@Bean
 	public DataSource jndiDataSource() {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
