@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestPhotosConfig.class)
-@ActiveProfiles({"integration-tests", "jdbc-datasource"})
+@ActiveProfiles({"integration-tests", "jdbc-ds"})
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);
 

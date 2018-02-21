@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "jndi.name=dummy")
-@ActiveProfiles({"integration-tests", "jdbc-datasource"})
+@ActiveProfiles({"integration-tests", "jdbc-ds"})
 public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 

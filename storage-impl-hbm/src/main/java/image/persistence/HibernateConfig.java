@@ -37,8 +37,6 @@ import java.util.Properties;
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
-	@Value("${jndi.name}")
-	private String jndiName;
 	@Autowired
 	private Environment env;
 
@@ -73,9 +71,9 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
-	@Profile("!jdbc-datasource")
+	@Profile("jndi-ds")
 	@Bean
-	public DataSource jndiDataSource() {
+	public DataSource jndiDataSource(@Value("${jndi.name}") String jndiName) {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 		return lookup.getDataSource(jndiName);
 	}
@@ -84,7 +82,7 @@ public class HibernateConfig {
 	 * When using same name (e.g. dataSource) for jdbc and jndi datasources
 	 * though they have different @Profile still won't work (none will be found).
 	 */
-	@Profile("jdbc-datasource")
+	@Profile("jdbc-ds")
 	@Bean
 	public DataSource jdbcDataSource(@Value("${jdbc.url}") String jdbcUrl,
 	                                 @Value("${jdbc.userName}") String userName,
