@@ -79,7 +79,7 @@ public class AppConfigRepositoryTest {
 	@Test
 	public void testGetNoCacheableOrderedAppConfigs() {
 		List<AppConfig> appConfigs = appConfigRepository.testGetNoCacheableOrderedAppConfigs();
-		assertThat(appConfigs, hasSize(greaterThan(0)));
+		assertThat(appConfigs, hasItem(anything()));
 		logger.debug(appConfigs.stream().map(AppConfig::toString)
 				.collect(Collectors.joining("\n")));
 	}

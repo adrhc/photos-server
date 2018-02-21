@@ -45,6 +45,13 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date imageLastUpdate;
 
+	/**
+	 * used by AlbumPageJsonTest
+	 */
+	public AlbumPage() {
+		// empty
+	}
+
 	public AlbumPage(Integer id, String imgName, boolean hidden, boolean personal,
 	                 boolean ugly, boolean duplicate, boolean printable, int imageHeight,
 	                 int imageWidth, byte rating, Integer coverId, Date thumbLastModified,
