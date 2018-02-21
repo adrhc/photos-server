@@ -21,7 +21,7 @@ import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
 public class AlbumEventsEmitterTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumEventsEmitterTest.class);
 
-	@Ignore
+	@Ignore("rxjava observeOn learning test")
 	@Test
 	public void albumEventsByTypesTest() {
 		Thread mainThread = Thread.currentThread();
