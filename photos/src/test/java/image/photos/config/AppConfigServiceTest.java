@@ -11,6 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
@@ -27,6 +29,11 @@ public class AppConfigServiceTest {
 
 	@Autowired
 	private AppConfigService appConfigService;
+
+	@Test
+	public void writeJsonForAppConfigs() throws IOException {
+		appConfigService.writeJsonForAppConfigs();
+	}
 
 	@Test
 	public void getConfigs() {
