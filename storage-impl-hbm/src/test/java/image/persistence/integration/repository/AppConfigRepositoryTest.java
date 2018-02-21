@@ -12,11 +12,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 
 /**
@@ -24,13 +24,34 @@ import static org.hamcrest.Matchers.hasSize;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
-@TestPropertySource(properties = "jndi.name=dummy")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @ActiveProfiles({"integration-tests", "jdbc-ds"})
 public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 
 	@Autowired
 	private AppConfigRepository appConfigRepository;
+
+	@Test
+	public void getAppConfigById() {
+		AppConfig appConfig = appConfigRepository.getAppConfigById(1);
+		assertThat(appConfig, notNullValue());
+		logger.debug(appConfig.toString());
+	}
+
+	@Test
+	public void getAppConfigByName() {
+		AppConfig appConfig = appConfigRepository.getAppConfigByName("albums_path");
+		assertThat(appConfig, notNullValue());
+		logger.debug(appConfig.toString());
+	}
+
+	@Test
+	public void getDBNow() {
+		Date date = appConfigRepository.getDBNow();
+		assertThat(date, notNullValue());
+		logger.debug(date.toString());
+	}
 
 	@Test
 	public void getAppConfigs() {

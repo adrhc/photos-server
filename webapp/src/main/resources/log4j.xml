@@ -107,6 +107,10 @@
     <logger name="org.hibernate.cache">
         <level value="info"/>
     </logger>
+    <logger name="org.hibernate.cache.ehcache">
+        <level value="info"/>
+    </logger>
+
     <logger name="net.sf.ehcache">
         <level value="info"/>
     </logger>

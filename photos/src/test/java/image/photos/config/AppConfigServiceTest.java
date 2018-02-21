@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestPhotosConfig.class)
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @ActiveProfiles({"integration-tests", "jdbc-ds"})
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);

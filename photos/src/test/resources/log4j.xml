@@ -72,6 +72,10 @@
     <logger name="org.hibernate.cache">
         <level value="warn"/>
     </logger>
+    <logger name="org.hibernate.cache.ehcache">
+        <level value="error"/>
+    </logger>
+
     <logger name="net.sf.ehcache">
         <level value="warn"/>
     </logger>
