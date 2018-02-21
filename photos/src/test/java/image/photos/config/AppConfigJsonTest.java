@@ -15,10 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.hasItem;
 
 
 /**
@@ -26,7 +27,7 @@ import static org.hamcrest.Matchers.hasSize;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = JsonMapperConfig.class)
-@ActiveProfiles({"integration-tests"})
+@ActiveProfiles({"json-tests"})
 public class AppConfigJsonTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigJsonTest.class);
 
@@ -36,7 +37,8 @@ public class AppConfigJsonTest {
 	@Test
 	public void decodeAppConfigsJson() throws IOException {
 		List<AppConfig> appConfigs = mapper.readValue("[{\"id\":1,\"name\":\"albums_path\",\"value\":\"/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums\"},{\"id\":2,\"name\":\"photos_per_page\",\"value\":\"120\"},{\"id\":3,\"name\":\"httpd_restart_logs\",\"value\":\"/ffp/home/root\"},{\"id\":4,\"name\":\"linux_process_status_lines_limit\",\"value\":\"10\"},{\"id\":5,\"name\":\"proc_stats_refresh_seconds\",\"value\":\"0\"},{\"id\":7,\"name\":\"sync_cpu_mem_full\",\"value\":\"true\"},{\"id\":8,\"name\":\"stop_httpd_checking\",\"value\":\"true\"},{\"id\":9,\"name\":\"subtitles-extractor-lines\",\"value\":\"13\"},{\"id\":10,\"name\":\"subtitles-extractor.log\",\"value\":\"/home/adr/subtitles-extractor.log\"},{\"id\":11,\"name\":\"subtitles-extractor-visible-lines\",\"value\":\"13\"},{\"id\":12,\"name\":\"apache-log-dir\",\"value\":\"/home/adr/apps/log\"},{\"id\":13,\"name\":\"apache-log-lines\",\"value\":\"15\"},{\"id\":14,\"name\":\"video root folder\",\"value\":\"/home/adr/Videos/\"},{\"id\":15,\"name\":\"memory progress bar style intervals\",\"value\":\"40,60,70\"},{\"id\":16,\"name\":\"cpu progress bar style intervals\",\"value\":\"10,20,50\"},{\"id\":17,\"name\":\"photos json FS path\",\"value\":\"/home/adr/apps/opt/apache-htdocs/photos/json\"},{\"id\":18,\"name\":\"use json files\",\"value\":\"true\"},{\"id\":19,\"name\":\"use json files for config\",\"value\":\"true\"},{\"id\":20,\"name\":\"cpu summary: use nsa310 CGI\",\"value\":\"false\"},{\"id\":21,\"name\":\"cpu summary: use sum on top command\",\"value\":\"true\"},{\"id\":22,\"name\":\"cpu summary: use sum on ps ax command\",\"value\":\"true\"},{\"id\":23,\"name\":\"cpu summary: use sum on ps x command\",\"value\":\"true\"},{\"id\":24,\"name\":\"cpu summary: use top (summary portion) command\",\"value\":\"true\"}]", new TypeReference<List<AppConfig>>() {});
-		assertThat(appConfigs, hasSize(greaterThan(0)));
-		logger.debug("appConfigs:\n{}", appConfigs.toString());
+		assertThat(appConfigs, hasItem(anything()));
+		logger.debug(appConfigs.stream().map(AppConfig::toString)
+				.collect(Collectors.joining("\n")));
 	}
 }
