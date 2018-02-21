@@ -33,6 +33,20 @@ public class AppConfigRepositoryTest {
 	private AppConfigRepository appConfigRepository;
 
 	@Test
+	public void getLinuxAlbumPath() {
+		String linuxAlbumPath = appConfigRepository.getLinuxAlbumPath();
+		assertThat(linuxAlbumPath, notNullValue());
+		logger.debug("linuxAlbumPath: {}", linuxAlbumPath);
+	}
+
+	@Test
+	public void getPhotosPerPage() {
+		Integer photosPerPage = appConfigRepository.getPhotosPerPage();
+		assertThat(photosPerPage, greaterThan(0));
+		logger.debug("photosPerPage = {}", photosPerPage);
+	}
+
+	@Test
 	public void getAppConfigById() {
 		AppConfig appConfig = appConfigRepository.getAppConfigById(1);
 		assertThat(appConfig, notNullValue());
