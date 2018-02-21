@@ -3,14 +3,13 @@ package image.photos.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
-import image.photos.TestPhotosConfig;
+import image.photos.JsonMapperConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.inject.Inject;
@@ -26,9 +25,8 @@ import static org.hamcrest.Matchers.hasSize;
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestPhotosConfig.class)
-@TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"integration-tests", "jdbc-ds"})
+@ContextConfiguration(classes = JsonMapperConfig.class)
+@ActiveProfiles({"integration-tests"})
 public class AppConfigJsonTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigJsonTest.class);
 
