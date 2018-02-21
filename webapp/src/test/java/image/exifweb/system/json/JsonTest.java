@@ -2,6 +2,7 @@ package image.exifweb.system.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.Image;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public class JsonTest {
 	 *
 	 * @throws IOException
 	 */
+	@Ignore
 	@Test
 	public void objectToMap() throws IOException {
 		/**

@@ -1,4 +1,4 @@
-package image.exifweb.image;
+package image.photos.image;
 
 import image.cdm.image.ExifInfo;
 import image.persistence.entity.Album;

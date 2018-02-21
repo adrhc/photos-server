@@ -40,11 +40,6 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>subtitles</groupId>
             <artifactId>subtitles-extractor</artifactId>
         </dependency>

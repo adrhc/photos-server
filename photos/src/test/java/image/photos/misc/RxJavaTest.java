@@ -1,4 +1,4 @@
-package image.exifweb.rxjava;
+package image.photos.misc;
 
 import io.reactivex.Observable;
 import org.junit.Test;
