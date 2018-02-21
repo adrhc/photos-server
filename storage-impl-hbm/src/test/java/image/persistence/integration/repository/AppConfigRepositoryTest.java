@@ -61,10 +61,10 @@ public class AppConfigRepositoryTest {
 	}
 
 	@Test
-	public void getDBNow() {
-		Date date = appConfigRepository.getDBNow();
-		assertThat(date, notNullValue());
-		logger.debug(date.toString());
+	public void testGetNoCacheableAppConfigByName() {
+		AppConfig appConfig = appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
+		assertThat(appConfig, notNullValue());
+		logger.debug(appConfig.toString());
 	}
 
 	@Test
@@ -72,5 +72,19 @@ public class AppConfigRepositoryTest {
 		List<AppConfig> appConfigs = appConfigRepository.getAppConfigs();
 		assertThat(appConfigs, hasSize(greaterThan(0)));
 		logger.debug("appConfigs:\n{}", appConfigs.toString());
+	}
+
+	@Test
+	public void testGetNoCacheableOrderedAppConfigs() {
+		List<AppConfig> appConfigs = appConfigRepository.testGetNoCacheableOrderedAppConfigs();
+		assertThat(appConfigs, hasSize(greaterThan(0)));
+		logger.debug("appConfigs:\n{}", appConfigs.toString());
+	}
+
+	@Test
+	public void getDBNow() {
+		Date date = appConfigRepository.getDBNow();
+		assertThat(date, notNullValue());
+		logger.debug(date.toString());
 	}
 }
