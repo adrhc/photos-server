@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestPhotosConfig.class)
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @ActiveProfiles({"integration-tests", "jdbc-ds"})
 public class AlbumCoverServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverServiceTest.class);
@@ -31,14 +32,21 @@ public class AlbumCoverServiceTest {
 	private AlbumCoverService albumCoverService;
 
 	@Test
-	public void getCoverByName() throws IOException {
+	public void getCoverById() {
+		AlbumCover cover = albumCoverService.getCoverById(45);
+		assertThat(cover, notNullValue());
+		logger.debug(cover.getAlbumName());
+	}
+
+	@Test
+	public void getCoverByName() {
 		AlbumCover cover = albumCoverService.getCoverByName("2015-08-23 Natalia");
 		assertThat(cover, notNullValue());
 		logger.debug("{}, pk = {}", cover.getAlbumName(), cover.getId());
 	}
 
 	@Test
-	public void getCovers() throws IOException {
+	public void getCovers() {
 		List<AlbumCover> covers = albumCoverService.getCovers();
 		assertThat(covers, hasItem(anything()));
 		logger.debug(covers.stream().map(AlbumCover::getAlbumName)
