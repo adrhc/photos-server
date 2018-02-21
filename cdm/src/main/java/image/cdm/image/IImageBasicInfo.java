@@ -15,4 +15,6 @@ public interface IImageBasicInfo {
 	String getAlbumName();
 
 	Date getThumbLastModified();
+	
+	Date getDateTime();
 }

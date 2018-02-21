@@ -12,14 +12,26 @@ import java.text.SimpleDateFormat;
  */
 @Configuration
 public class JsonMapperConfig {
+	/**
+	 * jackson uses GMT by default (com.fasterxml.jackson.databind.cfg.BaseSettings._timeZone)
+	 */
+	public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
+
 	@Bean
 	public ObjectMapper objectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
+		ObjectMapper mapper = new ObjectMapper();
+		// using server's timezone
+//		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
+		// using server's timezone
+		mapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
+		// using server's GMT
+//		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss") {{
+//			setTimeZone(TimeZone.getTimeZone("GMT"));
+//		}});
 		Hibernate4Module hm = new Hibernate4Module();
 		hm.disable(Hibernate4Module.Feature.FORCE_LAZY_LOADING);
 		hm.disable(Hibernate4Module.Feature.USE_TRANSIENT_ANNOTATION);
-		objectMapper.registerModule(hm);
-		return objectMapper;
+		mapper.registerModule(hm);
+		return mapper;
 	}
 }

@@ -32,15 +32,19 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	private String thumbPath;
 	private String imagePath;
 	/**
-	 * related to image file change
+	 * related to thumb's file change
 	 * used for thumb's url (impact browser-cache)
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date thumbLastModified;
+	/**
+	 * related to image's file change
+	 * used for image's url (impact browser-cache)
+	 */
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date dateTime;
 	/*
-	 * related to db record -> rating, status, deleted change
+	 * related to db record change (rating, status, deleted)
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date imageLastUpdate;

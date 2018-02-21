@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 public class ImageRepository {
 	private static final Logger logger = LoggerFactory.getLogger(ImageRepository.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
 	@Inject
 	private SessionFactory sessionFactory;

@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  */
 public interface INotModifiedChecker {
 	Logger logger = LoggerFactory.getLogger(INotModifiedChecker.class);
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
 	default <T> T checkNotModified(Supplier<Date> lastUpdateSupplier,
 	                               Supplier<T> valueSupplier, WebRequest webRequest) {

@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class AlbumRepository {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepository.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss.SSS");
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Inject
 	private SessionFactory sessionFactory;
 
