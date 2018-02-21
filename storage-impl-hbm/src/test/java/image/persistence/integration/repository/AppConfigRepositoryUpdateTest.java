@@ -3,6 +3,7 @@ package image.persistence.integration.repository;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ public class AppConfigRepositoryUpdateTest {
 		appConfigs = appConfigRepository.getAppConfigs();
 	}
 
+	@Ignore("todo: use in memory database")
 	@Test
 	public void update() {
 		appConfigRepository.update(appConfigs);
