@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created by adr on 2/21/18.
@@ -30,6 +29,13 @@ public class AlbumCoverServiceTest {
 
 	@Autowired
 	private AlbumCoverService albumCoverService;
+
+	@Test
+	public void getCoverByName() throws IOException {
+		AlbumCover cover = albumCoverService.getCoverByName("2015-08-23 Natalia");
+		assertThat(cover, notNullValue());
+		logger.debug("{}, pk = {}", cover.getAlbumName(), cover.getId());
+	}
 
 	@Test
 	public void getCovers() throws IOException {
