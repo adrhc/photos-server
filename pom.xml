@@ -382,6 +382,14 @@
                 <scope>test</scope>
             </dependency>
 
+			<!-- https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite -->
+			<dependency>
+				<groupId>io.takari.junit</groupId>
+				<artifactId>takari-cpsuite</artifactId>
+				<version>1.2.7</version>
+				<scope>test</scope>
+			</dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -396,6 +404,31 @@
                         <target>${source.version}</target>
                     </configuration>
                 </plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.20.1</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>2.20.1</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<parallel>methods</parallel>
+						<threadCount>4</threadCount>
+						<disableXmlReport>true</disableXmlReport>
+						<!--<argLine>-Dspring.profiles.active=integration-tests,jdbc-ds,json-tests</argLine>-->
+						<!--<argLine>-Dspring.profiles.active=json-tests</argLine>-->
+						<environmentVariables>
+							<!--<spring.profiles.active>integration-tests,jdbc-ds,json-tests</spring.profiles.active>-->
+							<spring.profiles.active>json-tests</spring.profiles.active>
+						</environmentVariables>
+						<!--<groups>com.mycompany.SlowTests</groups>-->
+					</configuration>
+				</plugin>
 
                 <!--plugin>
                     <groupId>org.apache.maven.plugins</groupId>

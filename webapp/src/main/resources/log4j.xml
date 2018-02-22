@@ -33,7 +33,6 @@
         <param name="Threshold" value="debug"/>
         <param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>
         <param name="MaxFileSize" value="10MB"/>
-        <!-- Keep one backup file -->
         <param name="MaxBackupIndex" value="3"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
