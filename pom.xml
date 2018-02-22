@@ -571,6 +571,7 @@
 				<version>2.20.1</version>
 				<configuration>
 					<aggregate>true</aggregate>
+					<alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
 					<showSuccess>true</showSuccess>
 				</configuration>
 			</plugin>
