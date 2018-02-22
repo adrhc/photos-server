@@ -1,4 +1,4 @@
-package image.photos.test_suites;
+package image.photos;
 
 import org.junit.extensions.cpsuite.ClasspathSuite;
 import org.junit.runner.RunWith;

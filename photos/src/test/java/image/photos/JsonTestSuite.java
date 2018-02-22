@@ -1,6 +1,5 @@
-package image.photos.test_suites;
+package image.photos;
 
-import image.photos.JsonMapperConfig;
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
