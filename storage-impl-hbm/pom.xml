@@ -104,8 +104,9 @@
 					<environmentVariables>
 						<spring.profiles.active>integration-tests,jdbc-ds</spring.profiles.active>
 					</environmentVariables>
-					<groups>image.persistence.HibernateConfig.class</groups>
-					<!--<skipTests>true</skipTests>-->
+                    <groups>${storage-impl-hbm.groups}</groups>
+					<!--<groups>image.persistence.HibernateConfig.class</groups>-->
+					<!--<skipTests>${skipTests}</skipTests>-->
 				</configuration>
 			</plugin>
             <plugin>
@@ -122,4 +123,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

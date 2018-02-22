@@ -16,6 +16,14 @@
 
     <dependencies>
         <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>cdm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-entities</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>

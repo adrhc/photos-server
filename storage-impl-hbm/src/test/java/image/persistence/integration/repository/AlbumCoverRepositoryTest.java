@@ -2,6 +2,7 @@ package image.persistence.integration.repository;
 
 import image.persistence.HibernateConfig;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @ActiveProfiles({"jdbc-ds"})
+@Category(HibernateConfig.class)
 public class AlbumCoverRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverRepositoryTest.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

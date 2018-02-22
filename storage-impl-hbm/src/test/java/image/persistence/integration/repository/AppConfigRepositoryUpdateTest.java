@@ -5,6 +5,7 @@ import image.persistence.entity.AppConfig;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -19,9 +20,10 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @ActiveProfiles({"jdbc-ds"})
+@Category(HibernateConfig.class)
 public class AppConfigRepositoryUpdateTest {
 	@Autowired
-	private AppConfigRepositoryImpl appConfigRepository;
+	private AppConfigRepository appConfigRepository;
 
 	private List<AppConfig> appConfigs;
 

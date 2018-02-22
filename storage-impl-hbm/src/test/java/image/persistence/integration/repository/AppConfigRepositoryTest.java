@@ -3,6 +3,7 @@ package image.persistence.integration.repository;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +28,12 @@ import static org.hamcrest.Matchers.*;
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @ActiveProfiles({"jdbc-ds"})
+@Category(HibernateConfig.class)
 public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 
 	@Autowired
-	private AppConfigRepositoryImpl appConfigRepository;
+	private AppConfigRepository appConfigRepository;
 
 	@Test
 	public void getLinuxAlbumPath() {

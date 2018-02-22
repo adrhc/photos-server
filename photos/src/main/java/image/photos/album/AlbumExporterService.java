@@ -3,9 +3,9 @@ package image.photos.album;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.persistence.entity.Album;
-import image.persistence.integration.repository.AlbumPageRepositoryImpl;
+import image.persistence.integration.repository.AlbumPageRepository;
 import image.persistence.integration.repository.AlbumRepositoryImpl;
-import image.persistence.integration.repository.AppConfigRepositoryImpl;
+import image.persistence.integration.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.util.status.E3ResultTypes;
@@ -34,11 +34,11 @@ public class AlbumExporterService {
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
 	@Inject
-	private AppConfigRepositoryImpl appConfigRepository;
+	private AppConfigRepository appConfigRepository;
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject
-	private AlbumPageRepositoryImpl albumPageRepository;
+	private AlbumPageRepository albumPageRepository;
 	@Inject
 	private AlbumRepositoryImpl albumRepository;
 	@Inject

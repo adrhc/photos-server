@@ -600,6 +600,29 @@
 		</plugins>
 	</reporting>
 
+    <profiles>
+        <profile>
+            <id>db-off</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--<skipTests>true</skipTests>-->
+                <!-- org.junit.Test.class means "no category" -->
+                <storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
+                <photos.groups>image.photos.JsonMapperConfig.class</photos.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>db-on</id>
+            <properties>
+                <!--<skipTests>false</skipTests>-->
+                <storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
+                <photos.groups>image.photos.JsonMapperConfig.class,image.photos.TestPhotosConfig.class</photos.groups>
+            </properties>
+        </profile>
+    </profiles>
+
 	<modules>
 		<!-- cdm = common data model -->
 		<module>cdm</module>

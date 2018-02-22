@@ -15,7 +15,7 @@ import java.util.List;
  * Created by adr on 2/8/18.
  */
 @Service
-public class AlbumPageRepositoryImpl {
+public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	/**
 	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
 	 * <p>
@@ -33,8 +33,9 @@ public class AlbumPageRepositoryImpl {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private AppConfigRepositoryImpl appConfigRepository;
+	private AppConfigRepository appConfigRepository;
 
+	@Override
 	@Transactional(readOnly = true)
 	public int getPageCount(String toSearch, boolean viewHidden,
 	                        boolean viewOnlyPrintable, Integer albumId) {
@@ -77,6 +78,7 @@ public class AlbumPageRepositoryImpl {
 	 * -         Cached query results were not up-to-date
 	 * so when Album or Image cache is not up to date this query becomes invalid.
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public List<AlbumPage> getPageFromDb(int pageNr, String sort, String toSearch,
 	                                     boolean viewHidden, boolean viewOnlyPrintable,

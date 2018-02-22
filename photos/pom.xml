@@ -91,10 +91,13 @@
 					<environmentVariables>
 						<spring.profiles.active>integration-tests,jdbc-ds</spring.profiles.active>
 					</environmentVariables>
-					<groups>image.photos.JsonMapperConfig.class</groups>
+                    <groups>${photos.groups}</groups>
+					<!--<groups>image.photos.JsonMapperConfig.class</groups>-->
 					<!--<groups>image.photos.TestPhotosConfig.class</groups>-->
+                    <!--<skipTests>${skipTests}</skipTests>-->
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

@@ -17,7 +17,7 @@ import java.util.List;
  * Created by adr on 2/10/18.
  */
 @Service
-public class AppConfigRepositoryImpl {
+public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
@@ -33,25 +33,30 @@ public class AppConfigRepositoryImpl {
 		return getAppConfigById(appConfigEnum.getValue()).getValue();
 	}
 
+	@Override
 	public Integer getPhotosPerPage() {
 		return getConfigInteger(AppConfigEnum.PHOTOS_PER_PAGE);
 	}
 
+	@Override
 	public String getLinuxAlbumPath() {
 		return getConfig(AppConfigEnum.LINUX_ALBUMS_PATH);
 	}
 
+	@Override
 	@Transactional
 	public AppConfig getAppConfigById(Integer id) {
 		return (AppConfig) sessionFactory.getCurrentSession().get(AppConfig.class, id);
 	}
 
+	@Override
 	@Transactional
 	public AppConfig getAppConfigByName(String name) {
 		return (AppConfig) sessionFactory.getCurrentSession().createCriteria(AppConfig.class)
 				.setCacheable(true).add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
+	@Override
 	@Transactional
 	public void update(List<AppConfig> appConfigs) {
 		List<AppConfig> dbAppConfigs = getAppConfigs();
@@ -65,12 +70,14 @@ public class AppConfigRepositoryImpl {
 		}
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true).list();
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
 		Session session = sessionFactory.getCurrentSession();
@@ -78,6 +85,7 @@ public class AppConfigRepositoryImpl {
 				.addOrder(Order.asc("name")).list();
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public AppConfig testGetNoCacheableAppConfigByName(String name) {
 		Session session = sessionFactory.getCurrentSession();
@@ -85,6 +93,7 @@ public class AppConfigRepositoryImpl {
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public Date getDBNow() {
 		Session session = sessionFactory.getCurrentSession();

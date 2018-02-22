@@ -2,7 +2,7 @@ package image.photos.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
-import image.persistence.integration.repository.AppConfigRepositoryImpl;
+import image.persistence.integration.repository.AppConfigRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -24,7 +24,7 @@ public class AppConfigService {
 	@Inject
 	private ObjectMapper objectMapper;
 	@Inject
-	private AppConfigRepositoryImpl appConfigRepository;
+	private AppConfigRepository appConfigRepository;
 
 	public boolean getConfigBool(String name) {
 		String s = getConfig(name);
