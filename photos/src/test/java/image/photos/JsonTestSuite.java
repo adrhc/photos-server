@@ -11,7 +11,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Categories.class)
 @Categories.IncludeCategory(JsonMapperConfig.class)
-//@Suite.SuiteClasses({AppConfigJsonTest.class, ExifInfoJsonTest.class, AlbumPageJsonTest.class})
+//@Suite.SuiteClasses({AppConfigJsonTest.class, ExifInfoJsonTest.class, AlbumPageJsonTest.class, AlbumCoverJsonTest.class})
 @Suite.SuiteClasses(AllTestsSuite.class)
 public class JsonTestSuite {
 }

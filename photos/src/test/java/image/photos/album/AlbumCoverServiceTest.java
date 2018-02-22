@@ -1,8 +1,10 @@
 package image.photos.album;
 
 import image.cdm.album.cover.AlbumCover;
+import image.photos.JsonMapperConfig;
 import image.photos.TestPhotosConfig;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,8 @@ import static org.hamcrest.Matchers.*;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestPhotosConfig.class)
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"integration-tests", "jdbc-ds"})
+@ActiveProfiles({"jdbc-ds"})
+@Category(TestPhotosConfig.class)
 public class AlbumCoverServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverServiceTest.class);
 

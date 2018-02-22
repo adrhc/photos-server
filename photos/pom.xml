@@ -92,6 +92,7 @@
 						<spring.profiles.active>integration-tests,jdbc-ds</spring.profiles.active>
 					</environmentVariables>
 					<groups>image.photos.JsonMapperConfig.class</groups>
+					<!--<groups>image.photos.TestPhotosConfig.class</groups>-->
 				</configuration>
 			</plugin>
 		</plugins>

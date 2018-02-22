@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.photos.JsonMapperConfig;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.hasSize;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = JsonMapperConfig.class)
+@Category(JsonMapperConfig.class)
 public class AlbumCoverJsonTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverJsonTest.class);
 

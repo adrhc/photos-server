@@ -18,7 +18,7 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
-@ActiveProfiles({"integration-tests", "jdbc-ds"})
+@ActiveProfiles({"jdbc-ds"})
 public class AppConfigRepositoryUpdateTest {
 	@Autowired
 	private AppConfigRepositoryImpl appConfigRepository;

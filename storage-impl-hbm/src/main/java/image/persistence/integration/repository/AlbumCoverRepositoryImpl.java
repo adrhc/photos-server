@@ -14,7 +14,7 @@ import java.util.Date;
  * Created by adr on 2/3/18.
  */
 @Component
-public class AlbumCoverRepositoryImpl {
+public class AlbumCoverRepositoryImpl implements AlbumCoverRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
@@ -27,6 +27,7 @@ public class AlbumCoverRepositoryImpl {
 	 *
 	 * @return
 	 */
+	@Override
 	@Transactional(readOnly = true)
 	public Date getAlbumCoversLastUpdateDate() {
 		Session session = sessionFactory.getCurrentSession();

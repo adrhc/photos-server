@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = TestPhotosConfig.class)
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"integration-tests", "jdbc-ds"})
+@ActiveProfiles({"jdbc-ds"})
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);
 

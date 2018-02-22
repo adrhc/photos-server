@@ -20,6 +20,10 @@
         </dependency>
         <dependency>
             <groupId>exifweb</groupId>
+            <artifactId>storage-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
             <artifactId>cdm</artifactId>
         </dependency>
 
@@ -100,8 +104,8 @@
 					<environmentVariables>
 						<spring.profiles.active>integration-tests,jdbc-ds</spring.profiles.active>
 					</environmentVariables>
-					<!--<groups>image.photos.JsonMapperConfig.class</groups>-->
-					<skipTests>true</skipTests>
+					<groups>image.persistence.HibernateConfig.class</groups>
+					<!--<skipTests>true</skipTests>-->
 				</configuration>
 			</plugin>
             <plugin>

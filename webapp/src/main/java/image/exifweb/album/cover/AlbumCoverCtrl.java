@@ -2,7 +2,7 @@ package image.exifweb.album.cover;
 
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.integration.repository.AlbumCoverRepositoryImpl;
+import image.persistence.integration.repository.AlbumCoverRepository;
 import image.photos.album.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class AlbumCoverCtrl implements INotModifiedChecker {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverCtrl.class);
 
 	@Inject
-	private AlbumCoverRepositoryImpl albumCoverRepository;
+	private AlbumCoverRepository albumCoverRepository;
 	@Inject
 	private AlbumCoverService albumCoverService;
 
