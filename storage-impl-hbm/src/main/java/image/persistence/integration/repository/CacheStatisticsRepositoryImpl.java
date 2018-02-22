@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by adr on 2/18/18.
  */
 @Component
-public class CacheStatisticsRepository {
+public class CacheStatisticsRepositoryImpl {
 	@Inject
 	private SessionFactory sessionFactory;
 

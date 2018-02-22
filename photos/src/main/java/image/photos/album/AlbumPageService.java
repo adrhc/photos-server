@@ -1,7 +1,7 @@
 package image.photos.album;
 
 import image.cdm.album.page.AlbumPage;
-import image.persistence.integration.repository.AlbumPageRepository;
+import image.persistence.integration.repository.AlbumPageRepositoryImpl;
 import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ public class AlbumPageService {
 	@Inject
 	private ImageUtils imageUtils;
 	@Inject
-	private AlbumPageRepository albumPageRepository;
+	private AlbumPageRepositoryImpl albumPageRepository;
 
 	public List<AlbumPage> getPage(int pageNr, String sort, String toSearch,
 	                               boolean viewHidden, boolean viewOnlyPrintable,

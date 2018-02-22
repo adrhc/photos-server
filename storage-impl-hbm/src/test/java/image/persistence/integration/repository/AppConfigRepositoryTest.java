@@ -31,7 +31,7 @@ public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 
 	@Autowired
-	private AppConfigRepository appConfigRepository;
+	private AppConfigRepositoryImpl appConfigRepository;
 
 	@Test
 	public void getLinuxAlbumPath() {

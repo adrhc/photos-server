@@ -23,8 +23,8 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumRepository {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumRepository.class);
+public class AlbumRepositoryImpl {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Inject
 	private SessionFactory sessionFactory;

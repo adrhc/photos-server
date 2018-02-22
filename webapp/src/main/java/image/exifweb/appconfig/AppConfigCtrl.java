@@ -6,7 +6,7 @@ import image.exifweb.util.MailService;
 import image.exifweb.util.procinfo.ProcStatPercent;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import image.persistence.entity.AppConfig;
-import image.persistence.integration.repository.AppConfigRepository;
+import image.persistence.integration.repository.AppConfigRepositoryImpl;
 import image.photos.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class AppConfigCtrl implements IAppConfigCache {
 	@Inject
 	private MailService mailService;
 	@Inject
-	private AppConfigRepository appConfigRepository;
+	private AppConfigRepositoryImpl appConfigRepository;
 	@Inject
 	private AppConfigService appConfigService;
 	@Inject

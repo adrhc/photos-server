@@ -15,7 +15,7 @@ import java.util.List;
  * Created by adr on 2/8/18.
  */
 @Service
-public class AlbumPageRepository {
+public class AlbumPageRepositoryImpl {
 	/**
 	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
 	 * <p>
@@ -33,7 +33,7 @@ public class AlbumPageRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
-	private AppConfigRepository appConfigRepository;
+	private AppConfigRepositoryImpl appConfigRepository;
 
 	@Transactional(readOnly = true)
 	public int getPageCount(String toSearch, boolean viewHidden,

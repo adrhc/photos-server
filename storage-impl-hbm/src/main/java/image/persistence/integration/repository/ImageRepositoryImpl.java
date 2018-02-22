@@ -25,8 +25,8 @@ import java.util.List;
  * Created by adrianpetre on 29.01.2018.
  */
 @Service
-public class ImageRepository {
-	private static final Logger logger = LoggerFactory.getLogger(ImageRepository.class);
+public class ImageRepositoryImpl {
+	private static final Logger logger = LoggerFactory.getLogger(ImageRepositoryImpl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
 	@Inject

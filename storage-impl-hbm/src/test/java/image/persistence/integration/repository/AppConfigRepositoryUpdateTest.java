@@ -21,7 +21,7 @@ import java.util.List;
 @ActiveProfiles({"integration-tests", "jdbc-ds"})
 public class AppConfigRepositoryUpdateTest {
 	@Autowired
-	private AppConfigRepository appConfigRepository;
+	private AppConfigRepositoryImpl appConfigRepository;
 
 	private List<AppConfig> appConfigs;
 

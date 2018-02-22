@@ -14,7 +14,7 @@ import java.util.Date;
  * Created by adr on 2/3/18.
  */
 @Component
-public class AlbumCoverRepository {
+public class AlbumCoverRepositoryImpl {
 	@Inject
 	private SessionFactory sessionFactory;
 

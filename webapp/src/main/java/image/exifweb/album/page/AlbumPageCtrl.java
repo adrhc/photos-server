@@ -2,8 +2,8 @@ package image.exifweb.album.page;
 
 import image.cdm.album.page.AlbumPage;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.integration.repository.AlbumPageRepository;
-import image.persistence.integration.repository.AppConfigRepository;
+import image.persistence.integration.repository.AlbumPageRepositoryImpl;
+import image.persistence.integration.repository.AppConfigRepositoryImpl;
 import image.photos.album.AlbumExporterService;
 import image.photos.album.AlbumPageService;
 import org.slf4j.Logger;
@@ -31,9 +31,9 @@ import java.util.concurrent.Callable;
 public class AlbumPageCtrl implements INotModifiedChecker {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageCtrl.class);
 	@Inject
-	private AlbumPageRepository albumPageRepository;
+	private AlbumPageRepositoryImpl albumPageRepository;
 	@Inject
-	private AppConfigRepository appConfigRepository;
+	private AppConfigRepositoryImpl appConfigRepository;
 	@Inject
 	private AlbumPageService albumPageService;
 

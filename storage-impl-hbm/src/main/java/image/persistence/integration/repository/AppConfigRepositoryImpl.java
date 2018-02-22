@@ -17,7 +17,7 @@ import java.util.List;
  * Created by adr on 2/10/18.
  */
 @Service
-public class AppConfigRepository {
+public class AppConfigRepositoryImpl {
 	@Inject
 	private SessionFactory sessionFactory;
 
