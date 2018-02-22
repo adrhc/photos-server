@@ -14,8 +14,8 @@ import java.util.List;
  */
 @Component
 public class ImageUtils {
-	private MessageFormat imageURIFormatter = new MessageFormat("{0}/{1}");
-	private MessageFormat commURIFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
+	private MessageFormat fullPathFormatter = new MessageFormat("{0}/{1}");
+	private MessageFormat relativePathFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -36,27 +36,32 @@ public class ImageUtils {
 
 	public void appendImagePaths(IImageBasicInfo basicInfo) {
 		String albumName = basicInfo.getAlbumName();
-		Long thumbLastModified = basicInfo.getThumbLastModified().getTime();
 		String imgName = basicInfo.getImgName();
 
-		String albumLastModifImg = commURIFormatter.format(
-				new Object[]{albumName, thumbLastModified, imgName});
+		Long thumbLastModified = basicInfo.getThumbLastModified().getTime();
+		Long imageLastModified = basicInfo.getDateTime().getTime();
 
-		basicInfo.setThumbPath(imageURIFormatter.format(
-				new Object[]{thumbsDir, albumLastModifImg}));
-		basicInfo.setImagePath(imageURIFormatter.format(
-				new Object[]{albumsDir, albumLastModifImg}));
+		basicInfo.setThumbPath(thumbPathFor(thumbLastModified, imgName, albumName));
+		basicInfo.setImagePath(imagePathFor(imageLastModified, imgName, albumName));
 	}
 
 	public void appendImagePaths(AlbumCover albumCover, Long thumbLastModified) {
 		String albumName = albumCover.getAlbumName();
 		String imgName = albumCover.getImgName();
 
-		String albumLastModifImg = commURIFormatter.format(
-				new Object[]{albumName, thumbLastModified, imgName});
+		albumCover.setThumbPath(thumbPathFor(thumbLastModified, imgName, albumName));
+	}
 
-		albumCover.setThumbPath(imageURIFormatter.format(
-				new Object[]{thumbsDir, albumLastModifImg}));
+	private String thumbPathFor(Long thumbLastModified, String imgName, String albumName) {
+		String relativePath = relativePathFormatter.format(
+				new Object[]{albumName, thumbLastModified, imgName});
+		return fullPathFormatter.format(new Object[]{thumbsDir, relativePath});
+	}
+
+	private String imagePathFor(Long imageLastModif, String imgName, String albumName) {
+		String relativePath = relativePathFormatter.format(
+				new Object[]{albumName, imageLastModif, imgName});
+		return fullPathFormatter.format(new Object[]{albumsDir, relativePath});
 	}
 
 	public void appendImageDimensions(List<? extends IImageDimensions> imageDimensions) {

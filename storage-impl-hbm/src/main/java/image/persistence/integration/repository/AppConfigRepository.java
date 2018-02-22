@@ -21,7 +21,7 @@ public class AppConfigRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
-	public Integer getConfigInteger(AppConfigEnum ace) {
+	private Integer getConfigInteger(AppConfigEnum ace) {
 		String s = getConfig(ace);
 		if (s == null) {
 			return 0;
@@ -29,11 +29,11 @@ public class AppConfigRepository {
 		return Integer.parseInt(s);
 	}
 
-	public String getConfig(AppConfigEnum appConfigEnum) {
+	private String getConfig(AppConfigEnum appConfigEnum) {
 		return getAppConfigById(appConfigEnum.getValue()).getValue();
 	}
 
-	public int getPhotosPerPage() {
+	public Integer getPhotosPerPage() {
 		return getConfigInteger(AppConfigEnum.PHOTOS_PER_PAGE);
 	}
 

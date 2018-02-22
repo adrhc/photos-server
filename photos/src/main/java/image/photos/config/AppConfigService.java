@@ -3,8 +3,6 @@ package image.photos.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
 import image.persistence.integration.repository.AppConfigRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -22,7 +20,7 @@ import java.util.List;
  */
 @Service
 public class AppConfigService {
-	private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
+	//	private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
 	@Inject
 	private ObjectMapper objectMapper;
 	@Inject

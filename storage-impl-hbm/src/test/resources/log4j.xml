@@ -14,8 +14,8 @@
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
-            <!--<param name="ConversionPattern" value="[%-5p] [%t] [%C{1}.%M] %m%n"/>-->
-            <param name="ConversionPattern" value="[%-5p] [%t] %m%n"/>
+            <param name="ConversionPattern" value="[%-5p] [%C{1}.%M] %m%n"/>
+            <!--<param name="ConversionPattern" value="[%-5p] [%t] %m%n"/>-->
         </layout>
     </appender>
 
@@ -72,6 +72,10 @@
     <logger name="org.hibernate.cache">
         <level value="warn"/>
     </logger>
+    <logger name="org.hibernate.cache.ehcache">
+        <level value="error"/>
+    </logger>
+
     <logger name="net.sf.ehcache">
         <level value="warn"/>
     </logger>

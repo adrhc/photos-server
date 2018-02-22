@@ -9,24 +9,20 @@ import java.util.Date;
  * Created by adr on 2/10/18.
  */
 public class ExifInfo implements Serializable {
+//	public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
 	private Integer id;
 	private String name;
 	/**
-	 * used in picture's url (impact browser-cache)
+	 * related to image's file change
+	 * used for image's url (impact browser-cache)
 	 */
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+//	@JsonFormat(pattern = DATE_FORMAT)
 	private Date dateTime;
-	/**
-	 * related to image file change
-	 * used in thumb's url (impact browser-cache)
-	 */
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
-	private Date thumbLastModified;
 	private int imageHeight;
 	private int imageWidth;
 	private String apertureValue;
 	private String contrast;
-	@JsonFormat(pattern = "dd.MM.yyyy HH:mm:ss")
+//	@JsonFormat(pattern = DATE_FORMAT)
 	private Date dateTimeOriginal;
 	private String lensModel;
 	private String meteringMode;
@@ -69,14 +65,6 @@ public class ExifInfo implements Serializable {
 
 	public void setDateTime(Date dateTime) {
 		this.dateTime = dateTime;
-	}
-
-	public Date getThumbLastModified() {
-		return thumbLastModified;
-	}
-
-	public void setThumbLastModified(Date thumbLastModified) {
-		this.thumbLastModified = thumbLastModified;
 	}
 
 	public Date getDateTimeOriginal() {
@@ -261,5 +249,37 @@ public class ExifInfo implements Serializable {
 
 	public void setIsoSpeedRatings(int isoSpeedRatings) {
 		this.isoSpeedRatings = isoSpeedRatings;
+	}
+
+	@Override
+	public String toString() {
+		return "ExifInfo{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", dateTime=" + dateTime +
+				", imageHeight=" + imageHeight +
+				", imageWidth=" + imageWidth +
+				", apertureValue='" + apertureValue + '\'' +
+				", contrast='" + contrast + '\'' +
+				", dateTimeOriginal=" + dateTimeOriginal +
+				", lensModel='" + lensModel + '\'' +
+				", meteringMode='" + meteringMode + '\'' +
+				", model='" + model + '\'' +
+				", saturation='" + saturation + '\'' +
+				", sceneCaptureType='" + sceneCaptureType + '\'' +
+				", sharpness='" + sharpness + '\'' +
+				", shutterSpeedValue='" + shutterSpeedValue + '\'' +
+				", subjectDistanceRange='" + subjectDistanceRange + '\'' +
+				", whiteBalanceMode='" + whiteBalanceMode + '\'' +
+				", exposureBiasValue='" + exposureBiasValue + '\'' +
+				", exposureMode='" + exposureMode + '\'' +
+				", exposureProgram='" + exposureProgram + '\'' +
+				", exposureTime='" + exposureTime + '\'' +
+				", fNumber='" + fNumber + '\'' +
+				", flash='" + flash + '\'' +
+				", focalLength='" + focalLength + '\'' +
+				", gainControl='" + gainControl + '\'' +
+				", isoSpeedRatings=" + isoSpeedRatings +
+				'}';
 	}
 }

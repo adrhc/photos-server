@@ -6,6 +6,7 @@ import image.cdm.image.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.integration.repository.AlbumRepository;
 import image.persistence.integration.repository.ImageRepository;
+import image.photos.image.ImageMetadataEntityToDTOConverter;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

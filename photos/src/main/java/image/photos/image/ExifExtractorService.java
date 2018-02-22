@@ -33,6 +33,9 @@ import java.util.Date;
 @Service
 public class ExifExtractorService {
 	private static final Logger logger = LoggerFactory.getLogger(ExifExtractorService.class);
+	/**
+	 * metadata extractor uses this yyyy:MM:dd format
+	 */
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
