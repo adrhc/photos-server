@@ -447,7 +447,8 @@
 					<configuration>
 						<parallel>methods</parallel>
 						<threadCount>4</threadCount>
-						<disableXmlReport>true</disableXmlReport>
+						<!-- maven-surefire-report-plugin needs false value -->
+						<disableXmlReport>false</disableXmlReport>
 					</configuration>
 				</plugin>
 
@@ -568,6 +569,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<version>2.20.1</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<showSuccess>true</showSuccess>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
