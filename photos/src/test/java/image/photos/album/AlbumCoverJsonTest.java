@@ -26,7 +26,6 @@ import static org.hamcrest.Matchers.hasSize;
  */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = JsonMapperConfig.class)
-@ActiveProfiles({"json-tests"})
 public class AlbumCoverJsonTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverJsonTest.class);
 
