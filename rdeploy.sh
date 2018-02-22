@@ -9,4 +9,4 @@ source env.sh
 
 RSYNCB="rsync -cEhikLmrtz"
 $RSYNCB --delete-after webapp/target/exifweb -e "ssh" adr@adrhc.go.ro:/home/adr/apps/opt/tomcat/webapps/
-# $RSYNCB --delete-after target/exifweb -e "ssh -p 443" adr@adrhc.go.ro:/home/adr/apps/opt/tomcat/webapps/
+# $RSYNCB --delete-after webapp/target/exifweb -e "ssh -p 443" adr@adrhc.go.ro:/home/adr/apps/opt/tomcat/webapps/
