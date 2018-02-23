@@ -22,14 +22,6 @@
 
         <dependency>
             <groupId>exifweb</groupId>
-            <artifactId>cdm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>exifweb</groupId>
-            <artifactId>storage-impl-hbm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>exifweb</groupId>
             <artifactId>photos</artifactId>
         </dependency>
 
