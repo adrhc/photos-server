@@ -86,10 +86,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration combine.self="append">
-					<!--<argLine>-Dspring.profiles.active=integration-tests,jdbc-ds,json-tests</argLine>-->
-					<!--<argLine>-Dspring.profiles.active=json-tests</argLine>-->
+					<!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
 					<environmentVariables>
-						<spring.profiles.active>integration-tests,jdbc-ds</spring.profiles.active>
+						<spring.profiles.active>jdbc-ds</spring.profiles.active>
 					</environmentVariables>
                     <groups>${photos.groups}</groups>
 					<!--<groups>image.photos.JsonMapperConfig.class</groups>-->
