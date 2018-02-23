@@ -1,13 +1,11 @@
 package image.persistence.integration.repository.albumrepository;
 
 import ch.unibe.jexample.Given;
-import ch.unibe.jexample.JExample;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.integration.repository.AlbumRepository;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,7 +21,6 @@ import java.util.Date;
 /**
  * Created by adr on 2/23/18.
  */
-@RunWith(JExample.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @ActiveProfiles({"in-memory-db"})
@@ -42,7 +39,6 @@ public class AlbumWriteTest {
 	@Inject
 	private AlbumRepository albumRepository;
 
-	@Ignore("todo: use in memory database")
 	@Test
 	public void createAlbum() throws Exception {
 		Album album = albumRepository.createAlbum("album " + sdf.format(new Date()));

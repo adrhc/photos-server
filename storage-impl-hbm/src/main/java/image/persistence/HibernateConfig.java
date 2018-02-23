@@ -103,7 +103,7 @@ public class HibernateConfig {
 	@Profile("in-memory-db")
 	@Bean
 	public DataSource inMemoryDataSource(@Value("${ramdb.jdbc.driverClass}") String driverClass,
-	                                 @Value("${ramdb.jdbc.url}") String jdbcUrl) {
+	                                     @Value("${ramdb.jdbc.url}") String jdbcUrl) {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName(driverClass);
 		dataSource.setUrl(jdbcUrl);
@@ -123,7 +123,14 @@ public class HibernateConfig {
 	private Properties hibernateProperties() {
 		return new Properties() {
 			{
-				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				if (env.acceptsProfiles("in-memory-db")) {
+					setProperty("hibernate.hbm2ddl.auto",
+							env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
+					setProperty("hibernate.dialect", env.getProperty("ramdb.hibernate.dialect"));
+				} else {
+					setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				}
+
 				setProperty("hibernate.jdbc.batch_size",
 						env.getProperty("hibernate.jdbc.batch_size"));
 				setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
