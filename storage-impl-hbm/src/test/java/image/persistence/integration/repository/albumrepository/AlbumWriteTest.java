@@ -26,7 +26,7 @@ import java.util.Date;
 @RunWith(JExample.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"jdbc-ds"})
+@ActiveProfiles({"in-memory-db"})
 @Category(HibernateConfig.class)
 public class AlbumWriteTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);

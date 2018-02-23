@@ -82,6 +82,12 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!--
         	ERROR (at compilation when missing aspectjrt):
         		couldn't find aspectjrt.jar on classpath, checked ...

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -97,6 +98,16 @@ public class HibernateConfig {
 		ds.setMinimumIdle(minimumIdle);
 		ds.setMaximumPoolSize(maximumPoolSize);
 		return ds;
+	}
+
+	@Profile("in-memory-db")
+	@Bean
+	public DataSource inMemoryDataSource(@Value("${ramdb.jdbc.driverClass}") String driverClass,
+	                                 @Value("${ramdb.jdbc.url}") String jdbcUrl) {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName(driverClass);
+		dataSource.setUrl(jdbcUrl);
+		return dataSource;
 	}
 
 	/**

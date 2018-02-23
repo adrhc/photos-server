@@ -359,6 +359,12 @@
                 <version>${javaee-api.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.194</version>
+            </dependency>
+
             <!-- https://mvnrepository.com/artifact/junit/junit -->
             <dependency>
                 <groupId>junit</groupId>
@@ -392,6 +398,12 @@
                 <version>2.0.4</version>
                 <scope>test</scope>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
+            <dependency>
+                <groupId>net.sf.jexample</groupId>
+                <artifactId>jexample</artifactId>
+                <version>4.4-378</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -422,11 +434,9 @@
             <artifactId>hamcrest-date</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
         <dependency>
             <groupId>net.sf.jexample</groupId>
             <artifactId>jexample</artifactId>
-            <version>4.4-378</version>
         </dependency>
     </dependencies>
 
