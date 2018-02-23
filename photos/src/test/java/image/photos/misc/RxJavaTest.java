@@ -14,7 +14,7 @@ public class RxJavaTest {
 	private static final Logger logger = LoggerFactory.getLogger(RxJavaTest.class);
 
 	@Test
-	public void skipObservableErrorTest() {
+	public void rxObservableErrorTest() {
 		Observable.range(1, 3)
 				.doOnNext(i -> {
 					if (i == 2) {
