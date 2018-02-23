@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-
 /**
  * Created by adr on 2/19/18.
  */
