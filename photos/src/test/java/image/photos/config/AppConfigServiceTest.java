@@ -35,11 +35,6 @@ public class AppConfigServiceTest {
     private AppConfigService appConfigService;
 
     @Test
-    public void writeJsonForAppConfigs() throws IOException {
-        appConfigService.writeJsonForAppConfigs();
-    }
-
-    @Test
     public void getConfigs() {
         String photosJsonFSPath = appConfigService.getConfig("photos json FS path");
         assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
