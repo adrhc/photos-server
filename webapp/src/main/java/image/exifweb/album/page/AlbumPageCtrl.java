@@ -70,7 +70,7 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 			WebRequest webRequest) {
 		INotModifiedChecker _this = this;
 		return () -> _this.checkNotModified(
-				() -> albumPageService.getPage(pageNr, ESortType.valueOf(sort),
+				() -> albumPageService.getPage(pageNr, ESortType.valueOf(sort.toUpperCase()),
 						toSearch, viewHidden, viewOnlyPrintable, albumId),
 				albumPages -> {
 				    /*
