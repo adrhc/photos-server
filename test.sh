@@ -2,4 +2,4 @@
 source env.sh
 
 # $MVN test
-$MVN surefire-report:report
+$MVN surefire-report:report "$@"
