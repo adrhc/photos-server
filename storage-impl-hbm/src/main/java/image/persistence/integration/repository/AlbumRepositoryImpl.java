@@ -23,13 +23,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumRepositoryImpl {
+public class AlbumRepositoryImpl implements AlbumRepository {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Inject
 	private SessionFactory sessionFactory;
 
-	@Transactional
+	@Override
+    @Transactional
 	public List<Album> getAlbumsOrderedByName() {
 		return sessionFactory.getCurrentSession()
 				.createCriteria(Album.class).setCacheable(true)
@@ -37,7 +38,8 @@ public class AlbumRepositoryImpl {
 				.addOrder(Order.desc("name")).list();
 	}
 
-	@Transactional
+	@Override
+    @Transactional
 	public Album createAlbum(String name) {
 		Album album = new Album(name);
 		sessionFactory.getCurrentSession().persist(album);
@@ -52,7 +54,8 @@ public class AlbumRepositoryImpl {
 	 * @param id
 	 * @return
 	 */
-	@Transactional
+	@Override
+    @Transactional
 	public Album getAlbumById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
@@ -74,7 +77,8 @@ public class AlbumRepositoryImpl {
 	 * @param name
 	 * @return
 	 */
-	@Transactional
+	@Override
+    @Transactional
 	public Album getAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
 		Session session = sessionFactory.getCurrentSession();
@@ -83,7 +87,8 @@ public class AlbumRepositoryImpl {
 				.uniqueResult();
 	}
 
-	@Transactional
+	@Override
+    @Transactional
 	public boolean putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image newCover = (Image) session.load(Image.class, imageId);
@@ -110,7 +115,8 @@ public class AlbumRepositoryImpl {
 	 * @param albumId
 	 * @return
 	 */
-	@Transactional
+	@Override
+    @Transactional
 	public boolean removeAlbumCover(Integer albumId) {
 		Album album = getAlbumById(albumId);
 		// NPE when album is NULL
@@ -127,7 +133,8 @@ public class AlbumRepositoryImpl {
 	 * DML-style HQL (insert, update and delete HQL statements) invalidates all Album cache, e.g.:
 	 * -    "UPDATE Album SET dirty = false WHERE id = :albumId AND dirty = true"
 	 */
-	@Transactional
+	@Override
+    @Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 		logger.debug("BEGIN");
 		Album album = getAlbumById(albumId);

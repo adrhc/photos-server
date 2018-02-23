@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.persistence.entity.Album;
 import image.persistence.integration.repository.AlbumPageRepository;
-import image.persistence.integration.repository.AlbumRepositoryImpl;
+import image.persistence.integration.repository.AlbumRepository;
 import image.persistence.integration.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.events.album.AlbumEventsEmitter;
@@ -40,7 +40,7 @@ public class AlbumExporterService {
 	@Inject
 	private AlbumPageRepository albumPageRepository;
 	@Inject
-	private AlbumRepositoryImpl albumRepository;
+	private AlbumRepository albumRepository;
 	@Inject
 	private AlbumPageService albumPageService;
 	@Inject
