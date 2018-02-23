@@ -3,7 +3,7 @@ package image.photos.album;
 import image.cdm.album.cover.AlbumCover;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.persistence.integration.repository.AlbumRepositoryImpl;
+import image.persistence.integration.repository.AlbumRepository;
 import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class AlbumCoverService {
 	//	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverService.class);
 	@Inject
-	private AlbumRepositoryImpl albumRepository;
+	private AlbumRepository albumRepository;
 	@Inject
 	private ImageUtils imageUtils;
 

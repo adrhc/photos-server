@@ -1,641 +1,689 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>image</groupId>
-    <artifactId>exifweb</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>exifweb</name>
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>image</groupId>
+	<artifactId>exifweb</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>exifweb</name>
 
-    <properties>
-        <tomcat.version>7.0.64</tomcat.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!--
-            https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
-            Should be the same version for spring-instrument-tomcat-*.jar!
-        -->
-        <springframework.version>4.3.14.RELEASE</springframework.version>
-        <spring-security.version>3.2.10.RELEASE</spring-security.version>
-        <spring-data.version>1.6.1.RELEASE</spring-data.version>
-        <hibernate.version>4.3.11.Final</hibernate.version>
-        <jackson-annotations.version>2.9.0</jackson-annotations.version>
-        <jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>
-        <slf4j.version>1.7.7</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
-        <javaee-api.version>6.0</javaee-api.version>
-        <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
-        <!-- same as aspectjtools within aspectj-maven-plugin -->
-        <aspectjrt.version>1.8.9</aspectjrt.version>
-        <!--
-            java8 won't work with version (2.5.1, 3.7.0]
-            I guess it determines also the spring-instrument-tomcat version.
-        -->
-        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-        <run-tomcat-embedded>provided</run-tomcat-embedded>
-        <run-jetty>provided</run-jetty>
-        <source.version>1.8</source.version>
-        <commons.io>2.4</commons.io>
-        <mysql.connector>5.1.38</mysql.connector>
-        <metadata.extractor>2.11.0</metadata.extractor>
-        <net.sf.json>2.4</net.sf.json>
-        <javax.inject>1</javax.inject>
-        <jstl>1.2</jstl>
-    </properties>
+	<properties>
+		<tomcat.version>7.0.64</tomcat.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!--
+			https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
+			Should be the same version for spring-instrument-tomcat-*.jar!
+		-->
+		<springframework.version>4.3.14.RELEASE</springframework.version>
+		<spring-security.version>3.2.10.RELEASE</spring-security.version>
+		<spring-data.version>1.6.1.RELEASE</spring-data.version>
+		<hibernate.version>4.3.11.Final</hibernate.version>
+		<jackson-annotations.version>2.9.0</jackson-annotations.version>
+		<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>
+		<slf4j.version>1.7.7</slf4j.version>
+		<log4j.version>1.2.17</log4j.version>
+		<javaee-api.version>6.0</javaee-api.version>
+		<aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
+		<!-- same as aspectjtools within aspectj-maven-plugin -->
+		<aspectjrt.version>1.8.9</aspectjrt.version>
+		<!--
+			java8 won't work with version (2.5.1, 3.7.0]
+			I guess it determines also the spring-instrument-tomcat version.
+		-->
+		<maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+		<run-tomcat-embedded>provided</run-tomcat-embedded>
+		<run-jetty>provided</run-jetty>
+		<source.version>1.8</source.version>
+		<commons.io>2.4</commons.io>
+		<mysql.connector>5.1.38</mysql.connector>
+		<metadata.extractor>2.11.0</metadata.extractor>
+		<net.sf.json>2.4</net.sf.json>
+		<javax.inject>1</javax.inject>
+		<jstl>1.2</jstl>
+	</properties>
 
-    <repositories>
-        <repository>
-            <id>mvnrepository</id>
-            <name>mvnrepository</name>
-            <url>http://mvnrepository.com/artifact</url>
-        </repository>
+	<repositories>
+		<repository>
+			<id>mvnrepository</id>
+			<name>mvnrepository</name>
+			<url>http://mvnrepository.com/artifact</url>
+		</repository>
 
-        <repository>
-            <id>com.springsource.repository.libraries.release</id>
-            <name>SpringSource Enterprise Bundle Repository - SpringSource Library Releases</name>
-            <url>http://repository.springsource.com/maven/libraries/release</url>
-        </repository>
+		<repository>
+			<id>com.springsource.repository.libraries.release</id>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Library Releases</name>
+			<url>http://repository.springsource.com/maven/libraries/release</url>
+		</repository>
 
-        <repository>
-            <id>com.springsource.repository.libraries.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
-            <url>http://repository.springsource.com/maven/libraries/external</url>
-        </repository>
-    </repositories>
+		<repository>
+			<id>com.springsource.repository.libraries.external</id>
+			<name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
+			<url>http://repository.springsource.com/maven/libraries/external</url>
+		</repository>
+	</repositories>
 
-    <dependencyManagement>
-        <dependencies>
-            <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-instrument-tomcat</artifactId>-->
-            <!--&lt;!&ndash;<version>4.2.9.RELEASE</version>&ndash;&gt;-->
-            <!--<version>4.3.13.RELEASE</version>-->
-            <!--</dependency>-->
+	<dependencyManagement>
+		<dependencies>
+			<!--<dependency>-->
+			<!--<groupId>org.springframework</groupId>-->
+			<!--<artifactId>spring-instrument-tomcat</artifactId>-->
+			<!--&lt;!&ndash;<version>4.2.9.RELEASE</version>&ndash;&gt;-->
+			<!--<version>4.3.13.RELEASE</version>-->
+			<!--</dependency>-->
 
-            <dependency>
-                <groupId>exifweb</groupId>
-                <artifactId>storage-entities</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>exifweb</groupId>
+				<artifactId>storage-entities</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>exifweb</groupId>
-                <artifactId>cdm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>exifweb</groupId>
+				<artifactId>cdm</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>exifweb</groupId>
-                <artifactId>storage-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>exifweb</groupId>
+				<artifactId>storage-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>exifweb</groupId>
-                <artifactId>storage-impl-hbm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>exifweb</groupId>
+				<artifactId>storage-impl-hbm</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>exifweb</groupId>
-                <artifactId>photos</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>exifweb</groupId>
+				<artifactId>photos</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>com.jolbox</groupId>
-                <artifactId>bonecp</artifactId>
-                <version>0.8.0.RELEASE</version>
-            </dependency>
+			<dependency>
+				<groupId>com.jolbox</groupId>
+				<artifactId>bonecp</artifactId>
+				<version>0.8.0.RELEASE</version>
+			</dependency>
 
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.9.3</version>
-            </dependency>
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.9.3</version>
+			</dependency>
 
-            <dependency>
-                <groupId>subtitles</groupId>
-                <artifactId>subtitles-extractor</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-beanutils</groupId>
-                        <artifactId>commons-beanutils</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+			<dependency>
+				<groupId>subtitles</groupId>
+				<artifactId>subtitles-extractor</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-beanutils</groupId>
+						<artifactId>commons-beanutils</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-            <dependency>
-                <groupId>io.reactivex.rxjava2</groupId>
-                <artifactId>rxjava</artifactId>
-                <version>2.1.9</version>
-            </dependency>
+			<dependency>
+				<groupId>io.reactivex.rxjava2</groupId>
+				<artifactId>rxjava</artifactId>
+				<version>2.1.9</version>
+			</dependency>
 
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons.io}</version>
-            </dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons.io}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
 
-            <!--
-                ERROR (at compilation when missing aspectjrt):
-                    couldn't find aspectjrt.jar on classpath, checked ...
-            -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>${aspectjrt.version}</version>
-            </dependency>
+			<!--
+				ERROR (at compilation when missing aspectjrt):
+					couldn't find aspectjrt.jar on classpath, checked ...
+			-->
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>${aspectjrt.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connector}</version>
-            </dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.connector}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>com.drewnoakes</groupId>
-                <artifactId>metadata-extractor</artifactId>
-                <version>${metadata.extractor}</version>
-            </dependency>
+			<dependency>
+				<groupId>com.drewnoakes</groupId>
+				<artifactId>metadata-extractor</artifactId>
+				<version>${metadata.extractor}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>javax.inject</groupId>
-                <artifactId>javax.inject</artifactId>
-                <version>${javax.inject}</version>
-            </dependency>
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aspects</artifactId>
+				<version>${springframework.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
 
-            <!-- depends on hibernate-core -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
+			<!-- depends on hibernate-core -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-ehcache</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
 
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson-datatype-hibernate4.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson-datatype-hibernate4.version}</version>
-            </dependency>
-            <!--
-                jackson-datatype-hibernate4 depends on:
-                    jackson-core -> jackson-databind -> jackson-annotations
-                version determined by jackson-datatype-hibernate4.version
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson-datatype-hibernate4.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson-datatype-hibernate4.version}</version>
+			</dependency>
+			<!--
+				jackson-datatype-hibernate4 depends on:
+					jackson-core -> jackson-databind -> jackson-annotations
+				version determined by jackson-datatype-hibernate4.version
 
-                see mvn dependency:tree | grep -B3 jackson
-            -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson-annotations.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-hibernate4</artifactId>
-                <version>${jackson-datatype-hibernate4.version}</version>
-            </dependency>
+				see mvn dependency:tree | grep -B3 jackson
+			-->
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson-annotations.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-hibernate4</artifactId>
+				<version>${jackson-datatype-hibernate4.version}</version>
+			</dependency>
 
-            <!--<dependency>-->
-            <!--<groupId>javax.servlet</groupId>-->
-            <!--<artifactId>jstl</artifactId>-->
-            <!--<version>${jstl}</version>-->
-            <!--</dependency>-->
+			<!--<dependency>-->
+			<!--<groupId>javax.servlet</groupId>-->
+			<!--<artifactId>jstl</artifactId>-->
+			<!--<version>${jstl}</version>-->
+			<!--</dependency>-->
 
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-aspects</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring-security.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-expression</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-web</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring-security.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-aop</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-aspects</artifactId>
+				<version>${spring-security.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>2.7.7</version>
-            </dependency>
+			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>HikariCP</artifactId>
+				<version>2.7.7</version>
+			</dependency>
 
-            <!--
-                ERROR
-                    Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
-                SOLUTION
-                    Let this dependency the last!
+			<!--
+				ERROR
+					Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
+				SOLUTION
+					Let this dependency the last!
 
-                see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
-            -->
-            <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>${javaee-api.version}</version>
-            </dependency>
+				see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
+			-->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>${javaee-api.version}</version>
+			</dependency>
 
-            <!-- https://mvnrepository.com/artifact/junit/junit -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library -->
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${springframework.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite -->
-            <dependency>
-                <groupId>io.takari.junit</groupId>
-                <artifactId>takari-cpsuite</artifactId>
-                <version>1.2.7</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.exparity</groupId>
-                <artifactId>hamcrest-date</artifactId>
-                <version>2.0.4</version>
-                <scope>test</scope>
-            </dependency>
+			<!-- https://mvnrepository.com/artifact/junit/junit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library -->
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-library</artifactId>
+				<version>1.3</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${springframework.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite -->
+			<dependency>
+				<groupId>io.takari.junit</groupId>
+				<artifactId>takari-cpsuite</artifactId>
+				<version>1.2.7</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.exparity</groupId>
+				<artifactId>hamcrest-date</artifactId>
+				<version>2.0.4</version>
+				<scope>test</scope>
+			</dependency>
 
-        </dependencies>
-    </dependencyManagement>
+		</dependencies>
+	</dependencyManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.takari.junit</groupId>
-            <artifactId>takari-cpsuite</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.exparity</groupId>
-            <artifactId>hamcrest-date</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.takari.junit</groupId>
+			<artifactId>takari-cpsuite</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.exparity</groupId>
+			<artifactId>hamcrest-date</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>${source.version}</source>
-                        <target>${source.version}</target>
-                    </configuration>
-                </plugin>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>${source.version}</source>
+						<target>${source.version}</target>
+					</configuration>
+				</plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.20.1</version>
-                    <!--
-                    When directly using surefire-junit47 I get:
-                        NoClassDefFoundError: org/junit/runner/notification/RunListener
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.20.1</version>
+					<!--
+					When directly using surefire-junit47 I get:
+						NoClassDefFoundError: org/junit/runner/notification/RunListener
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-junit47</artifactId>
-                            <version>2.20.1</version>
-                        </dependency>
-                    </dependencies>
-                    -->
-                    <configuration>
-                        <!--
-                            https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>2.20.1</version>
+						</dependency>
+					</dependencies>
+					-->
+					<configuration>
+						<!--
+							https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
 
-                            parallel=methods -> fails within multithreaded environment
-                        -->
-                        <parallel>classes</parallel>
-                        <threadCount>4</threadCount>
-                        <!-- maven-surefire-report-plugin needs false value -->
-                        <disableXmlReport>false</disableXmlReport>
-                    </configuration>
-                </plugin>
+							parallel=methods -> fails within multithreaded environment
+						-->
+						<parallel>classes</parallel>
+						<threadCount>4</threadCount>
+						<!-- maven-surefire-report-plugin needs false value -->
+						<disableXmlReport>false</disableXmlReport>
+					</configuration>
+				</plugin>
 
-                <!--plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <archive>
-                            <index>true</index>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin-->
+				<!--plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<index>true</index>
+							<manifest>
+								<addClasspath>true</addClasspath>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin-->
 
-                <!--
-                    http://tomcat.apache.org/maven-plugin-2.2/
-                -->
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                        <url>http://127.0.0.1:8080/manager</url>
-                        <server>TomcatServer</server>
-                        <path>/${project.build.finalName}</path>
-                    </configuration>
-                </plugin>
+				<!--
+					http://tomcat.apache.org/maven-plugin-2.2/
+				-->
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>2.2</version>
+					<configuration>
+						<url>http://127.0.0.1:8080/manager</url>
+						<server>TomcatServer</server>
+						<path>/${project.build.finalName}</path>
+					</configuration>
+				</plugin>
 
-                <!--
-                    ERROR
-                        EnhancementException: Unable to enhance persistent attribute [image.exifweb.systemtem.persistence.entities.Album:cover]
-                        Caused by: javassist.NotFoundException: image.exifweb.systemtem.persistence.entities.Image
-                    PROBLEM?
-                        Album depends on Image which depends on Album
+				<!--
+					ERROR
+						EnhancementException: Unable to enhance persistent attribute [image.exifweb.systemtem.persistence.entities.Album:cover]
+						Caused by: javassist.NotFoundException: image.exifweb.systemtem.persistence.entities.Image
+					PROBLEM?
+						Album depends on Image which depends on Album
 
-                    https://docs.jboss.org/hibernate/orm/5.0/topical/html/bytecode/BytecodeEnhancement.html#_build_time_enhancement
+					https://docs.jboss.org/hibernate/orm/5.0/topical/html/bytecode/BytecodeEnhancement.html#_build_time_enhancement
 
-                    https://vladmihalcea.com/how-to-enable-bytecode-enhancement-dirty-checking-in-hibernate/
-                    While the unidirectional @OneToOne association can be fetched lazily, the parent-side of a bidirectional @OneToOne association is not. Even when specifying that the association is not optional and we have the FetchType.LAZY, the parent-side association behaves like a FetchType.EAGER relationship.
-                -->
-                <!--<plugin>-->
-                <!--<groupId>org.hibernate.orm.tooling</groupId>-->
-                <!--<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
-                <!--<version>${hibernate.version}</version>-->
-                <!--<dependencies>-->
-                <!--&lt;!&ndash;-->
-                <!--version determined by jackson-datatype-hibernate4.version-->
+					https://vladmihalcea.com/how-to-enable-bytecode-enhancement-dirty-checking-in-hibernate/
+					While the unidirectional @OneToOne association can be fetched lazily, the parent-side of a bidirectional @OneToOne association is not. Even when specifying that the association is not optional and we have the FetchType.LAZY, the parent-side association behaves like a FetchType.EAGER relationship.
+				<plugin>
+					<groupId>org.hibernate.orm.tooling</groupId>
+					<artifactId>hibernate-enhance-maven-plugin</artifactId>
+					<version>${hibernate.version}</version>
+					<dependencies>
+						<!- -
+						version determined by jackson-datatype-hibernate4.version
 
-                <!--see mvn dependency:tree | grep -B3 jackson-->
-                <!--&ndash;&gt;-->
-                <!--<dependency>-->
-                <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-                <!--<artifactId>jackson-annotations</artifactId>-->
-                <!--<version>${jackson-annotations.version}</version>-->
-                <!--</dependency>-->
-                <!--</dependencies>-->
-                <!--<executions>-->
-                <!--<execution>-->
-                <!--<configuration>-->
-                <!--&lt;!&ndash;<dir>${project.build.outputDirectory}</dir>&ndash;&gt;-->
-                <!--<failOnError>true</failOnError>-->
-                <!--<enableLazyInitialization>true</enableLazyInitialization>-->
-                <!--<enableDirtyTracking>true</enableDirtyTracking>-->
-                <!--<enableAssociationManagement>true</enableAssociationManagement>-->
-                <!--<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
-                <!--</configuration>-->
-                <!--<goals>-->
-                <!--<goal>enhance</goal>-->
-                <!--</goals>-->
-                <!--</execution>-->
-                <!--</executions>-->
-                <!--</plugin>-->
+						see mvn dependency:tree | grep -B3 jackson
+						- ->
+						<dependency>
+							<groupId>com.fasterxml.jackson.core</groupId>
+							<artifactId>jackson-annotations</artifactId>
+							<version>${jackson-annotations.version}</version>
+						</dependency>
+					</dependencies>
+					<executions>
+						<execution>
+							<configuration>
+								<!- -<dir>${project.build.outputDirectory}</dir>- ->
+								<failOnError>true</failOnError>
+								<enableLazyInitialization>true</enableLazyInitialization>
+								<enableDirtyTracking>true</enableDirtyTracking>
+								<enableAssociationManagement>true</enableAssociationManagement>
+								<enableExtendedEnhancement>false</enableExtendedEnhancement>
+							</configuration>
+							<goals>
+								<goal>enhance</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				-->
 
-                <!--
-                    order matters: put this after hibernate-enhance-maven-plugin
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
 
-                    https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
-                    multiple goals bound to a phase are executed in the same order as they are declared in the POM
-                -->
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>aspectj-maven-plugin</artifactId>
-                    <version>${aspectj-maven-plugin.version}</version>
-                    <configuration>
-                        <verbose>false</verbose>
-                        <showWeaveInfo>false</showWeaveInfo>
-                        <privateScope>true</privateScope>
-                        <source>${source.version}</source>
-                        <target>${source.version}</target>
-                        <complianceLevel>${source.version}</complianceLevel>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>process-sources</phase>
-                            <goals>
-                                <goal>compile</goal>
-                                <goal>test-compile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+				<!--
+					order matters: put this after hibernate-enhance-maven-plugin
 
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+					https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+					multiple goals bound to a phase are executed in the same order as they are declared in the POM
+				-->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>aspectj-maven-plugin</artifactId>
+					<version>${aspectj-maven-plugin.version}</version>
+					<configuration>
+						<verbose>false</verbose>
+						<showWeaveInfo>false</showWeaveInfo>
+						<privateScope>true</privateScope>
+						<source>${source.version}</source>
+						<target>${source.version}</target>
+						<complianceLevel>${source.version}</complianceLevel>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>process-sources</phase>
+							<goals>
+								<goal>compile</goal>
+								<goal>test-compile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20.1</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                    <alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
-                    <showSuccess>true</showSuccess>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.5</version>
-                <reportSets>
-                    <reportSet>
-                        <id>aggregate</id>
-                        <reports>
-                            <report>aggregate</report>
-                            <report>test-aggregate</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
 
-    <profiles>
-        <profile>
-            <id>db-off</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <!--<skipTests>true</skipTests>-->
-                <!-- org.junit.Test.class means "no category" -->
-                <storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
-                <photos.groups>image.photos.JsonMapperConfig.class</photos.groups>
-            </properties>
-        </profile>
-        <profile>
-            <id>db-on</id>
-            <properties>
-                <!--<skipTests>false</skipTests>-->
-                <storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
-                <photos.groups>image.photos.JsonMapperConfig.class,image.photos.TestPhotosConfig.class</photos.groups>
-            </properties>
-        </profile>
-    </profiles>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 
-    <modules>
-        <!-- cdm = common data model -->
-        <module>cdm</module>
-        <module>storage-entities</module>
-        <module>storage-api</module>
-        <module>storage-impl-hbm</module>
-        <!-- photos = business logic -->
-        <module>photos</module>
-        <module>webapp</module>
-    </modules>
+		<!--testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources-->
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.20.1</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
+					<showSuccess>true</showSuccess>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.5</version>
+				<reportSets>
+					<reportSet>
+						<id>aggregate</id>
+						<reports>
+							<report>aggregate</report>
+							<report>test-aggregate</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<profiles>
+		<profile>
+			<id>db-off</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!--<skipTests>true</skipTests>-->
+				<!-- org.junit.Test.class means "no category" -->
+				<storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
+				<photos.groups>
+					image.photos.misc.MiscTestCategory.class,
+					image.photos.JsonMapperConfig.class
+				</photos.groups>
+				<db.host>db-off-host</db.host>
+			</properties>
+		</profile>
+		<profile>
+			<id>local-db</id>
+			<properties>
+				<!--<skipTests>false</skipTests>-->
+				<storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
+				<photos.groups>
+					image.photos.misc.MiscTestCategory.class,
+					image.photos.JsonMapperConfig.class,
+					image.photos.TestPhotosConfig.class
+				</photos.groups>
+				<db.host>127.0.0.1</db.host>
+			</properties>
+		</profile>
+		<profile>
+			<id>remote-db</id>
+			<properties>
+				<!--<skipTests>false</skipTests>-->
+				<storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
+				<photos.groups>
+					image.photos.misc.MiscTestCategory.class,
+					image.photos.JsonMapperConfig.class,
+					image.photos.TestPhotosConfig.class
+				</photos.groups>
+				<db.host>adrhc.go.ro</db.host>
+			</properties>
+		</profile>
+	</profiles>
+
+	<modules>
+		<!-- cdm = common data model -->
+		<module>cdm</module>
+		<module>storage-entities</module>
+		<module>storage-api</module>
+		<module>storage-impl-hbm</module>
+		<!-- photos = business logic -->
+		<module>photos</module>
+		<module>webapp</module>
+	</modules>
 </project>

@@ -3,9 +3,9 @@ package image.photos.album;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
-import image.persistence.integration.repository.AlbumRepositoryImpl;
+import image.persistence.integration.repository.AlbumRepository;
 import image.persistence.integration.repository.AppConfigRepository;
-import image.persistence.integration.repository.ImageRepositoryImpl;
+import image.persistence.integration.repository.ImageRepository;
 import image.photos.events.album.AlbumEventBuilder;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.events.album.EAlbumEventType;
@@ -48,9 +48,9 @@ public class AlbumImporterService {
 	@Inject
 	private AppConfigRepository appConfigRepository;
 	@Inject
-	private ImageRepositoryImpl imageRepository;
+	private ImageRepository imageRepository;
 	@Inject
-	private AlbumRepositoryImpl albumRepository;
+	private AlbumRepository albumRepository;
 	@Inject
 	private AlbumEventsEmitter albumEventsEmitter;
 	@Inject

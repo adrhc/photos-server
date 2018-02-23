@@ -14,6 +14,10 @@
     <name>storage-impl-hbm</name>
     <url>http://maven.apache.org</url>
     <dependencies>
+		<dependency>
+			<groupId>exifweb</groupId>
+			<artifactId>cdm</artifactId>
+		</dependency>
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-entities</artifactId>
@@ -21,10 +25,6 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>exifweb</groupId>
-            <artifactId>cdm</artifactId>
         </dependency>
 
         <dependency>

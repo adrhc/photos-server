@@ -1,7 +1,7 @@
 package image.exifweb.cache;
 
 import image.persistence.entity.Album;
-import image.persistence.integration.repository.CacheStatisticsRepositoryImpl;
+import image.persistence.integration.repository.CacheStatisticsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ public class CacheStatisticsCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(CacheStatisticsCtrl.class);
 
 	@Inject
-	private CacheStatisticsRepositoryImpl statisticsRepository;
+	private CacheStatisticsRepository statisticsRepository;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public void printCacheStatistics() {

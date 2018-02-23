@@ -1,7 +1,7 @@
 package image.exifweb.album;
 
 import image.persistence.entity.Album;
-import image.persistence.integration.repository.AlbumRepositoryImpl;
+import image.persistence.integration.repository.AlbumRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ public class AlbumCtrl {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
 	@Inject
-	private AlbumRepositoryImpl albumRepository;
+	private AlbumRepository albumRepository;
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
