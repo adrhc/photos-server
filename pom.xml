@@ -641,7 +641,10 @@
 				<!--<skipTests>true</skipTests>-->
 				<!-- org.junit.Test.class means "no category" -->
 				<storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
-				<photos.groups>image.photos.JsonMapperConfig.class</photos.groups>
+				<photos.groups>
+					image.photos.misc.MiscTestCategory.class,
+					image.photos.JsonMapperConfig.class
+				</photos.groups>
 				<db.host>db-off-host</db.host>
 			</properties>
 		</profile>
@@ -651,7 +654,9 @@
 				<!--<skipTests>false</skipTests>-->
 				<storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
 				<photos.groups>
-					image.photos.JsonMapperConfig.class,image.photos.TestPhotosConfig.class
+					image.photos.misc.MiscTestCategory.class,
+					image.photos.JsonMapperConfig.class,
+					image.photos.TestPhotosConfig.class
 				</photos.groups>
 				<db.host>127.0.0.1</db.host>
 			</properties>
@@ -662,7 +667,9 @@
 				<!--<skipTests>false</skipTests>-->
 				<storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
 				<photos.groups>
-					image.photos.JsonMapperConfig.class,image.photos.TestPhotosConfig.class
+					image.photos.misc.MiscTestCategory.class,
+					image.photos.JsonMapperConfig.class,
+					image.photos.TestPhotosConfig.class
 				</photos.groups>
 				<db.host>adrhc.go.ro</db.host>
 			</properties>

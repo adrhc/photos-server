@@ -2,6 +2,7 @@ package image.photos.misc;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,25 +18,29 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assume.assumeTrue;
 
+@Category(MiscTestCategory.class)
 public class IdentifyPictureTest {
-	private static final Logger logger = LoggerFactory.getLogger(IdentifyPictureTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(IdentifyPictureTest.class);
 
-	@Before
-	public void beforeMethod() {
-		assumeTrue(Files.isRegularFile(Paths.get("/usr/bin/identify")));
-	}
+    private static final String ITENTIFY = "/usr/bin/identify";
+    private static final String IMAGE = "/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums/2017-10-14 Family/20171105_130105.jpg";
 
-	@Test
-	public void identifyPictureTest() throws IOException {
-		logger.trace("PATH=" + System.getenv().get("PATH"));
-		ProcessBuilder processBuilder = new ProcessBuilder(
-				"/usr/bin/identify", "/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums/2017-10-14 Family/20171105_130105.jpg");
-		Process exec = processBuilder.start();
-		InputStream is = exec.getInputStream();
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		String sCurrentLine = br.readLine();
-		logger.debug(sCurrentLine);
-		assertThat(sCurrentLine, not(isEmptyOrNullString()));
-	}
+    @Before
+    public void beforeMethod() {
+        assumeTrue(Files.isRegularFile(Paths.get(ITENTIFY)));
+        assumeTrue(Files.isRegularFile(Paths.get(IMAGE)));
+    }
+
+    @Test
+    public void identifyPictureTest() throws IOException {
+        logger.trace("PATH=" + System.getenv().get("PATH"));
+        ProcessBuilder processBuilder = new ProcessBuilder(ITENTIFY, IMAGE);
+        Process exec = processBuilder.start();
+        InputStream is = exec.getInputStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        String sCurrentLine = br.readLine();
+        logger.debug(sCurrentLine);
+        assertThat(sCurrentLine, not(isEmptyOrNullString()));
+    }
 } 
