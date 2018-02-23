@@ -32,7 +32,7 @@ public class AppConfigServiceWriteTest {
     @Before
     public void setUp() {
         String path = appConfigService.getConfig("photos json FS path");
-        assumeTrue(Files.isRegularFile(Paths.get(path)));
+        assumeTrue("missing " + path, Files.isRegularFile(Paths.get(path)));
     }
 
     @Test

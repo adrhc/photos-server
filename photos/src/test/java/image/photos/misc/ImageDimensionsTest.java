@@ -29,8 +29,8 @@ public class ImageDimensionsTest {
 
     @Before
     public void beforeMethod() {
-        assumeTrue(Files.isRegularFile(Paths.get(X_SH)));
-        assumeTrue(Files.isRegularFile(Paths.get(IMAGE)));
+        assumeTrue("missing " + X_SH, Files.isRegularFile(Paths.get(X_SH)));
+        assumeTrue("missing " + IMAGE, Files.isRegularFile(Paths.get(IMAGE)));
     }
 
     @Test

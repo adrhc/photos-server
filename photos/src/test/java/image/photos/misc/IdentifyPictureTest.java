@@ -27,8 +27,8 @@ public class IdentifyPictureTest {
 
     @Before
     public void beforeMethod() {
-        assumeTrue(Files.isRegularFile(Paths.get(ITENTIFY)));
-        assumeTrue(Files.isRegularFile(Paths.get(IMAGE)));
+        assumeTrue("missing " + ITENTIFY, Files.isRegularFile(Paths.get(ITENTIFY)));
+        assumeTrue("missing " + IMAGE, Files.isRegularFile(Paths.get(IMAGE)));
     }
 
     @Test
