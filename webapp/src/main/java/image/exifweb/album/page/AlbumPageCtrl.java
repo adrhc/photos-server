@@ -4,6 +4,7 @@ import image.cdm.album.page.AlbumPage;
 import image.exifweb.web.controller.INotModifiedChecker;
 import image.persistence.integration.repository.AlbumPageRepository;
 import image.persistence.integration.repository.AppConfigRepository;
+import image.persistence.integration.repository.ESortType;
 import image.photos.album.AlbumExporterService;
 import image.photos.album.AlbumPageService;
 import org.slf4j.Logger;
@@ -69,8 +70,8 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 			WebRequest webRequest) {
 		INotModifiedChecker _this = this;
 		return () -> _this.checkNotModified(
-				() -> albumPageService.getPage(pageNr, sort, toSearch,
-						viewHidden, viewOnlyPrintable, albumId),
+				() -> albumPageService.getPage(pageNr, ESortType.valueOf(sort),
+						toSearch, viewHidden, viewOnlyPrintable, albumId),
 				albumPages -> {
 				    /*
 					 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:

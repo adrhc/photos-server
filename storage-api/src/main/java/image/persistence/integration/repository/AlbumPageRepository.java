@@ -14,7 +14,7 @@ public interface AlbumPageRepository {
 	                 boolean viewOnlyPrintable, Integer albumId);
 
 	@Transactional(readOnly = true)
-	List<AlbumPage> getPageFromDb(int pageNr, String sort, String toSearch,
+	List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
 	                              boolean viewHidden, boolean viewOnlyPrintable,
 	                              Integer albumId);
 }

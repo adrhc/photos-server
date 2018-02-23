@@ -6,6 +6,7 @@ import image.persistence.entity.Album;
 import image.persistence.integration.repository.AlbumPageRepository;
 import image.persistence.integration.repository.AlbumRepository;
 import image.persistence.integration.repository.AppConfigRepository;
+import image.persistence.integration.repository.ESortType;
 import image.photos.config.AppConfigService;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.util.status.E3ResultTypes;
@@ -118,10 +119,10 @@ public class AlbumExporterService {
 		for (int i = 0; i < pageCount; i++) {
 			logger.debug("write page {} asc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
-					albumPageService.getPage(i + 1, "asc", null, false, false, album.getId()));
+					albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
 			logger.debug("write page {} desc", (i + 1));
 			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
-					albumPageService.getPage(i + 1, "desc", null, false, false, album.getId()));
+					albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
 		albumRepository.clearDirtyForAlbum(album.getId());
 		logger.debug("END {}", album.getName());
