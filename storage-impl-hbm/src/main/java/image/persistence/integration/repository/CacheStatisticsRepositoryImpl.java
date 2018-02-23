@@ -11,11 +11,12 @@ import java.util.Map;
  * Created by adr on 2/18/18.
  */
 @Component
-public class CacheStatisticsRepositoryImpl {
+public class CacheStatisticsRepositoryImpl implements CacheStatisticsRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
-	@Transactional(readOnly = true)
+	@Override
+    @Transactional(readOnly = true)
 	public Map getSecondLevelCacheStatistics(String name) {
 		return sessionFactory.getStatistics()
 				.getSecondLevelCacheStatistics(name)
