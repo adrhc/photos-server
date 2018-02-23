@@ -4,8 +4,9 @@ import image.cdm.image.ExifInfo;
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
 import image.persistence.entity.Image;
-import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.ImageRepository;
+import image.persistence.integration.repository.AlbumRepositoryImpl;
+import image.persistence.integration.repository.ImageRepositoryImpl;
+import image.photos.image.ImageMetadataEntityToDTOConverter;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,9 @@ import java.io.IOException;
 @RequestMapping("/json/image")
 public class ImageCtrl {
 	@Inject
-	private AlbumRepository albumRepository;
+	private AlbumRepositoryImpl albumRepository;
 	@Inject
-	private ImageRepository imageRepository;
+	private ImageRepositoryImpl imageRepository;
 	private ImageMetadataEntityToDTOConverter metadataEntityToDTOConverter =
 			new ImageMetadataEntityToDTOConverter();
 

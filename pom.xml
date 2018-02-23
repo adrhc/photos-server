@@ -86,7 +86,19 @@
 
             <dependency>
                 <groupId>exifweb</groupId>
+                <artifactId>storage-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
                 <artifactId>storage-impl-hbm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
+                <artifactId>photos</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -327,6 +339,12 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>2.7.7</version>
+            </dependency>
+
             <!--
                 ERROR
                     Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
@@ -348,9 +366,63 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library -->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${springframework.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite -->
+            <dependency>
+                <groupId>io.takari.junit</groupId>
+                <artifactId>takari-cpsuite</artifactId>
+                <version>1.2.7</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.exparity</groupId>
+                <artifactId>hamcrest-date</artifactId>
+                <version>2.0.4</version>
+                <scope>test</scope>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.takari.junit</groupId>
+            <artifactId>takari-cpsuite</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.exparity</groupId>
+            <artifactId>hamcrest-date</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>
@@ -361,6 +433,35 @@
                     <configuration>
                         <source>${source.version}</source>
                         <target>${source.version}</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.20.1</version>
+                    <!--
+                    When directly using surefire-junit47 I get:
+                        NoClassDefFoundError: org/junit/runner/notification/RunListener
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit47</artifactId>
+                            <version>2.20.1</version>
+                        </dependency>
+                    </dependencies>
+                    -->
+                    <configuration>
+                        <!--
+                            https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
+
+                            parallel=methods -> fails within multithreaded environment
+                        -->
+                        <parallel>classes</parallel>
+                        <threadCount>4</threadCount>
+                        <!-- maven-surefire-report-plugin needs false value -->
+                        <disableXmlReport>false</disableXmlReport>
                     </configuration>
                 </plugin>
 
@@ -386,7 +487,7 @@
                     <artifactId>tomcat7-maven-plugin</artifactId>
                     <version>2.2</version>
                     <configuration>
-                        <url>http://192.168.1.31:8080/manager</url>
+                        <url>http://127.0.0.1:8080/manager</url>
                         <server>TomcatServer</server>
                         <path>/${project.build.finalName}</path>
                     </configuration>
@@ -475,11 +576,66 @@
         </plugins>
     </build>
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                    <alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
+                    <showSuccess>true</showSuccess>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
+                <reportSets>
+                    <reportSet>
+                        <id>aggregate</id>
+                        <reports>
+                            <report>aggregate</report>
+                            <report>test-aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <profile>
+            <id>db-off</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--<skipTests>true</skipTests>-->
+                <!-- org.junit.Test.class means "no category" -->
+                <storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
+                <photos.groups>image.photos.JsonMapperConfig.class</photos.groups>
+            </properties>
+        </profile>
+        <profile>
+            <id>db-on</id>
+            <properties>
+                <!--<skipTests>false</skipTests>-->
+                <storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
+                <photos.groups>image.photos.JsonMapperConfig.class,image.photos.TestPhotosConfig.class</photos.groups>
+            </properties>
+        </profile>
+    </profiles>
+
     <modules>
-        <module>storage-entities</module>
+        <!-- cdm = common data model -->
         <module>cdm</module>
+        <module>storage-entities</module>
         <module>storage-api</module>
         <module>storage-impl-hbm</module>
+        <!-- photos = business logic -->
+        <module>photos</module>
         <module>webapp</module>
     </modules>
 </project>

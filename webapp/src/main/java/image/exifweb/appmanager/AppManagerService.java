@@ -1,6 +1,7 @@
 package image.exifweb.appmanager;
 
 import image.exifweb.util.procinfo.ProcessInfoService;
+import image.photos.util.process.ProcessRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,12 +29,14 @@ public class AppManagerService {
 	protected ProcessBuilder appStopForce;
 	@Inject
 	protected ProcessInfoService processInfoService;
+	@Inject
+	private ProcessRunner processRunner;
 	@Value("${wait.to.verify.kill}")
 	private int waitToVerifyKill;
 
 	public boolean isRunning() throws IOException, InterruptedException {
 		if (appStatus != null) {
-			return StringUtils.hasText(processInfoService.getProcessOutput(appStatus));
+			return StringUtils.hasText(processRunner.getProcessOutput(appStatus));
 		} else {
 			return StringUtils.hasText(getPID());
 		}

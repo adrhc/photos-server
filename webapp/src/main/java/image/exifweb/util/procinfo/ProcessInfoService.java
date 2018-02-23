@@ -1,7 +1,7 @@
 package image.exifweb.util.procinfo;
 
-import image.exifweb.appconfig.AppConfigService;
 import image.exifweb.appconfig.CPUMemSummaryDeferredResult;
+import image.photos.config.AppConfigService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +101,7 @@ public class ProcessInfoService {
 		prepareCPUMemSummary(model, procStatInfos);
 //        List<ProcStatPercent> procStatInfos = getCPUDetailUsingPsAx();
 		List<ProcStatPercent> memProcInfos = getMemDetailUsingPs();
-		int linesLimit = appConfigService.getConfigInt("linux_process_status_lines_limit");
+		int linesLimit = appConfigService.getConfigInteger("linux_process_status_lines_limit");
 		if (linesLimit > 0 && procStatInfos.size() > linesLimit) {
 			model.addAttribute("procStat", procStatInfos.subList(0, linesLimit));
 		} else {
@@ -393,16 +393,6 @@ public class ProcessInfoService {
 		IOUtils.closeQuietly(is);
 		p.destroy();
 		return psOutput != null ? psOutput.trim() : null;
-	}
-
-	public String getProcessOutput(ProcessBuilder processBuilder) throws IOException, InterruptedException {
-		Process p = processBuilder.start();
-		p.waitFor();
-		InputStream is = p.getInputStream();
-		String psOutput = IOUtils.toString(is, "UTF-8");
-		IOUtils.closeQuietly(is);
-		p.destroy();
-		return psOutput;
 	}
 
 	@PostConstruct

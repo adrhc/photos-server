@@ -24,6 +24,13 @@ public class AlbumCover implements IImageDimensions, Serializable {
 	@JsonIgnore
 	private Date lastUpdate;
 
+	/**
+	 * used by AppConfigJsonTest
+	 */
+	public AlbumCover() {
+		// empty
+	}
+
 	public AlbumCover(Integer albumId, String albumName, boolean dirty, Date lastUpdate) {
 		this.id = albumId;
 		this.albumName = albumName;

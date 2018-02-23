@@ -1,12 +1,13 @@
 package image.persistence;
 
+import com.zaxxer.hikari.HikariDataSource;
 import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
@@ -23,23 +24,41 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
+@PropertySource(value = {"classpath:/jdbc-datasource.properties",
+		"classpath*:/jdbc-datasource-overridden.properties"},
+		ignoreResourceNotFound = true)
+@PropertySource(value = {"classpath:/jndi-datasource.properties",
+		"classpath*:/jndi-datasource-overridden.properties"},
+		ignoreResourceNotFound = true)
+@PropertySource(value = {"classpath:/hibernate.properties",
+		"classpath*:/hibernate-overridden.properties"},
+		ignoreResourceNotFound = true)
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+@ComponentScan(basePackageClasses = HibernateConfig.class,
+		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
-	@Value("${jndi.name}")
-	private String jndiName;
+	@Autowired
+	private Environment env;
 
 	@Bean
+	public static PropertySourcesPlaceholderConfigurer
+	propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
+
 	@Autowired
+	@Bean
 	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory);
 		return txManager;
 	}
 
+	@Autowired
 	@Bean
-	public LocalSessionFactoryBean sessionFactory() {
+	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
-		localSessionFactoryBean.setDataSource(dataSource());
+		localSessionFactoryBean.setDataSource(dataSource);
 		localSessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
 		localSessionFactoryBean.setHibernateProperties(hibernateProperties());
 		return localSessionFactoryBean;
@@ -52,10 +71,32 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
+	@Profile("jndi-ds")
 	@Bean
-	public DataSource dataSource() {
+	public DataSource jndiDataSource(@Value("${jndi.name}") String jndiName) {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
 		return lookup.getDataSource(jndiName);
+	}
+
+	/**
+	 * When using same name (e.g. dataSource) for jdbc and jndi datasources
+	 * though they have different @Profile still won't work (none will be found).
+	 */
+	@Profile("jdbc-ds")
+	@Bean
+	public DataSource jdbcDataSource(@Value("${jdbc.url}") String jdbcUrl,
+	                                 @Value("${jdbc.userName}") String userName,
+	                                 @Value("${jdbc.password}") String password,
+	                                 @Value("${jdbc.minimumIdle}") int minimumIdle,
+	                                 @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
+		HikariDataSource ds = new HikariDataSource();
+		ds.setJdbcUrl(jdbcUrl);
+		ds.setUsername(userName);
+		ds.setPassword(password);
+		ds.setAutoCommit(false);
+		ds.setMinimumIdle(minimumIdle);
+		ds.setMaximumPoolSize(maximumPoolSize);
+		return ds;
 	}
 
 	/**
@@ -71,21 +112,25 @@ public class HibernateConfig {
 	private Properties hibernateProperties() {
 		return new Properties() {
 			{
-				setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
-				setProperty("hibernate.jdbc.batch_size", "20");
-				setProperty("hibernate.show_sql", "true");
-				setProperty("hibernate.format_sql", "true");
-				setProperty("hibernate.validator.autoregister_listeners", "false");
+				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.jdbc.batch_size",
+						env.getProperty("hibernate.jdbc.batch_size"));
+				setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+				setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
+				setProperty("hibernate.validator.autoregister_listeners",
+						env.getProperty("hibernate.validator.autoregister_listeners"));
 
 				// http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x
 				// http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache
 				// setProperty("hibernate.generate_statistics", "true");
 				// setProperty("hibernate.cache.use_structured_entries", "true");
 
-				setProperty("hibernate.cache.use_second_level_cache", "true");
-				setProperty("hibernate.cache.use_query_cache", "true");
+				setProperty("hibernate.cache.use_second_level_cache",
+						env.getProperty("hibernate.cache.use_second_level_cache"));
+				setProperty("hibernate.cache.use_query_cache",
+						env.getProperty("hibernate.cache.use_query_cache"));
 				setProperty("hibernate.cache.region.factory_class",
-						"org.hibernate.cache.ehcache.EhCacheRegionFactory");
+						env.getProperty("hibernate.cache.region.factory_class"));
 
 				// setProperty("hibernate.hbm2ddl.auto", "update");
 				// setProperty("hibernate.id.new_generator_mappings", "true");

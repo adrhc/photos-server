@@ -1,9 +1,10 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.system.events.album.AlbumEventsEmitter;
 import image.exifweb.util.json.JsonStringValue;
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.persistence.entity.Album;
+import image.photos.album.AlbumImporterService;
+import image.photos.events.album.AlbumEventsEmitter;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import static image.exifweb.system.events.album.EAlbumEventType.ALBUM_IMPORTED;
+import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 

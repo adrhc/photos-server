@@ -14,49 +14,34 @@
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
-            <!--<param name="ConversionPattern" value="[%-5p] [%t] [%C{1}.%M] %m%n"/>-->
-            <param name="ConversionPattern" value="[%-5p] [%t] %m%n"/>
+            <param name="ConversionPattern" value="[%-5p] [%C{1}.%M] %m%n"/>
+            <!--<param name="ConversionPattern" value="[%-5p] [%t] %m%n"/>-->
         </layout>
     </appender>
 
-    <appender name="exifweb-file" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="debug"/>
-        <param name="file" value="/home/adr/apps/log/exifweb.log"/>
-        <param name="MaxFileSize" value="10MB"/>
-        <!-- Keep one backup file -->
-        <param name="MaxBackupIndex" value="1"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>
-        </layout>
-    </appender>
-
-    <appender name="subtitles-extractor-file" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="debug"/>
-        <param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>
-        <param name="MaxFileSize" value="10MB"/>
-        <!-- Keep one backup file -->
-        <param name="MaxBackupIndex" value="3"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>
-        </layout>
-    </appender>
+    <!--<appender name="subtitles-extractor-file" class="org.apache.log4j.RollingFileAppender">-->
+        <!--<param name="Threshold" value="debug"/>-->
+        <!--<param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>-->
+        <!--<param name="MaxFileSize" value="10MB"/>-->
+        <!--<param name="MaxBackupIndex" value="3"/>-->
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+            <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
+        <!--</layout>-->
+    <!--</appender>-->
 
     <logger name="image" additivity="false">
         <level value="debug"/>
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="exifweb-file"/>-->
     </logger>
 
     <logger name="image.exifweb.system.persistence" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="exifweb-file"/>-->
     </logger>
 
-    <logger name="image.exifweb.system.events.album.AlbumEventsEmitter" additivity="false">
+    <logger name="image.photos.events.album.AlbumEventsEmitter" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="exifweb-file"/>-->
     </logger>
 
     <logger name="subtitles" additivity="false">
@@ -86,6 +71,10 @@
     <logger name="org.hibernate.cache">
         <level value="info"/>
     </logger>
+    <logger name="org.hibernate.cache.ehcache">
+        <level value="info"/>
+    </logger>
+
     <logger name="net.sf.ehcache">
         <level value="info"/>
     </logger>
@@ -94,7 +83,6 @@
     <root>
         <priority value="warn"/>
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="exifweb-file"/>-->
     </root>
 
 </log4j:configuration>

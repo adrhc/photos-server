@@ -117,3 +117,13 @@ ALTER TABLE AppConfig ADD COLUMN `last_update1` TIMESTAMP(3) NOT NULL DEFAULT no
 UPDATE AppConfig SET last_update1 = last_update;
 -- ALTER TABLE AppConfig DROP COLUMN `last_update`;
 ALTER TABLE AppConfig CHANGE COLUMN `last_update1` `last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3);
+
+https://stackoverflow.com/questions/6328778/how-to-create-an-empty-multi-module-maven-project
+http://books.sonatype.com/mvnex-book/reference/multimodule.html
+mvn -B archetype:generate -DarchetypeGroupId=org.codehaus.mojo.archetypes -DarchetypeArtifactId=pom-root -DarchetypeVersion=RELEASE -DgroupId=image -DartifactId=exifweb -Dversion=1.0-SNAPSHOT
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=storage-sql
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=storage-api
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=storage-entities
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=cdm
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-webapp -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=exifweb
+mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=photos

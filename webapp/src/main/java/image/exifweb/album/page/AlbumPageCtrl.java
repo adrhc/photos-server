@@ -1,10 +1,11 @@
 package image.exifweb.album.page;
 
 import image.cdm.album.page.AlbumPage;
-import image.exifweb.album.export.AlbumExporterService;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.repository.AlbumPageRepository;
-import image.persistence.repository.AppConfigRepository;
+import image.persistence.integration.repository.AlbumPageRepository;
+import image.persistence.integration.repository.AppConfigRepository;
+import image.photos.album.AlbumExporterService;
+import image.photos.album.AlbumPageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;

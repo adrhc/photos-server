@@ -12,13 +12,14 @@ public class ImageMetadata implements Serializable {
 	@Embedded
 	private ExifData exifData = new ExifData();
 	/**
-	 * utilizat in url-ul imaginii si cu impact in browser-cache
+	 * related to image's file change
+	 * used for image's url (impact browser-cache)
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date dateTime;
 	/**
-	 * related to image file change
+	 * related to thumb's file change
 	 * used for thumb's url (impact browser-cache)
 	 */
 	@Temporal(TemporalType.TIMESTAMP)

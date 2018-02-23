@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.stereotype.Controller;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -32,8 +33,10 @@ import java.util.*;
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true,
 		mode = AdviceMode.ASPECTJ, securedEnabled = true)
-@ComponentScan(basePackageClasses = WebConfig.class, useDefaultFilters = false,
+@ComponentScan(basePackageClasses = WebConfig.class,
+		useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),
+				@ComponentScan.Filter(RestController.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
 public class WebConfig extends WebMvcConfigurerAdapter {
 	@Inject
@@ -45,7 +48,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 //		PropertySourcesPlaceholderConfigurer p =
 //				new PropertySourcesPlaceholderConfigurer();
 //		p.setLocations(new ClassPathResource("exifweb.properties"),
-//				new ClassPathResource("classpath*:exifweb-overwrite.properties"));
+//				new ClassPathResource("classpath*:exifweb-overridden.properties"));
 //		p.setIgnoreResourceNotFound(true);
 //		p.setIgnoreUnresolvablePlaceholders(true);
 //		return p;

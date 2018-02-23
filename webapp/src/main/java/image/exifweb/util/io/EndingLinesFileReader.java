@@ -1,6 +1,6 @@
 package image.exifweb.util.io;
 
-import image.exifweb.appconfig.AppConfigService;
+import image.photos.config.AppConfigService;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class EndingLinesFileReader {
 	@PostConstruct
 	public void postConstruct() {
 		this.videoFolder = appConfigService.getConfig("video root folder");
-		this.linesToRead = appConfigService.getConfigInt("subtitles-extractor-lines");
+		this.linesToRead = appConfigService.getConfigInteger("subtitles-extractor-lines");
 		this.path = getLastModifiedPath(appConfigService.getConfig("subtitles-extractor.log"));
 	}
 

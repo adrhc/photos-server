@@ -33,7 +33,6 @@
         <param name="Threshold" value="debug"/>
         <param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>
         <param name="MaxFileSize" value="10MB"/>
-        <!-- Keep one backup file -->
         <param name="MaxBackupIndex" value="3"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
@@ -53,7 +52,7 @@
         <appender-ref ref="exifweb-file"/>
     </logger>
 
-    <logger name="image.exifweb.system.events" additivity="false">
+    <logger name="image.photos.events" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>
@@ -107,6 +106,10 @@
     <logger name="org.hibernate.cache">
         <level value="info"/>
     </logger>
+    <logger name="org.hibernate.cache.ehcache">
+        <level value="info"/>
+    </logger>
+
     <logger name="net.sf.ehcache">
         <level value="info"/>
     </logger>

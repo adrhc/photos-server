@@ -24,10 +24,13 @@
             <groupId>exifweb</groupId>
             <artifactId>cdm</artifactId>
         </dependency>
-
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-impl-hbm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>photos</artifactId>
         </dependency>
 
         <dependency>
@@ -37,37 +40,13 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>subtitles</groupId>
             <artifactId>subtitles-extractor</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
         </dependency>
 
         <!--
@@ -77,17 +56,6 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>${run-jetty}</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.drewnoakes</groupId>
-            <artifactId>metadata-extractor</artifactId>
         </dependency>
 
         <dependency>
@@ -102,12 +70,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-        </dependency>
-
-        <!-- depends on hibernate-core -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
         </dependency>
 
         <dependency>
@@ -220,12 +182,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
