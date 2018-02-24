@@ -407,11 +407,11 @@
                 <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
-            <dependency>
-                <groupId>net.sf.jexample</groupId>
-                <artifactId>jexample</artifactId>
-                <version>4.4-378</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>net.sf.jexample</groupId>-->
+                <!--<artifactId>jexample</artifactId>-->
+                <!--<version>4.4-378</version>-->
+            <!--</dependency>-->
 
         </dependencies>
     </dependencyManagement>
@@ -442,10 +442,10 @@
             <artifactId>hamcrest-date</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>net.sf.jexample</groupId>
-            <artifactId>jexample</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.sf.jexample</groupId>-->
+            <!--<artifactId>jexample</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

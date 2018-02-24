@@ -1,6 +1,5 @@
 package image.persistence.repository.albumrepository;
 
-import ch.unibe.jexample.Given;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
@@ -43,7 +42,6 @@ public class AlbumWriteTest implements ISpringClassRuleSupport {
 	}
 
 	@Ignore("todo: use in memory database")
-	@Given("#createAlbum")
 	@Test
 	public void putAlbumCover() throws Exception {
 		boolean result = albumRepository.putAlbumCover(1);
@@ -51,7 +49,6 @@ public class AlbumWriteTest implements ISpringClassRuleSupport {
 	}
 
 	@Ignore("todo: use in memory database")
-	@Given("#putAlbumCover")
 	@Test
 	public void removeAlbumCover() throws Exception {
 		boolean result = albumRepository.removeAlbumCover(1);
@@ -59,7 +56,6 @@ public class AlbumWriteTest implements ISpringClassRuleSupport {
 	}
 
 	@Ignore("todo: use in memory database")
-	@Given("#removeAlbumCover")
 	@Test
 	public void clearDirtyForAlbum() throws Exception {
 		boolean result = albumRepository.clearDirtyForAlbum(1);
