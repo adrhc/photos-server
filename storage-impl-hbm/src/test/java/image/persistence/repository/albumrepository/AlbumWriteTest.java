@@ -4,12 +4,15 @@ import ch.unibe.jexample.Given;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
+import image.persistence.repository.springtestconfig.ISpringClassRuleSupport;
 import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import javax.inject.Inject;
@@ -21,11 +24,8 @@ import java.util.Date;
  */
 @InMemoryDbTestConfig
 @Category(HibernateConfig.class)
-public class AlbumWriteTest {
+public class AlbumWriteTest implements ISpringClassRuleSupport {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
-
-	@ClassRule
-	public static final SpringClassRule springClassRule = new SpringClassRule();
 
 	@Rule
 	public final SpringMethodRule springMethodRule = new SpringMethodRule();
