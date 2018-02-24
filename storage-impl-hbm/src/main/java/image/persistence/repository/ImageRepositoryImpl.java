@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
@@ -40,7 +40,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	 * @return
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public Image updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.get(Image.class, imageId);
@@ -49,7 +49,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public boolean changeRating(ImageRating imageRating) {
 		logger.debug("BEGIN");
 		Session session = sessionFactory.getCurrentSession();
@@ -68,7 +68,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageStatus.getId());
@@ -81,7 +81,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public List<Image> getImagesByAlbumId(Integer albumId) {
 		Session session = sessionFactory.getCurrentSession();
 		// gets album and cover too
@@ -101,13 +101,13 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public void persistImage(Image image) {
 		sessionFactory.getCurrentSession().persist(image);
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public boolean markDeleted(Integer imageId) {
 		Image image = (Image) sessionFactory.getCurrentSession().get(Image.class, imageId);
 		if (image.isDeleted()) {
@@ -119,7 +119,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public void deleteImage(Integer imageId) {
 		Image image = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
 		checkAndRemoveAlbumCover(image);
@@ -148,7 +148,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public void changeName(String name, Integer imageId) {
 		Image image = (Image) sessionFactory.getCurrentSession().get(Image.class, imageId);
 		image.setName(name);
@@ -160,7 +160,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	 * @param imageMetadata
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
 		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
 		dbImage.setImageMetadata(imageMetadata);
@@ -176,7 +176,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	 * @return
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public Image getImageByNameAndAlbumId(String name, Integer albumId) {
 		Integer imageId = getImageIdByNameAndAlbumId(name, albumId);
 		if (imageId == null) {
@@ -186,7 +186,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public Image getImageById(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		return (Image) session.get(Image.class, imageId);

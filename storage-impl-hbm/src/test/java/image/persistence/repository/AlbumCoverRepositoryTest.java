@@ -1,13 +1,13 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import image.persistence.HibernateConfig;
+import image.persistence.repository.springprofile.JdbcDsActivated;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,7 +24,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"jdbc-ds"})
+@JdbcDsActivated
 @Category(HibernateConfig.class)
 public class AlbumCoverRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverRepositoryTest.class);

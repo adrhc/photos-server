@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;

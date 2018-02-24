@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 /**
  * Created by adr on 2/23/18.

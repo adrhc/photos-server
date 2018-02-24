@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import org.springframework.transaction.annotation.Transactional;
 

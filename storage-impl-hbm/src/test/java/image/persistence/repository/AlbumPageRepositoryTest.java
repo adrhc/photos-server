@@ -1,7 +1,8 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import image.cdm.album.page.AlbumPage;
 import image.persistence.HibernateConfig;
+import image.persistence.repository.springprofile.JdbcDsActivated;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +10,6 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.hasItem;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"jdbc-ds"})
+@JdbcDsActivated
 @Category(HibernateConfig.class)
 public class AlbumPageRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);

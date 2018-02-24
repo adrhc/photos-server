@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
@@ -30,7 +30,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	private SessionFactory sessionFactory;
 
 	@Override
-    @Transactional
+	@Transactional
 	public List<Album> getAlbumsOrderedByName() {
 		return sessionFactory.getCurrentSession()
 				.createCriteria(Album.class).setCacheable(true)
@@ -39,7 +39,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public Album createAlbum(String name) {
 		Album album = new Album(name);
 		sessionFactory.getCurrentSession().persist(album);
@@ -55,7 +55,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 * @return
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public Album getAlbumById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
@@ -78,7 +78,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 * @return
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public Album getAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
 		Session session = sessionFactory.getCurrentSession();
@@ -88,7 +88,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	}
 
 	@Override
-    @Transactional
+	@Transactional
 	public boolean putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
 		Image newCover = (Image) session.load(Image.class, imageId);
@@ -116,7 +116,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 * @return
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public boolean removeAlbumCover(Integer albumId) {
 		Album album = getAlbumById(albumId);
 		// NPE when album is NULL
@@ -134,7 +134,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 * -    "UPDATE Album SET dirty = false WHERE id = :albumId AND dirty = true"
 	 */
 	@Override
-    @Transactional
+	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 		logger.debug("BEGIN");
 		Album album = getAlbumById(albumId);

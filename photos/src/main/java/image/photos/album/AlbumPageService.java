@@ -1,8 +1,8 @@
 package image.photos.album;
 
 import image.cdm.album.page.AlbumPage;
-import image.persistence.integration.repository.AlbumPageRepository;
-import image.persistence.integration.repository.ESortType;
+import image.persistence.repository.AlbumPageRepository;
+import image.persistence.repository.ESortType;
 import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Service;
 

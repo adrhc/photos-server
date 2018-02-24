@@ -1,16 +1,14 @@
-package image.persistence.integration.repository.albumrepository;
+package image.persistence.repository.albumrepository;
 
 import ch.unibe.jexample.Given;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
-import image.persistence.integration.repository.AlbumRepository;
+import image.persistence.repository.AlbumRepository;
+import image.persistence.springtestconfig.InMemoryDbTestConfig;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
@@ -21,9 +19,7 @@ import java.util.Date;
 /**
  * Created by adr on 2/23/18.
  */
-@ContextConfiguration(classes = {HibernateConfig.class})
-@TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"in-memory-db"})
+@InMemoryDbTestConfig
 @Category(HibernateConfig.class)
 public class AlbumWriteTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);

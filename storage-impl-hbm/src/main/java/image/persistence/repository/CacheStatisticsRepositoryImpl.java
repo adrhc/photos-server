@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class CacheStatisticsRepositoryImpl implements CacheStatisticsRepository 
 	private SessionFactory sessionFactory;
 
 	@Override
-    @Transactional(readOnly = true)
+	@Transactional(readOnly = true)
 	public Map getSecondLevelCacheStatistics(String name) {
 		return sessionFactory.getStatistics()
 				.getSecondLevelCacheStatistics(name)

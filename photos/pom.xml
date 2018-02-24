@@ -78,6 +78,17 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 		</dependency>
+
+        <!--
+            https://stackoverflow.com/questions/174560/sharing-test-code-in-maven
+        -->
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-impl-hbm</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
 	</dependencies>
 
 	<build>

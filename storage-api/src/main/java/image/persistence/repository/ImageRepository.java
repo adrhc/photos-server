@@ -1,4 +1,4 @@
-package image.persistence.integration.repository;
+package image.persistence.repository;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
