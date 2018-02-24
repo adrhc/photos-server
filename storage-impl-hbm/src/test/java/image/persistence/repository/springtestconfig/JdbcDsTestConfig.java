@@ -1,7 +1,7 @@
 package image.persistence.repository.springtestconfig;
 
 import image.persistence.HibernateConfig;
-import image.persistence.repository.springprofile.JdbcDsActivated;
+import image.persistence.repository.springtestconfig.springprofile.JdbcDsActivated;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 

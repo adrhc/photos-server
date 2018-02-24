@@ -1,6 +1,6 @@
 package image.photos.springtestconfig;
 
-import image.persistence.repository.springprofile.JdbcDsActivated;
+import image.persistence.repository.springtestconfig.springprofile.JdbcDsActivated;
 import image.photos.TestPhotosConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;

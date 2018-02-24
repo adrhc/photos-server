@@ -1,7 +1,7 @@
 package image.persistence.repository.springtestconfig;
 
 import image.persistence.HibernateConfig;
-import image.persistence.repository.springprofile.InMemoryDbActivated;
+import image.persistence.repository.springtestconfig.springprofile.InMemoryDbActivated;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 

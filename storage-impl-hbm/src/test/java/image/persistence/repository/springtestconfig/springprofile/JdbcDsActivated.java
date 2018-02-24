@@ -1,4 +1,4 @@
-package image.persistence.repository.springprofile;
+package image.persistence.repository.springtestconfig.springprofile;
 
 import org.springframework.test.context.ActiveProfiles;
 
