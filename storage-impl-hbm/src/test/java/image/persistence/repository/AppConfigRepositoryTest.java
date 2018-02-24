@@ -2,15 +2,13 @@ package image.persistence.repository;
 
 import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
-import image.persistence.repository.springprofile.JdbcDsActivated;
+import image.persistence.springtestconfig.JdbcDsTestConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
@@ -24,9 +22,7 @@ import static org.hamcrest.Matchers.*;
  * Created by adr on 2/19/18.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {HibernateConfig.class})
-@TestPropertySource(properties = "hibernate.show_sql=false")
-@JdbcDsActivated
+@JdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
