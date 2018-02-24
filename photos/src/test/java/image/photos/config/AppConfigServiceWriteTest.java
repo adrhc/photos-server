@@ -1,14 +1,13 @@
 package image.photos.config;
 
-import image.persistence.repository.springprofile.JdbcDsActivated;
 import image.photos.TestPhotosConfig;
+import image.photos.springtestconfig.JdbcDsPhotosTestConfig;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -21,9 +20,7 @@ import static org.junit.Assume.assumeTrue;
  * Created by adrianpetre on 23.02.2018.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestPhotosConfig.class)
-@TestPropertySource(properties = "hibernate.show_sql=false")
-@JdbcDsActivated
+@JdbcDsPhotosTestConfig
 @Category(TestPhotosConfig.class)
 public class AppConfigServiceWriteTest {
 	@Autowired
@@ -35,6 +32,7 @@ public class AppConfigServiceWriteTest {
 		assumeTrue("missing " + path, Files.isDirectory(Paths.get(path)));
 	}
 
+	@Ignore("todo: use ramfs")
 	@Test
 	public void writeJsonForAppConfigs() throws IOException {
 		appConfigService.writeJsonForAppConfigs();

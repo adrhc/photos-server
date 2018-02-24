@@ -1,16 +1,14 @@
 package image.photos.album;
 
 import image.cdm.album.cover.AlbumCover;
-import image.persistence.repository.springprofile.JdbcDsActivated;
 import image.photos.TestPhotosConfig;
+import image.photos.springtestconfig.JdbcDsPhotosTestConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -23,9 +21,7 @@ import static org.hamcrest.Matchers.*;
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestPhotosConfig.class)
-@TestPropertySource(properties = "hibernate.show_sql=false")
-@JdbcDsActivated
+@JdbcDsPhotosTestConfig
 @Category(TestPhotosConfig.class)
 public class AlbumCoverServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverServiceTest.class);
