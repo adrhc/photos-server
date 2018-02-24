@@ -2,7 +2,7 @@ package image.persistence.repository;
 
 import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
-import image.persistence.springtestconfig.JdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;

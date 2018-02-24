@@ -3,7 +3,7 @@ package image.persistence.repository.albumrepository;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
-import image.persistence.springtestconfig.JdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

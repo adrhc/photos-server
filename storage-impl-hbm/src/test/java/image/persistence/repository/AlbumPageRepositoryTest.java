@@ -2,7 +2,7 @@ package image.persistence.repository;
 
 import image.cdm.album.page.AlbumPage;
 import image.persistence.HibernateConfig;
-import image.persistence.springtestconfig.JdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;

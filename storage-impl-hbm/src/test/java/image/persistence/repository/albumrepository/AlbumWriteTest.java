@@ -4,7 +4,7 @@ import ch.unibe.jexample.Given;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
-import image.persistence.springtestconfig.InMemoryDbTestConfig;
+import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;

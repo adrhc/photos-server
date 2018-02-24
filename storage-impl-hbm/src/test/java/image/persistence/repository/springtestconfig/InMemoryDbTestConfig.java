@@ -1,4 +1,4 @@
-package image.persistence.springtestconfig;
+package image.persistence.repository.springtestconfig;
 
 import image.persistence.HibernateConfig;
 import image.persistence.repository.springprofile.InMemoryDbActivated;
