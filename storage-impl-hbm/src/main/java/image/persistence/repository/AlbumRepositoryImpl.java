@@ -91,7 +91,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Transactional
 	public boolean putAlbumCover(Integer imageId) {
 		Session session = sessionFactory.getCurrentSession();
-		Image newCover = (Image) session.load(Image.class, imageId);
+		Image newCover = session.load(Image.class, imageId);
 		Album album = newCover.getAlbum();
 		Image currentCover = album.getCover();
 		if (currentCover == null) {
