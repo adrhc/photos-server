@@ -175,7 +175,7 @@ public class HibernateConfig {
 		return new Properties() {
 			{
 				setProperty("hibernate.hbm2ddl.auto",
-						env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
+						env.getProperty("test.hibernate.hbm2ddl.auto"));
 				addCommonHbmProps(this);
 			}
 		};

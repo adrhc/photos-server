@@ -55,6 +55,7 @@ public class AlbumWriteTest extends SpringRunnerRulesBased
 	public void putAlbumCover() throws Exception {
 		boolean result = albumRepository.putAlbumCover(1);
 		Assert.assertTrue(result);
+		logger.debug("album cover set using image.id = 1");
 	}
 
 	@Ignore("todo: use in memory database")
