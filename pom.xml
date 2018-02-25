@@ -531,7 +531,8 @@
 
                         <!--
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
-                            @NotThreadSafe
+
+                            works with @NotThreadSafe on e.g. @ContextConfiguration tests
                         -->
                         <parallel>methods</parallel>
                         <threadCount>4</threadCount>
