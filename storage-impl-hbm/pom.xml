@@ -94,6 +94,16 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hsqldb</groupId>-->
+            <!--<artifactId>hsqldb</artifactId>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.derby</groupId>-->
+            <!--<artifactId>derby</artifactId>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
 
         <!--
         	ERROR (at compilation when missing aspectjrt):
@@ -102,6 +112,13 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-entities</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

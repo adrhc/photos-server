@@ -15,6 +15,7 @@ import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -106,11 +107,19 @@ public class HibernateConfig {
 	@Profile("in-memory-db")
 	@Bean
 	public DataSource inMemoryDataSource(@Value("${ramdb.jdbc.driverClass}") String driverClass,
-	                                     @Value("${ramdb.jdbc.url}") String jdbcUrl) {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(driverClass);
-		dataSource.setUrl(jdbcUrl);
-		return dataSource;
+	                                     @Value("${ramdb.jdbc.url}") String jdbcUrl,
+	                                     @Value("${ramdb.jdbc.userName}") String userName,
+	                                     @Value("${ramdb.jdbc.password}") String password) {
+		DriverManagerDataSource ds = new DriverManagerDataSource();
+		ds.setDriverClassName(driverClass);
+		ds.setUrl(jdbcUrl);
+		if (StringUtils.hasText(userName)) {
+			ds.setUsername(userName);
+			if (StringUtils.hasText(password)) {
+				ds.setPassword(password);
+			}
+		}
+		return ds;
 	}
 
 	/**
@@ -149,7 +158,9 @@ public class HibernateConfig {
 	public Properties hibernatePropertiesForJdbcDs() {
 		return new Properties() {
 			{
-				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+//				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.dialect.storage_engine",
+						env.getProperty("hibernate.dialect.storage_engine"));
 
 				// for hbm < 4x
 //				setProperty("net.sf.ehcache.cacheManagerName",

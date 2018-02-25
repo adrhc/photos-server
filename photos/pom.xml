@@ -84,6 +84,13 @@
         -->
         <dependency>
             <groupId>exifweb</groupId>
+            <artifactId>storage-entities</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
             <artifactId>storage-impl-hbm</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
