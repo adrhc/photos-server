@@ -506,9 +506,22 @@
                             https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
 
                             parallel=methods -> fails within multithreaded environment
+
+                            http://maven.apache.org/surefire-archives/maven-surefire-2.15/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
+                            As reuseForks=false creates a new JVM process for each
+                            test class, using parallel=classes would have no effect.
                         -->
-                        <parallel>classes</parallel>
-                        <threadCount>4</threadCount>
+                        <!--<parallel>classes</parallel>-->
+                        <!--<threadCount>4</threadCount>-->
+                        <!--
+                            see tech.log
+                            solving "multiple similar but different ApplicationContext in same JVM" problem
+
+                            http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
+                            reuseForks is used to define whether to terminate the spawned process after one test class and to create a new process for the next test
+                        -->
+                        <forkCount>4</forkCount>
+                        <reuseForks>false</reuseForks>
                         <!-- maven-surefire-report-plugin needs false value -->
                         <disableXmlReport>false</disableXmlReport>
                     </configuration>
