@@ -9,24 +9,27 @@ import java.util.List;
  * Created by adrianpetre on 23.02.2018.
  */
 public interface AlbumRepository {
-    @Transactional
-    List<Album> getAlbumsOrderedByName();
+	@Transactional
+	List<Album> getAlbumsOrderedByName();
 
-    @Transactional
-    Album createAlbum(String name);
+	@Transactional
+	Album createAlbum(String name);
 
-    @Transactional
-    Album getAlbumById(Integer id);
+	@Transactional
+	void deleteAlbum(Integer id);
 
-    @Transactional
-    Album getAlbumByName(String name);
+	@Transactional
+	Album getAlbumById(Integer id);
 
-    @Transactional
-    boolean putAlbumCover(Integer imageId);
+	@Transactional
+	Album getAlbumByName(String name);
 
-    @Transactional
-    boolean removeAlbumCover(Integer albumId);
+	@Transactional
+	boolean putAlbumCover(Integer imageId);
 
-    @Transactional
-    boolean clearDirtyForAlbum(Integer albumId);
+	@Transactional
+	boolean removeAlbumCover(Integer albumId);
+
+	@Transactional
+	boolean clearDirtyForAlbum(Integer albumId);
 }

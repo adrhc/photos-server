@@ -46,6 +46,13 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 		return album;
 	}
 
+	@Override
+	@Transactional
+	public void deleteAlbum(Integer id) {
+		Album album = sessionFactory.getCurrentSession().get(Album.class, id);
+		sessionFactory.getCurrentSession().delete(album);
+	}
+
 	/**
 	 * Returned with the intention to be an immutable object or at least
 	 * not modifiable for the cache-related parts (any property except images).
@@ -59,7 +66,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	public Album getAlbumById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
-		return (Album) sessionFactory.getCurrentSession().get(Album.class, id);
+		return sessionFactory.getCurrentSession().get(Album.class, id);
 	}
 
 	/**
