@@ -11,16 +11,23 @@
     <properties>
         <tomcat.version>7.0.64</tomcat.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <!--
             https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
             Should be the same version for spring-instrument-tomcat-*.jar!
         -->
-        <springframework.version>4.3.14.RELEASE</springframework.version>
-        <spring-security.version>3.2.10.RELEASE</spring-security.version>
+        <!--<springframework.version>4.3.14.RELEASE</springframework.version>-->
+        <!--<spring-security.version>3.2.10.RELEASE</spring-security.version>-->
+        <!--<spring-security.version>4.2.4.RELEASE</spring-security.version>-->
+        <springframework.version>5.0.4.RELEASE</springframework.version>
+        <spring-security.version>5.0.2.RELEASE</spring-security.version>
         <spring-data.version>1.6.1.RELEASE</spring-data.version>
-        <hibernate.version>4.3.11.Final</hibernate.version>
-        <jackson-annotations.version>2.9.0</jackson-annotations.version>
-        <jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>
+
+        <!--<hibernate.version>4.3.11.Final</hibernate.version>-->
+        <!--<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>-->
+        <hibernate.version>5.2.13.Final</hibernate.version>
+        <jackson-datatype-hibernate5.version>2.9.4</jackson-datatype-hibernate5.version>
+
         <slf4j.version>1.7.7</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
         <javaee-api.version>6.0</javaee-api.version>
@@ -211,6 +218,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
                 <version>${springframework.version}</version>
             </dependency>
@@ -235,7 +247,6 @@
                 <artifactId>hibernate-core</artifactId>
                 <version>${hibernate.version}</version>
             </dependency>
-
             <!-- depends on hibernate-core -->
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -246,12 +257,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>${jackson-datatype-hibernate4.version}</version>
+                <version>${jackson-datatype-hibernate5.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson-datatype-hibernate4.version}</version>
+                <version>${jackson-datatype-hibernate5.version}</version>
             </dependency>
             <!--
                 jackson-datatype-hibernate4 depends on:
@@ -263,12 +274,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackson-annotations.version}</version>
+                <version>${jackson-datatype-hibernate5.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-hibernate4</artifactId>
-                <version>${jackson-datatype-hibernate4.version}</version>
+                <artifactId>jackson-datatype-hibernate5</artifactId>
+                <version>${jackson-datatype-hibernate5.version}</version>
             </dependency>
 
             <!--<dependency>-->

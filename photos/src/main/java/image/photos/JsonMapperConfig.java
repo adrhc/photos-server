@@ -1,7 +1,7 @@
 package image.photos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,9 +28,9 @@ public class JsonMapperConfig {
 //		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss") {{
 //			setTimeZone(TimeZone.getTimeZone("GMT"));
 //		}});
-		Hibernate4Module hm = new Hibernate4Module();
-		hm.disable(Hibernate4Module.Feature.FORCE_LAZY_LOADING);
-		hm.disable(Hibernate4Module.Feature.USE_TRANSIENT_ANNOTATION);
+		Hibernate5Module hm = new Hibernate5Module();
+		hm.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
+		hm.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 		mapper.registerModule(hm);
 		return mapper;
 	}
