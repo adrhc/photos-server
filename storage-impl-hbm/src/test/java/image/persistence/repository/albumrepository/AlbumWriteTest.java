@@ -7,8 +7,8 @@ import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
-import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
-import image.persistence.repository.springtestconfig.SpringRunnerRulesBased;
+import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.springrunner.SpringRunnerRulesBased;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,12 +28,11 @@ import static org.hamcrest.Matchers.equalTo;
  * Created by adr on 2/23/18.
  */
 @NotThreadSafe
-@InMemoryDbTestConfig
+@TestJdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AlbumWriteTest extends SpringRunnerRulesBased
 		implements IImageSupplier, IAlbumSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
-
 
 	@Inject
 	private AlbumRepository albumRepository;
@@ -52,7 +51,6 @@ public class AlbumWriteTest extends SpringRunnerRulesBased
 		logger.debug("image.id = {}", image.getId());
 	}
 
-	@Ignore("todo: use in memory database")
 	@Test
 	public void putAlbumCover() throws Exception {
 		boolean result = albumRepository.putAlbumCover(1);

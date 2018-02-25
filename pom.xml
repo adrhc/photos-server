@@ -749,7 +749,8 @@
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class
                 </photos.groups>
-                <db.host>db-off-host</db.host>
+                <db.host>dummy-host</db.host>
+                <test.db.host>dummy-host</test.db.host>
             </properties>
         </profile>
         <profile>
@@ -763,6 +764,7 @@
                     image.photos.TestPhotosConfig.class
                 </photos.groups>
                 <db.host>127.0.0.1</db.host>
+                <test.db.host>127.0.0.1</test.db.host>
             </properties>
         </profile>
         <profile>
@@ -776,6 +778,7 @@
                     image.photos.TestPhotosConfig.class
                 </photos.groups>
                 <db.host>adrhc.go.ro</db.host>
+                <test.db.host>adrhc.go.ro</test.db.host>
             </properties>
         </profile>
     </profiles>

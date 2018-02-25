@@ -94,6 +94,22 @@ public class HibernateConfig {
 	                                 @Value("${jdbc.password}") String password,
 	                                 @Value("${jdbc.minimumIdle}") int minimumIdle,
 	                                 @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
+		return hikariDataSourceOf(jdbcUrl, userName, password, minimumIdle, maximumPoolSize);
+	}
+
+	@Profile("test-jdbc-ds")
+	@Bean
+	public DataSource testJdbcDataSource(@Value("${test.jdbc.url}") String jdbcUrl,
+	                                     @Value("${test.jdbc.userName}") String userName,
+	                                     @Value("${test.jdbc.password}") String password,
+	                                     @Value("${test.jdbc.minimumIdle}") int minimumIdle,
+	                                     @Value("${test.jdbc.maximumPoolSize}") int maximumPoolSize) {
+		return hikariDataSourceOf(jdbcUrl, userName, password, minimumIdle, maximumPoolSize);
+	}
+
+	private HikariDataSource hikariDataSourceOf(String jdbcUrl, String userName,
+	                                            String password, int minimumIdle,
+	                                            int maximumPoolSize) {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl(jdbcUrl);
 		ds.setUsername(userName);
@@ -146,6 +162,18 @@ public class HibernateConfig {
 //				setProperty("net.sf.ehcache.configurationResourceName",
 //						env.getProperty("net.sf.ehcache.configurationResourceName.in_memory_db"));
 
+				setProperty("hibernate.hbm2ddl.auto",
+						env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
+				addCommonHbmProps(this);
+			}
+		};
+	}
+
+	@Profile("test-jdbc-ds")
+	@Bean("hibernateProperties")
+	public Properties hibernatePropertiesForTestJdbcDs() {
+		return new Properties() {
+			{
 				setProperty("hibernate.hbm2ddl.auto",
 						env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
 				addCommonHbmProps(this);
