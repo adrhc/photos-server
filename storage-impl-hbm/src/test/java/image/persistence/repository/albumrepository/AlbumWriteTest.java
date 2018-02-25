@@ -5,6 +5,7 @@ import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.springtestconfig.ISpringClassRuleSupport;
 import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -21,6 +22,7 @@ import java.util.Date;
 /**
  * Created by adr on 2/23/18.
  */
+@NotThreadSafe
 @InMemoryDbTestConfig
 @Category(HibernateConfig.class)
 public class AlbumWriteTest implements ISpringClassRuleSupport {

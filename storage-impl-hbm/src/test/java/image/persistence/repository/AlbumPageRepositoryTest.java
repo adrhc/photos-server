@@ -3,6 +3,7 @@ package image.persistence.repository;
 import image.cdm.album.page.AlbumPage;
 import image.persistence.HibernateConfig;
 import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,6 +23,7 @@ import static org.hamcrest.Matchers.hasItem;
  * Created by adrianpetre on 23.02.2018.
  */
 @RunWith(SpringRunner.class)
+@NotThreadSafe
 @JdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AlbumPageRepositoryTest {

@@ -389,39 +389,45 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
-                <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-library -->
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
                 <version>1.3</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>${springframework.version}</version>
-                <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite -->
             <dependency>
                 <groupId>io.takari.junit</groupId>
                 <artifactId>takari-cpsuite</artifactId>
                 <version>1.2.7</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.exparity</groupId>
                 <artifactId>hamcrest-date</artifactId>
                 <version>2.0.4</version>
-                <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
             <!--<dependency>-->
                 <!--<groupId>net.sf.jexample</groupId>-->
                 <!--<artifactId>jexample</artifactId>-->
                 <!--<version>4.4-378</version>-->
+            <!--</dependency>-->
+            <!-- https://mvnrepository.com/artifact/net.jcip/jcip-annotations -->
+            <dependency>
+                <groupId>com.github.stephenc.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
+                <version>1.0-1</version>
+            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>net.jcip</groupId>-->
+                <!--<artifactId>jcip-annotations</artifactId>-->
+                <!--<version>1.0</version>-->
             <!--</dependency>-->
 
         </dependencies>
@@ -456,6 +462,16 @@
         <!--<dependency>-->
             <!--<groupId>net.sf.jexample</groupId>-->
             <!--<artifactId>jexample</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.github.stephenc.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>net.jcip</groupId>-->
+            <!--<artifactId>jcip-annotations</artifactId>-->
+            <!--<scope>test</scope>-->
         <!--</dependency>-->
     </dependencies>
 
@@ -512,6 +528,14 @@
                         -->
                         <!--<parallel>classes</parallel>-->
                         <!--<threadCount>4</threadCount>-->
+
+                        <!--
+                            http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
+                            @NotThreadSafe
+                        -->
+                        <parallel>methods</parallel>
+                        <threadCount>4</threadCount>
+
                         <!--
                             see tech.log
                             solving "multiple similar but different ApplicationContext in same JVM" problem
@@ -521,7 +545,9 @@
                         -->
                         <forkCount>4</forkCount>
                         <reuseForks>false</reuseForks>
-                        <!-- maven-surefire-report-plugin needs false value -->
+                        <!--
+                            maven-surefire-report-plugin needs false value
+                        -->
                         <disableXmlReport>false</disableXmlReport>
                     </configuration>
                 </plugin>

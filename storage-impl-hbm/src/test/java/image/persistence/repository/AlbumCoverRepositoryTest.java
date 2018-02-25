@@ -2,6 +2,7 @@ package image.persistence.repository;
 
 import image.persistence.HibernateConfig;
 import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Created by adr on 2/22/18.
  */
 @RunWith(SpringRunner.class)
+@NotThreadSafe
 @JdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AlbumCoverRepositoryTest {

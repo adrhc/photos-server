@@ -2,6 +2,7 @@ package image.photos.config;
 
 import image.photos.TestPhotosConfig;
 import image.photos.springtestconfig.JdbcDsPhotosTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import static org.junit.Assume.assumeTrue;
  * Created by adrianpetre on 23.02.2018.
  */
 @RunWith(SpringRunner.class)
+@NotThreadSafe
 @JdbcDsPhotosTestConfig
 @Category(TestPhotosConfig.class)
 public class AppConfigServiceWriteTest {
