@@ -504,8 +504,7 @@
                     <configuration>
                         <!--
                             https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
-
-                            parallel=methods -> fails within multithreaded environment
+                            parallel=methods -> ApplicationContext fails with this multithreaded environment
 
                             http://maven.apache.org/surefire-archives/maven-surefire-2.15/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
                             As reuseForks=false creates a new JVM process for each
