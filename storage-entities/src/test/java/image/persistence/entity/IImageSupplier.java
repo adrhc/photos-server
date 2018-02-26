@@ -16,7 +16,7 @@ public interface IImageSupplier {
 	}
 
 	default Image supplyImage() {
-		int random = ThreadLocalRandom.current().nextInt();
+		int random = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
 		ImageMetadata imageMetadata = new ImageMetadata();
 		Date date = new Date();
 		imageMetadata.setDateTime(date);

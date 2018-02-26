@@ -32,7 +32,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public List<Album> getAlbumsOrderedByName() {
-		return sessionFactory.getCurrentSession()
+		return this.sessionFactory.getCurrentSession()
 				.createCriteria(Album.class).setCacheable(true)
 				.add(Restrictions.eq("deleted", false))
 				.addOrder(Order.desc("name")).list();
@@ -42,15 +42,15 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Transactional
 	public Album createAlbum(String name) {
 		Album album = new Album(name);
-		sessionFactory.getCurrentSession().persist(album);
+		this.sessionFactory.getCurrentSession().persist(album);
 		return album;
 	}
 
 	@Override
 	@Transactional
 	public void deleteAlbum(Integer id) {
-		Album album = sessionFactory.getCurrentSession().get(Album.class, id);
-		sessionFactory.getCurrentSession().delete(album);
+		Album album = this.sessionFactory.getCurrentSession().get(Album.class, id);
+		this.sessionFactory.getCurrentSession().delete(album);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	public Album getAlbumById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
-		return sessionFactory.getCurrentSession().get(Album.class, id);
+		return this.sessionFactory.getCurrentSession().get(Album.class, id);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Transactional
 	public Album getAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		return (Album) session.createCriteria(Album.class)
 				.setCacheable(true).add(Restrictions.eq("name", name))
 				.uniqueResult();
@@ -97,7 +97,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public boolean putAlbumCover(Integer imageId) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		Image newCover = session.load(Image.class, imageId);
 		Album album = newCover.getAlbum();
 		Image currentCover = album.getCover();
@@ -143,15 +143,15 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
-		logger.debug("BEGIN");
+//		logger.debug("BEGIN");
 		Album album = getAlbumById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
-			logger.debug("END dirty update cancelled (already false)");
+//			logger.debug("END dirty update cancelled (already false)");
 			return false;
 		}
 		album.setDirty(false);
-		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
+//		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
 		return true;
 	}
 }

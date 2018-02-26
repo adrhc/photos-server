@@ -7,6 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public interface IAlbumSupplier {
 	default String supplyAlbumName() {
-		return "album-" + ThreadLocalRandom.current().nextInt();
+		return "album-" + ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
 	}
 }

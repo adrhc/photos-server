@@ -5,23 +5,31 @@ import image.persistence.entity.Album;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by adr on 2/23/18.
+ * Created by adr on 2/26/18.
  */
 @NotThreadSafe
 @TestJdbcDsTestConfig
 @Category(HibernateConfig.class)
-public class PutAlbumCoverTest extends AlbumRepoWriteTestBase {
+public class ClearDirtyForAlbumTest extends AlbumRepoWriteTestBase {
+	@Override
+	@Before
+	@Transactional
+	public void createAnAlbumWithImage() {
+		super.createAnAlbumWithImage();
+		this.album.setDirty(true);
+	}
+
 	@Test
-	public void putAlbumCover() throws Exception {
-		boolean result = this.albumRepository.putAlbumCover(this.image.getId());
+	public void clearDirtyForAlbum() throws Exception {
+		boolean result = this.albumRepository.clearDirtyForAlbum(this.album.getId());
 		Assert.assertTrue(result);
 		Album alteredAlbum = this.albumRepository.getAlbumById(this.album.getId());
-		Assert.assertEquals(alteredAlbum.getCover().getId(), this.image.getId());
-		logger.debug("cover set using image.id = {}, image.name = {}",
-				this.image.getId(), this.image.getName());
+		Assert.assertFalse(alteredAlbum.isDirty());
 	}
 }

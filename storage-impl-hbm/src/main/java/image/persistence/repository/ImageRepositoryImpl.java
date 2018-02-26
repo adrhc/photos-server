@@ -42,7 +42,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public Image updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		Image image = (Image) session.get(Image.class, imageId);
 		image.getImageMetadata().setThumbLastModified(thumbLastModified);
 		return image;
@@ -51,26 +51,26 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public boolean changeRating(ImageRating imageRating) {
-		logger.debug("BEGIN");
-		Session session = sessionFactory.getCurrentSession();
+//		logger.debug("BEGIN");
+		Session session = this.sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageRating.getId());
 		if (image.getRating() == imageRating.getRating()) {
-			logger.debug("END (same rating {})", imageRating.getRating());
+//			logger.debug("END (same rating {})", imageRating.getRating());
 			return false;
 		}
-		logger.debug("before setRating({})", imageRating.getRating());
+//		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
-		logger.debug("before album.setDirty(true), {}",
-				sdf.format(image.getAlbum().getLastUpdate()));
+//		logger.debug("before album.setDirty(true), {}",
+//				sdf.format(image.getAlbum().getLastUpdate()));
 		image.getAlbum().setDirty(true);
-		logger.debug("END");
+//		logger.debug("END");
 		return true;
 	}
 
 	@Override
 	@Transactional
 	public boolean changeStatus(ImageStatus imageStatus) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		Image image = (Image) session.load(Image.class, imageStatus.getId());
 		if (image.getStatus() == imageStatus.getStatus()) {
 			return false;
@@ -83,7 +83,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public List<Image> getImagesByAlbumId(Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		// gets album and cover too
 //		Criteria ic = session.createCriteria(Image.class)
 //				.createAlias("album", "a")
@@ -103,13 +103,13 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public void persistImage(Image image) {
-		sessionFactory.getCurrentSession().persist(image);
+		this.sessionFactory.getCurrentSession().persist(image);
 	}
 
 	@Override
 	@Transactional
 	public boolean markDeleted(Integer imageId) {
-		Image image = (Image) sessionFactory.getCurrentSession().get(Image.class, imageId);
+		Image image = this.sessionFactory.getCurrentSession().get(Image.class, imageId);
 		if (image.isDeleted()) {
 			return false;
 		}
@@ -121,16 +121,16 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public void deleteImage(Integer imageId) {
-		Image image = sessionFactory.getCurrentSession().load(Image.class, imageId);
-		sessionFactory.getCurrentSession().delete(image);
+		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
+		this.sessionFactory.getCurrentSession().delete(image);
 	}
 
 	@Override
 	@Transactional
 	public void safelyDeleteImage(Integer imageId) {
-		Image image = sessionFactory.getCurrentSession().load(Image.class, imageId);
+		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
 		checkAndRemoveAlbumCover(image);
-		sessionFactory.getCurrentSession().delete(image);
+		this.sessionFactory.getCurrentSession().delete(image);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public void changeName(String name, Integer imageId) {
-		Image image = (Image) sessionFactory.getCurrentSession().get(Image.class, imageId);
+		Image image = (Image) this.sessionFactory.getCurrentSession().get(Image.class, imageId);
 		image.setName(name);
 	}
 
@@ -169,7 +169,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
-		Image dbImage = (Image) sessionFactory.getCurrentSession().load(Image.class, imageId);
+		Image dbImage = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
 		dbImage.setImageMetadata(imageMetadata);
 		return dbImage;
 	}
@@ -195,13 +195,13 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Override
 	@Transactional
 	public Image getImageById(Integer imageId) {
-		Session session = sessionFactory.getCurrentSession();
-		return (Image) session.get(Image.class, imageId);
+		Session session = this.sessionFactory.getCurrentSession();
+		return session.get(Image.class, imageId);
 	}
 
 	@Transactional(readOnly = true)
 	private Integer getImageIdByNameAndAlbumId(String name, Integer albumId) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		Query q = session.createQuery("SELECT id FROM Image " +
 				"WHERE name = :name AND album.id = :albumId");
 		q.setString("name", name);
