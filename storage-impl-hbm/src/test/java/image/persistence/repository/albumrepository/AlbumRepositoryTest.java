@@ -3,7 +3,7 @@ package image.persistence.repository.albumrepository;
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.hasItem;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@JdbcDsTestConfig
+@ProdJdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AlbumRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);

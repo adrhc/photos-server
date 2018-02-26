@@ -76,7 +76,7 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
-	@Profile("jndi-ds")
+	@Profile("prod-jndi-ds")
 	@Bean
 	public DataSource jndiDataSource(@Value("${jndi.name}") String jndiName) {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
@@ -87,13 +87,13 @@ public class HibernateConfig {
 	 * When using same name (e.g. dataSource) for jdbc and jndi datasources
 	 * though they have different @Profile still won't work (none will be found).
 	 */
-	@Profile("jdbc-ds")
+	@Profile("prod-jdbc-ds")
 	@Bean
-	public DataSource jdbcDataSource(@Value("${jdbc.url}") String jdbcUrl,
-	                                 @Value("${jdbc.userName}") String userName,
-	                                 @Value("${jdbc.password}") String password,
-	                                 @Value("${jdbc.minimumIdle}") int minimumIdle,
-	                                 @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
+	public DataSource prodJdbcDataSource(@Value("${prod.jdbc.url}") String jdbcUrl,
+	                                     @Value("${prod.jdbc.userName}") String userName,
+	                                     @Value("${prod.jdbc.password}") String password,
+	                                     @Value("${prod.jdbc.minimumIdle}") int minimumIdle,
+	                                     @Value("${prod.jdbc.maximumPoolSize}") int maximumPoolSize) {
 		return hikariDataSourceOf(jdbcUrl, userName, password, minimumIdle, maximumPoolSize);
 	}
 
@@ -181,7 +181,7 @@ public class HibernateConfig {
 		};
 	}
 
-	@Profile({"jdbc-ds", "jndi-ds"})
+	@Profile({"prod-jdbc-ds", "prod-jndi-ds"})
 	@Bean("hibernateProperties")
 	public Properties hibernatePropertiesForJdbcDs() {
 		return new Properties() {

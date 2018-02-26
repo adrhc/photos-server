@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles({"jdbc-ds"})
-public @interface JdbcDsActivated {
+@ActiveProfiles({"prod-jdbc-ds"})
+public @interface ProdJdbcDsActivated {
 }

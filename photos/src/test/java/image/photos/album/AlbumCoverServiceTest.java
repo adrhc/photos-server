@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -49,7 +48,8 @@ public class AlbumCoverServiceTest {
 	public void getCovers() {
 		List<AlbumCover> covers = albumCoverService.getCovers();
 		assertThat(covers, hasItem(anything()));
-		logger.debug(covers.stream().map(AlbumCover::getAlbumName)
-				.collect(Collectors.joining("\n")));
+		logger.debug("covers.size = {}", covers.size());
+//		logger.debug(covers.stream().map(AlbumCover::getAlbumName)
+//				.collect(Collectors.joining("\n")));
 	}
 }

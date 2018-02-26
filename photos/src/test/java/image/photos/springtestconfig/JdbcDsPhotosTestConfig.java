@@ -1,6 +1,6 @@
 package image.photos.springtestconfig;
 
-import image.persistence.repository.springtestconfig.springprofile.JdbcDsActivated;
+import image.persistence.repository.springtestconfig.springprofile.ProdJdbcDsActivated;
 import image.photos.TestPhotosConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -17,6 +17,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ContextConfiguration(classes = {TestPhotosConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@JdbcDsActivated
+@ProdJdbcDsActivated
 public @interface JdbcDsPhotosTestConfig {
 }

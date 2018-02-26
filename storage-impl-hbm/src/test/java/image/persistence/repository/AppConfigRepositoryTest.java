@@ -2,7 +2,7 @@ package image.persistence.repository;
 
 import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
-import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@JdbcDsTestConfig
+@ProdJdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);

@@ -2,7 +2,7 @@ package image.persistence.repository;
 
 import image.cdm.album.page.AlbumPage;
 import image.persistence.HibernateConfig;
-import image.persistence.repository.springtestconfig.JdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@JdbcDsTestConfig
+@ProdJdbcDsTestConfig
 @Category(HibernateConfig.class)
 public class AlbumPageRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
