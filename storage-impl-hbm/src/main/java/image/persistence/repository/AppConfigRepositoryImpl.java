@@ -6,10 +6,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
 
@@ -58,8 +62,12 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional
 	public AppConfig getAppConfigByName(String name) {
-		return (AppConfig) this.sessionFactory.getCurrentSession().createCriteria(AppConfig.class)
-				.setCacheable(true).add(Restrictions.eq("name", name)).uniqueResult();
+		CriteriaBuilder builder = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
+		CriteriaQuery<AppConfig> criteria = builder.createQuery(AppConfig.class);
+		Root<AppConfig> root = criteria.from(AppConfig.class);
+		criteria.select(root).where(builder.equal(root.get("name"), name));
+		Query<AppConfig> q = this.sessionFactory.getCurrentSession().createQuery(criteria);
+		return q.setCacheable(true).uniqueResult();
 	}
 
 	@Override

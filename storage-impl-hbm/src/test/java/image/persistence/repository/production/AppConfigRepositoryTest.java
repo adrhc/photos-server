@@ -72,8 +72,9 @@ public class AppConfigRepositoryTest {
 	public void getAppConfigs() {
 		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
 		assertThat(appConfigs, hasSize(greaterThan(0)));
-		logger.debug(appConfigs.stream().map(AppConfig::toString)
-				.collect(Collectors.joining("\n")));
+		logger.debug("appConfigs.size = {}", appConfigs.size());
+//		logger.debug(appConfigs.stream().map(AppConfig::toString)
+//				.collect(Collectors.joining("\n")));
 	}
 
 	@Test
