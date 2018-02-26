@@ -14,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 /**
  * Created by adr on 2/25/18.
  */
@@ -28,6 +25,9 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 	protected AlbumRepository albumRepository;
 	@Inject
 	protected ImageRepository imageRepository;
+
+	protected Album album;
+	protected Image image;
 
 //	@Before
 //	public void setUp() {
@@ -49,12 +49,10 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 	@Before
 	@Transactional
 	public void createAnAlbumAndImage() {
-		Album album = albumRepository.createAlbum(supplyAlbumName());
-		assertThat(album.getId(), equalTo(1));
+		this.album = albumRepository.createAlbum(supplyAlbumName());
 		logger.debug("album.id = {}", album.getId());
-		Image image = supplyImage(album);
+		this.image = supplyImage(album);
 		imageRepository.persistImage(image);
-		assertThat(image.getId(), equalTo(1));
 		logger.debug("image.id = {}", image.getId());
 	}
 }

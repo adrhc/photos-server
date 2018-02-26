@@ -17,9 +17,9 @@ import org.junit.experimental.categories.Category;
 public class PutAlbumCoverTest extends AlbumRepoWriteTestBase {
 	@Test
 	public void putAlbumCover() throws Exception {
-		boolean result = albumRepository.putAlbumCover(1);
+		boolean result = albumRepository.putAlbumCover(image.getId());
 		Assert.assertTrue(result);
-		logger.debug("album cover set using image.id = 1");
+		logger.debug("album cover set using image.id = {}", image.getId());
 	}
 
 	@Ignore("todo: use in memory database")
