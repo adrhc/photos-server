@@ -122,6 +122,13 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Transactional
 	public void deleteImage(Integer imageId) {
 		Image image = sessionFactory.getCurrentSession().load(Image.class, imageId);
+		sessionFactory.getCurrentSession().delete(image);
+	}
+
+	@Override
+	@Transactional
+	public void safelyDeleteImage(Integer imageId) {
+		Image image = sessionFactory.getCurrentSession().load(Image.class, imageId);
 		checkAndRemoveAlbumCover(image);
 		sessionFactory.getCurrentSession().delete(image);
 	}

@@ -277,7 +277,7 @@ public class AlbumImporterService {
 			if (image.getStatus() == Image.DEFAULT_STATUS) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				imageRepository.deleteImage(image.getId());
+				imageRepository.safelyDeleteImage(image.getId());
 				imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}

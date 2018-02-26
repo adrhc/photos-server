@@ -35,6 +35,9 @@ public interface ImageRepository {
     void deleteImage(Integer imageId);
 
     @Transactional
+    void safelyDeleteImage(Integer imageId);
+
+    @Transactional
     void changeName(String name, Integer imageId);
 
     @Transactional

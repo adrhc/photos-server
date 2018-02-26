@@ -19,7 +19,8 @@ public class PutAlbumCoverTest extends AlbumRepoWriteTestBase {
 	public void putAlbumCover() throws Exception {
 		boolean result = albumRepository.putAlbumCover(image.getId());
 		Assert.assertTrue(result);
-		logger.debug("album cover set using image.id = {}", image.getId());
+		logger.debug("cover set using image.id = {}, image.name = {}",
+				image.getId(), image.getName());
 	}
 
 	@Ignore("todo: use in memory database")
