@@ -43,7 +43,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Transactional
 	public Image updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Image image = (Image) session.get(Image.class, imageId);
+		Image image = session.get(Image.class, imageId);
 		image.getImageMetadata().setThumbLastModified(thumbLastModified);
 		return image;
 	}
