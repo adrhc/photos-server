@@ -1,7 +1,8 @@
-package image.persistence.repository;
+package image.persistence.repository.production;
 
 import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
+import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
@@ -34,42 +35,42 @@ public class AppConfigRepositoryTest {
 
 	@Test
 	public void getLinuxAlbumPath() {
-		String linuxAlbumPath = appConfigRepository.getLinuxAlbumPath();
+		String linuxAlbumPath = this.appConfigRepository.getLinuxAlbumPath();
 		assertThat(linuxAlbumPath, notNullValue());
 		logger.debug("linuxAlbumPath: {}", linuxAlbumPath);
 	}
 
 	@Test
 	public void getPhotosPerPage() {
-		Integer photosPerPage = appConfigRepository.getPhotosPerPage();
+		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 		assertThat(photosPerPage, greaterThan(0));
 		logger.debug("photosPerPage = {}", photosPerPage);
 	}
 
 	@Test
 	public void getAppConfigById() {
-		AppConfig appConfig = appConfigRepository.getAppConfigById(1);
+		AppConfig appConfig = this.appConfigRepository.getAppConfigById(1);
 		assertThat(appConfig, notNullValue());
 		logger.debug(appConfig.toString());
 	}
 
 	@Test
 	public void getAppConfigByName() {
-		AppConfig appConfig = appConfigRepository.getAppConfigByName("albums_path");
+		AppConfig appConfig = this.appConfigRepository.getAppConfigByName("albums_path");
 		assertThat(appConfig, notNullValue());
 		logger.debug(appConfig.toString());
 	}
 
 	@Test
 	public void testGetNoCacheableAppConfigByName() {
-		AppConfig appConfig = appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
+		AppConfig appConfig = this.appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
 		assertThat(appConfig, notNullValue());
 		logger.debug(appConfig.toString());
 	}
 
 	@Test
 	public void getAppConfigs() {
-		List<AppConfig> appConfigs = appConfigRepository.getAppConfigs();
+		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
 		assertThat(appConfigs, hasSize(greaterThan(0)));
 		logger.debug(appConfigs.stream().map(AppConfig::toString)
 				.collect(Collectors.joining("\n")));
@@ -77,7 +78,7 @@ public class AppConfigRepositoryTest {
 
 	@Test
 	public void testGetNoCacheableOrderedAppConfigs() {
-		List<AppConfig> appConfigs = appConfigRepository.testGetNoCacheableOrderedAppConfigs();
+		List<AppConfig> appConfigs = this.appConfigRepository.testGetNoCacheableOrderedAppConfigs();
 		assertThat(appConfigs, hasItem(anything()));
 		logger.debug(appConfigs.stream().map(AppConfig::toString)
 				.collect(Collectors.joining("\n")));
@@ -85,7 +86,7 @@ public class AppConfigRepositoryTest {
 
 	@Test
 	public void getDBNow() {
-		Date date = appConfigRepository.getDBNow();
+		Date date = this.appConfigRepository.getDBNow();
 		assertThat(date, notNullValue());
 		logger.debug(date.toString());
 	}

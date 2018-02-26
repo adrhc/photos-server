@@ -1,4 +1,4 @@
-package image.persistence.repository.albumrepository;
+package image.persistence.repository.staging.album;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;
@@ -6,6 +6,7 @@ import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
+import image.persistence.repository.production.AlbumRepositoryTest;
 import image.persistence.repository.springtestconfig.springrunner.SpringRunnerRulesBased;
 import image.persistence.repository.util.ITransactionalAction;
 import org.junit.After;
@@ -17,7 +18,7 @@ import javax.inject.Inject;
 
 /**
  * Must be a public class otherwise occurs:
- * IllegalAccessException: Class org.junit.runners.model.FrameworkMethod$1 can not access a member of class image.persistence.repository.albumrepository.AlbumRepoWriteTestBase with modifiers "public"
+ * IllegalAccessException: Class org.junit.runners.model.FrameworkMethod$1 can not access a member of class image.persistence.repository.staging.album.AlbumRepoWriteTestBase with modifiers "public"
  * <p>
  * Created by adr on 2/25/18.
  */

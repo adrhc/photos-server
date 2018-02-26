@@ -21,6 +21,12 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Inject
 	private SessionFactory sessionFactory;
 
+	@Override
+	@Transactional
+	public void createAppConfig(AppConfig appConfig) {
+		this.sessionFactory.getCurrentSession().persist(appConfig);
+	}
+
 	private Integer getConfigInteger(AppConfigEnum ace) {
 		String s = getConfig(ace);
 		if (s == null) {
@@ -46,13 +52,13 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional
 	public AppConfig getAppConfigById(Integer id) {
-		return (AppConfig) sessionFactory.getCurrentSession().get(AppConfig.class, id);
+		return this.sessionFactory.getCurrentSession().get(AppConfig.class, id);
 	}
 
 	@Override
 	@Transactional
 	public AppConfig getAppConfigByName(String name) {
-		return (AppConfig) sessionFactory.getCurrentSession().createCriteria(AppConfig.class)
+		return (AppConfig) this.sessionFactory.getCurrentSession().createCriteria(AppConfig.class)
 				.setCacheable(true).add(Restrictions.eq("name", name)).uniqueResult();
 	}
 
@@ -73,14 +79,14 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true).list();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class)
 				.addOrder(Order.asc("name")).list();
 	}
@@ -88,7 +94,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public AppConfig testGetNoCacheableAppConfigByName(String name) {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		return (AppConfig) session.createCriteria(AppConfig.class)
 				.add(Restrictions.eq("name", name)).uniqueResult();
 	}
@@ -96,7 +102,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public Date getDBNow() {
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		return (Date) session.createSQLQuery("SELECT now() FROM dual").uniqueResult();
 	}
 }

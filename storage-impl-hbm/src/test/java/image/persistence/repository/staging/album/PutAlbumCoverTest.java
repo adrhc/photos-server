@@ -1,4 +1,4 @@
-package image.persistence.repository.albumrepository;
+package image.persistence.repository.staging.album;
 
 import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;

@@ -10,6 +10,9 @@ import java.util.List;
  * Created by adr on 2/22/18.
  */
 public interface AppConfigRepository {
+	@Transactional
+	void createAppConfig(AppConfig appConfig);
+
 	Integer getPhotosPerPage();
 
 	String getLinuxAlbumPath();

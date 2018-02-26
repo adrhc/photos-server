@@ -1,14 +1,14 @@
 package image.persistence.entity;
 
 import image.persistence.entity.image.ImageMetadata;
+import image.persistence.util.IPositiveRandom;
 
 import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by adr on 2/25/18.
  */
-public interface IImageSupplier {
+public interface IImageSupplier extends IPositiveRandom {
 	default Image supplyImage(Album album) {
 		Image image = supplyImage();
 		image.setAlbum(album);
@@ -16,7 +16,7 @@ public interface IImageSupplier {
 	}
 
 	default Image supplyImage() {
-		int random = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
+		int random = positiveRandom();
 		ImageMetadata imageMetadata = new ImageMetadata();
 		Date date = new Date();
 		imageMetadata.setDateTime(date);

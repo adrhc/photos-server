@@ -1,12 +1,20 @@
-package image.persistence.repository;
+package image.persistence.repository.staging;
 
+import image.persistence.HibernateConfig;
+import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Created by adr on 2/25/18.
  */
+@RunWith(SpringRunner.class)
+@NotThreadSafe
+@TestJdbcDsTestConfig
+@Category(HibernateConfig.class)
 public class ImageRepositoryTest {
 	@Test
 	public void updateThumbLastModifiedForImg() throws Exception {

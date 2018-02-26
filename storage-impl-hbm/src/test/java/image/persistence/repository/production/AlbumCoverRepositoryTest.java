@@ -1,6 +1,7 @@
-package image.persistence.repository;
+package image.persistence.repository.production;
 
 import image.persistence.HibernateConfig;
+import image.persistence.repository.AlbumCoverRepository;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
@@ -33,7 +34,7 @@ public class AlbumCoverRepositoryTest {
 
 	@Test
 	public void getAlbumCoversLastUpdateDate() {
-		Date date = albumCoverRepository.getAlbumCoversLastUpdateDate();
+		Date date = this.albumCoverRepository.getAlbumCoversLastUpdateDate();
 		assertThat(date, sameOrBefore(new Date()));
 		logger.debug("albumCoversLastUpdateDate: {}", sdf.format(date));
 	}

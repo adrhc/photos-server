@@ -1,7 +1,9 @@
-package image.persistence.repository;
+package image.persistence.repository.production;
 
 import image.cdm.album.page.AlbumPage;
 import image.persistence.HibernateConfig;
+import image.persistence.repository.AlbumPageRepository;
+import image.persistence.repository.ESortType;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
@@ -38,13 +40,13 @@ public class AlbumPageRepositoryTest {
 
 	@Test
 	public void getPageCount() {
-		int pageCount = albumPageRepository.getPageCount(
+		int pageCount = this.albumPageRepository.getPageCount(
 				T1_TO_SEARCH, false, false, T1_ALBUM_ID);
 		logger.debug("imageCount = {}, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
 				pageCount, T1_TO_SEARCH, T1_ALBUM_ID);
 		Assert.assertTrue(pageCount == 1);
-		pageCount = albumPageRepository.getPageCount(
+		pageCount = this.albumPageRepository.getPageCount(
 				T2_TO_SEARCH, true, false, T2_ALBUM_ID);
 		logger.debug("imageCount = {}, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
@@ -54,13 +56,13 @@ public class AlbumPageRepositoryTest {
 
 	@Test
 	public void getPageFromDb() {
-		List<AlbumPage> imagesForPage = albumPageRepository.getPageFromDb(1,
+		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
 				ESortType.ASC, T1_TO_SEARCH, false, false, T1_ALBUM_ID);
 		logger.debug("imagesForPage.size = {}, sort ASC, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
 				T1_TO_SEARCH, T1_ALBUM_ID);
 		assertThat(imagesForPage, hasSize(2));
-		imagesForPage = albumPageRepository.getPageFromDb(1,
+		imagesForPage = this.albumPageRepository.getPageFromDb(1,
 				ESortType.ASC, T2_TO_SEARCH, false, false, T2_ALBUM_ID);
 		logger.debug("imagesForPage.size = {}, sort ASC, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
