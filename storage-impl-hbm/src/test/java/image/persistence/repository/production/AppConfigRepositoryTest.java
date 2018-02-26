@@ -5,6 +5,7 @@ import image.persistence.entity.AppConfig;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -57,7 +58,8 @@ public class AppConfigRepositoryTest {
 	@Test
 	public void getAppConfigByName() {
 		AppConfig appConfig = this.appConfigRepository.getAppConfigByName("albums_path");
-		assertThat(appConfig, notNullValue());
+		Assert.assertEquals(appConfig.getValue(),
+				"/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums");
 		logger.debug(appConfig.toString());
 	}
 
