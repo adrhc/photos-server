@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 
 /**
+ * Must be a public class otherwise occurs:
+ * IllegalAccessException: Class org.junit.runners.model.FrameworkMethod$1 can not access a member of class image.persistence.repository.albumrepository.AlbumRepoWriteTestBase with modifiers "public"
+ * <p>
  * Created by adr on 2/25/18.
  */
 public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
