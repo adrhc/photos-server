@@ -1,5 +1,6 @@
 package image.persistence.entity;
 
+import image.cdm.image.EImageStatus;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.util.IPositiveRandom;
 
@@ -26,7 +27,8 @@ public interface IImageSupplier extends IPositiveRandom {
 		image.setImageMetadata(imageMetadata);
 		image.setName("image-" + random);
 		image.setRating((byte) (random % 6));
-		image.setStatus((byte) Math.pow(2, random % 5));
+		image.setStatus(EImageStatus.findByValue((int)
+				Math.pow(2, random % 5)).getValueAsByte());
 		return image;
 	}
 }

@@ -3,7 +3,7 @@ package image.persistence.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import image.persistence.entity.enums.EImageStatus;
+import image.cdm.image.EImageStatus;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
@@ -27,7 +27,6 @@ import java.util.Date;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Image.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements Serializable {
-	public static final Byte DEFAULT_STATUS = 0;
 	public static final Byte DEFAULT_RATING = 1;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +40,7 @@ public class Image implements Serializable {
 	 * see DEFAULT_STATUS = 0 defined above
 	 */
 	@Column(nullable = false)
-	private byte status = EImageStatus.DEFAULT.getValue();
+	private byte status = EImageStatus.DEFAULT.getValueAsByte();
 	@Formula("(status & 1)")
 	private boolean hidden;
 	@Formula("(status & 2)")

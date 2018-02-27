@@ -71,11 +71,11 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Transactional
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageStatus.getId());
-		if (image.getStatus() == imageStatus.getStatus()) {
+		Image image = session.load(Image.class, imageStatus.getId());
+		if (image.getStatus() == imageStatus.getStatus().getValueAsByte()) {
 			return false;
 		}
-		image.setStatus(imageStatus.getStatus());
+		image.setStatus(imageStatus.getStatus().getValueAsByte());
 		image.getAlbum().setDirty(true);
 		return true;
 	}
