@@ -25,7 +25,8 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		Date date = dateNoMilliseconds();
 		this.imageRepository.updateThumbLastModifiedForImg(date, this.imageId);
 		Image alteredImage = this.imageRepository.getImageById(this.imageId);
-		// @Temporal(TemporalType.TIMESTAMP) thumbLastModified is in fact a java.sql.TimeStamp
+		// @Temporal(TemporalType.TIMESTAMP) thumbLastModified
+		// is in fact a java.sql.TimeStamp
 		Assert.assertEquals(alteredImage.getImageMetadata()
 				.getThumbLastModified().getTime(), date.getTime());
 	}
