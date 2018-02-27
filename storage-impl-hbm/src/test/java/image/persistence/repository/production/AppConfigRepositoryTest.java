@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -82,8 +81,9 @@ public class AppConfigRepositoryTest {
 	public void testGetNoCacheableOrderedAppConfigs() {
 		List<AppConfig> appConfigs = this.appConfigRepository.testGetNoCacheableOrderedAppConfigs();
 		assertThat(appConfigs, hasItem(anything()));
-		logger.debug(appConfigs.stream().map(AppConfig::toString)
-				.collect(Collectors.joining("\n")));
+		logger.debug("appConfigs.size = {}", appConfigs.size());
+//		logger.debug(appConfigs.stream().map(AppConfig::toString)
+//				.collect(Collectors.joining("\n")));
 	}
 
 	@Test
