@@ -69,6 +69,12 @@
             <name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
             <url>http://repository.springsource.com/maven/libraries/external</url>
         </repository>
+
+        <repository>
+            <id>projectlombok.org</id>
+            <name>Project Lombok</name>
+            <url>http://projectlombok.org/mavenrepo</url>
+        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -460,6 +466,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
