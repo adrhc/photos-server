@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by adr on 2/26/18.
@@ -19,10 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClearDirtyForAlbumTest extends AlbumRepoWriteTestBase {
 	@Override
 	@Before
-	@Transactional
 	public void createAnAlbumWithImage() {
 		super.createAnAlbumWithImage();
-		this.album.setDirty(true);
+		doTransaction(() -> this.album.setDirty(true));
 	}
 
 	@Test
