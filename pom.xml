@@ -49,6 +49,8 @@
         <net.sf.json>2.4</net.sf.json>
         <javax.inject>1</javax.inject>
         <jstl>1.2</jstl>
+        <lombok.version>1.16.20</lombok.version>
+        <lombok-maven-plugin.version>1.16.20.0</lombok-maven-plugin.version>
     </properties>
 
     <repositories>
@@ -368,7 +370,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.16.20</version>
+                <version>${lombok.version}</version>
             </dependency>
             <!--<dependency>-->
             <!--<groupId>com.github.peichhorn</groupId>-->
@@ -534,6 +536,36 @@
                 </plugin>
 
                 <plugin>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-maven-plugin</artifactId>
+                    <version>${lombok-maven-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>delombok</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>delombok</goal>
+                            </goals>
+                            <configuration>
+                                <addOutputDirectory>false</addOutputDirectory>
+                                <sourceDirectory>src/main/java</sourceDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>test-delombok</id>
+                            <phase>generate-test-sources</phase>
+                            <goals>
+                                <goal>testDelombok</goal>
+                            </goals>
+                            <configuration>
+                                <addOutputDirectory>false</addOutputDirectory>
+                                <sourceDirectory>src/test/java</sourceDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.0.2</version>
@@ -691,6 +723,14 @@
                         <verbose>false</verbose>
                         <showWeaveInfo>false</showWeaveInfo>
                         <privateScope>true</privateScope>
+                        <!--<sources>-->
+                        <!--<source>-->
+                        <!--<basedir>${project.build.directory}/generated-sources/delombok</basedir>-->
+                        <!--</source>-->
+                        <!--<source>-->
+                        <!--<basedir>${project.build.directory}/generated-test-sources/delombok</basedir>-->
+                        <!--</source>-->
+                        <!--</sources>-->
                         <source>${source.version}</source>
                         <target>${source.version}</target>
                         <complianceLevel>${source.version}</complianceLevel>
@@ -716,6 +756,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
             </plugin>
         </plugins>
 
