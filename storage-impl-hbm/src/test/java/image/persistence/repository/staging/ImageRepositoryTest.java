@@ -1,6 +1,5 @@
 package image.persistence.repository.staging;
 
-import image.persistence.HibernateConfig;
 import image.persistence.entity.Image;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
 import image.persistence.repository.staging.album.AlbumRepoWriteTestBase;
@@ -17,7 +16,7 @@ import java.util.Date;
  */
 @NotThreadSafe
 @TestJdbcDsTestConfig
-@Category(HibernateConfig.class)
+@Category(TestJdbcDsTestConfig.class)
 public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		implements IDateNoMillisSupplier {
 	@Test

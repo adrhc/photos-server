@@ -14,10 +14,10 @@
     <name>storage-impl-hbm</name>
     <url>http://maven.apache.org</url>
     <dependencies>
-		<dependency>
-			<groupId>exifweb</groupId>
-			<artifactId>cdm</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>cdm</artifactId>
+        </dependency>
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-entities</artifactId>
@@ -95,14 +95,14 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.hsqldb</groupId>-->
-            <!--<artifactId>hsqldb</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.hsqldb</groupId>-->
+        <!--<artifactId>hsqldb</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.apache.derby</groupId>-->
-            <!--<artifactId>derby</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apache.derby</groupId>-->
+        <!--<artifactId>derby</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
 
         <!--
@@ -125,19 +125,18 @@
 
     <build>
         <plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration combine.self="append">
-					<!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
-					<environmentVariables>
-						<spring.profiles.active>jdbc-ds</spring.profiles.active>
-					</environmentVariables>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration combine.self="append">
+                    <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
+                    <environmentVariables>
+                        <spring.profiles.active>jdbc-ds</spring.profiles.active>
+                    </environmentVariables>
                     <groups>${storage-impl-hbm.groups}</groups>
-					<!--<groups>image.persistence.HibernateConfig.class</groups>-->
-					<!--<skipTests>${skipTests}</skipTests>-->
-				</configuration>
-			</plugin>
+                    <!--<skipTests>${skipTests}</skipTests>-->
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>

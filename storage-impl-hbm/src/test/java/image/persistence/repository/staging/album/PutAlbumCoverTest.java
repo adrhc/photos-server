@@ -1,6 +1,5 @@
 package image.persistence.repository.staging.album;
 
-import image.persistence.HibernateConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
@@ -13,7 +12,7 @@ import org.junit.experimental.categories.Category;
  */
 @NotThreadSafe
 @TestJdbcDsTestConfig
-@Category(HibernateConfig.class)
+@Category(TestJdbcDsTestConfig.class)
 public class PutAlbumCoverTest extends AlbumRepoWriteTestBase {
 	@Test
 	public void putAlbumCover() throws Exception {

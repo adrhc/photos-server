@@ -1,6 +1,5 @@
 package image.persistence.repository.production;
 
-import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
@@ -27,7 +26,7 @@ import static org.hamcrest.Matchers.*;
 @RunWith(SpringRunner.class)
 @NotThreadSafe
 @ProdJdbcDsTestConfig
-@Category(HibernateConfig.class)
+@Category(ProdJdbcDsTestConfig.class)
 public class AppConfigRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 

@@ -1,6 +1,5 @@
 package image.persistence.repository.staging;
 
-import image.persistence.HibernateConfig;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
@@ -25,7 +24,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @NotThreadSafe
 @TestJdbcDsTestConfig
-@Category(HibernateConfig.class)
+@Category(TestJdbcDsTestConfig.class)
 public class AppConfigRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 

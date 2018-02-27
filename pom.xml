@@ -386,15 +386,15 @@
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
             <!--<dependency>-->
-                <!--<groupId>org.hsqldb</groupId>-->
-                <!--<artifactId>hsqldb</artifactId>-->
-                <!--<version>2.4.0</version>-->
+            <!--<groupId>org.hsqldb</groupId>-->
+            <!--<artifactId>hsqldb</artifactId>-->
+            <!--<version>2.4.0</version>-->
             <!--</dependency>-->
             <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
             <!--<dependency>-->
-                <!--<groupId>org.apache.derby</groupId>-->
-                <!--<artifactId>derby</artifactId>-->
-                <!--<version>10.14.1.0</version>-->
+            <!--<groupId>org.apache.derby</groupId>-->
+            <!--<artifactId>derby</artifactId>-->
+            <!--<version>10.14.1.0</version>-->
             <!--</dependency>-->
 
             <!-- https://mvnrepository.com/artifact/junit/junit -->
@@ -431,9 +431,9 @@
             </dependency>
             <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
             <!--<dependency>-->
-                <!--<groupId>net.sf.jexample</groupId>-->
-                <!--<artifactId>jexample</artifactId>-->
-                <!--<version>4.4-378</version>-->
+            <!--<groupId>net.sf.jexample</groupId>-->
+            <!--<artifactId>jexample</artifactId>-->
+            <!--<version>4.4-378</version>-->
             <!--</dependency>-->
             <!-- https://mvnrepository.com/artifact/net.jcip/jcip-annotations -->
             <dependency>
@@ -442,9 +442,9 @@
                 <version>1.0-1</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>net.jcip</groupId>-->
-                <!--<artifactId>jcip-annotations</artifactId>-->
-                <!--<version>1.0</version>-->
+            <!--<groupId>net.jcip</groupId>-->
+            <!--<artifactId>jcip-annotations</artifactId>-->
+            <!--<version>1.0</version>-->
             <!--</dependency>-->
 
         </dependencies>
@@ -477,8 +477,8 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>net.sf.jexample</groupId>-->
-            <!--<artifactId>jexample</artifactId>-->
+        <!--<groupId>net.sf.jexample</groupId>-->
+        <!--<artifactId>jexample</artifactId>-->
         <!--</dependency>-->
         <dependency>
             <groupId>com.github.stephenc.jcip</groupId>
@@ -486,9 +486,9 @@
             <scope>test</scope>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>net.jcip</groupId>-->
-            <!--<artifactId>jcip-annotations</artifactId>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>net.jcip</groupId>-->
+        <!--<artifactId>jcip-annotations</artifactId>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
     </dependencies>
 
@@ -757,7 +757,10 @@
             <id>local-db</id>
             <properties>
                 <!--<skipTests>false</skipTests>-->
-                <storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
+                <storage-impl-hbm.groups>
+                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
+                    image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
+                </storage-impl-hbm.groups>
                 <photos.groups>
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
@@ -771,7 +774,10 @@
             <id>remote-db</id>
             <properties>
                 <!--<skipTests>false</skipTests>-->
-                <storage-impl-hbm.groups>image.persistence.HibernateConfig.class</storage-impl-hbm.groups>
+                <storage-impl-hbm.groups>
+                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
+                    image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
+                </storage-impl-hbm.groups>
                 <photos.groups>
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,

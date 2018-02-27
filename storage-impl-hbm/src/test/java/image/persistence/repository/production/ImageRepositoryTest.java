@@ -1,6 +1,5 @@
 package image.persistence.repository.production;
 
-import image.persistence.HibernateConfig;
 import image.persistence.entity.Image;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
@@ -23,7 +22,7 @@ import static org.hamcrest.Matchers.anything;
 @RunWith(SpringRunner.class)
 @NotThreadSafe
 @ProdJdbcDsTestConfig
-@Category(HibernateConfig.class)
+@Category(ProdJdbcDsTestConfig.class)
 public class ImageRepositoryTest {
 	@Autowired
 	private ImageRepository imageRepository;

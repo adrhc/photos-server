@@ -1,7 +1,6 @@
 package image.persistence.repository.production;
 
 import image.cdm.album.page.AlbumPage;
-import image.persistence.HibernateConfig;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
@@ -26,7 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 @RunWith(SpringRunner.class)
 @NotThreadSafe
 @ProdJdbcDsTestConfig
-@Category(HibernateConfig.class)
+@Category(ProdJdbcDsTestConfig.class)
 public class AlbumPageRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 
