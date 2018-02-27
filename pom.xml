@@ -738,12 +738,10 @@
     <profiles>
         <profile>
             <id>db-off</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
-                <!--<skipTests>true</skipTests>-->
-                <!-- org.junit.Test.class means "no category" -->
+                <!--
+                    org.junit.Test.class means "no category"
+                -->
                 <storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
                 <photos.groups>
                     image.photos.misc.MiscTestCategory.class,
@@ -752,11 +750,13 @@
                 <db.host>dummy-host</db.host>
                 <test.db.host>dummy-host</test.db.host>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>local-db</id>
             <properties>
-                <!--<skipTests>false</skipTests>-->
                 <storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
@@ -773,7 +773,6 @@
         <profile>
             <id>remote-db</id>
             <properties>
-                <!--<skipTests>false</skipTests>-->
                 <storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
