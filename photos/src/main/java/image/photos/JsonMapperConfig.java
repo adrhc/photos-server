@@ -20,6 +20,7 @@ public class JsonMapperConfig {
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
+
 		// using server's timezone
 //		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
 		// using server's timezone
@@ -28,10 +29,12 @@ public class JsonMapperConfig {
 //		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss") {{
 //			setTimeZone(TimeZone.getTimeZone("GMT"));
 //		}});
+
 		Hibernate5Module hm = new Hibernate5Module();
 		hm.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
 		hm.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 		mapper.registerModule(hm);
+
 		return mapper;
 	}
 }
