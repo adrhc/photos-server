@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.cdm.image.EImageStatus;
+import image.cdm.image.ImageRating;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
@@ -27,7 +28,6 @@ import java.util.Date;
 @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Image.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements Serializable {
-	public static final Byte DEFAULT_RATING = 1;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -55,10 +55,10 @@ public class Image implements Serializable {
 	@Column(nullable = false)
 	private boolean deleted;
 	/**
-	 * see DEFAULT_RATING = 1 (defined above)
+	 * see MIN_RATING = 1 (defined above)
 	 */
 	@Column(nullable = false, columnDefinition = "INTEGER(1) NOT NULL DEFAULT 1")
-	private byte rating = DEFAULT_RATING;
+	private byte rating = ImageRating.MIN_RATING;
 	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")

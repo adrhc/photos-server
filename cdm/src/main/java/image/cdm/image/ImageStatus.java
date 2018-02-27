@@ -18,7 +18,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ImageStatus implements Serializable {
 	private Integer id;
-	private EImageStatus status;
+	private byte status;
 
 	public Integer getId() {
 		return this.id;
@@ -28,11 +28,11 @@ public class ImageStatus implements Serializable {
 		this.id = id;
 	}
 
-	public EImageStatus getStatus() {
+	public byte getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(EImageStatus status) {
+	public void setStatus(byte status) {
 		this.status = status;
 	}
 }

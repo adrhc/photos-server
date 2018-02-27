@@ -17,6 +17,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageRating implements Serializable {
+	public static final Byte MIN_RATING = 1;
+
 	private Integer id;
 	private Byte rating;
 

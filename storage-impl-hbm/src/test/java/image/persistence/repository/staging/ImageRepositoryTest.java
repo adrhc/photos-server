@@ -35,17 +35,28 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 
 	@Test
 	public void changeRating() throws Exception {
-		this.imageRepository.changeRating(new ImageRating(this.imageId, (byte) 3));
+		byte newRating = ImageRating.MIN_RATING;
+		if (this.image.getRating() == newRating) {
+			newRating++;
+		}
+		boolean changed = this.imageRepository.changeRating(
+				new ImageRating(this.imageId, newRating));
+		Assert.assertTrue(changed);
 		Image alteredImage = this.imageRepository.getImageById(this.imageId);
-		Assert.assertEquals(alteredImage.getRating(), 3);
+		Assert.assertEquals(alteredImage.getRating(), newRating);
 	}
 
 	@Test
 	public void changeStatus() throws Exception {
-		this.imageRepository.changeStatus(new ImageStatus(
-				this.imageId, EImageStatus.PRINTABLE));
+		EImageStatus newStatus = EImageStatus.DEFAULT;
+		if (this.image.getStatus() == newStatus.getValueAsByte()) {
+			newStatus = EImageStatus.PRINTABLE;
+		}
+		boolean changed = this.imageRepository.changeStatus(new ImageStatus(
+				this.imageId, newStatus.getValueAsByte()));
+		Assert.assertTrue(changed);
 		Image alteredImage = this.imageRepository.getImageById(this.imageId);
-		Assert.assertEquals(alteredImage.getStatus(), EImageStatus.PRINTABLE.getValueAsByte());
+		Assert.assertEquals(alteredImage.getStatus(), newStatus.getValueAsByte());
 	}
 
 	@Test
