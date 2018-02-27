@@ -1,7 +1,9 @@
 package image.persistence.repository.staging;
 
 import image.cdm.image.ImageRating;
+import image.cdm.image.ImageStatus;
 import image.persistence.entity.Image;
+import image.persistence.entity.enums.EImageStatus;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
 import image.persistence.repository.staging.album.AlbumRepoWriteTestBase;
 import image.persistence.repository.util.IDateNoMillisSupplier;
@@ -40,7 +42,10 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 
 	@Test
 	public void changeStatus() throws Exception {
-
+		this.imageRepository.changeStatus(new ImageStatus(
+				this.imageId, EImageStatus.PRINTABLE.getValue()));
+		Image alteredImage = this.imageRepository.getImageById(this.imageId);
+		Assert.assertEquals(alteredImage.getStatus(), EImageStatus.PRINTABLE.getValue());
 	}
 
 	@Test

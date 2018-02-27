@@ -3,6 +3,7 @@ package image.persistence.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import image.persistence.entity.enums.EImageStatus;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;
@@ -35,13 +36,12 @@ public class Image implements Serializable {
 	private String name;
 	@Embedded
 	private ImageMetadata imageMetadata;
+
 	/**
 	 * see DEFAULT_STATUS = 0 defined above
 	 */
 	@Column(nullable = false)
-	private byte status = DEFAULT_STATUS;
-	@Column(nullable = false)
-	private boolean deleted;
+	private byte status = EImageStatus.DEFAULT.getValue();
 	@Formula("(status & 1)")
 	private boolean hidden;
 	@Formula("(status & 2)")
@@ -52,6 +52,9 @@ public class Image implements Serializable {
 	private boolean duplicate;
 	@Formula("(status & 16)")
 	private boolean printable;
+
+	@Column(nullable = false)
+	private boolean deleted;
 	/**
 	 * see DEFAULT_RATING = 1 (defined above)
 	 */
@@ -83,7 +86,7 @@ public class Image implements Serializable {
 	private Date lastUpdate;
 
 	public Date getLastUpdate() {
-		return lastUpdate;
+		return this.lastUpdate;
 	}
 
 	public void setLastUpdate(Date lastUpdate) {
@@ -91,7 +94,7 @@ public class Image implements Serializable {
 	}
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -99,7 +102,7 @@ public class Image implements Serializable {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -107,7 +110,7 @@ public class Image implements Serializable {
 	}
 
 	public Album getAlbum() {
-		return album;
+		return this.album;
 	}
 
 	public void setAlbum(Album album) {
@@ -115,7 +118,7 @@ public class Image implements Serializable {
 	}
 
 	public byte getStatus() {
-		return status;
+		return this.status;
 	}
 
 	public void setStatus(byte status) {
@@ -123,27 +126,27 @@ public class Image implements Serializable {
 	}
 
 	public boolean isHidden() {
-		return hidden;
+		return this.hidden;
 	}
 
 	public boolean isPersonal() {
-		return personal;
+		return this.personal;
 	}
 
 	public boolean isUgly() {
-		return ugly;
+		return this.ugly;
 	}
 
 	public boolean isDuplicate() {
-		return duplicate;
+		return this.duplicate;
 	}
 
 	public boolean isPrintable() {
-		return printable;
+		return this.printable;
 	}
 
 	public boolean isDeleted() {
-		return deleted;
+		return this.deleted;
 	}
 
 	public void setDeleted(boolean deleted) {
@@ -151,7 +154,7 @@ public class Image implements Serializable {
 	}
 
 	public byte getRating() {
-		return rating;
+		return this.rating;
 	}
 
 	public void setRating(byte rating) {
@@ -159,7 +162,7 @@ public class Image implements Serializable {
 	}
 
 	public ImageMetadata getImageMetadata() {
-		return imageMetadata;
+		return this.imageMetadata;
 	}
 
 	public void setImageMetadata(ImageMetadata imageMetadata) {
@@ -169,18 +172,18 @@ public class Image implements Serializable {
 	@Override
 	public String toString() {
 		return "Image{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", imageMetadata=" + imageMetadata.toString() +
-				", status=" + status +
-				", deleted=" + deleted +
-				", hidden=" + hidden +
-				", personal=" + personal +
-				", ugly=" + ugly +
-				", duplicate=" + duplicate +
-				", printable=" + printable +
-				", rating=" + rating +
-				", lastUpdate=" + lastUpdate +
+				"id=" + this.id +
+				", name='" + this.name + '\'' +
+				", imageMetadata=" + this.imageMetadata.toString() +
+				", status=" + this.status +
+				", deleted=" + this.deleted +
+				", hidden=" + this.hidden +
+				", personal=" + this.personal +
+				", ugly=" + this.ugly +
+				", duplicate=" + this.duplicate +
+				", printable=" + this.printable +
+				", rating=" + this.rating +
+				", lastUpdate=" + this.lastUpdate +
 				'}';
 	}
 }
