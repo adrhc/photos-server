@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Don't delete created configs with an have @After because I use @InMemoryDbTestConfig.
+ * Don't delete created configs with an have @After because using @InMemoryDbTestConfig.
  * <p>
  * Created by adr on 2/21/18.
  */
