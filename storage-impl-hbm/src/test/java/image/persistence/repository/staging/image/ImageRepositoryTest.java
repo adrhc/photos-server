@@ -61,12 +61,16 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 
 	@Test
 	public void markDeleted() throws Exception {
-
+		boolean changed = this.imageRepository.markDeleted(this.imageId);
+		Assert.assertTrue(changed);
+		Image alteredImage = this.imageRepository.getImageById(this.imageId);
+		Assert.assertTrue(alteredImage.isDeleted());
 	}
 
 	@Test
 	public void changeName() throws Exception {
-
+		this.imageRepository.changeName(this.image.getName() + "-updated", this.imageId);
+		Image alteredImage = this.imageRepository.getImageById(this.imageId);
+		Assert.assertEquals(alteredImage.getName(), this.image.getName() + "-updated");
 	}
-
 }
