@@ -3,7 +3,7 @@ package image.persistence.repository.staging;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
-import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,12 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Don't delete created configs with an have @After because I use @InMemoryDbTestConfig.
+ * <p>
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@TestJdbcDsTestConfig
-@Category(TestJdbcDsTestConfig.class)
+@InMemoryDbTestConfig
+@Category(InMemoryDbTestConfig.class)
 public class AppConfigRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 
