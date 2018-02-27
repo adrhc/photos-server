@@ -1,21 +1,18 @@
 package image.photos.album;
 
 import image.cdm.album.cover.AlbumCover;
-import image.photos.JsonMapperConfig;
 import image.photos.TestPhotosConfig;
+import image.photos.springtestconfig.JdbcDsPhotosTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -24,9 +21,8 @@ import static org.hamcrest.Matchers.*;
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestPhotosConfig.class)
-@TestPropertySource(properties = "hibernate.show_sql=false")
-@ActiveProfiles({"jdbc-ds"})
+@NotThreadSafe
+@JdbcDsPhotosTestConfig
 @Category(TestPhotosConfig.class)
 public class AlbumCoverServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverServiceTest.class);
@@ -52,7 +48,8 @@ public class AlbumCoverServiceTest {
 	public void getCovers() {
 		List<AlbumCover> covers = albumCoverService.getCovers();
 		assertThat(covers, hasItem(anything()));
-		logger.debug(covers.stream().map(AlbumCover::getAlbumName)
-				.collect(Collectors.joining("\n")));
+		logger.debug("covers.size = {}", covers.size());
+//		logger.debug(covers.stream().map(AlbumCover::getAlbumName)
+//				.collect(Collectors.joining("\n")));
 	}
 }

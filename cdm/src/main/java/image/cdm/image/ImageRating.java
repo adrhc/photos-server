@@ -1,5 +1,9 @@
 package image.cdm.image;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -9,12 +13,17 @@ import java.io.Serializable;
  * Time: 9:58 PM
  * To change this template use File | Settings | File Templates.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ImageRating implements Serializable {
+	public static final Byte MIN_RATING = 1;
+
 	private Integer id;
 	private Byte rating;
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -22,7 +31,7 @@ public class ImageRating implements Serializable {
 	}
 
 	public Byte getRating() {
-		return rating;
+		return this.rating;
 	}
 
 	public void setRating(Byte status) {

@@ -1,5 +1,9 @@
 package image.cdm.image;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -9,23 +13,26 @@ import java.io.Serializable;
  * Time: 10:51 PM
  * To change this template use File | Settings | File Templates.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ImageStatus implements Serializable {
 	private Integer id;
-	private Byte status;
+	private byte status;
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public Byte getStatus() {
-		return status;
+	public byte getStatus() {
+		return this.status;
 	}
 
-	public void setStatus(Byte status) {
+	public void setStatus(byte status) {
 		this.status = status;
 	}
 }

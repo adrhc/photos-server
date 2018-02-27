@@ -4,15 +4,18 @@ import com.zaxxer.hikari.HikariDataSource;
 import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -24,6 +27,7 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
+//@Import(HibernateCacheConfig.class)
 @PropertySource(value = {"classpath:/jdbc-datasource.properties",
 		"classpath*:/jdbc-datasource-overridden.properties"},
 		ignoreResourceNotFound = true)
@@ -56,12 +60,13 @@ public class HibernateConfig {
 
 	@Autowired
 	@Bean
-	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
-		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
-		localSessionFactoryBean.setDataSource(dataSource);
-		localSessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
-		localSessionFactoryBean.setHibernateProperties(hibernateProperties());
-		return localSessionFactoryBean;
+	public LocalSessionFactoryBean sessionFactory(
+			DataSource dataSource, @Qualifier("hibernateProperties") Properties hibernateProperties) {
+		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+		sessionFactoryBean.setDataSource(dataSource);
+		sessionFactoryBean.setPackagesToScan(Image.class.getPackage().getName());
+		sessionFactoryBean.setHibernateProperties(hibernateProperties);
+		return sessionFactoryBean;
 	}
 
 	/**
@@ -71,7 +76,7 @@ public class HibernateConfig {
 	 * <p>
 	 * In tomcat's context.xml define: <Resource ... />
 	 */
-	@Profile("jndi-ds")
+	@Profile("prod-jndi-ds")
 	@Bean
 	public DataSource jndiDataSource(@Value("${jndi.name}") String jndiName) {
 		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
@@ -82,13 +87,29 @@ public class HibernateConfig {
 	 * When using same name (e.g. dataSource) for jdbc and jndi datasources
 	 * though they have different @Profile still won't work (none will be found).
 	 */
-	@Profile("jdbc-ds")
+	@Profile("prod-jdbc-ds")
 	@Bean
-	public DataSource jdbcDataSource(@Value("${jdbc.url}") String jdbcUrl,
-	                                 @Value("${jdbc.userName}") String userName,
-	                                 @Value("${jdbc.password}") String password,
-	                                 @Value("${jdbc.minimumIdle}") int minimumIdle,
-	                                 @Value("${jdbc.maximumPoolSize}") int maximumPoolSize) {
+	public DataSource prodJdbcDataSource(@Value("${prod.jdbc.url}") String jdbcUrl,
+	                                     @Value("${prod.jdbc.userName}") String userName,
+	                                     @Value("${prod.jdbc.password}") String password,
+	                                     @Value("${prod.jdbc.minimumIdle}") int minimumIdle,
+	                                     @Value("${prod.jdbc.maximumPoolSize}") int maximumPoolSize) {
+		return hikariDataSourceOf(jdbcUrl, userName, password, minimumIdle, maximumPoolSize);
+	}
+
+	@Profile("test-jdbc-ds")
+	@Bean
+	public DataSource testJdbcDataSource(@Value("${test.jdbc.url}") String jdbcUrl,
+	                                     @Value("${test.jdbc.userName}") String userName,
+	                                     @Value("${test.jdbc.password}") String password,
+	                                     @Value("${test.jdbc.minimumIdle}") int minimumIdle,
+	                                     @Value("${test.jdbc.maximumPoolSize}") int maximumPoolSize) {
+		return hikariDataSourceOf(jdbcUrl, userName, password, minimumIdle, maximumPoolSize);
+	}
+
+	private HikariDataSource hikariDataSourceOf(String jdbcUrl, String userName,
+	                                            String password, int minimumIdle,
+	                                            int maximumPoolSize) {
 		HikariDataSource ds = new HikariDataSource();
 		ds.setJdbcUrl(jdbcUrl);
 		ds.setUsername(userName);
@@ -96,6 +117,24 @@ public class HibernateConfig {
 		ds.setAutoCommit(false);
 		ds.setMinimumIdle(minimumIdle);
 		ds.setMaximumPoolSize(maximumPoolSize);
+		return ds;
+	}
+
+	@Profile("in-memory-db")
+	@Bean
+	public DataSource inMemoryDataSource(@Value("${ramdb.jdbc.driverClass}") String driverClass,
+	                                     @Value("${ramdb.jdbc.url}") String jdbcUrl,
+	                                     @Value("${ramdb.jdbc.userName}") String userName,
+	                                     @Value("${ramdb.jdbc.password}") String password) {
+		DriverManagerDataSource ds = new DriverManagerDataSource();
+		ds.setDriverClassName(driverClass);
+		ds.setUrl(jdbcUrl);
+		if (StringUtils.hasText(userName)) {
+			ds.setUsername(userName);
+			if (StringUtils.hasText(password)) {
+				ds.setPassword(password);
+			}
+		}
 		return ds;
 	}
 
@@ -109,34 +148,86 @@ public class HibernateConfig {
 		return new PersistenceExceptionTranslationPostProcessor();
 	}
 
-	private Properties hibernateProperties() {
+	@Profile("in-memory-db")
+	@Bean("hibernateProperties")
+	public Properties hibernatePropertiesForInMemoryDb() {
 		return new Properties() {
 			{
-				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-				setProperty("hibernate.jdbc.batch_size",
-						env.getProperty("hibernate.jdbc.batch_size"));
-				setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-				setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
-				setProperty("hibernate.validator.autoregister_listeners",
-						env.getProperty("hibernate.validator.autoregister_listeners"));
+				setProperty("hibernate.dialect", env.getProperty("ramdb.hibernate.dialect"));
 
-				// http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x
-				// http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache
-				// setProperty("hibernate.generate_statistics", "true");
-				// setProperty("hibernate.cache.use_structured_entries", "true");
+				// for hbm < 4x
+//				setProperty("net.sf.ehcache.cacheManagerName",
+//						env.getProperty("net.sf.ehcache.cacheManagerName.in_memory_db"));
+				// solution for hbm >= 4x
+//				setProperty("net.sf.ehcache.configurationResourceName",
+//						env.getProperty("net.sf.ehcache.configurationResourceName.in_memory_db"));
 
-				setProperty("hibernate.cache.use_second_level_cache",
-						env.getProperty("hibernate.cache.use_second_level_cache"));
-				setProperty("hibernate.cache.use_query_cache",
-						env.getProperty("hibernate.cache.use_query_cache"));
-				setProperty("hibernate.cache.region.factory_class",
-						env.getProperty("hibernate.cache.region.factory_class"));
-
-				// setProperty("hibernate.hbm2ddl.auto", "update");
-				// setProperty("hibernate.id.new_generator_mappings", "true");
-				// setProperty("hibernate.current_session_context_class", "jta");
-				// setProperty("javax.persistence.validation.mode", "");
+				setProperty("hibernate.hbm2ddl.auto",
+						env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
+				addCommonHbmProps(this);
 			}
 		};
+	}
+
+	@Profile("test-jdbc-ds")
+	@Bean("hibernateProperties")
+	public Properties hibernatePropertiesForTestJdbcDs() {
+		return new Properties() {
+			{
+				setProperty("hibernate.hbm2ddl.auto",
+						env.getProperty("test.hibernate.hbm2ddl.auto"));
+				addCommonHbmProps(this);
+			}
+		};
+	}
+
+	@Profile({"prod-jdbc-ds", "prod-jndi-ds"})
+	@Bean("hibernateProperties")
+	public Properties hibernatePropertiesForJdbcDs() {
+		return new Properties() {
+			{
+//				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.dialect.storage_engine",
+						env.getProperty("hibernate.dialect.storage_engine"));
+
+				// for hbm < 4x
+//				setProperty("net.sf.ehcache.cacheManagerName",
+//						env.getProperty("net.sf.ehcache.cacheManagerName.jdbc_ds"));
+				// solution for hbm >= 4x
+//				setProperty("net.sf.ehcache.configurationResourceName",
+//						env.getProperty("net.sf.ehcache.configurationResourceName.jdbc_ds"));
+
+				addCommonHbmProps(this);
+			}
+		};
+	}
+
+	private void addCommonHbmProps(Properties properties) {
+		properties.setProperty("hibernate.jdbc.batch_size",
+				env.getProperty("hibernate.jdbc.batch_size"));
+		properties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+		properties.setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
+		properties.setProperty("hibernate.validator.autoregister_listeners",
+				env.getProperty("hibernate.validator.autoregister_listeners"));
+
+		// http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x
+		// http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache
+		// properties.setProperty("hibernate.generate_statistics", "true");
+		// properties.setProperty("hibernate.cache.use_structured_entries", "true");
+
+		properties.setProperty("hibernate.cache.use_second_level_cache",
+				env.getProperty("hibernate.cache.use_second_level_cache"));
+		properties.setProperty("hibernate.cache.use_query_cache",
+				env.getProperty("hibernate.cache.use_query_cache"));
+		properties.setProperty("hibernate.cache.region.factory_class",
+				env.getProperty("hibernate.cache.region.factory_class"));
+//		properties.setProperty("net.sf.ehcache.configurationResourceName",
+//				env.getProperty("net.sf.ehcache.configurationResourceName"));
+
+		// properties.setProperty("hibernate.hbm2ddl.auto", "update");
+		// properties.setProperty("hibernate.id.new_generator_mappings", "true");
+		// properties.setProperty("hibernate.current_session_context_class", "jta");
+		// properties.setProperty("javax.persistence.validation.mode", "");
+
 	}
 }

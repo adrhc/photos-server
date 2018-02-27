@@ -2,7 +2,7 @@ package image.photos.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
-import image.persistence.integration.repository.AppConfigRepository;
+import image.persistence.repository.AppConfigRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

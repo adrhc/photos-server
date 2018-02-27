@@ -1,7 +1,8 @@
 package image.photos.album;
 
 import image.cdm.album.page.AlbumPage;
-import image.persistence.integration.repository.AlbumPageRepository;
+import image.persistence.repository.AlbumPageRepository;
+import image.persistence.repository.ESortType;
 import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class AlbumPageService {
 	@Inject
 	private AlbumPageRepository albumPageRepository;
 
-	public List<AlbumPage> getPage(int pageNr, String sort, String toSearch,
+	public List<AlbumPage> getPage(int pageNr, ESortType sort, String toSearch,
 	                               boolean viewHidden, boolean viewOnlyPrintable,
 	                               Integer albumId) {
 		List<AlbumPage> thumbs = albumPageRepository.getPageFromDb(pageNr, sort,

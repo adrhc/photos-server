@@ -1,11 +1,12 @@
 package image.photos.album;
 
+import image.cdm.image.EImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
-import image.persistence.integration.repository.AlbumRepository;
-import image.persistence.integration.repository.AppConfigRepository;
-import image.persistence.integration.repository.ImageRepository;
+import image.persistence.repository.AlbumRepository;
+import image.persistence.repository.AppConfigRepository;
+import image.persistence.repository.ImageRepository;
 import image.photos.events.album.AlbumEventBuilder;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.events.album.EAlbumEventType;
@@ -71,7 +72,7 @@ public class AlbumImporterService {
 			logger.warn("{} este gol!", albumPath.getPath());
 			return false;
 		}
-		Album album = albumRepository.getAlbumByName(albumPath.getName());
+		Album album = this.albumRepository.getAlbumByName(albumPath.getName());
 		if (album != null) {
 			// albumPath este un album deja importat deci NU nou
 			return false;
@@ -84,7 +85,7 @@ public class AlbumImporterService {
 	private ThumbUtils thumbUtils;
 
 	public void importAlbumByName(String albumName) {
-		importAlbumByPath(new File(appConfigRepository.getLinuxAlbumPath(), albumName));
+		importAlbumByPath(new File(this.appConfigRepository.getLinuxAlbumPath(), albumName));
 	}
 
 	public void importAllFromAlbumsRoot() {
@@ -94,7 +95,7 @@ public class AlbumImporterService {
 	}
 
 	public void importNewAlbumsOnly() {
-		importFromAlbumsRoot(IS_NEW_VALID_ALBUM);
+		importFromAlbumsRoot(this.IS_NEW_VALID_ALBUM);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class AlbumImporterService {
 	 * @param albumsFilter
 	 */
 	private void importFromAlbumsRoot(Predicate<File> albumsFilter) {
-		File albumsRoot = new File(appConfigRepository.getLinuxAlbumPath());
+		File albumsRoot = new File(this.appConfigRepository.getLinuxAlbumPath());
 		File[] files = albumsRoot.listFiles();
 		if (files == null || files.length == 0) {
 			return;
@@ -136,7 +137,7 @@ public class AlbumImporterService {
 		if (!noFiles) {
 			Arrays.sort(files);
 		}
-		Album album = albumRepository.getAlbumByName(path.getName());
+		Album album = this.albumRepository.getAlbumByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
 			// album inexistent in DB deci nou
@@ -146,12 +147,12 @@ public class AlbumImporterService {
 				return;
 			}
 			// creem un nou album (dir aferent are poze)
-			album = albumRepository.createAlbum(path.getName());
+			album = this.albumRepository.createAlbum(path.getName());
 		}
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
 		MutableValueHolder<Boolean> existsAtLeast1ImageChange = MutableValueHolder.of(false);
-		Disposable subscription = imageEventsEmitter
+		Disposable subscription = this.imageEventsEmitter
 				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
 						ie -> existsAtLeast1ImageChange.setValue(true),
@@ -178,7 +179,7 @@ public class AlbumImporterService {
 		// todo: make sure to dispose even when an exception occurs
 		subscription.dispose();
 		if (existsAtLeast1ImageChange.getValue()) {
-			albumEventsEmitter.emit(AlbumEventBuilder
+			this.albumEventsEmitter.emit(AlbumEventBuilder
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
 		}
@@ -193,7 +194,7 @@ public class AlbumImporterService {
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
 		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
-		Image dbImage = imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
+		Image dbImage = this.imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
@@ -201,7 +202,7 @@ public class AlbumImporterService {
 			// check lastModified for image then extract EXIF and update
 			updateImageMetadataFromFile(imgFile, dbImage);
 		} else {
-			Date thumbLastModified = thumbUtils
+			Date thumbLastModified = this.thumbUtils
 					.getThumbLastModified(imgFile, dbImage.getImageMetadata().getDateTime());
 			if (thumbLastModified.after(dbImage.getImageMetadata().getThumbLastModified())) {
 				// check lastModified for thumb then update in DB lastModified date only
@@ -212,10 +213,10 @@ public class AlbumImporterService {
 	}
 
 	private void updateThumbLastModifiedForImgFile(Date thumbLastModified, Integer imageId) {
-		Image updatedDbImg = imageRepository
+		Image updatedDbImg = this.imageRepository
 				.updateThumbLastModifiedForImg(thumbLastModified, imageId);
 		logger.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
-		imageEventsEmitter.emit(ImageEventBuilder
+		this.imageEventsEmitter.emit(ImageEventBuilder
 				.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
 				.image(updatedDbImg).build());
 	}
@@ -223,16 +224,16 @@ public class AlbumImporterService {
 	private void updateImageMetadataFromFile(File imgFile, Image dbImage) {
 		logger.debug("update EXIF for {}/{}",
 				imgFile.getParentFile().getName(), dbImage.getName());
-		ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
-		Image imgWithUpdatedMetadata = imageRepository
+		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
+		Image imgWithUpdatedMetadata = this.imageRepository
 				.updateImageMetadata(imageMetadata, dbImage.getId());
-		imageEventsEmitter.emit(ImageEventBuilder
+		this.imageEventsEmitter.emit(ImageEventBuilder
 				.of(EImageEventType.EXIF_UPDATED)
 				.image(imgWithUpdatedMetadata).build());
 	}
 
 	private boolean createImageFromFile(File imgFile, Album album) {
-		ImageMetadata imageMetadata = exifExtractorService.extractMetadata(imgFile);
+		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
 		if (imageMetadata == null) {
 			logger.info("{} no longer exists!", imgFile.getPath());
 			return false;
@@ -242,8 +243,8 @@ public class AlbumImporterService {
 		newImg.setImageMetadata(imageMetadata);
 		newImg.setName(imgFile.getName());
 		newImg.setAlbum(album);
-		imageRepository.persistImage(newImg);
-		imageEventsEmitter.emit(ImageEventBuilder
+		this.imageRepository.persistImage(newImg);
+		this.imageEventsEmitter.emit(ImageEventBuilder
 				.of(EImageEventType.CREATED)
 				.image(newImg).build());
 		return true;
@@ -256,7 +257,7 @@ public class AlbumImporterService {
 	 */
 	public void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		logger.debug("BEGIN {}", album.getName());
-		List<Image> images = imageRepository.getImagesByAlbumId(album.getId());
+		List<Image> images = this.imageRepository.getImagesByAlbumId(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
 			int fsNameIdx = foundImageNames.indexOf(dbName);
@@ -264,27 +265,27 @@ public class AlbumImporterService {
 				// imagine existenta in DB cu acelas nume ca in file system
 				return;
 			}
-			String oppositeExtensionCase = imageUtils.changeToOppositeExtensionCase(dbName);
+			String oppositeExtensionCase = this.imageUtils.changeToOppositeExtensionCase(dbName);
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
 			ImageEventBuilder imgEvBuilder = new ImageEventBuilder().album(album).image(image);
 			if (fsNameIdx >= 0) {
 				logger.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				imageRepository.changeName(oppositeExtensionCase, image.getId());
-				imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
+				this.imageRepository.changeName(oppositeExtensionCase, image.getId());
+				this.imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
 				return;
 			}
-			if (image.getStatus() == Image.DEFAULT_STATUS) {
+			if (image.getStatus() == EImageStatus.DEFAULT.getValueAsByte()) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				imageRepository.deleteImage(image.getId());
-				imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
+				this.imageRepository.safelyDeleteImage(image.getId());
+				this.imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-			if (imageRepository.markDeleted(image.getId())) {
-				imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
+			if (this.imageRepository.markDeleted(image.getId())) {
+				this.imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
 			}
 		});
 		logger.debug("END {}", album.getName());
