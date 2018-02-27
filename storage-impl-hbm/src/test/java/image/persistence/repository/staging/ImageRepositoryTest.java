@@ -1,5 +1,6 @@
 package image.persistence.repository.staging;
 
+import image.cdm.image.ImageRating;
 import image.persistence.entity.Image;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
 import image.persistence.repository.staging.album.AlbumRepoWriteTestBase;
@@ -32,7 +33,9 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 
 	@Test
 	public void changeRating() throws Exception {
-
+		this.imageRepository.changeRating(new ImageRating(this.imageId, (byte) 3));
+		Image alteredImage = this.imageRepository.getImageById(this.imageId);
+		Assert.assertEquals(alteredImage.getRating(), 3);
 	}
 
 	@Test
