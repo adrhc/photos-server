@@ -129,12 +129,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration combine.self="append">
-                    <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
                     <environmentVariables>
                         <spring.profiles.active>jdbc-ds</spring.profiles.active>
                     </environmentVariables>
                     <groups>${storage-impl-hbm.groups}</groups>
-                    <!--<skipTests>${skipTests}</skipTests>-->
                 </configuration>
             </plugin>
             <plugin>

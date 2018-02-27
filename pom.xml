@@ -723,33 +723,13 @@
                         <verbose>false</verbose>
                         <showWeaveInfo>false</showWeaveInfo>
                         <privateScope>true</privateScope>
-
-                        <!--
-                            https://palesz.wordpress.com/2011/12/03/howto-maven-lombok-and-aspectj-together/
-
-                            maven + aspectj + lombok problem
-                        -->
-                        <sources><source/></sources>
-                        <forceAjcCompile>true</forceAjcCompile>
-                        <weaveDirectories>
-                            <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
-                            <weaveDirectory>${project.build.directory}/test-classes</weaveDirectory>
-                        </weaveDirectories>
-
                         <source>${source.version}</source>
                         <target>${source.version}</target>
                         <complianceLevel>${source.version}</complianceLevel>
                     </configuration>
                     <executions>
-                        <!--<execution>-->
-                            <!--<phase>process-sources</phase>-->
-                            <!--<goals>-->
-                                <!--<goal>compile</goal>-->
-                                <!--<goal>test-compile</goal>-->
-                            <!--</goals>-->
-                        <!--</execution>-->
                         <execution>
-                            <phase>process-classes</phase>
+                            <phase>process-sources</phase>
                             <goals>
                                 <goal>compile</goal>
                                 <goal>test-compile</goal>
