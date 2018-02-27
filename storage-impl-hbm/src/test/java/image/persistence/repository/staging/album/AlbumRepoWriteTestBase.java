@@ -36,23 +36,6 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 	protected Image image;
 	protected Integer imageId;
 
-//	@Before
-//	public void setUp() {
-//		deleteExistingAlbumAndImage(1);
-//		createAnAlbumAndImage();
-//	}
-
-//	@Transactional
-//	private void deleteExistingAlbumAndImage(Integer imageId) {
-//		Image image = imageRepository.getImageById(imageId);
-//		if (image == null) {
-//			return;
-//		}
-//		Integer albumId = image.getAlbum().getId();
-//		imageRepository.safelyDeleteImage(imageId);
-//		albumRepository.deleteAlbum(albumId);
-//	}
-
 	@Before
 	public void createAnAlbumWithImage() {
 		doTransaction(() -> {
@@ -68,8 +51,7 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 
 	@After
 	public void removeAlbumAndImage() {
-		this.albumRepository.deleteAlbum(this.album.getId());
-		logger.debug("removing album.id = {}, album.name = {}",
-				this.album.getId(), this.album.getName());
+		this.albumRepository.deleteAlbum(this.albumId);
+		logger.debug("removing album.id = {}", this.albumId);
 	}
 }

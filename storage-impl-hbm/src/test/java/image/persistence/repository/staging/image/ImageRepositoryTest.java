@@ -1,4 +1,4 @@
-package image.persistence.repository.staging;
+package image.persistence.repository.staging.image;
 
 import image.cdm.image.EImageStatus;
 import image.cdm.image.ImageRating;
@@ -60,17 +60,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	}
 
 	@Test
-	public void persistImage() throws Exception {
-
-	}
-
-	@Test
 	public void markDeleted() throws Exception {
-
-	}
-
-	@Test
-	public void deleteImage() throws Exception {
 
 	}
 
