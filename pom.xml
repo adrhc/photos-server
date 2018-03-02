@@ -791,8 +791,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
             <!--<plugin>-->
-                <!--<groupId>org.projectlombok</groupId>-->
-                <!--<artifactId>lombok-maven-plugin</artifactId>-->
+            <!--<groupId>org.projectlombok</groupId>-->
+            <!--<artifactId>lombok-maven-plugin</artifactId>-->
             <!--</plugin>-->
         </plugins>
 
@@ -850,7 +850,8 @@
                 <storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
                 <photos.groups>
                     image.photos.misc.MiscTestCategory.class,
-                    image.photos.JsonMapperConfig.class
+                    image.photos.JsonMapperConfig.class,
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class
                 </photos.groups>
                 <db.host>dummy-host</db.host>
                 <test.db.host>dummy-host</test.db.host>
@@ -885,7 +886,8 @@
                 <photos.groups>
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.TestPhotosConfig.class
+                    image.photos.TestPhotosConfig.class,
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class
                 </photos.groups>
                 <db.host>adrhc.go.ro</db.host>
                 <test.db.host>adrhc.go.ro</test.db.host>

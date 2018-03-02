@@ -1,7 +1,7 @@
 package image.photos.config;
 
 import image.photos.TestPhotosConfig;
-import image.photos.springtestconfig.JdbcDsPhotosTestConfig;
+import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@JdbcDsPhotosTestConfig
+@ProdJdbcDsPhotosTestConfig
 @Category(TestPhotosConfig.class)
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);

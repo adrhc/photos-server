@@ -2,7 +2,7 @@ package image.photos.album;
 
 import image.cdm.album.cover.AlbumCover;
 import image.photos.TestPhotosConfig;
-import image.photos.springtestconfig.JdbcDsPhotosTestConfig;
+import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@JdbcDsPhotosTestConfig
+@ProdJdbcDsPhotosTestConfig
 @Category(TestPhotosConfig.class)
 public class AlbumCoverServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverServiceTest.class);
