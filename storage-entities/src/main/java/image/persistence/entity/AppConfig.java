@@ -27,7 +27,7 @@ public class AppConfig implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -36,7 +36,7 @@ public class AppConfig implements Serializable {
 
 	@Column
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -45,7 +45,7 @@ public class AppConfig implements Serializable {
 
 	@Column
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
@@ -70,20 +70,25 @@ public class AppConfig implements Serializable {
 	@Version
 	@Column(name = "last_update")
 	public Date getLastUpdate() {
-		return lastUpdate;
+		return this.lastUpdate;
 	}
 
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 
+	public boolean similarTo(AppConfig other) {
+		return this.name == null ? other.getName() == null : this.name.equals(other.getName()) &&
+				this.value == null ? other.getValue() == null : this.value.equals(other.getValue());
+	}
+
 	@Override
 	public String toString() {
 		return "AppConfig{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", value='" + value + '\'' +
-				", lastUpdate=" + lastUpdate +
+				"id=" + this.id +
+				", name='" + this.name + '\'' +
+				", value='" + this.value + '\'' +
+				", lastUpdate=" + this.lastUpdate +
 				'}';
 	}
 }
