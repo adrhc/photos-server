@@ -87,8 +87,12 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
-		Session session = this.sessionFactory.getCurrentSession();
-		return (List<AppConfig>) session.createCriteria(AppConfig.class).setCacheable(true).list();
+		CriteriaBuilder builder = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
+		CriteriaQuery<AppConfig> criteria = builder.createQuery(AppConfig.class);
+		Root<AppConfig> root = criteria.from(AppConfig.class);
+		criteria.select(root);
+		Query<AppConfig> q = this.sessionFactory.getCurrentSession().createQuery(criteria);
+		return q.setCacheable(true).list();
 	}
 
 	@Override

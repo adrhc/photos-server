@@ -92,7 +92,6 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
         </dependency>
         <!--<dependency>-->
         <!--<groupId>org.hsqldb</groupId>-->
@@ -132,7 +131,7 @@
                     <environmentVariables>
                         <spring.profiles.active>jdbc-ds</spring.profiles.active>
                     </environmentVariables>
-                    <groups>${storage-impl-hbm.groups}</groups>
+                    <groups>${junit5.storage-impl-hbm.groups}</groups>
                 </configuration>
             </plugin>
             <plugin>
