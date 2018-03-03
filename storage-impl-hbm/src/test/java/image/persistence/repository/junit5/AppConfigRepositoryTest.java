@@ -5,16 +5,14 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
 import net.jcip.annotations.NotThreadSafe;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @NotThreadSafe
 @ExtendWith(SpringExtension.class)
@@ -26,16 +24,12 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 
-	@Test
+	@RepeatedTest(5)
 	void createAppConfig() {
-		List<AppConfig> appConfigs = new ArrayList<>();
-		appConfigs.add(supplyAppConfig());
-		appConfigs.add(supplyAppConfig());
-		appConfigs.add(supplyAppConfig());
-		appConfigs.forEach(this.appConfigRepository::createAppConfig);
-		this.appConfigRepository.getAppConfigs().forEach(appConfig ->
-				assertEquals(1,
-						appConfigs.stream().filter(appConfig::similarTo).count()));
+		AppConfig appConfig = supplyAppConfig();
+		this.appConfigRepository.createAppConfig(appConfig);
+		AppConfig dbAppConfig = this.appConfigRepository.getAppConfigById(appConfig.getId());
+		assertTrue(dbAppConfig.similarTo(appConfig));
 	}
 
 	@Test
