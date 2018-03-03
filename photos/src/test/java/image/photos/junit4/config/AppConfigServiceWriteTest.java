@@ -1,6 +1,7 @@
 package image.photos.junit4.config;
 
 import image.persistence.entity.AppConfig;
+import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.springtestconfig.InMemoryDbPhotosTestConfig;
@@ -52,7 +53,7 @@ public class AppConfigServiceWriteTest {
 				PosixFilePermissions.asFileAttribute(perms));
 		// photosJsonFSPath
 		AppConfig photosJsonFSPath = new AppConfig();
-		photosJsonFSPath.setName("photos json FS path");
+		photosJsonFSPath.setName(AppConfigEnum.photos_json_FS_path.getValue());
 		photosJsonFSPath.setValue(this.tempDir.toAbsolutePath().toString());
 		logger.debug("{}:\n{}", photosJsonFSPath.getName(), photosJsonFSPath.getValue());
 		this.appConfigRepository.createAppConfig(photosJsonFSPath);

@@ -39,18 +39,19 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 		return Integer.parseInt(s);
 	}
 
-	private String getConfig(AppConfigEnum appConfigEnum) {
-		return getAppConfigById(appConfigEnum.getValue()).getValue();
+	@Override
+	public String getConfig(AppConfigEnum appConfigEnum) {
+		return getAppConfigByName(appConfigEnum.getValue()).getValue();
 	}
 
 	@Override
 	public Integer getPhotosPerPage() {
-		return getConfigInteger(AppConfigEnum.PHOTOS_PER_PAGE);
+		return getConfigInteger(AppConfigEnum.photos_per_page);
 	}
 
 	@Override
-	public String getLinuxAlbumPath() {
-		return getConfig(AppConfigEnum.LINUX_ALBUMS_PATH);
+	public String getAlbumsPath() {
+		return getConfig(AppConfigEnum.albums_path);
 	}
 
 	@Override

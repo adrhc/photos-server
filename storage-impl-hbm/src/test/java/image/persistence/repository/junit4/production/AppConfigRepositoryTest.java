@@ -34,7 +34,7 @@ public class AppConfigRepositoryTest {
 
 	@Test
 	public void getLinuxAlbumPath() {
-		String linuxAlbumPath = this.appConfigRepository.getLinuxAlbumPath();
+		String linuxAlbumPath = this.appConfigRepository.getAlbumsPath();
 		assertThat(linuxAlbumPath, notNullValue());
 		logger.debug("linuxAlbumPath: {}", linuxAlbumPath);
 	}

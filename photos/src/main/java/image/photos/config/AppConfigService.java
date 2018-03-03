@@ -2,6 +2,7 @@ package image.photos.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
+import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +46,7 @@ public class AppConfigService {
 	}
 
 	public String getConfig(String name) {
-		AppConfig ac = appConfigRepository.getAppConfigByName(name);
+		AppConfig ac = this.appConfigRepository.getAppConfigByName(name);
 		if (ac == null) {
 			return null;
 		}
@@ -60,18 +61,18 @@ public class AppConfigService {
 	 * @throws IOException
 	 */
 	public void writeJsonForAppConfigs() throws IOException {
-		File dir = new File(getConfig("photos json FS path"));
+		File dir = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path));
 		dir.mkdirs();
 		File file = new File(dir, "appConfigs.json");
-		List<AppConfig> appConfigs = appConfigRepository.getAppConfigs();
+		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
 //        logger.debug(ArrayUtils.toString(appConfigs));
 //        logger.debug("lastUpdatedAppConfigs = {}", getLastUpdatedAppConfigs());
-		objectMapper.writeValue(file, appConfigs);
+		this.objectMapper.writeValue(file, appConfigs);
 	}
 
 	public long getLastUpdatedAppConfigs() {
 //        logger.debug("BEGIN");
-		List<AppConfig> appConfigs = appConfigRepository.getAppConfigs();
+		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
 		Date date = null;
 		for (AppConfig appConfig : appConfigs) {
 			if (date == null) {
@@ -90,8 +91,8 @@ public class AppConfigService {
 	}
 
 	public long canUseJsonFilesLastUpdate() {
-		AppConfig useJsonFiles = appConfigRepository.getAppConfigByName("use json files");
-		AppConfig useJsonFilesForConfig = appConfigRepository.getAppConfigByName("use json files for config");
+		AppConfig useJsonFiles = this.appConfigRepository.getAppConfigByName("use json files");
+		AppConfig useJsonFilesForConfig = this.appConfigRepository.getAppConfigByName("use json files for config");
 		if (useJsonFiles.getLastUpdate().after(useJsonFilesForConfig.getLastUpdate())) {
 //            logger.debug("END {}", useJsonFiles.getLastUpdate().getTime());
 			return useJsonFiles.getLastUpdate().getTime();

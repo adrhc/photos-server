@@ -2,6 +2,7 @@ package image.photos.junit5.config;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
+import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.springtestconfig.InMemoryDbPhotosTestConfig;
@@ -42,7 +43,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	private void createPhotosJsonFSPathAppConfig(String photosJsonFSPath) {
 		AppConfig appConfig = new AppConfig();
-		appConfig.setName("photos json FS path");
+		appConfig.setName(AppConfigEnum.photos_json_FS_path.getValue());
 		appConfig.setValue(photosJsonFSPath);
 		this.appConfigRepository.createAppConfig(appConfig);
 	}

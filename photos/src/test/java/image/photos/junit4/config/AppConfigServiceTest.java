@@ -1,5 +1,7 @@
 package image.photos.junit4.config;
 
+import image.persistence.entity.enums.AppConfigEnum;
+import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
 import net.jcip.annotations.NotThreadSafe;
@@ -28,11 +30,13 @@ public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);
 
 	@Autowired
+	private AppConfigRepository appConfigRepository;
+	@Autowired
 	private AppConfigService appConfigService;
 
 	@Test
 	public void getConfigs() {
-		String photosJsonFSPath = this.appConfigService.getConfig("photos json FS path");
+		String photosJsonFSPath = this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path);
 		assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
 		logger.debug("photosJsonFSPath = {}", photosJsonFSPath);
 

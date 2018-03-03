@@ -1,6 +1,7 @@
 package image.persistence.repository;
 
 import image.persistence.entity.AppConfig;
+import image.persistence.entity.enums.AppConfigEnum;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -13,9 +14,11 @@ public interface AppConfigRepository {
 	@Transactional
 	void createAppConfig(AppConfig appConfig);
 
+	String getConfig(AppConfigEnum appConfigEnum);
+
 	Integer getPhotosPerPage();
 
-	String getLinuxAlbumPath();
+	String getAlbumsPath();
 
 	@Transactional
 	AppConfig getAppConfigById(Integer id);

@@ -544,6 +544,9 @@
                 <version>2.11.0</version>
                 <scope>test</scope>
             </dependency>
+            <!--
+                https://glytching.github.io/junit-extensions/
+            -->
             <dependency>
                 <groupId>io.github.glytching</groupId>
                 <artifactId>junit-extensions</artifactId>

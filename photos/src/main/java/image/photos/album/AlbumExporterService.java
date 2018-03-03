@@ -3,6 +3,7 @@ package image.photos.album;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.persistence.entity.Album;
+import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
@@ -52,7 +53,7 @@ public class AlbumExporterService {
 	private AlbumCoverService albumCoverService;
 
 	public boolean writeJsonForAlbumSafe(String name) {
-		Album album = albumRepository.getAlbumByName(name);
+		Album album = this.albumRepository.getAlbumByName(name);
 		if (album == null) {
 			logger.error("Missing album: {}", name);
 		}
@@ -71,7 +72,7 @@ public class AlbumExporterService {
 	}
 
 	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<Album> albums = albumRepository.getAlbumsOrderedByName();
+		List<Album> albums = this.albumRepository.getAlbumsOrderedByName();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (Album album : albums) {
 			successForAlbum = writeJsonForAlbumSafe(album);
@@ -90,11 +91,11 @@ public class AlbumExporterService {
 	 * Necesara doar la debug din js/grunt fara serverul java.
 	 */
 	public boolean writeJsonForAlbumsPageSafe() {
-		File file = new File(appConfigService.getConfig("photos json FS path"), ALBUMS_PAGE_JSON);
+		File file = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
-		List<AlbumCover> albums = albumCoverService.getCovers();
+		List<AlbumCover> albums = this.albumCoverService.getCovers();
 		try {
-			jsonMapper.writeValue(file, albums);
+			this.jsonMapper.writeValue(file, albums);
 			return true;
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
@@ -105,32 +106,32 @@ public class AlbumExporterService {
 
 	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
-		int pageCount = albumPageRepository.getPageCount(null, false, false, album.getId());
-		Integer photosPerPage = appConfigRepository.getPhotosPerPage();
+		int pageCount = this.albumPageRepository.getPageCount(null, false, false, album.getId());
+		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
-		File dir = new File(appConfigService.getConfig("photos json FS path"),
+		File dir = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path),
 				album.getId().toString());
 		dir.mkdirs();
 		File file = new File(dir, "pageCount.json");
 		// write pageCount info
-		jsonMapper.writeValue(file, map);
+		this.jsonMapper.writeValue(file, map);
 		for (int i = 0; i < pageCount; i++) {
 			logger.debug("write page {} asc", (i + 1));
-			jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
-					albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
+			this.jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
+					this.albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
 			logger.debug("write page {} desc", (i + 1));
-			jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
-					albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
+			this.jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
+					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
-		albumRepository.clearDirtyForAlbum(album.getId());
+		this.albumRepository.clearDirtyForAlbum(album.getId());
 		logger.debug("END {}", album.getName());
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		albumEventsEmitter.albumEventsByTypes(false, ALBUM_IMPORTED)
+		this.albumEventsEmitter.albumEventsByTypes(false, ALBUM_IMPORTED)
 				.observeOn(Schedulers.io())
 				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),
 						t -> {
