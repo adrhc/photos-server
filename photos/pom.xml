@@ -105,17 +105,22 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration combine.self="append">
                     <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
                     <environmentVariables>
                         <spring.profiles.active>jdbc-ds</spring.profiles.active>
                     </environmentVariables>
-                    <groups>${photos.groups}</groups>
-                    <!--<groups>image.photos.JsonMapperConfig.class</groups>-->
-                    <!--<groups>image.photos.TestPhotosConfig.class</groups>-->
-                    <!--<skipTests>${skipTests}</skipTests>-->
+                    <!--<groups>${junit4.photos.groups}</groups>-->
+                    <groups>${junit5.photos.groups}</groups>
+                    <!--<properties>-->
+                    <!--<includeTags>image.photos.misc.MiscTestCategory</includeTags>-->
+                    <!--<includeTags>image.photos.JsonMapperConfig</includeTags>-->
+                    <!--<includeTags>image.photos.springtestconfig.InMemoryDbPhotosTestConfig</includeTags>-->
+                    <!--<includeTags>junit5&amp;photos&amp;inmemorydb</includeTags>-->
+                    <!--<includeTags>junit5&amp;photos&amp;json</includeTags>-->
+                    <!--<includeTags>junit5&amp;photos&amp;misc</includeTags>-->
+                    <!--</properties>-->
                 </configuration>
             </plugin>
         </plugins>

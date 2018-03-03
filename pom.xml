@@ -433,21 +433,28 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
                 <version>${junit.jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.junit.vintage</groupId>
-                <artifactId>junit-vintage-engine</artifactId>
-                <version>${junit.vintage.version}</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-migrationsupport</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-console</artifactId>
+                <version>${junit.platform.version}</version>
                 <scope>test</scope>
             </dependency>
             <!-- Only required to run tests in an IDE that bundles an older version -->
@@ -455,6 +462,32 @@
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
                 <version>${junit.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-runner</artifactId>
+                <version>${junit.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-surefire-provider</artifactId>
+                <version>${junit.platform.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>${junit.vintage.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -524,20 +557,43 @@
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-migrationsupport</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-console</artifactId>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
 
         <dependency>
@@ -620,9 +676,25 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.20.1</version>
+                    <version>2.19.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.junit.platform</groupId>
+                            <artifactId>junit-platform-surefire-provider</artifactId>
+                            <version>${junit.platform.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.junit.jupiter</groupId>
+                            <artifactId>junit-jupiter-engine</artifactId>
+                            <version>${junit.jupiter.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.junit.vintage</groupId>
+                            <artifactId>junit-vintage-engine</artifactId>
+                            <version>${junit.vintage.version}</version>
+                        </dependency>
+                    </dependencies>
                     <!--
                     When directly using surefire-junit47 I get:
                         NoClassDefFoundError: org/junit/runner/notification/RunListener
@@ -848,11 +920,17 @@
                     org.junit.Test.class means "no category"
                 -->
                 <storage-impl-hbm.groups>org.junit.Test.class</storage-impl-hbm.groups>
-                <photos.groups>
+                <junit4.photos.groups>
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
                     image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class
-                </photos.groups>
+                </junit4.photos.groups>
+                <junit5.photos.groups>
+                    image.photos.misc.MiscTestCategory,
+                    image.photos.JsonMapperConfig,
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
+                    junit5&amp;photos&amp;inmemorydb
+                </junit5.photos.groups>
                 <db.host>dummy-host</db.host>
                 <test.db.host>dummy-host</test.db.host>
             </properties>
@@ -867,11 +945,19 @@
                     image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
                 </storage-impl-hbm.groups>
-                <photos.groups>
+                <junit4.photos.groups>
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.TestPhotosConfig.class
-                </photos.groups>
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class,
+                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
+                </junit4.photos.groups>
+                <junit5.photos.groups>
+                    image.photos.misc.MiscTestCategory,
+                    image.photos.JsonMapperConfig,
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
+                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig,
+                    junit5&amp;photos&amp;inmemorydb
+                </junit5.photos.groups>
                 <db.host>127.0.0.1</db.host>
                 <test.db.host>127.0.0.1</test.db.host>
             </properties>
@@ -883,12 +969,19 @@
                     image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
                 </storage-impl-hbm.groups>
-                <photos.groups>
+                <junit4.photos.groups>
                     image.photos.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.TestPhotosConfig.class,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class
-                </photos.groups>
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class,
+                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
+                </junit4.photos.groups>
+                <junit5.photos.groups>
+                    image.photos.misc.MiscTestCategory,
+                    image.photos.JsonMapperConfig,
+                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
+                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig,
+                    junit5&amp;photos&amp;inmemorydb
+                </junit5.photos.groups>
                 <db.host>adrhc.go.ro</db.host>
                 <test.db.host>adrhc.go.ro</test.db.host>
             </properties>

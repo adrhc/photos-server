@@ -1,6 +1,5 @@
 package image.photos.config;
 
-import image.photos.TestPhotosConfig;
 import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
@@ -23,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringRunner.class)
 @NotThreadSafe
 @ProdJdbcDsPhotosTestConfig
-@Category(TestPhotosConfig.class)
+@Category(ProdJdbcDsPhotosTestConfig.class)
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);
 
@@ -32,33 +31,33 @@ public class AppConfigServiceTest {
 
 	@Test
 	public void getConfigs() {
-		String photosJsonFSPath = appConfigService.getConfig("photos json FS path");
+		String photosJsonFSPath = this.appConfigService.getConfig("photos json FS path");
 		assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
 		logger.debug("photosJsonFSPath = {}", photosJsonFSPath);
 
 		// nothing to check here
-		boolean bStopHttpdChecking = appConfigService.getConfigBool("stop_httpd_checking");
+		boolean bStopHttpdChecking = this.appConfigService.getConfigBool("stop_httpd_checking");
 		logger.debug("bStopHttpdChecking = {}", bStopHttpdChecking);
 
-		Boolean stopHttpdChecking = appConfigService.getConfigBoolean("stop_httpd_checking");
+		Boolean stopHttpdChecking = this.appConfigService.getConfigBoolean("stop_httpd_checking");
 		assertNotNull(stopHttpdChecking);
 		logger.debug("stopHttpdChecking = {}", stopHttpdChecking);
 
-		Integer subtitlesExtractorLines = appConfigService.getConfigInteger("subtitles-extractor-lines");
+		Integer subtitlesExtractorLines = this.appConfigService.getConfigInteger("subtitles-extractor-lines");
 		Assert.assertTrue(subtitlesExtractorLines > 0);
 		logger.debug("subtitlesExtractorLines = {}", subtitlesExtractorLines);
 	}
 
 	@Test
 	public void getLastUpdatedAppConfigs() {
-		long lastUpdatedAppConfigs = appConfigService.getLastUpdatedAppConfigs();
+		long lastUpdatedAppConfigs = this.appConfigService.getLastUpdatedAppConfigs();
 		Assert.assertTrue(lastUpdatedAppConfigs > 0);
 		logger.debug("lastUpdatedAppConfigs = {}", lastUpdatedAppConfigs);
 	}
 
 	@Test
 	public void canUseJsonFilesLastUpdate() {
-		long canUseJsonFilesLastUpdate = appConfigService.canUseJsonFilesLastUpdate();
+		long canUseJsonFilesLastUpdate = this.appConfigService.canUseJsonFilesLastUpdate();
 		Assert.assertTrue(canUseJsonFilesLastUpdate > 0);
 		logger.debug("canUseJsonFilesLastUpdate = {}", canUseJsonFilesLastUpdate);
 	}
