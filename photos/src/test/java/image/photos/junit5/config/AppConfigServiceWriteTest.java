@@ -1,31 +1,23 @@
 package image.photos.junit5.config;
 
 import image.persistence.entity.AppConfig;
+import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.springtestconfig.InMemoryDbPhotosTestConfig;
+import io.github.glytching.junit.extension.folder.TemporaryFolder;
+import io.github.glytching.junit.extension.folder.TemporaryFolderExtension;
 import net.jcip.annotations.NotThreadSafe;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.EnumSet;
-
-import static org.junit.Assert.assertFalse;
+import java.util.stream.IntStream;
 
 /**
  * Created by adrianpetre on 23.02.2018.
@@ -36,59 +28,30 @@ import static org.junit.Assert.assertFalse;
 @Tag("junit5")
 @Tag("photos")
 @Tag("inmemorydb")
-public class AppConfigServiceWriteTest {
-	private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
+public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private AppConfigService appConfigService;
-	private Path tempDir;
 
 	@BeforeEach
-	public void setUp() throws IOException {
-		// temp directory
-		EnumSet<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
-				PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE,
-				PosixFilePermission.GROUP_READ, PosixFilePermission.GROUP_EXECUTE);
-		this.tempDir = Files.createTempDirectory("writeJsonForAppConfigs-",
-				PosixFilePermissions.asFileAttribute(perms));
-		// photosJsonFSPath
-		AppConfig photosJsonFSPath = new AppConfig();
-		photosJsonFSPath.setName("photos json FS path");
-		photosJsonFSPath.setValue(this.tempDir.toAbsolutePath().toString());
-		logger.debug("{}:\n{}", photosJsonFSPath.getName(), photosJsonFSPath.getValue());
-		this.appConfigRepository.createAppConfig(photosJsonFSPath);
-		// dummy AppConfig
-		AppConfig dummy = new AppConfig();
-		dummy.setName("dummy-name");
-		dummy.setValue("dummy-value");
-		this.appConfigRepository.createAppConfig(dummy);
+	void setUp() {
+		IntStream.range(0, 5).boxed().map(i -> supplyAppConfig())
+				.forEach(this.appConfigRepository::createAppConfig);
+	}
+
+	private void createPhotosJsonFSPathAppConfig(String photosJsonFSPath) {
+		AppConfig appConfig = new AppConfig();
+		appConfig.setName("photos json FS path");
+		appConfig.setValue(photosJsonFSPath);
+		this.appConfigRepository.createAppConfig(appConfig);
 	}
 
 	@Test
-	public void writeJsonForAppConfigs() throws IOException {
+	@ExtendWith(TemporaryFolderExtension.class)
+	public void writeJsonForAppConfigs(TemporaryFolder temporaryFolder) throws IOException {
+		File dir = temporaryFolder.createDirectory("writeJsonForAppConfigs");
+		createPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
 		this.appConfigService.writeJsonForAppConfigs();
-	}
-
-	@AfterEach
-	public void teadDown() throws IOException {
-		Files.walkFileTree(this.tempDir,
-				new SimpleFileVisitor<Path>() {
-					@Override
-					public FileVisitResult postVisitDirectory(
-							Path dir, IOException exc) throws IOException {
-						Files.delete(dir);
-						return FileVisitResult.CONTINUE;
-					}
-
-					@Override
-					public FileVisitResult visitFile(
-							Path file, BasicFileAttributes attrs)
-							throws IOException {
-						Files.delete(file);
-						return FileVisitResult.CONTINUE;
-					}
-				});
-		assertFalse(this.tempDir + " still exists", Files.exists(this.tempDir));
 	}
 }

@@ -85,6 +85,14 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	}
 
 	@Override
+	@Transactional
+	public void updateValue(String value, Integer appConfigId) {
+		AppConfig dbAppConfig = getAppConfigById(appConfigId);
+		dbAppConfig.setValue(value);
+	}
+
+
+	@Override
 	@Transactional(readOnly = true)
 	public List<AppConfig> getAppConfigs() {
 		CriteriaBuilder builder = this.sessionFactory.getCurrentSession().getCriteriaBuilder();

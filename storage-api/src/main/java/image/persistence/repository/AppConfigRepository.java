@@ -26,6 +26,9 @@ public interface AppConfigRepository {
 	@Transactional
 	void update(List<AppConfig> appConfigs);
 
+	@Transactional
+	void updateValue(String value, Integer appConfigId);
+
 	@Transactional(readOnly = true)
 	List<AppConfig> getAppConfigs();
 
