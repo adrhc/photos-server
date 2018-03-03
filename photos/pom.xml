@@ -114,7 +114,7 @@
                     <!--<groups>${junit4.photos.groups}</groups>-->
                     <groups>${junit5.photos.groups}</groups>
                     <!--<properties>-->
-                    <!--<includeTags>image.photos.misc.MiscTestCategory</includeTags>-->
+                    <!--<includeTags>MiscTestCategory</includeTags>-->
                     <!--<includeTags>image.photos.JsonMapperConfig</includeTags>-->
                     <!--<includeTags>image.photos.springtestconfig.InMemoryDbPhotosTestConfig</includeTags>-->
                     <!--<includeTags>junit5&amp;photos&amp;inmemorydb</includeTags>-->

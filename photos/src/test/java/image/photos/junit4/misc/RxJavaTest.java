@@ -1,4 +1,4 @@
-package image.photos.misc;
+package image.photos.junit4.misc;
 
 import io.reactivex.Observable;
 import org.junit.Test;

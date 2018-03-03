@@ -1,6 +1,8 @@
-package image.photos.events.album;
+package image.photos.junit4.events.album;
 
 import image.persistence.entity.Album;
+import image.photos.events.album.AlbumEventBuilder;
+import image.photos.events.album.AlbumEventsEmitter;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import org.junit.Ignore;

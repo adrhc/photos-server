@@ -1,6 +1,7 @@
-package image.photos.album;
+package image.photos.junit4.album;
 
 import image.cdm.album.cover.AlbumCover;
+import image.photos.album.AlbumCoverService;
 import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;

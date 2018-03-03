@@ -1,5 +1,6 @@
-package image.photos.config;
+package image.photos.junit4.config;
 
+import image.photos.config.AppConfigService;
 import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;

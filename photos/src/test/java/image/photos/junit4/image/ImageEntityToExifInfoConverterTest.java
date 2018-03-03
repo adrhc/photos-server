@@ -1,9 +1,10 @@
-package image.photos.image;
+package image.photos.junit4.image;
 
 import image.cdm.image.ExifInfo;
 import image.persistence.entity.IAlbumSupplier;
 import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
+import image.photos.image.ImageMetadataEntityToDTOConverter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
