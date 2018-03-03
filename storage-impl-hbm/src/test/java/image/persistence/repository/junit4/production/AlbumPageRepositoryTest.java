@@ -1,4 +1,4 @@
-package image.persistence.repository.production;
+package image.persistence.repository.junit4.production;
 
 import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;

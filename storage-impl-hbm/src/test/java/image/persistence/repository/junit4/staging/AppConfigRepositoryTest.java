@@ -1,4 +1,4 @@
-package image.persistence.repository.staging;
+package image.persistence.repository.junit4.staging;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;

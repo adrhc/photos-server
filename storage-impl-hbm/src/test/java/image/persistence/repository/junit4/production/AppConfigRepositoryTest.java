@@ -1,4 +1,4 @@
-package image.persistence.repository.production;
+package image.persistence.repository.junit4.production;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.repository.AppConfigRepository;

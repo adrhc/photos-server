@@ -1,4 +1,4 @@
-package image.persistence.repository.staging.image;
+package image.persistence.repository.junit4.staging.image;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;

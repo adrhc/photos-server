@@ -1,4 +1,4 @@
-package image.persistence.repository.staging.album;
+package image.persistence.repository.junit4.staging.album;
 
 import image.persistence.entity.Album;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;

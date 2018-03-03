@@ -1,11 +1,11 @@
-package image.persistence.repository.staging.image;
+package image.persistence.repository.junit4.staging.image;
 
 import image.cdm.image.EImageStatus;
 import image.cdm.image.ImageRating;
 import image.cdm.image.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;
-import image.persistence.repository.staging.album.AlbumRepoWriteTestBase;
+import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
 import image.persistence.repository.util.IDateNoMillisSupplier;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;

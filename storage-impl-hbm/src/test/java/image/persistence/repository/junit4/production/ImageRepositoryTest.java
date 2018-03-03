@@ -1,4 +1,4 @@
-package image.persistence.repository.production;
+package image.persistence.repository.junit4.production;
 
 import image.persistence.entity.Image;
 import image.persistence.repository.ImageRepository;
