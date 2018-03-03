@@ -1,4 +1,4 @@
-package image.photos.junit4.events.album;
+package image.photos.junit4.misc;
 
 import image.persistence.entity.Album;
 import image.photos.events.album.AlbumEventBuilder;
@@ -7,6 +7,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
 /**
  * Created by adr on 2/7/18.
  */
+@Category(MiscTestCategory.class)
 public class AlbumEventsEmitterTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumEventsEmitterTest.class);
 
