@@ -17,9 +17,6 @@ public class AppConfigEntityToCdmConverter implements
 
 	@Override
 	public image.cdm.AppConfig convert(AppConfig source) {
-		if (source == null) {
-			return null;
-		}
 		image.cdm.AppConfig appConfig = new image.cdm.AppConfig();
 		try {
 			BeanUtils.copyProperties(appConfig, source);
