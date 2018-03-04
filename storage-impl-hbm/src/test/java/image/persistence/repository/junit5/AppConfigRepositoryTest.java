@@ -5,19 +5,19 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import net.jcip.annotations.NotThreadSafe;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @NotThreadSafe
 @Junit5HbmInMemoryDbConfig
@@ -36,32 +36,36 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class GetAppConfigById {
-		private Integer idFirstAppConfigDbRecord;
+		private Integer idAppConfig;
 
 		@BeforeEach
 		void setUp() {
-			AppConfig appConfig = supplyAppConfig("first AppConfig db record", "dummy");
+			AppConfig appConfig = supplyAppConfig("byId", "byId-value");
 			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
-			this.idFirstAppConfigDbRecord = appConfig.getId();
+			this.idAppConfig = appConfig.getId();
 		}
 
 		@Test
 		void getAppConfigById() {
 			AppConfig appConfig = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(this.idFirstAppConfigDbRecord);
-			assertEquals("first AppConfig db record", appConfig.getName());
+					.appConfigRepository.getAppConfigById(this.idAppConfig);
+			assertAll("getAppConfigById",
+					() -> assertEquals("byId", appConfig.getName()),
+					() -> assertEquals("byId-value", appConfig.getValue()));
 		}
 	}
 
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class UpdateTest {
-		private List<AppConfig> appConfigs;
+		private List<AppConfig> appConfigs = new ArrayList<>();
 
 		@BeforeEach
 		void setUp() {
-			this.appConfigs = AppConfigRepositoryTest.this.appConfigRepository.getAppConfigs();
-			this.appConfigs.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
+			IntStream.range(0, 5).boxed().map(i -> supplyAppConfig())
+					.peek(this.appConfigs::add)
+					.peek(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig)
+					.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
 		}
 
 		@Test
@@ -72,6 +76,25 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 						.appConfigRepository.getAppConfigById(ac.getId());
 				assertEquals(ac.getValue(), updatedAppConfig.getValue());
 			});
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmInMemoryDbNestedConfig
+	class GetAppConfigByName {
+		@BeforeEach
+		void setUp() {
+			AppConfigRepositoryTest.this.appConfigRepository
+					.createAppConfig(supplyAppConfig("byName", "byName-value"));
+		}
+
+		@Test
+		void getAppConfigByName() {
+			AppConfig appConfig = AppConfigRepositoryTest.this
+					.appConfigRepository.getAppConfigByName("byName");
+			assertAll("getAppConfigByName",
+					() -> assertEquals("byName", appConfig.getName()),
+					() -> assertEquals("byName-value", appConfig.getValue()));
 		}
 	}
 
@@ -96,13 +119,6 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		void getAlbumsPath() {
 			String albumsPath = AppConfigRepositoryTest.this.appConfigRepository.getAlbumsPath();
 			assertEquals("/dummy-path", albumsPath);
-		}
-
-		@Test
-		void getAppConfigByName() {
-			AppConfig appConfig = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigByName("albums_path");
-			Assert.assertEquals("/dummy-path", appConfig.getValue());
 		}
 
 		@Test
