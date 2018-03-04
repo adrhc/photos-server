@@ -5,6 +5,7 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.photos.config.AppConfigsEntityToCdmConverter;
 import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosTestConfig;
 import image.photos.util.ITypeDescriptors;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NotThreadSafe
 @Tag("misc")
 @Junit5InMemoryDbPhotosTestConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -33,7 +35,7 @@ public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier {
 	void beforeAll() {
 		this.appConfigs = IntStream.range(0, 3).boxed()
 				.map(i -> {
-					AppConfig source = supplyAppConfig();
+					AppConfig source = supplyEntityAppConfig();
 					source.setId(i);
 					return source;
 				})

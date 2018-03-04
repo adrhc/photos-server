@@ -37,7 +37,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	@BeforeEach
 	void setUp() {
-		IntStream.range(0, 5).boxed().map(i -> supplyAppConfig())
+		IntStream.range(0, 5).boxed().map(i -> supplyEntityAppConfig())
 				.forEach(this.appConfigRepository::createAppConfig);
 	}
 

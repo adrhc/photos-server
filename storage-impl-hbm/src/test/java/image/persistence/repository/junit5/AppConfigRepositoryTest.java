@@ -38,7 +38,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	class CreateAppConfig {
 		@RepeatedTest(3)
 		void createAppConfig() {
-			AppConfig appConfig = supplyAppConfig();
+			AppConfig appConfig = supplyEntityAppConfig();
 			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
 			AppConfig dbAppConfig = AppConfigRepositoryTest.this
 					.appConfigRepository.getAppConfigById(appConfig.getId());
@@ -53,7 +53,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			AppConfig appConfig = supplyAppConfig("byId", "byId-value");
+			AppConfig appConfig = supplyEntityAppConfig("byId", "byId-value");
 			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
 			this.idAppConfig = appConfig.getId();
 		}
@@ -75,7 +75,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			IntStream.range(0, 3).boxed().map(i -> supplyAppConfig())
+			IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
 					.peek(this.appConfigs::add)
 					.peek(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig)
 					.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
@@ -98,7 +98,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
-					.createAppConfig(supplyAppConfig("byName", "byName-value"));
+					.createAppConfig(supplyEntityAppConfig("byName", "byName-value"));
 		}
 
 		@Test
@@ -129,9 +129,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			this.appConfigRepository.createAppConfig(
-					supplyAppConfig(AppConfigEnum.albums_path.getValue(), "/dummy-path"));
+					supplyEntityAppConfig(AppConfigEnum.albums_path.getValue(), "/dummy-path"));
 			this.appConfigRepository.createAppConfig(
-					supplyAppConfig(AppConfigEnum.photos_per_page.getValue(), "10"));
+					supplyEntityAppConfig(AppConfigEnum.photos_per_page.getValue(), "10"));
 		}
 
 		@Test

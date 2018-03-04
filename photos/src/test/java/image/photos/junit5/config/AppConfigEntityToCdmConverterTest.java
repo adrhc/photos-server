@@ -4,6 +4,7 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.config.AppConfigEntityToCdmConverter;
 import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosTestConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.core.convert.ConversionService;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@NotThreadSafe
 @Tag("misc")
 @Junit5InMemoryDbPhotosTestConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -27,7 +29,7 @@ public class AppConfigEntityToCdmConverterTest implements IAppConfigSupplier {
 
 	@BeforeAll
 	void beforeAll() {
-		this.source = supplyAppConfig();
+		this.source = supplyEntityAppConfig();
 		this.source.setId(1);
 	}
 

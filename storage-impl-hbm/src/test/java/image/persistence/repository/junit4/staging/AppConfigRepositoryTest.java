@@ -38,9 +38,9 @@ public class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@Before
 	public void setUp() {
 		this.appConfigs = new ArrayList<>();
-		this.appConfigs.add(supplyAppConfig());
-		this.appConfigs.add(supplyAppConfig());
-		this.appConfigs.add(supplyAppConfig());
+		this.appConfigs.add(supplyEntityAppConfig());
+		this.appConfigs.add(supplyEntityAppConfig());
+		this.appConfigs.add(supplyEntityAppConfig());
 		for (AppConfig appConfig : this.appConfigs) {
 			this.appConfigRepository.createAppConfig(appConfig);
 		}
