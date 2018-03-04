@@ -12,11 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @NotThreadSafe
@@ -82,8 +85,8 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class GetAppConfigByName {
-		@BeforeEach
-		void setUp() {
+		@BeforeAll
+		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
 					.createAppConfig(supplyAppConfig("byName", "byName-value"));
 		}
@@ -96,48 +99,61 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 					() -> assertEquals("byName", appConfig.getName()),
 					() -> assertEquals("byName-value", appConfig.getValue()));
 		}
+
+		@Test
+		void testGetNoCacheableAppConfigByName() {
+			AppConfig appConfig = AppConfigRepositoryTest.this.appConfigRepository
+					.testGetNoCacheableAppConfigByName("byName");
+			assertAll("testGetNoCacheableAppConfigByName",
+					() -> assertEquals("byName", appConfig.getName()),
+					() -> assertEquals("byName-value", appConfig.getValue()));
+		}
 	}
 
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
-	class AppConfigRUDTest {
+	class AppConfigOtherTest {
+		@Autowired
+		private AppConfigRepository appConfigRepository;
+
 		@BeforeAll
 		void beforeAll() {
-			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(
+			this.appConfigRepository.createAppConfig(
 					supplyAppConfig(AppConfigEnum.albums_path.getValue(), "/dummy-path"));
-			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(
+			this.appConfigRepository.createAppConfig(
 					supplyAppConfig(AppConfigEnum.photos_per_page.getValue(), "10"));
 		}
 
 		@Test
 		void getPhotosPerPage() {
-			Integer photosPerPage = AppConfigRepositoryTest.this.appConfigRepository.getPhotosPerPage();
+			Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 			assertThat(photosPerPage, equalTo(10));
 		}
 
 		@Test
 		void getAlbumsPath() {
-			String albumsPath = AppConfigRepositoryTest.this.appConfigRepository.getAlbumsPath();
+			String albumsPath = this.appConfigRepository.getAlbumsPath();
 			assertEquals("/dummy-path", albumsPath);
 		}
 
 		@Test
 		void getAppConfigs() {
 			List<AppConfig> appConfigs =
-					AppConfigRepositoryTest.this.appConfigRepository.getAppConfigs();
-			assertThat(appConfigs.size(), equalTo(7));
+					this.appConfigRepository.getAppConfigs();
+			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
 		}
 
 		@Test
 		void testGetNoCacheableOrderedAppConfigs() {
-		}
-
-		@Test
-		void testGetNoCacheableAppConfigByName() {
+			List<AppConfig> appConfigs = this.appConfigRepository
+					.testGetNoCacheableOrderedAppConfigs();
+			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
 		}
 
 		@Test
 		void getDBNow() {
+			Date date = this.appConfigRepository.getDBNow();
+			assertThat(date, sameOrBefore(new Date()));
 		}
 	}
 }
