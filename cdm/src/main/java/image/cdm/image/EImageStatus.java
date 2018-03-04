@@ -2,7 +2,6 @@ package image.cdm.image;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -22,7 +21,6 @@ public enum EImageStatus {
 	}
 
 	@Getter
-	@NonNull
 	private final int value;
 
 	public byte getValueAsByte() {
