@@ -17,13 +17,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @NotThreadSafe
 @Tag("misc")
 @Junit5InMemoryDbPhotosTestConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier {
+public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Autowired
 	private AppConfigsEntityToCdmConverter appConfigsEntityToCdmConverter;
 	@Autowired
@@ -46,7 +44,7 @@ public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier {
 	public void convert() {
 		List<image.cdm.AppConfig> cdmAppConfig =
 				this.appConfigsEntityToCdmConverter.convert(this.appConfigs);
-		assertListEquals(cdmAppConfig, this.appConfigs);
+		assertAppConfigsEquals(cdmAppConfig, this.appConfigs);
 	}
 
 
@@ -56,17 +54,6 @@ public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier {
 				this.cs.convert(this.appConfigs,
 						ITypeDescriptors.listOfEntityAppConfig,
 						ITypeDescriptors.listOfCdmAppConfig);
-		assertListEquals(cdmAppConfig, this.appConfigs);
-	}
-
-	private static void assertListEquals(List<image.cdm.AppConfig> cdmAppConfig,
-	                                     List<AppConfig> appConfigs) {
-		cdmAppConfig.forEach(cdm -> {
-			long findings = appConfigs.stream().filter(ac ->
-					ac.getId().equals(cdm.getId()) &&
-							ac.getName().equals(cdm.getName()) &&
-							ac.getValue().equals(cdm.getValue())).count();
-			assertEquals(1, findings);
-		});
+		assertAppConfigsEquals(cdmAppConfig, this.appConfigs);
 	}
 }

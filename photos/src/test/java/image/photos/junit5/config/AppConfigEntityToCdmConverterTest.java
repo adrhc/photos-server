@@ -12,14 +12,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @NotThreadSafe
 @Tag("misc")
 @Junit5InMemoryDbPhotosTestConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AppConfigEntityToCdmConverterTest implements IAppConfigSupplier {
+public class AppConfigEntityToCdmConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Autowired
 	private AppConfigEntityToCdmConverter appConfigEntityToCdmConverter;
 	@Autowired
@@ -36,20 +33,12 @@ public class AppConfigEntityToCdmConverterTest implements IAppConfigSupplier {
 	@Test
 	public void convert() {
 		image.cdm.AppConfig appConfig = this.appConfigEntityToCdmConverter.convert(this.source);
-		assertAllEquals("convert", this.source, appConfig);
+		assertAppConfigEquals("convert", appConfig, this.source);
 	}
 
 	@Test
 	public void convertWithConversionService() {
 		image.cdm.AppConfig appConfig = this.cs.convert(this.source, image.cdm.AppConfig.class);
-		assertAllEquals("convertWithConversionService", this.source, appConfig);
-	}
-
-	private static void assertAllEquals(String heading, AppConfig source,
-	                                    image.cdm.AppConfig appConfig) {
-		assertAll(heading,
-				() -> assertEquals(source.getId(), appConfig.getId()),
-				() -> assertEquals(source.getName(), appConfig.getName()),
-				() -> assertEquals(source.getValue(), appConfig.getValue()));
+		assertAppConfigEquals("convertWithConversionService", appConfig, this.source);
 	}
 }

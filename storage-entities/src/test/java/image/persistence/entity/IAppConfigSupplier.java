@@ -19,8 +19,14 @@ public interface IAppConfigSupplier extends IPositiveRandom {
 	}
 
 	default image.cdm.AppConfig supplyCdmAppConfig() {
+		return supplyCdmAppConfig(null);
+
+	}
+
+	default image.cdm.AppConfig supplyCdmAppConfig(Integer id) {
 		image.cdm.AppConfig appConfig = new image.cdm.AppConfig();
 		int random = positiveRandom();
+		appConfig.setId(id != null ? id : random);
 		appConfig.setName("cdmAppConfig-" + random);
 		appConfig.setValue("cdmAppConfigValue-" + random);
 		return appConfig;

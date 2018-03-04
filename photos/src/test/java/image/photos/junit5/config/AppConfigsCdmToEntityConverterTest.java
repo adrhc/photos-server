@@ -10,25 +10,30 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @NotThreadSafe
 @Tag("misc")
 @Junit5InMemoryDbPhotosTestConfig
-public class AppConfigCdmToEntityConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
+public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Inject
 	private PhotosConversionSupport photosConversionSupport;
 
-	private AppConfig source;
+	private List<AppConfig> appConfigs;
 
 	@BeforeEach
-	void beforeAll() {
-		this.source = supplyCdmAppConfig();
+	void setUp() {
+		this.appConfigs = IntStream.range(0, 3).boxed()
+				.map(i -> supplyCdmAppConfig())
+				.collect(Collectors.toList());
 	}
 
 	@Test
 	public void convert() {
-		image.persistence.entity.AppConfig appConfig =
-				this.photosConversionSupport.entityAppConfigOf(this.source);
-		assertAppConfigEquals("convert", this.source, appConfig);
+		List<image.persistence.entity.AppConfig> cdmAppConfig =
+				this.photosConversionSupport.entityAppConfigsOf(this.appConfigs);
+		assertAppConfigsEquals(this.appConfigs, cdmAppConfig);
 	}
 }
