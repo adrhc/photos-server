@@ -78,8 +78,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Override
-	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(new MappingJackson2HttpMessageConverter(this.objectMapper));
 	}
 
 	@Bean
@@ -113,6 +113,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public MappingJackson2JsonView jacksonConverter() {
-		return new MappingJackson2JsonView(objectMapper);
+		return new MappingJackson2JsonView(this.objectMapper);
 	}
 }
