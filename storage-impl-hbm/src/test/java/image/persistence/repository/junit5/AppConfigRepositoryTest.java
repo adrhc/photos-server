@@ -4,6 +4,8 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
+import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
+import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbNestedConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
