@@ -956,7 +956,8 @@
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
                     image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
-                    junit5&amp;photos&amp;inmemorydb|misc
+                    junit5&amp;photos&amp;inmemorydb,
+                    junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
                 <db.host>dummy-host</db.host>
                 <test.db.host>dummy-host</test.db.host>
