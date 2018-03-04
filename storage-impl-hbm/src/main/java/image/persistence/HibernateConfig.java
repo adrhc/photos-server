@@ -3,6 +3,8 @@ package image.persistence;
 import com.zaxxer.hikari.HikariDataSource;
 import image.persistence.entity.Image;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +43,8 @@ import java.util.Properties;
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
+	private static final Logger logger = LoggerFactory.getLogger(HibernateConfig.class);
+
 	@Autowired
 	private Environment env;
 
@@ -53,6 +57,7 @@ public class HibernateConfig {
 	@Autowired
 	@Bean
 	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+		logger.debug("begin");
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory);
 		return txManager;
@@ -153,7 +158,7 @@ public class HibernateConfig {
 	public Properties hibernatePropertiesForInMemoryDb() {
 		return new Properties() {
 			{
-				setProperty("hibernate.dialect", env.getProperty("ramdb.hibernate.dialect"));
+				setProperty("hibernate.dialect", HibernateConfig.this.env.getProperty("ramdb.hibernate.dialect"));
 
 				// for hbm < 4x
 //				setProperty("net.sf.ehcache.cacheManagerName",
@@ -163,7 +168,7 @@ public class HibernateConfig {
 //						env.getProperty("net.sf.ehcache.configurationResourceName.in_memory_db"));
 
 				setProperty("hibernate.hbm2ddl.auto",
-						env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
+						HibernateConfig.this.env.getProperty("ramdb.hibernate.hbm2ddl.auto"));
 				addCommonHbmProps(this);
 			}
 		};
@@ -175,7 +180,7 @@ public class HibernateConfig {
 		return new Properties() {
 			{
 				setProperty("hibernate.hbm2ddl.auto",
-						env.getProperty("test.hibernate.hbm2ddl.auto"));
+						HibernateConfig.this.env.getProperty("test.hibernate.hbm2ddl.auto"));
 				addCommonHbmProps(this);
 			}
 		};
@@ -188,7 +193,7 @@ public class HibernateConfig {
 			{
 //				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
 				setProperty("hibernate.dialect.storage_engine",
-						env.getProperty("hibernate.dialect.storage_engine"));
+						HibernateConfig.this.env.getProperty("hibernate.dialect.storage_engine"));
 
 				// for hbm < 4x
 //				setProperty("net.sf.ehcache.cacheManagerName",
@@ -204,11 +209,11 @@ public class HibernateConfig {
 
 	private void addCommonHbmProps(Properties properties) {
 		properties.setProperty("hibernate.jdbc.batch_size",
-				env.getProperty("hibernate.jdbc.batch_size"));
-		properties.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-		properties.setProperty("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
+				this.env.getProperty("hibernate.jdbc.batch_size"));
+		properties.setProperty("hibernate.show_sql", this.env.getProperty("hibernate.show_sql"));
+		properties.setProperty("hibernate.format_sql", this.env.getProperty("hibernate.format_sql"));
 		properties.setProperty("hibernate.validator.autoregister_listeners",
-				env.getProperty("hibernate.validator.autoregister_listeners"));
+				this.env.getProperty("hibernate.validator.autoregister_listeners"));
 
 		// http://www.baeldung.com/hibernate-second-level-cache => for hibernate 5.x
 		// http://docs.jboss.org/hibernate/orm/4.3/manual/en-US/html_single/#performance-cache
@@ -216,11 +221,11 @@ public class HibernateConfig {
 		// properties.setProperty("hibernate.cache.use_structured_entries", "true");
 
 		properties.setProperty("hibernate.cache.use_second_level_cache",
-				env.getProperty("hibernate.cache.use_second_level_cache"));
+				this.env.getProperty("hibernate.cache.use_second_level_cache"));
 		properties.setProperty("hibernate.cache.use_query_cache",
-				env.getProperty("hibernate.cache.use_query_cache"));
+				this.env.getProperty("hibernate.cache.use_query_cache"));
 		properties.setProperty("hibernate.cache.region.factory_class",
-				env.getProperty("hibernate.cache.region.factory_class"));
+				this.env.getProperty("hibernate.cache.region.factory_class"));
 //		properties.setProperty("net.sf.ehcache.configurationResourceName",
 //				env.getProperty("net.sf.ehcache.configurationResourceName"));
 

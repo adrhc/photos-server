@@ -34,6 +34,11 @@
         <appender-ref ref="console"/>
     </logger>
 
+    <logger name="image.persistence.HibernateConfig" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+    </logger>
+
     <logger name="image.persistence.repository.junit4" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>

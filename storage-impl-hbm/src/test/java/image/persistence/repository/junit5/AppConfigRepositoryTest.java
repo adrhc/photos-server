@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -21,12 +23,13 @@ import java.util.stream.IntStream;
 import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.isOneOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 @NotThreadSafe
 @Junit5HbmInMemoryDbConfig
 class AppConfigRepositoryTest implements IAppConfigSupplier {
+	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 
@@ -67,7 +70,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			IntStream.range(0, 5).boxed().map(i -> supplyAppConfig())
+			IntStream.range(0, 3).boxed().map(i -> supplyAppConfig())
 					.peek(this.appConfigs::add)
 					.peek(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig)
 					.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
@@ -142,14 +145,16 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		void getAppConfigs() {
 			List<AppConfig> appConfigs =
 					this.appConfigRepository.getAppConfigs();
-			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
+			logger.debug("appConfigs.size = {}", appConfigs.size());
+			assertThat(appConfigs.size(), isOneOf(2, 7));
 		}
 
 		@Test
 		void testGetNoCacheableOrderedAppConfigs() {
 			List<AppConfig> appConfigs = this.appConfigRepository
 					.testGetNoCacheableOrderedAppConfigs();
-			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
+			logger.debug("appConfigs.size = {}", appConfigs.size());
+			assertThat(appConfigs.size(), isOneOf(2, 7));
 		}
 
 		@Test
