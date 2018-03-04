@@ -1,7 +1,5 @@
 package image.cdm.image;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,7 +7,7 @@ import java.util.Date;
  * Created by adr on 2/10/18.
  */
 public class ExifInfo implements Serializable {
-//	public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
+	//	public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
 	private Integer id;
 	private String name;
 	/**
@@ -22,7 +20,7 @@ public class ExifInfo implements Serializable {
 	private int imageWidth;
 	private String apertureValue;
 	private String contrast;
-//	@JsonFormat(pattern = DATE_FORMAT)
+	//	@JsonFormat(pattern = DATE_FORMAT)
 	private Date dateTimeOriginal;
 	private String lensModel;
 	private String meteringMode;
@@ -44,7 +42,7 @@ public class ExifInfo implements Serializable {
 	private int isoSpeedRatings;
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -52,7 +50,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -60,7 +58,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public Date getDateTime() {
-		return dateTime;
+		return this.dateTime;
 	}
 
 	public void setDateTime(Date dateTime) {
@@ -68,7 +66,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public Date getDateTimeOriginal() {
-		return dateTimeOriginal;
+		return this.dateTimeOriginal;
 	}
 
 	public void setDateTimeOriginal(Date dateTimeOriginal) {
@@ -76,7 +74,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public int getImageHeight() {
-		return imageHeight;
+		return this.imageHeight;
 	}
 
 	public void setImageHeight(int imageHeight) {
@@ -84,7 +82,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public int getImageWidth() {
-		return imageWidth;
+		return this.imageWidth;
 	}
 
 	public void setImageWidth(int imageWidth) {
@@ -92,7 +90,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getApertureValue() {
-		return apertureValue;
+		return this.apertureValue;
 	}
 
 	public void setApertureValue(String apertureValue) {
@@ -100,7 +98,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getContrast() {
-		return contrast;
+		return this.contrast;
 	}
 
 	public void setContrast(String contrast) {
@@ -108,7 +106,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getLensModel() {
-		return lensModel;
+		return this.lensModel;
 	}
 
 	public void setLensModel(String lensModel) {
@@ -116,7 +114,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getMeteringMode() {
-		return meteringMode;
+		return this.meteringMode;
 	}
 
 	public void setMeteringMode(String meteringMode) {
@@ -124,7 +122,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getModel() {
-		return model;
+		return this.model;
 	}
 
 	public void setModel(String model) {
@@ -132,7 +130,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getSaturation() {
-		return saturation;
+		return this.saturation;
 	}
 
 	public void setSaturation(String saturation) {
@@ -140,7 +138,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getSceneCaptureType() {
-		return sceneCaptureType;
+		return this.sceneCaptureType;
 	}
 
 	public void setSceneCaptureType(String sceneCaptureType) {
@@ -148,7 +146,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getSharpness() {
-		return sharpness;
+		return this.sharpness;
 	}
 
 	public void setSharpness(String sharpness) {
@@ -156,7 +154,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getShutterSpeedValue() {
-		return shutterSpeedValue;
+		return this.shutterSpeedValue;
 	}
 
 	public void setShutterSpeedValue(String shutterSpeedValue) {
@@ -164,7 +162,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getSubjectDistanceRange() {
-		return subjectDistanceRange;
+		return this.subjectDistanceRange;
 	}
 
 	public void setSubjectDistanceRange(String subjectDistanceRange) {
@@ -172,7 +170,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getWhiteBalanceMode() {
-		return whiteBalanceMode;
+		return this.whiteBalanceMode;
 	}
 
 	public void setWhiteBalanceMode(String whiteBalanceMode) {
@@ -180,7 +178,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getExposureBiasValue() {
-		return exposureBiasValue;
+		return this.exposureBiasValue;
 	}
 
 	public void setExposureBiasValue(String exposureBiasValue) {
@@ -188,7 +186,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getExposureMode() {
-		return exposureMode;
+		return this.exposureMode;
 	}
 
 	public void setExposureMode(String exposureMode) {
@@ -196,7 +194,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getExposureProgram() {
-		return exposureProgram;
+		return this.exposureProgram;
 	}
 
 	public void setExposureProgram(String exposureProgram) {
@@ -204,7 +202,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getExposureTime() {
-		return exposureTime;
+		return this.exposureTime;
 	}
 
 	public void setExposureTime(String exposureTime) {
@@ -212,7 +210,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getfNumber() {
-		return fNumber;
+		return this.fNumber;
 	}
 
 	public void setfNumber(String fNumber) {
@@ -220,7 +218,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getFlash() {
-		return flash;
+		return this.flash;
 	}
 
 	public void setFlash(String flash) {
@@ -228,7 +226,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getFocalLength() {
-		return focalLength;
+		return this.focalLength;
 	}
 
 	public void setFocalLength(String focalLength) {
@@ -236,7 +234,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public String getGainControl() {
-		return gainControl;
+		return this.gainControl;
 	}
 
 	public void setGainControl(String gainControl) {
@@ -244,7 +242,7 @@ public class ExifInfo implements Serializable {
 	}
 
 	public int getIsoSpeedRatings() {
-		return isoSpeedRatings;
+		return this.isoSpeedRatings;
 	}
 
 	public void setIsoSpeedRatings(int isoSpeedRatings) {
@@ -254,32 +252,32 @@ public class ExifInfo implements Serializable {
 	@Override
 	public String toString() {
 		return "ExifInfo{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", dateTime=" + dateTime +
-				", imageHeight=" + imageHeight +
-				", imageWidth=" + imageWidth +
-				", apertureValue='" + apertureValue + '\'' +
-				", contrast='" + contrast + '\'' +
-				", dateTimeOriginal=" + dateTimeOriginal +
-				", lensModel='" + lensModel + '\'' +
-				", meteringMode='" + meteringMode + '\'' +
-				", model='" + model + '\'' +
-				", saturation='" + saturation + '\'' +
-				", sceneCaptureType='" + sceneCaptureType + '\'' +
-				", sharpness='" + sharpness + '\'' +
-				", shutterSpeedValue='" + shutterSpeedValue + '\'' +
-				", subjectDistanceRange='" + subjectDistanceRange + '\'' +
-				", whiteBalanceMode='" + whiteBalanceMode + '\'' +
-				", exposureBiasValue='" + exposureBiasValue + '\'' +
-				", exposureMode='" + exposureMode + '\'' +
-				", exposureProgram='" + exposureProgram + '\'' +
-				", exposureTime='" + exposureTime + '\'' +
-				", fNumber='" + fNumber + '\'' +
-				", flash='" + flash + '\'' +
-				", focalLength='" + focalLength + '\'' +
-				", gainControl='" + gainControl + '\'' +
-				", isoSpeedRatings=" + isoSpeedRatings +
+				"id=" + this.id +
+				", name='" + this.name + '\'' +
+				", dateTime=" + this.dateTime +
+				", imageHeight=" + this.imageHeight +
+				", imageWidth=" + this.imageWidth +
+				", apertureValue='" + this.apertureValue + '\'' +
+				", contrast='" + this.contrast + '\'' +
+				", dateTimeOriginal=" + this.dateTimeOriginal +
+				", lensModel='" + this.lensModel + '\'' +
+				", meteringMode='" + this.meteringMode + '\'' +
+				", model='" + this.model + '\'' +
+				", saturation='" + this.saturation + '\'' +
+				", sceneCaptureType='" + this.sceneCaptureType + '\'' +
+				", sharpness='" + this.sharpness + '\'' +
+				", shutterSpeedValue='" + this.shutterSpeedValue + '\'' +
+				", subjectDistanceRange='" + this.subjectDistanceRange + '\'' +
+				", whiteBalanceMode='" + this.whiteBalanceMode + '\'' +
+				", exposureBiasValue='" + this.exposureBiasValue + '\'' +
+				", exposureMode='" + this.exposureMode + '\'' +
+				", exposureProgram='" + this.exposureProgram + '\'' +
+				", exposureTime='" + this.exposureTime + '\'' +
+				", fNumber='" + this.fNumber + '\'' +
+				", flash='" + this.flash + '\'' +
+				", focalLength='" + this.focalLength + '\'' +
+				", gainControl='" + this.gainControl + '\'' +
+				", isoSpeedRatings=" + this.isoSpeedRatings +
 				'}';
 	}
 }
