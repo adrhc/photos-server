@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Date;
 import java.util.List;
 
+import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -89,7 +90,7 @@ public class AppConfigRepositoryTest {
 	@Test
 	public void getDBNow() {
 		Date date = this.appConfigRepository.getDBNow();
-		assertThat(date, notNullValue());
+		assertThat(date, sameOrBefore(new Date()));
 		logger.debug(date.toString());
 	}
 }
