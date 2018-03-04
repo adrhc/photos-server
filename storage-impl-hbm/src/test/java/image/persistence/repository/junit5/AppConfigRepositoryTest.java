@@ -33,12 +33,17 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 
-	@RepeatedTest(5)
-	void createAppConfig() {
-		AppConfig appConfig = supplyAppConfig();
-		this.appConfigRepository.createAppConfig(appConfig);
-		AppConfig dbAppConfig = this.appConfigRepository.getAppConfigById(appConfig.getId());
-		assertTrue(dbAppConfig.similarTo(appConfig));
+	@NotThreadSafe
+	@Junit5HbmInMemoryDbNestedConfig
+	class CreateAppConfig {
+		@RepeatedTest(3)
+		void createAppConfig() {
+			AppConfig appConfig = supplyAppConfig();
+			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
+			AppConfig dbAppConfig = AppConfigRepositoryTest.this
+					.appConfigRepository.getAppConfigById(appConfig.getId());
+			assertTrue(dbAppConfig.similarTo(appConfig));
+		}
 	}
 
 	@NotThreadSafe
@@ -146,7 +151,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			List<AppConfig> appConfigs =
 					this.appConfigRepository.getAppConfigs();
 			logger.debug("appConfigs.size = {}", appConfigs.size());
-			assertThat(appConfigs.size(), isOneOf(2, 7));
+			assertThat(appConfigs.size(), isOneOf(2, 5));
 		}
 
 		@Test
@@ -154,7 +159,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			List<AppConfig> appConfigs = this.appConfigRepository
 					.testGetNoCacheableOrderedAppConfigs();
 			logger.debug("appConfigs.size = {}", appConfigs.size());
-			assertThat(appConfigs.size(), isOneOf(2, 7));
+			assertThat(appConfigs.size(), isOneOf(2, 5));
 		}
 
 		@Test
