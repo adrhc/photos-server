@@ -1,8 +1,5 @@
 package image.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import image.cdm.image.EImageStatus;
 import image.cdm.image.ImageRating;
 import image.persistence.entity.image.ImageMetadata;
@@ -24,8 +21,6 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = Image.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements Serializable {
 	@Id

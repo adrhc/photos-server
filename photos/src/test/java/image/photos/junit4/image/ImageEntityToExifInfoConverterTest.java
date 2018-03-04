@@ -5,8 +5,10 @@ import image.persistence.entity.IAlbumSupplier;
 import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.photos.image.ImageMetadataEntityToDTOConverter;
+import image.photos.junit4.misc.MiscTestCategory;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +17,7 @@ import java.io.IOException;
 /**
  * Created by adr on 2/10/18.
  */
+@Category(MiscTestCategory.class)
 public class ImageEntityToExifInfoConverterTest implements IImageSupplier, IAlbumSupplier {
 	private static final Logger logger =
 			LoggerFactory.getLogger(ImageEntityToExifInfoConverterTest.class);
@@ -25,7 +28,7 @@ public class ImageEntityToExifInfoConverterTest implements IImageSupplier, IAlbu
 	 * @throws IOException
 	 */
 	@Test
-	public void convert() throws IOException {
+	public void convert() {
 		Image image = supplyImage();
 		// some versions of beanutils fail with Date null
 		image.getImageMetadata().setDateTime(null);

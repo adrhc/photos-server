@@ -1,8 +1,5 @@
 package image.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
@@ -17,8 +14,6 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "user")
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, scope = User.class)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
 	@Id
@@ -29,7 +24,7 @@ public class User implements Serializable {
 	private short enabled;
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -37,7 +32,7 @@ public class User implements Serializable {
 	}
 
 	public String getUsername() {
-		return username;
+		return this.username;
 	}
 
 	public void setUsername(String username) {
@@ -45,7 +40,7 @@ public class User implements Serializable {
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -53,7 +48,7 @@ public class User implements Serializable {
 	}
 
 	public short getEnabled() {
-		return enabled;
+		return this.enabled;
 	}
 
 	public void setEnabled(short enabled) {

@@ -1,7 +1,5 @@
 package image.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
@@ -16,7 +14,6 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AppConfig implements Serializable {
 	private Integer id;
@@ -66,7 +63,6 @@ public class AppConfig implements Serializable {
 	 * Date represents a specific instant in time, with millisecond precision.
 	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
-	@JsonIgnore
 	@Version
 	@Column(name = "last_update")
 	public Date getLastUpdate() {
