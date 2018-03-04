@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -38,7 +38,7 @@ import java.util.*;
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(RestController.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 	@Inject
 	private ObjectMapper objectMapper;
 
@@ -74,7 +74,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
 		configurer.setDefaultTimeout(7200000);
-		super.configureAsyncSupport(configurer);
 	}
 
 	@Override

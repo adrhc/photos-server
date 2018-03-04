@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @ExtendWith(SpringExtension.class)
 @InMemoryDbPhotosTestConfig
 @Tag("junit5")
-@Tag("hbm")
+@Tag("photos")
 @Tag("inmemorydb")
 public @interface Junit5InMemoryDbPhotosTestConfig {
 }
