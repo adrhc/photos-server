@@ -158,7 +158,8 @@ public class HibernateConfig {
 	public Properties hibernatePropertiesForInMemoryDb() {
 		return new Properties() {
 			{
-				setProperty("hibernate.dialect", HibernateConfig.this.env.getProperty("ramdb.hibernate.dialect"));
+				setProperty("hibernate.dialect",
+						HibernateConfig.this.env.getProperty("ramdb.hibernate.dialect"));
 
 				// for hbm < 4x
 //				setProperty("net.sf.ehcache.cacheManagerName",
