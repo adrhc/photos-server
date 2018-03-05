@@ -1,4 +1,4 @@
-package image.photos.util;
+package image.photos.util.converter;
 
 import image.persistence.entity.AppConfig;
 import org.springframework.core.convert.TypeDescriptor;

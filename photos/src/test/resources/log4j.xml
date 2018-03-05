@@ -20,17 +20,22 @@
     </appender>
 
     <!--<appender name="subtitles-extractor-file" class="org.apache.log4j.RollingFileAppender">-->
-        <!--<param name="Threshold" value="debug"/>-->
-        <!--<param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>-->
-        <!--<param name="MaxFileSize" value="10MB"/>-->
-        <!--<param name="MaxBackupIndex" value="3"/>-->
-        <!--<layout class="org.apache.log4j.PatternLayout">-->
-            <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
-        <!--</layout>-->
+    <!--<param name="Threshold" value="debug"/>-->
+    <!--<param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>-->
+    <!--<param name="MaxFileSize" value="10MB"/>-->
+    <!--<param name="MaxBackupIndex" value="3"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
+    <!--</layout>-->
     <!--</appender>-->
 
     <logger name="image" additivity="false">
         <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="image.persistence.HibernateConfig" additivity="false">
+        <level value="info"/>
         <appender-ref ref="console"/>
     </logger>
 

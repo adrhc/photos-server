@@ -4,7 +4,7 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.config.AppConfigsEntityToCdmConverter;
 import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosTestConfig;
-import image.photos.util.ITypeDescriptors;
+import image.photos.util.converter.ITypeDescriptors;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
