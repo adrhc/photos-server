@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
+import image.photos.util.PhotosConversionSupport;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -26,6 +27,8 @@ public class AppConfigService {
 	private ObjectMapper objectMapper;
 	@Inject
 	private AppConfigRepository appConfigRepository;
+	@Inject
+	private PhotosConversionSupport photosConversionSupport;
 
 	public boolean getConfigBool(String name) {
 		String s = getConfig(name);
@@ -67,7 +70,8 @@ public class AppConfigService {
 		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
 //        logger.debug(ArrayUtils.toString(appConfigs));
 //        logger.debug("lastUpdatedAppConfigs = {}", getLastUpdatedAppConfigs());
-		this.objectMapper.writeValue(file, appConfigs);
+		this.objectMapper.writeValue(file,
+				this.photosConversionSupport.cdmAppConfigsOf(appConfigs));
 	}
 
 	public long getLastUpdatedAppConfigs() {

@@ -2,12 +2,13 @@ package image.exifweb.appconfig;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import image.cdm.AppConfig;
 import image.exifweb.util.MailService;
 import image.exifweb.util.procinfo.ProcStatPercent;
 import image.exifweb.util.procinfo.ProcessInfoService;
-import image.persistence.entity.AppConfig;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
+import image.photos.util.PhotosConversionSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -52,24 +53,25 @@ public class AppConfigCtrl implements IAppConfigCache {
 	private ObjectMapper objectMapper;
 	@Inject
 	private ApplicationContext ac;
+	@Inject
+	private PhotosConversionSupport photosConversionSupport;
 	private String testRAMString;
 	private List<AppConfig> testRAMObjectToJson;
 
 	@RequestMapping("/subscribeToAsyncProcMemStats")
 	@ResponseBody
 	public DeferredResult<Model> subscribeToAsyncProcMemStats() {
-		return new CPUMemSummaryDeferredResult(processInfoService.asyncSubscribers);
+		return new CPUMemSummaryDeferredResult(this.processInfoService.asyncSubscribers);
 	}
 
 	@RequestMapping(value = "/getProcMemStatSummary", produces = MediaType.APPLICATION_JSON_VALUE)
 	public void getProcMemStatSummary(Model model)
 			throws IOException, InterruptedException {
-		processInfoService.prepareCPUMemSummary(model, null);
+		this.processInfoService.prepareCPUMemSummary(model, null);
 	}
 
 	@RequestMapping(value = "/getProcMemFullStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> getProcMemFullStats()
-			throws IOException, InterruptedException {
+	public ResponseEntity<String> getProcMemFullStats() {
 		// valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
 		// HttpHeaders responseHeaders = new HttpHeaders();
 		// responseHeaders.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -78,41 +80,37 @@ public class AppConfigCtrl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "/testRAMObjectToJson", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<AppConfig> testRAMObjectToJson()
-			throws IOException, InterruptedException {
-		return testRAMObjectToJson;
+	public List<AppConfig> testRAMObjectToJson() {
+		return this.testRAMObjectToJson;
 	}
 
 	@RequestMapping(value = "/testRAMObjectToJsonDeferred", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public DeferredResult<List<AppConfig>> testRAMObjectToJsonDeferred()
-			throws IOException, InterruptedException {
-		return (new ConstantDeferredResult<List<AppConfig>>()).setResultThenRun(testRAMObjectToJson);
+	public DeferredResult<List<AppConfig>> testRAMObjectToJsonDeferred() {
+		return (new ConstantDeferredResult<List<AppConfig>>()).setResultThenRun(this.testRAMObjectToJson);
 	}
 
 	@RequestMapping(value = "/testRAMString", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
-	public String testRAMString()
-			throws IOException, InterruptedException {
-		return testRAMString;
+	public String testRAMString() {
+		return this.testRAMString;
 	}
 
 	@RequestMapping(value = "/testRAMStringDeferred", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	@ResponseBody
-	public DeferredResult<String> testRAMStringDeferred()
-			throws IOException, InterruptedException {
-		return ac.getBean(StringConstDeferredResult.class).setString(testRAMString);
+	public DeferredResult<String> testRAMStringDeferred() {
+		return this.ac.getBean(StringConstDeferredResult.class).setString(this.testRAMString);
 	}
 
 	@RequestMapping(value = "/getMemStat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<ProcStatPercent> getMemStat() throws IOException, InterruptedException {
-		return processInfoService.getMemDetailUsingPs();
+		return this.processInfoService.getMemDetailUsingPs();
 	}
 
 	@RequestMapping(value = "/getProcStat", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public List<ProcStatPercent> getProcStat() throws IOException, InterruptedException {
-		return processInfoService.getCPUDetailUsingTop();
+		return this.processInfoService.getCPUDetailUsingTop();
 	}
 
 	@RequestMapping(value = "/gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -124,7 +122,7 @@ public class AppConfigCtrl implements IAppConfigCache {
 
 	@RequestMapping(value = "/checkProcess", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public void checkProcess(@RequestParam String[] commands, Model model) throws Exception {
-		List<String> runningCmds = processInfoService.getProcessesRunning(commands);
+		List<String> runningCmds = this.processInfoService.getProcessesRunning(commands);
 		if (runningCmds.isEmpty()) {
 			model.addAttribute("message",
 					StringUtils.arrayToCommaDelimitedString(commands) + " not running!");
@@ -138,7 +136,7 @@ public class AppConfigCtrl implements IAppConfigCache {
 	@RequestMapping(value = "/checkMailService", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void checkMailService(Model model) throws Exception {
-		if (mailService.checkMailService()) {
+		if (this.mailService.checkMailService()) {
 			model.addAttribute("message", "Mail service is running!");
 		} else {
 			model.addAttribute("message", "Mail service is NOT running!");
@@ -156,21 +154,21 @@ public class AppConfigCtrl implements IAppConfigCache {
 	@RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void update(@RequestBody List<AppConfig> appConfigs, Model model) throws IOException {
-		appConfigRepository.update(appConfigs);
-		appConfigService.writeJsonForAppConfigs();
+		this.appConfigRepository.update(this.photosConversionSupport.entityAppConfigsOf(appConfigs));
+		this.appConfigService.writeJsonForAppConfigs();
 		model.addAttribute("message", "App configs updated!");
 	}
 
 	@RequestMapping(value = "/canUseJsonFiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public Map<String, String> canUseJsonFiles(WebRequest webRequest) {
-		if (webRequest.checkNotModified(appConfigService.canUseJsonFilesLastUpdate())) {
+		if (webRequest.checkNotModified(this.appConfigService.canUseJsonFilesLastUpdate())) {
 			return null;
 		}
 		Map<String, String> map = new HashMap<>();
-		map.put("use json files", appConfigService.getConfig("use json files"));
+		map.put("use json files", this.appConfigService.getConfig("use json files"));
 		map.put("use json files for config",
-				appConfigService.getConfig("use json files for config"));
+				this.appConfigService.getConfig("use json files for config"));
 		return map;
 	}
 
@@ -182,33 +180,38 @@ public class AppConfigCtrl implements IAppConfigCache {
 //        logger.debug("If-Modified-Since = {}", request.getDateHeader("If-Modified-Since"));
 //        logger.debug("currentTimeMillis = {}", System.currentTimeMillis());
 //        logger.debug("getDBNow = {}", appConfigService.getDBNow().getTime());
-		if (webRequest.checkNotModified(appConfigService.getLastUpdatedAppConfigs())) {
+		if (webRequest.checkNotModified(
+				this.appConfigService.getLastUpdatedAppConfigs())) {
 //            logger.debug("not modified");
 			return null;
 		}
 //        List<AppConfig> appConfigs = appConfigService.getAppConfigs();
 //        logger.debug("modified:\n{}", ArrayUtils.toString(appConfigs));
 //        return appConfigs;
-		return appConfigRepository.getAppConfigs();
+		return this.photosConversionSupport.cdmAppConfigsOf(
+				this.appConfigRepository.getAppConfigs());
 	}
 
 	@RequestMapping(value = "testGetNoCacheableOrderedAppConfigs",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
-		return appConfigRepository.testGetNoCacheableOrderedAppConfigs();
+		return this.photosConversionSupport.cdmAppConfigsOf(
+				this.appConfigRepository.testGetNoCacheableOrderedAppConfigs());
 	}
 
 	@RequestMapping(value = "testGetNoCacheableAppConfigByName",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public AppConfig testGetNoCacheableAppConfigByName() {
-		return appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
+		return this.photosConversionSupport.cdmAppConfigOf(
+				this.appConfigRepository.testGetNoCacheableAppConfigByName("albums_path"));
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		testRAMObjectToJson = appConfigRepository.getAppConfigs();
+		this.testRAMObjectToJson = this.photosConversionSupport.cdmAppConfigsOf(
+				this.appConfigRepository.getAppConfigs());
 		try {
-			testRAMString = objectMapper.writeValueAsString(testRAMObjectToJson);
+			this.testRAMString = this.objectMapper.writeValueAsString(this.testRAMObjectToJson);
 		} catch (JsonProcessingException e) {
 			logger.error(e.getMessage(), e);
 		}

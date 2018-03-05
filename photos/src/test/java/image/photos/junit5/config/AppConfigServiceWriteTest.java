@@ -18,7 +18,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by adrianpetre on 23.02.2018.
@@ -37,7 +40,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	@BeforeEach
 	void setUp() {
-		IntStream.range(0, 5).boxed().map(i -> supplyAppConfig())
+		IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
 				.forEach(this.appConfigRepository::createAppConfig);
 	}
 
@@ -54,5 +57,6 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 		File dir = temporaryFolder.createDirectory("writeJsonForAppConfigs");
 		createPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
 		this.appConfigService.writeJsonForAppConfigs();
+		assertTrue(Files.isRegularFile(dir.toPath().resolve("appConfigs.json")));
 	}
 }
