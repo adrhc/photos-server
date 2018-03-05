@@ -1,7 +1,6 @@
-package image.photos.util;
+package image.photos.util.converter;
 
 import image.cdm.AppConfig;
-import image.photos.util.converter.ITypeDescriptors;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 

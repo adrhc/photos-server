@@ -8,7 +8,7 @@ import image.exifweb.util.procinfo.ProcStatPercent;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.util.PhotosConversionSupport;
+import image.photos.util.converter.PhotosConversionSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;

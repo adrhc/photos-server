@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
-import image.photos.util.PhotosConversionSupport;
+import image.photos.util.converter.PhotosConversionSupport;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

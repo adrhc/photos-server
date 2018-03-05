@@ -3,7 +3,7 @@ package image.photos.junit5.config;
 import image.cdm.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosTestConfig;
-import image.photos.util.PhotosConversionSupport;
+import image.photos.util.converter.PhotosConversionSupport;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
