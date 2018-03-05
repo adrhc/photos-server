@@ -13,7 +13,7 @@ public abstract class CopyPropertiesConverter<S, T> implements Converter<S, T> {
 
 	@Override
 	public T convert(S source) {
-		T target = supplyTargetInstance();
+		T target = targetNewInstance();
 		try {
 			BeanUtils.copyProperties(target, source);
 		} catch (IllegalAccessException | InvocationTargetException e) {
@@ -22,5 +22,5 @@ public abstract class CopyPropertiesConverter<S, T> implements Converter<S, T> {
 		return target;
 	}
 
-	public abstract T supplyTargetInstance();
+	public abstract T targetNewInstance();
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class AppConfigCdmToEntityConverter extends
 		CopyPropertiesConverter<image.cdm.AppConfig, AppConfig> {
 	@Override
-	public AppConfig supplyTargetInstance() {
+	public AppConfig targetNewInstance() {
 		return new AppConfig();
 	}
 }
