@@ -18,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Junit5InMemoryDbPhotosTestConfig
 public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier {
 	@Autowired
-	private AppConfigEntityToCdmConverter toCdmConverter;
+	private AppConfigEntityToCdmConverter appConfigEntityToCdmConverter;
 	@Autowired
-	private AppConfigsEntityToCdmConverter converter;
+	private AppConfigsEntityToCdmConverter appConfigsEntityToCdmConverter;
 
 	private List<AppConfig> appConfigs;
 
@@ -37,7 +37,8 @@ public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier {
 
 	@Test
 	public void convert() {
-		List<image.cdm.AppConfig> cdmAppConfig = this.converter.convert(this.appConfigs);
+		List<image.cdm.AppConfig> cdmAppConfig =
+				this.appConfigsEntityToCdmConverter.convert(this.appConfigs);
 		cdmAppConfig.forEach(cdm -> {
 			long findings = this.appConfigs.stream().filter(ac ->
 					ac.getId().equals(cdm.getId()) &&
