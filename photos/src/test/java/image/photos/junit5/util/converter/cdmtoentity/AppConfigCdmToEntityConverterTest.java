@@ -1,12 +1,13 @@
-package image.photos.junit5.util.converter.factory;
+package image.photos.junit5.util.converter.cdmtoentity;
 
 import image.cdm.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.junit5.config.IAppConfigAssertions;
+import image.photos.junit5.util.converter.ConversionTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AppConfigCdmToEntityConverterTest extends ConverterFactoryTestBase
+public class AppConfigCdmToEntityConverterTest extends ConversionTestBase
 		implements IAppConfigSupplier, IAppConfigAssertions {
 	private AppConfig sourceAppConfig;
 

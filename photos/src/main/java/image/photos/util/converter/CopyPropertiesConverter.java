@@ -14,7 +14,7 @@ public class CopyPropertiesConverter<S, T> implements Converter<S, T> {
 
 	private Map<Class<? extends S>, Class<? extends T>> convertionClasses;
 
-	public CopyPropertiesConverter(
+	CopyPropertiesConverter(
 			Map<Class<? extends S>, Class<? extends T>> convertionClasses) {
 		this.convertionClasses = convertionClasses;
 	}

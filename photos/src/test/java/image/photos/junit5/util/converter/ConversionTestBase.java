@@ -1,4 +1,4 @@
-package image.photos.junit5.util.converter.factory;
+package image.photos.junit5.util.converter;
 
 import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosConfig;
 import net.jcip.annotations.NotThreadSafe;
@@ -9,7 +9,7 @@ import org.springframework.core.convert.ConversionService;
 @NotThreadSafe
 @Junit5InMemoryDbPhotosConfig
 @Tag("misc")
-public abstract class ConverterFactoryTestBase {
+public abstract class ConversionTestBase {
 	@Autowired
 	protected ConversionService cs;
 }

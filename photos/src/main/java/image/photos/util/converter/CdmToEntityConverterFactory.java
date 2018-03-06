@@ -35,6 +35,6 @@ public class CdmToEntityConverterFactory implements
 
 	@Override
 	public <T extends IStorageEntity> Converter<ICdmEntity, T> getConverter(Class<T> targetType) {
-		return new CdmToEntityCopyPropertiesConverter<>();
+		return (Converter<ICdmEntity, T>) new CopyPropertiesConverter<>(this.cdmToEntityClasses);
 	}
 }

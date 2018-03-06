@@ -1,4 +1,4 @@
-package image.photos.junit5.util.converter.factory.collection;
+package image.photos.junit5.util.converter.cdmtoentity;
 
 import image.cdm.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
