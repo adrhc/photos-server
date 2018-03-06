@@ -1,7 +1,8 @@
-package image.photos.junit5.config;
+package image.photos.junit5.util.converter.factory.collection;
 
-import image.cdm.AppConfig;
+import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
+import image.photos.junit5.config.IAppConfigAssertions;
 import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosConfig;
 import image.photos.util.converter.PhotosConversionUtil;
 import net.jcip.annotations.NotThreadSafe;
@@ -17,23 +18,27 @@ import java.util.stream.IntStream;
 @NotThreadSafe
 @Tag("misc")
 @Junit5InMemoryDbPhotosConfig
-public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
+public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Inject
-	private PhotosConversionUtil pcu;
+	private PhotosConversionUtil photosConversionSupport;
 
 	private List<AppConfig> appConfigs;
 
 	@BeforeEach
-	void setUp() {
+	void beforeAll() {
 		this.appConfigs = IntStream.range(0, 3).boxed()
-				.map(i -> supplyCdmAppConfig())
+				.map(i -> {
+					AppConfig source = supplyEntityAppConfig();
+					source.setId(i);
+					return source;
+				})
 				.collect(Collectors.toList());
 	}
 
 	@Test
 	public void convert() {
-		List<image.persistence.entity.AppConfig> cdmAppConfig =
-				this.pcu.entityAppConfigsOf(this.appConfigs);
-		assertAppConfigsEquals(this.appConfigs, cdmAppConfig);
+		List<image.cdm.AppConfig> cdmAppConfig =
+				this.photosConversionSupport.cdmAppConfigsOf(this.appConfigs);
+		assertAppConfigsEquals(cdmAppConfig, this.appConfigs);
 	}
 }

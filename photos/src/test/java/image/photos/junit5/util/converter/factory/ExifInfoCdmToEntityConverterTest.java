@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ExifInfoConverterTest
+public class ExifInfoCdmToEntityConverterTest
 		extends ConverterFactoryTestBase implements IExifInfoSupplier {
 	private ExifInfo exifInfo;
 

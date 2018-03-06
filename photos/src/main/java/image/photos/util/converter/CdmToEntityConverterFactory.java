@@ -25,16 +25,16 @@ public class CdmToEntityConverterFactory implements
 			}};
 
 	@Override
-	public <T extends IStorageEntity> Converter<ICdmEntity, T> getConverter(Class<T> targetType) {
-		return new CdmToEntityCopyPropertiesConverter<>();
-	}
-
-	@Override
 	public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
 		if (!ICdmEntity.class.isAssignableFrom(sourceType.getObjectType())) {
 			return false;
 		}
 		Class<?> targetClass = this.cdmToEntityClasses.get(sourceType.getObjectType());
 		return targetClass.isAssignableFrom(targetType.getObjectType());
+	}
+
+	@Override
+	public <T extends IStorageEntity> Converter<ICdmEntity, T> getConverter(Class<T> targetType) {
+		return new CdmToEntityCopyPropertiesConverter<>();
 	}
 }

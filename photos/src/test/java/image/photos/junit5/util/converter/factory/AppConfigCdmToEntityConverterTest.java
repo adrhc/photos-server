@@ -6,7 +6,7 @@ import image.photos.junit5.config.IAppConfigAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AppConfigConverterTest extends ConverterFactoryTestBase
+public class AppConfigCdmToEntityConverterTest extends ConverterFactoryTestBase
 		implements IAppConfigSupplier, IAppConfigAssertions {
 	private AppConfig sourceAppConfig;
 
