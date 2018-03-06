@@ -14,16 +14,13 @@ import java.lang.reflect.InvocationTargetException;
  * Created by adr on 2/10/18.
  */
 @Component
-public class ImageMetadataEntityToDTOConverter
+public class ImageToExifInfoConverter
 		implements Converter<Image, ExifInfo> {
 	private static final Logger logger =
-			LoggerFactory.getLogger(ImageMetadataEntityToDTOConverter.class);
+			LoggerFactory.getLogger(ImageToExifInfoConverter.class);
 
 	@Override
 	public ExifInfo convert(Image source) {
-		if (source == null) {
-			return null;
-		}
 		ExifInfo exifInfo = new ExifInfo();
 		try {
 			BeanUtils.copyProperties(exifInfo, source);

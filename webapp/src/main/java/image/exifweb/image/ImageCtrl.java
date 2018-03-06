@@ -6,7 +6,7 @@ import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
-import image.photos.image.ImageMetadataEntityToDTOConverter;
+import image.photos.image.ImageToExifInfoConverter;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +29,8 @@ public class ImageCtrl {
 	private AlbumRepository albumRepository;
 	@Inject
 	private ImageRepository imageRepository;
-	private ImageMetadataEntityToDTOConverter metadataEntityToDTOConverter =
-			new ImageMetadataEntityToDTOConverter();
+	private ImageToExifInfoConverter metadataEntityToDTOConverter =
+			new ImageToExifInfoConverter();
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
