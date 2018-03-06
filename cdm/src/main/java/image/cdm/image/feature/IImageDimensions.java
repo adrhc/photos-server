@@ -1,4 +1,4 @@
-package image.cdm.image;
+package image.cdm.image.feature;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,7 +1,7 @@
 package image.persistence.entity;
 
-import image.cdm.image.EImageStatus;
 import image.cdm.image.ImageRating;
+import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Formula;

@@ -2,10 +2,10 @@ package image.cdm.album.page;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import image.cdm.image.IImageBasicInfo;
-import image.cdm.image.IImageDimensions;
+import image.cdm.ICdmEntity;
+import image.cdm.image.feature.IImageBasicInfo;
+import image.cdm.image.feature.IImageDimensions;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,7 +16,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"thumbLastModified"})
-public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializable {
+public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity {
 	private Integer id;// image id
 	private String imgName;
 	private boolean hidden;
@@ -78,23 +78,25 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
+	@Override
 	public String getImgName() {
-		return imgName;
+		return this.imgName;
 	}
 
 	public void setImgName(String imgName) {
 		this.imgName = imgName;
 	}
 
+	@Override
 	public String getAlbumName() {
-		return albumName;
+		return this.albumName;
 	}
 
 	public void setAlbumName(String albumName) {
@@ -102,7 +104,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public boolean isHidden() {
-		return hidden;
+		return this.hidden;
 	}
 
 	public void setHidden(boolean hidden) {
@@ -110,7 +112,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public boolean isPersonal() {
-		return personal;
+		return this.personal;
 	}
 
 	public void setPersonal(boolean personal) {
@@ -118,7 +120,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public boolean isUgly() {
-		return ugly;
+		return this.ugly;
 	}
 
 	public void setUgly(boolean ugly) {
@@ -126,7 +128,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public boolean isDuplicate() {
-		return duplicate;
+		return this.duplicate;
 	}
 
 	public void setDuplicate(boolean duplicate) {
@@ -134,31 +136,35 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public boolean isPrintable() {
-		return printable;
+		return this.printable;
 	}
 
 	public void setPrintable(boolean printable) {
 		this.printable = printable;
 	}
 
+	@Override
 	public int getImageHeight() {
-		return imageHeight;
+		return this.imageHeight;
 	}
 
+	@Override
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
 	}
 
+	@Override
 	public int getImageWidth() {
-		return imageWidth;
+		return this.imageWidth;
 	}
 
+	@Override
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
 	}
 
 	public byte getRating() {
-		return rating;
+		return this.rating;
 	}
 
 	public void setRating(byte rating) {
@@ -166,23 +172,25 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public boolean isCover() {
-		return isCover;
+		return this.isCover;
 	}
 
 	public void setCover(boolean cover) {
-		isCover = cover;
+		this.isCover = cover;
 	}
 
+	@Override
 	public Date getThumbLastModified() {
-		return thumbLastModified;
+		return this.thumbLastModified;
 	}
 
 	public void setThumbLastModified(Date thumbLastModified) {
 		this.thumbLastModified = thumbLastModified;
 	}
 
+	@Override
 	public Date getDateTime() {
-		return dateTime;
+		return this.dateTime;
 	}
 
 	public void setDateTime(Date dateTime) {
@@ -190,7 +198,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public String getThumbPath() {
-		return thumbPath;
+		return this.thumbPath;
 	}
 
 	@Override
@@ -199,15 +207,16 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, Serializabl
 	}
 
 	public String getImagePath() {
-		return imagePath;
+		return this.imagePath;
 	}
 
+	@Override
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
 	}
 
 	public Date getImageLastUpdate() {
-		return imageLastUpdate;
+		return this.imageLastUpdate;
 	}
 
 	public void setImageLastUpdate(Date imageLastUpdate) {

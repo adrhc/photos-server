@@ -1,9 +1,9 @@
 package image.cdm.album.cover;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import image.cdm.image.IImageDimensions;
+import image.cdm.ICdmEntity;
+import image.cdm.image.feature.IImageDimensions;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: 1:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AlbumCover implements IImageDimensions, Serializable {
+public class AlbumCover implements IImageDimensions, ICdmEntity {
 	private Integer id;
 	private String albumName;
 	private String imgName;
@@ -47,7 +47,7 @@ public class AlbumCover implements IImageDimensions, Serializable {
 	}
 
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -55,7 +55,7 @@ public class AlbumCover implements IImageDimensions, Serializable {
 	}
 
 	public String getAlbumName() {
-		return albumName;
+		return this.albumName;
 	}
 
 	public void setAlbumName(String albumName) {
@@ -63,31 +63,35 @@ public class AlbumCover implements IImageDimensions, Serializable {
 	}
 
 	public String getThumbPath() {
-		return thumbPath;
+		return this.thumbPath;
 	}
 
 	public void setThumbPath(String thumbPath) {
 		this.thumbPath = thumbPath;
 	}
 
+	@Override
 	public int getImageHeight() {
-		return imageHeight;
+		return this.imageHeight;
 	}
 
+	@Override
 	public void setImageHeight(int imageHeight) {
 		this.imageHeight = imageHeight;
 	}
 
+	@Override
 	public int getImageWidth() {
-		return imageWidth;
+		return this.imageWidth;
 	}
 
+	@Override
 	public void setImageWidth(int imageWidth) {
 		this.imageWidth = imageWidth;
 	}
 
 	public boolean isDirty() {
-		return dirty;
+		return this.dirty;
 	}
 
 	public void setDirty(boolean dirty) {
@@ -95,7 +99,7 @@ public class AlbumCover implements IImageDimensions, Serializable {
 	}
 
 	public String getImgName() {
-		return imgName;
+		return this.imgName;
 	}
 
 	public void setImgName(String imgName) {
@@ -103,7 +107,7 @@ public class AlbumCover implements IImageDimensions, Serializable {
 	}
 
 	public Date getLastUpdate() {
-		return lastUpdate;
+		return this.lastUpdate;
 	}
 
 	public void setLastUpdate(Date lastUpdate) {

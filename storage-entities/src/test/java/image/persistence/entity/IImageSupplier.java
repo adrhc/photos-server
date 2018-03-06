@@ -1,6 +1,6 @@
 package image.persistence.entity;
 
-import image.cdm.image.EImageStatus;
+import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.util.IPositiveRandom;
 

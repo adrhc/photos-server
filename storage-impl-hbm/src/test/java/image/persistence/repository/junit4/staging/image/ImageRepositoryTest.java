@@ -1,8 +1,8 @@
 package image.persistence.repository.junit4.staging.image;
 
-import image.cdm.image.EImageStatus;
 import image.cdm.image.ImageRating;
-import image.cdm.image.ImageStatus;
+import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
 import image.persistence.repository.springtestconfig.TestJdbcDsTestConfig;

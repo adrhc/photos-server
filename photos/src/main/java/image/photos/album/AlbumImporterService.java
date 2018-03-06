@@ -1,6 +1,6 @@
 package image.photos.album;
 
-import image.cdm.image.EImageStatus;
+import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;

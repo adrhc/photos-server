@@ -1,12 +1,13 @@
 package image.cdm.image;
 
-import java.io.Serializable;
+import image.cdm.ICdmEntity;
+
 import java.util.Date;
 
 /**
  * Created by adr on 2/10/18.
  */
-public class ExifInfo implements Serializable {
+public class ExifInfo implements ICdmEntity {
 	//	public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
 	private Integer id;
 	private String name;

@@ -1,8 +1,8 @@
 package image.photos.image;
 
 import image.cdm.album.cover.AlbumCover;
-import image.cdm.image.IImageBasicInfo;
-import image.cdm.image.IImageDimensions;
+import image.cdm.image.feature.IImageBasicInfo;
+import image.cdm.image.feature.IImageDimensions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -53,15 +53,15 @@ public class ImageUtils {
 	}
 
 	private String thumbPathFor(Long thumbLastModified, String imgName, String albumName) {
-		String relativePath = relativePathFormatter.format(
+		String relativePath = this.relativePathFormatter.format(
 				new Object[]{albumName, thumbLastModified, imgName});
-		return fullPathFormatter.format(new Object[]{thumbsDir, relativePath});
+		return this.fullPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
 	}
 
 	private String imagePathFor(Long imageLastModif, String imgName, String albumName) {
-		String relativePath = relativePathFormatter.format(
+		String relativePath = this.relativePathFormatter.format(
 				new Object[]{albumName, imageLastModif, imgName});
-		return fullPathFormatter.format(new Object[]{albumsDir, relativePath});
+		return this.fullPathFormatter.format(new Object[]{this.albumsDir, relativePath});
 	}
 
 	public void appendImageDimensions(List<? extends IImageDimensions> imageDimensions) {
@@ -73,12 +73,12 @@ public class ImageUtils {
 	public void appendImageDimensions(IImageDimensions entity) {
 		if (entity.getImageHeight() < entity.getImageWidth()) {
 			entity.setImageHeight((int)
-					Math.floor(maxThumbSize * entity.getImageHeight() / entity.getImageWidth()));
-			entity.setImageWidth(maxThumbSizeInt);
+					Math.floor(this.maxThumbSize * entity.getImageHeight() / entity.getImageWidth()));
+			entity.setImageWidth(this.maxThumbSizeInt);
 		} else {
 			entity.setImageWidth((int)
-					Math.floor(maxThumbSize * entity.getImageWidth() / entity.getImageHeight()));
-			entity.setImageHeight(maxThumbSizeInt);
+					Math.floor(this.maxThumbSize * entity.getImageWidth() / entity.getImageHeight()));
+			entity.setImageHeight(this.maxThumbSizeInt);
 		}
 	}
 

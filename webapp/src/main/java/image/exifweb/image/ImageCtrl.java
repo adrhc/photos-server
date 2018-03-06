@@ -2,7 +2,7 @@ package image.exifweb.image;
 
 import image.cdm.image.ExifInfo;
 import image.cdm.image.ImageRating;
-import image.cdm.image.ImageStatus;
+import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
@@ -34,7 +34,7 @@ public class ImageCtrl {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
-		Image image = imageRepository.getImageById(id);
+		Image image = this.imageRepository.getImageById(id);
 		if (webRequest.checkNotModified(
 				image.getImageMetadata().getDateTime().getTime())) {
 			return null;
@@ -44,12 +44,12 @@ public class ImageCtrl {
 
 	@RequestMapping(value = "/exif/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public ExifInfo getExifById(@PathVariable Integer id, WebRequest webRequest) {
-		Image image = imageRepository.getImageById(id);
+		Image image = this.imageRepository.getImageById(id);
 		if (webRequest.checkNotModified(
 				image.getImageMetadata().getDateTime().getTime())) {
 			return null;
 		}
-		return metadataEntityToDTOConverter.convert(image);
+		return this.metadataEntityToDTOConverter.convert(image);
 	}
 
 	@RequestMapping(value = "/changeStatus",
@@ -57,7 +57,7 @@ public class ImageCtrl {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void changeStatus(@RequestBody ImageStatus imageStatus) {
-		imageRepository.changeStatus(imageStatus);
+		this.imageRepository.changeStatus(imageStatus);
 	}
 
 	@RequestMapping(value = "/setRating",
@@ -65,7 +65,7 @@ public class ImageCtrl {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void changeRating(@RequestBody ImageRating imageRating) {
-		imageRepository.changeRating(imageRating);
+		this.imageRepository.changeRating(imageRating);
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -73,6 +73,6 @@ public class ImageCtrl {
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void putAlbumCover(@PathVariable Integer imageId) throws IOException {
-		albumRepository.putAlbumCover(imageId);
+		this.albumRepository.putAlbumCover(imageId);
 	}
 }

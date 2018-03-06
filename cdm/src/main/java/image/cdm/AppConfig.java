@@ -3,11 +3,9 @@ package image.cdm;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @NoArgsConstructor
-public class AppConfig implements Serializable {
+public class AppConfig implements ICdmEntity {
 	private Integer id;
 	private String name;
 	private String value;

@@ -1,4 +1,4 @@
-package image.cdm.image;
+package image.cdm.image.feature;
 
 import java.util.Date;
 
@@ -15,6 +15,6 @@ public interface IImageBasicInfo {
 	String getAlbumName();
 
 	Date getThumbLastModified();
-	
+
 	Date getDateTime();
 }
