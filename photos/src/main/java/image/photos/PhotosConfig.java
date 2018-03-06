@@ -2,13 +2,15 @@ package image.photos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.ConversionServiceFactoryBean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
+import org.springframework.format.datetime.DateFormatter;
+import org.springframework.format.datetime.DateFormatterRegistrar;
+import org.springframework.format.number.NumberFormatAnnotationFormatterFactory;
+import org.springframework.format.support.DefaultFormattingConversionService;
+import org.springframework.format.support.FormattingConversionService;
 
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,16 +28,35 @@ public class PhotosConfig {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	@Autowired
+	/**
+	 * see @EnableWebMvc
+	 * see @Bean public FormattingConversionService mvcConversionService() from WebMvcConfigurationSupport
+	 * <p>
+	 * ERROR when using conversionService() with ConversionServiceFactoryBean:
+	 * expected single matching bean but found 2: mvcConversionService,conversionService
+	 *
+	 * @param converterSet
+	 * @param converterFactories
+	 * @return
+	 */
 	@Bean
-	public ConversionService conversionService(Set<Converter> converterSet,
-	                                           Set<ConverterFactory> converterFactories) {
-		ConversionServiceFactoryBean factoryBean = new ConversionServiceFactoryBean();
-		Set converters = new HashSet();
-		converters.addAll(converterSet);
-		converters.addAll(converterFactories);
-		factoryBean.setConverters(converters);
-		factoryBean.afterPropertiesSet();
-		return factoryBean.getObject();
+	@Autowired
+	public FormattingConversionService mvcConversionService(
+			Set<Converter> converterSet,
+			Set<ConverterFactory> converterFactories) {
+		DefaultFormattingConversionService conversionService =
+				new DefaultFormattingConversionService(false);
+		converterSet.forEach(conversionService::addConverter);
+		converterFactories.forEach(conversionService::addConverterFactory);
+
+		// Ensure @NumberFormat is still supported
+		conversionService.addFormatterForFieldAnnotation(new NumberFormatAnnotationFormatterFactory());
+
+		// Register date conversion with a specific global format
+		DateFormatterRegistrar registrar = new DateFormatterRegistrar();
+		registrar.setFormatter(new DateFormatter("dd.MM.yyyy"));
+		registrar.registerFormatters(conversionService);
+
+		return conversionService;
 	}
 }
