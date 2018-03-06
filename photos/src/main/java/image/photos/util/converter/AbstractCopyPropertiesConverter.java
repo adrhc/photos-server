@@ -7,9 +7,9 @@ import org.springframework.core.convert.converter.Converter;
 
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class CopyPropertiesConverter<S, T> implements Converter<S, T> {
+public abstract class AbstractCopyPropertiesConverter<S, T> implements Converter<S, T> {
 	private static final Logger logger =
-			LoggerFactory.getLogger(CopyPropertiesConverter.class);
+			LoggerFactory.getLogger(AbstractCopyPropertiesConverter.class);
 
 	@Override
 	public T convert(S source) {

@@ -1,12 +1,12 @@
 package image.photos.config;
 
 import image.persistence.entity.AppConfig;
-import image.photos.util.converter.CopyPropertiesConverter;
+import image.photos.util.converter.AbstractCopyPropertiesConverter;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AppConfigCdmToEntityConverter extends
-		CopyPropertiesConverter<image.cdm.AppConfig, AppConfig> {
+		AbstractCopyPropertiesConverter<image.cdm.AppConfig, AppConfig> {
 	@Override
 	public AppConfig targetNewInstance() {
 		return new AppConfig();
