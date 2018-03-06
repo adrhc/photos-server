@@ -46,6 +46,8 @@ public class PhotosConfig {
 			Set<ConverterFactory> converterFactories) {
 		DefaultFormattingConversionService conversionService =
 				new DefaultFormattingConversionService(false);
+
+		// custom converters & converterFactories
 		converterSet.forEach(conversionService::addConverter);
 		converterFactories.forEach(conversionService::addConverterFactory);
 
