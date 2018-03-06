@@ -8,7 +8,7 @@ import image.exifweb.util.procinfo.ProcStatPercent;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.util.converter.PhotosConversionSupport;
+import image.photos.util.converter.PhotosConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -54,7 +54,7 @@ public class AppConfigCtrl implements IAppConfigCache {
 	@Inject
 	private ApplicationContext ac;
 	@Inject
-	private PhotosConversionSupport photosConversionSupport;
+	private PhotosConversionUtil photosConversionSupport;
 	private String testRAMString;
 	private List<AppConfig> testRAMObjectToJson;
 

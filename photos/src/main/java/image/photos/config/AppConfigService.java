@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
-import image.photos.util.converter.PhotosConversionSupport;
+import image.photos.util.converter.PhotosConversionUtil;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public class AppConfigService {
 	@Inject
 	private AppConfigRepository appConfigRepository;
 	@Inject
-	private PhotosConversionSupport photosConversionSupport;
+	private PhotosConversionUtil photosConversionSupport;
 
 	public boolean getConfigBool(String name) {
 		String s = getConfig(name);

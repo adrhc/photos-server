@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 @Component
-public class PhotosConversionSupport {
+public class PhotosConversionUtil implements ITypeDescriptors {
 	@Inject
 	private ConversionService conversionService;
 
@@ -17,9 +17,8 @@ public class PhotosConversionSupport {
 	}
 
 	public List<AppConfig> cdmAppConfigsOf(List<image.persistence.entity.AppConfig> appConfigs) {
-		return (List<AppConfig>) this.conversionService.convert(appConfigs,
-				ITypeDescriptors.listOfEntityAppConfig,
-				ITypeDescriptors.listOfCdmAppConfig);
+		return (List<AppConfig>) this.conversionService.convert(
+				appConfigs, listOfEntityAppConfig, listOfCdmAppConfig);
 	}
 
 	public image.persistence.entity.AppConfig entityAppConfigOf(AppConfig appConfig) {
@@ -29,7 +28,6 @@ public class PhotosConversionSupport {
 	public List<image.persistence.entity.AppConfig> entityAppConfigsOf(List<AppConfig> appConfigs) {
 		return (List<image.persistence.entity.AppConfig>)
 				this.conversionService.convert(appConfigs,
-						ITypeDescriptors.listOfCdmAppConfig,
-						ITypeDescriptors.listOfEntityAppConfig);
+						listOfCdmAppConfig, listOfEntityAppConfig);
 	}
 }

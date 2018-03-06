@@ -3,7 +3,6 @@ package image.persistence.entity;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Date;
  */
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class AppConfig implements Serializable {
+public class AppConfig implements IStorageEntity {
 	private Integer id;
 	private String name;
 	private String value;
