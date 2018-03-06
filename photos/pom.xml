@@ -116,7 +116,7 @@
                     <!--<properties>-->
                     <!--<includeTags>MiscTestCategory</includeTags>-->
                     <!--<includeTags>image.photos.JsonMapperConfig</includeTags>-->
-                    <!--<includeTags>image.photos.springtestconfig.InMemoryDbPhotosTestConfig</includeTags>-->
+                    <!--<includeTags>image.photos.springtestconfig.InMemoryDbPhotosConfig</includeTags>-->
                     <!--<includeTags>junit5&amp;photos&amp;inmemorydb</includeTags>-->
                     <!--<includeTags>junit5&amp;photos&amp;json</includeTags>-->
                     <!--<includeTags>junit5&amp;photos&amp;misc</includeTags>-->

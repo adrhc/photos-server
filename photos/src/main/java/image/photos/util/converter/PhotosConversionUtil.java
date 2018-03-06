@@ -10,24 +10,15 @@ import java.util.List;
 @Component
 public class PhotosConversionUtil implements ITypeDescriptors {
 	@Inject
-	private ConversionService conversionService;
-
-	public AppConfig cdmAppConfigOf(image.persistence.entity.AppConfig appConfig) {
-		return this.conversionService.convert(appConfig, AppConfig.class);
-	}
+	private ConversionService cs;
 
 	public List<AppConfig> cdmAppConfigsOf(List<image.persistence.entity.AppConfig> appConfigs) {
-		return (List<AppConfig>) this.conversionService.convert(
-				appConfigs, listOfEntityAppConfig, listOfCdmAppConfig);
-	}
-
-	public image.persistence.entity.AppConfig entityAppConfigOf(AppConfig appConfig) {
-		return this.conversionService.convert(appConfig, image.persistence.entity.AppConfig.class);
+		return (List<AppConfig>) this.cs.convert(appConfigs,
+				listOfEntityAppConfig, listOfCdmAppConfig);
 	}
 
 	public List<image.persistence.entity.AppConfig> entityAppConfigsOf(List<AppConfig> appConfigs) {
 		return (List<image.persistence.entity.AppConfig>)
-				this.conversionService.convert(appConfigs,
-						listOfCdmAppConfig, listOfEntityAppConfig);
+				this.cs.convert(appConfigs, listOfCdmAppConfig, listOfEntityAppConfig);
 	}
 }

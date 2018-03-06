@@ -3,7 +3,7 @@ package image.photos.junit5.config;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.config.AppConfigEntityToCdmConverter;
-import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosTestConfig;
+import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -14,7 +14,7 @@ import org.springframework.core.convert.ConversionService;
 
 @NotThreadSafe
 @Tag("misc")
-@Junit5InMemoryDbPhotosTestConfig
+@Junit5InMemoryDbPhotosConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AppConfigEntityToCdmConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Autowired

@@ -19,5 +19,5 @@ import java.lang.annotation.Target;
 @ContextConfiguration(classes = {HibernateConfig.class, PhotosConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @InMemoryDbActivated
-public @interface InMemoryDbPhotosTestConfig {
+public @interface InMemoryDbPhotosConfig {
 }

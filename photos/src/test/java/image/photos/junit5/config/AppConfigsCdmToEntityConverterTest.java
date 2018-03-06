@@ -2,7 +2,7 @@ package image.photos.junit5.config;
 
 import image.cdm.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
-import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosTestConfig;
+import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosConfig;
 import image.photos.util.converter.PhotosConversionUtil;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,10 +16,10 @@ import java.util.stream.IntStream;
 
 @NotThreadSafe
 @Tag("misc")
-@Junit5InMemoryDbPhotosTestConfig
+@Junit5InMemoryDbPhotosConfig
 public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Inject
-	private PhotosConversionUtil photosConversionSupport;
+	private PhotosConversionUtil pcu;
 
 	private List<AppConfig> appConfigs;
 
@@ -33,7 +33,7 @@ public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, I
 	@Test
 	public void convert() {
 		List<image.persistence.entity.AppConfig> cdmAppConfig =
-				this.photosConversionSupport.entityAppConfigsOf(this.appConfigs);
+				this.pcu.entityAppConfigsOf(this.appConfigs);
 		assertAppConfigsEquals(this.appConfigs, cdmAppConfig);
 	}
 }
