@@ -1,4 +1,4 @@
-package image.photos.util.converter;
+package image.photos.util.conversion;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;

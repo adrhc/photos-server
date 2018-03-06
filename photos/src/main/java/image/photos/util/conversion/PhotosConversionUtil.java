@@ -1,4 +1,4 @@
-package image.photos.util.converter;
+package image.photos.util.conversion;
 
 import image.cdm.AppConfig;
 import org.springframework.core.convert.ConversionService;
