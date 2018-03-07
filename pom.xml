@@ -942,7 +942,7 @@
                     org.junit.Test.class means "no category"
                 -->
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig.class
+                    image.persistence.repository.springtestconfig.HbmInMemoryDbTestConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
@@ -970,7 +970,7 @@
             <id>local-db</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig.class,
+                    image.persistence.repository.springtestconfig.HbmInMemoryDbTestConfig.class,
                     image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
                 </junit4.storage-impl-hbm.groups>
@@ -1001,7 +1001,7 @@
             <id>remote-db</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig.class,
+                    image.persistence.repository.springtestconfig.HbmInMemoryDbTestConfig.class,
                     image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
                 </junit4.storage-impl-hbm.groups>

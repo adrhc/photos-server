@@ -18,5 +18,5 @@ import java.lang.annotation.Target;
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @InMemoryDbActivated
-public @interface InMemoryDbTestConfig {
+public @interface HbmInMemoryDbTestConfig {
 }

@@ -1,6 +1,6 @@
 package image.persistence.repository.junit5.testconfig;
 
-import image.persistence.repository.springtestconfig.InMemoryDbTestConfig;
+import image.persistence.repository.springtestconfig.HbmInMemoryDbTestConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
-@InMemoryDbTestConfig
+@HbmInMemoryDbTestConfig
 @Tag("junit5")
 @Tag("hbm")
 @Tag("inmemorydb")
