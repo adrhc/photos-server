@@ -2,7 +2,7 @@ package image.photos.junit5.util.converter.entitytocdm;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
-import image.photos.junit5.config.IAppConfigAssertions;
+import image.photos.junit5.appconfig.IAppConfigAssertions;
 import image.photos.junit5.util.converter.ConversionTestBase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package image.photos.junit5.config;
+package image.photos.junit5.appconfig;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;

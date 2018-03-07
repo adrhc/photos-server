@@ -2,7 +2,7 @@ package image.photos.junit5.util.converter.cdmtoentity;
 
 import image.cdm.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
-import image.photos.junit5.config.IAppConfigAssertions;
+import image.photos.junit5.appconfig.IAppConfigAssertions;
 import image.photos.junit5.testconfig.Junit5InMemoryDbPhotosConfig;
 import image.photos.util.conversion.PhotosConversionUtil;
 import net.jcip.annotations.NotThreadSafe;
