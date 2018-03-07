@@ -1,7 +1,7 @@
 package image.persistence.repository.junit4.staging.album;
 
 import image.persistence.entity.Album;
-import image.persistence.repository.springtestconfig.HbmTestJdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.HbmStagingJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by adr on 2/26/18.
  */
 @NotThreadSafe
-@HbmTestJdbcDsTestConfig
-@Category(HbmTestJdbcDsTestConfig.class)
+@HbmStagingJdbcDsTestConfig
+@Category(HbmStagingJdbcDsTestConfig.class)
 public class ClearDirtyForAlbumTest extends AlbumRepoWriteTestBase {
 	@Override
 	@Before
