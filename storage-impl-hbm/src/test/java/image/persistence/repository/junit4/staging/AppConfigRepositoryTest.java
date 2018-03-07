@@ -3,7 +3,7 @@ package image.persistence.repository.junit4.staging;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
-import image.persistence.repository.springtestconfig.HbmInMemoryDsConfig;
+import image.persistence.repository.springtestconfig.HbmInMemoryDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,14 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Don't delete created configs with an have @After because using @HbmInMemoryDsConfig.
+ * Don't delete created configs with an have @After because using @HbmInMemoryDbConfig.
  * <p>
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@HbmInMemoryDsConfig
-@Category(HbmInMemoryDsConfig.class)
+@HbmInMemoryDbConfig
+@Category(HbmInMemoryDbConfig.class)
 public class AppConfigRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 

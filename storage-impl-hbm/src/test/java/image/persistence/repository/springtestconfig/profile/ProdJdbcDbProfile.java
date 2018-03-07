@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles({"in-memory-db"})
-public @interface InMemoryDsProfile {
+@ActiveProfiles({"prod-jdbc-ds"})
+public @interface ProdJdbcDbProfile {
 }

@@ -1,7 +1,7 @@
 package image.persistence.repository.springtestconfig;
 
 import image.persistence.HibernateConfig;
-import image.persistence.repository.springtestconfig.profile.TestJdbcDsProfile;
+import image.persistence.repository.springtestconfig.profile.InMemoryDbProfile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -17,6 +17,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
-@TestJdbcDsProfile
-public @interface HbmStagingJdbcDsConfig {
+@InMemoryDbProfile
+public @interface HbmInMemoryDbConfig {
 }
