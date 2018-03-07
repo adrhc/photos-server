@@ -3,7 +3,7 @@ package image.photos.junit5.util.converter.entitytocdm;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.junit5.config.IAppConfigAssertions;
-import image.photos.junit5.config.testconfig.Junit5InMemoryDbPhotosConfig;
+import image.photos.junit5.testconfig.Junit5InMemoryDbPhotosConfig;
 import image.photos.util.conversion.PhotosConversionUtil;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeEach;

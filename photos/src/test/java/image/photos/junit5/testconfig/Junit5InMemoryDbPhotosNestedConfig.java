@@ -1,4 +1,4 @@
-package image.photos.junit5.config.testconfig;
+package image.photos.junit5.testconfig;
 
 import image.photos.springtestconfig.InMemoryDbPhotosConfig;
 import org.junit.jupiter.api.Nested;
