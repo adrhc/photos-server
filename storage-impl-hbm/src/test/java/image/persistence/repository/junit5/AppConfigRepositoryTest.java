@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.isOneOf;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @NotThreadSafe
@@ -182,7 +182,8 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			List<AppConfig> appConfigs =
 					this.appConfigRepository.getAppConfigs();
 			logger.debug("appConfigs.size = {}", appConfigs.size());
-			assertThat(appConfigs.size(), isOneOf(2, 5));
+			// any createAppConfig add to the same in memory db instance
+			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
 		}
 
 		@Test
@@ -190,7 +191,8 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			List<AppConfig> appConfigs = this.appConfigRepository
 					.testGetNoCacheableOrderedAppConfigs();
 			logger.debug("appConfigs.size = {}", appConfigs.size());
-			assertThat(appConfigs.size(), isOneOf(2, 5));
+			// any createAppConfig add to the same in memory db instance
+			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
 		}
 
 		@Test
