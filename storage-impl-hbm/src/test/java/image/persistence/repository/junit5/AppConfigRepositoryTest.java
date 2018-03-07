@@ -6,11 +6,15 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbNestedConfig;
+import image.persistence.repository.util.IEnhancedRandom;
+import io.github.glytching.junit.extension.random.Random;
+import io.github.glytching.junit.extension.random.RandomBeansExtension;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(RandomBeansExtension.class)
 @NotThreadSafe
 @Junit5HbmInMemoryDbConfig
 class AppConfigRepositoryTest implements IAppConfigSupplier {
@@ -92,34 +97,72 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
-	@Junit5HbmInMemoryDbNestedConfig
-	class UpdateValueTest {
-		private List<AppConfig> appConfigs = new ArrayList<>();
-		private AppConfig appConfig0;
-		private AppConfig appConfig1;
-
-		@BeforeEach
-		void setUp() {
-			IntStream.range(0, 2).boxed().map(i -> supplyEntityAppConfig())
-					.peek(this.appConfigs::add)
-					.forEach(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig);
-			this.appConfig0 = this.appConfigs.get(0);
-			this.appConfig1 = this.appConfigs.get(1);
-		}
+	/**
+	 * Should be abstract class in order to run @Test as part of the derived class!
+	 */
+	abstract class UpdateValueTestBase {
+		@Autowired
+		AppConfigRepository appConfigRepository;
+		AppConfig appConfig0;
+		AppConfig appConfig1;
 
 		@Test
 		void updateValue() {
-			AppConfigRepositoryTest.this.appConfigRepository.updateValue(
+			this.appConfigRepository.updateValue(
 					"updated-value", this.appConfig0.getId());
-			AppConfig updatedAppConfig0 = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(this.appConfig0.getId());
-			AppConfig notUpdatedAppConfig1 = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(this.appConfig1.getId());
+			AppConfig updatedAppConfig0 =
+					this.appConfigRepository.getAppConfigById(this.appConfig0.getId());
+			AppConfig notUpdatedAppConfig1 =
+					this.appConfigRepository.getAppConfigById(this.appConfig1.getId());
 			assertAll(
 					() -> assertEquals("updated-value", updatedAppConfig0.getValue()),
 					() -> assertEquals(this.appConfig1.getValue(), notUpdatedAppConfig1.getValue())
 			);
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmInMemoryDbNestedConfig
+	class UpdateValueTest1 extends UpdateValueTestBase {
+		private List<AppConfig> appConfigs = new ArrayList<>();
+
+		@BeforeEach
+		void setUp() {
+			IntStream.range(0, 2).boxed()
+					.map(i -> supplyEntityAppConfig())
+					.peek(this.appConfigs::add)
+					.forEach(this.appConfigRepository::createAppConfig);
+			this.appConfig0 = this.appConfigs.get(0);
+			this.appConfig1 = this.appConfigs.get(1);
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmInMemoryDbNestedConfig
+	class UpdateValueTest2 extends UpdateValueTestBase {
+		@Random(size = 2, type = AppConfig.class, excludes = {"id", "lastUpdate"})
+		private List<AppConfig> appConfigs;
+
+		@BeforeEach
+		void setUp() {
+			this.appConfigs.forEach(this.appConfigRepository::createAppConfig);
+			this.appConfig0 = this.appConfigs.get(0);
+			this.appConfig1 = this.appConfigs.get(1);
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmInMemoryDbNestedConfig
+	class UpdateValueTest3 extends UpdateValueTestBase {
+		private List<AppConfig> appConfigs = new ArrayList<>();
+
+		@BeforeEach
+		void setUp() {
+			IEnhancedRandom.random.objects(AppConfig.class, 2, "id", "lastUpdate")
+					.peek(this.appConfigs::add)
+					.forEach(this.appConfigRepository::createAppConfig);
+			this.appConfig0 = this.appConfigs.get(0);
+			this.appConfig1 = this.appConfigs.get(1);
 		}
 	}
 
