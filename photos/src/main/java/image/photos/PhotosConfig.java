@@ -39,8 +39,8 @@ public class PhotosConfig {
 	 * @param converterFactories
 	 * @return
 	 */
-	@Bean
 	@Autowired
+	@Bean({"conversionService", "mvcConversionService"})
 	public FormattingConversionService mvcConversionService(
 			Set<Converter> converterSet,
 			Set<ConverterFactory> converterFactories) {
