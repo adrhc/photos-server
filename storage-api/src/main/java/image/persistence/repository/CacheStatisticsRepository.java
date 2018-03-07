@@ -8,6 +8,6 @@ import java.util.Map;
  * Created by adrianpetre on 23.02.2018.
  */
 public interface CacheStatisticsRepository {
-    @Transactional(readOnly = true)
-    Map getSecondLevelCacheStatistics(String name);
+	@Transactional(readOnly = true)
+	Map getSecondLevelCacheStatistics(String name);
 }

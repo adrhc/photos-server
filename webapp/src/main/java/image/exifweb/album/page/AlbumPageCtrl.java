@@ -49,9 +49,9 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 			Model model) {
 		return () -> {
 			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE,
-					appConfigRepository.getPhotosPerPage());
+					this.appConfigRepository.getPhotosPerPage());
 			model.addAttribute(AlbumExporterService.PAGE_COUNT,
-					albumPageRepository.getPageCount(toSearch,
+					this.albumPageRepository.getPageCount(toSearch,
 							viewHidden, viewOnlyPrintable, albumId));
 			return model;
 		};
@@ -70,10 +70,10 @@ public class AlbumPageCtrl implements INotModifiedChecker {
 			WebRequest webRequest) {
 		INotModifiedChecker _this = this;
 		return () -> _this.checkNotModified(
-				() -> albumPageService.getPage(pageNr, ESortType.valueOf(sort.toUpperCase()),
+				() -> this.albumPageService.getPage(pageNr, ESortType.valueOf(sort.toUpperCase()),
 						toSearch, viewHidden, viewOnlyPrintable, albumId),
 				albumPages -> {
-				    /*
+					/*
 					 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
 					 * location /photos/app/
 					 * location /photosj/app/

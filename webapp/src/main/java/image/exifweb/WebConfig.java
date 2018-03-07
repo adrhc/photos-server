@@ -48,7 +48,7 @@ public class WebConfig implements WebMvcConfigurer {
 	private ObjectMapper objectMapper;
 	@Value("${async.timeout}")
 	private long asyncTimeout;
-	
+
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer
 	propertySourcesPlaceholderConfigurer() {

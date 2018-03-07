@@ -25,15 +25,15 @@ public enum EImageStatus implements Serializable {
 	@Getter
 	private final int value;
 
-	public byte getValueAsByte() {
-		return (byte) this.value;
-	}
-
 	public static EImageStatus findByValue(final int value) {
 		if ($CODE_LOOKUP.containsKey(value)) {
 			return $CODE_LOOKUP.get(value);
 		}
 		throw new java.lang.IllegalArgumentException(
 				java.lang.String.format("Enumeration \'EImageStatus\' has no value \'%s\'", value));
+	}
+
+	public byte getValueAsByte() {
+		return (byte) this.value;
 	}
 }
