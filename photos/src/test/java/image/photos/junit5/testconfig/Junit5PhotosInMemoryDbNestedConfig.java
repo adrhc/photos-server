@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @PhotosInMemoryDbConfig
 @Nested
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public @interface Junit5InMemoryDbPhotosNestedConfig {
+public @interface Junit5PhotosInMemoryDbNestedConfig {
 }

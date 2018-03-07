@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Tag("junit5")
 @Tag("photos")
 @Tag("inmemorydb")
-public @interface Junit5InMemoryDbPhotosConfig {
+public @interface Junit5PhotosInMemoryDbConfig {
 }
