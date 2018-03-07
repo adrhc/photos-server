@@ -1,4 +1,4 @@
-package image.persistence.repository.springtestconfig.springprofile;
+package image.persistence.repository.springtestconfig.profile;
 
 import org.springframework.test.context.ActiveProfiles;
 
@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles({"test-jdbc-ds"})
-public @interface TestJdbcDsProfile {
+@ActiveProfiles({"prod-jdbc-ds"})
+public @interface ProdJdbcDsProfile {
 }

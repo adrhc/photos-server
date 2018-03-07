@@ -1,4 +1,4 @@
-package image.persistence.repository.springtestconfig.springrunner;
+package image.persistence.repository.junit4.springrunner;
 
 import org.junit.ClassRule;
 import org.springframework.test.context.junit4.rules.SpringClassRule;

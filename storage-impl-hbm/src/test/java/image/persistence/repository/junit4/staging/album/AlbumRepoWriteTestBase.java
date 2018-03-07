@@ -7,7 +7,7 @@ import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.junit4.production.AlbumRepositoryTest;
-import image.persistence.repository.springtestconfig.springrunner.SpringRunnerRulesBased;
+import image.persistence.repository.junit4.springrunner.SpringRunnerRulesBased;
 import image.persistence.repository.util.ITransactionalAction;
 import org.junit.After;
 import org.junit.Before;
