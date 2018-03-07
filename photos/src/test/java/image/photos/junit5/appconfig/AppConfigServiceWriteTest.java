@@ -5,7 +5,7 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springtestconfig.InMemoryDbPhotosConfig;
+import image.photos.springtestconfig.PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.folder.TemporaryFolder;
 import io.github.glytching.junit.extension.folder.TemporaryFolderExtension;
 import net.jcip.annotations.NotThreadSafe;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @NotThreadSafe
 @ExtendWith(SpringExtension.class)
-@InMemoryDbPhotosConfig
+@PhotosInMemoryDbConfig
 @Tag("junit5")
 @Tag("photos")
 @Tag("inmemorydb")

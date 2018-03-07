@@ -5,7 +5,7 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springtestconfig.InMemoryDbPhotosConfig;
+import image.photos.springtestconfig.PhotosInMemoryDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.After;
 import org.junit.Before;
@@ -34,8 +34,8 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@InMemoryDbPhotosConfig
-@Category(InMemoryDbPhotosConfig.class)
+@PhotosInMemoryDbConfig
+@Category(PhotosInMemoryDbConfig.class)
 public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	@Autowired
 	private AppConfigRepository appConfigRepository;

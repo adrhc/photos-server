@@ -1,6 +1,6 @@
 package image.photos.junit5.testconfig;
 
-import image.photos.springtestconfig.InMemoryDbPhotosConfig;
+import image.photos.springtestconfig.PhotosInMemoryDbConfig;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@InMemoryDbPhotosConfig
+@PhotosInMemoryDbConfig
 @Nested
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public @interface Junit5InMemoryDbPhotosNestedConfig {

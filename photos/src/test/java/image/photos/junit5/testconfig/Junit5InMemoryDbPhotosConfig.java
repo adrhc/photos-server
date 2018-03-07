@@ -1,6 +1,6 @@
 package image.photos.junit5.testconfig;
 
-import image.photos.springtestconfig.InMemoryDbPhotosConfig;
+import image.photos.springtestconfig.PhotosInMemoryDbConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
-@InMemoryDbPhotosConfig
+@PhotosInMemoryDbConfig
 @Tag("junit5")
 @Tag("photos")
 @Tag("inmemorydb")
