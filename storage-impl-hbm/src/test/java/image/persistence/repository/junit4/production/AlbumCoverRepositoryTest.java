@@ -1,7 +1,7 @@
 package image.persistence.repository.junit4.production;
 
 import image.persistence.repository.AlbumCoverRepository;
-import image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.HbmProdJdbcDsTestConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,8 +22,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@ProdJdbcDsTestConfig
-@Category(ProdJdbcDsTestConfig.class)
+@HbmProdJdbcDsTestConfig
+@Category(HbmProdJdbcDsTestConfig.class)
 public class AlbumCoverRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverRepositoryTest.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

@@ -18,5 +18,5 @@ import java.lang.annotation.Target;
 @ContextConfiguration(classes = {HibernateConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @ProdJdbcDsActivated
-public @interface ProdJdbcDsTestConfig {
+public @interface HbmProdJdbcDsTestConfig {
 }
