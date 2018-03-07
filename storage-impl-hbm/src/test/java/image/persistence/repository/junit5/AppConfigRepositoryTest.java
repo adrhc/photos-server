@@ -111,14 +111,13 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@Test
 		void updateValue() {
 			AppConfigRepositoryTest.this.appConfigRepository.updateValue(
-					this.appConfig0.getValue().concat("-updated"), this.appConfig0.getId());
+					"updated-value", this.appConfig0.getId());
 			AppConfig updatedAppConfig0 = AppConfigRepositoryTest.this
 					.appConfigRepository.getAppConfigById(this.appConfig0.getId());
 			AppConfig notUpdatedAppConfig1 = AppConfigRepositoryTest.this
 					.appConfigRepository.getAppConfigById(this.appConfig1.getId());
 			assertAll(
-					() -> assertEquals(
-							this.appConfig0.getValue().concat("-updated"), updatedAppConfig0.getValue()),
+					() -> assertEquals("updated-value", updatedAppConfig0.getValue()),
 					() -> assertEquals(this.appConfig1.getValue(), notUpdatedAppConfig1.getValue())
 			);
 		}
