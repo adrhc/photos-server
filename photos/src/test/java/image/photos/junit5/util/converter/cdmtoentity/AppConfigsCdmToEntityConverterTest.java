@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @NotThreadSafe
-@Tag("misc")
 @Junit5PhotosInMemoryDbConfig
+@Tag("misc")
 public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Inject
 	private PhotosConversionUtil pcu;

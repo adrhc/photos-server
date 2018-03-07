@@ -1,7 +1,8 @@
-package image.persistence.repository.springconfig;
+package image.photos.springconfig;
 
 import image.persistence.HibernateConfig;
 import image.persistence.repository.springconfig.profile.StagingJdbcDbProfile;
+import image.photos.PhotosConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -10,13 +11,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Created by adr on 2/24/18.
- */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ContextConfiguration(classes = {HibernateConfig.class})
+@ContextConfiguration(classes = {HibernateConfig.class, PhotosConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @StagingJdbcDbProfile
-public @interface HbmStagingJdbcDbConfig {
+public @interface PhotosStagingJdbcDbConfig {
 }

@@ -2,7 +2,7 @@ package image.persistence.repository.junit4.production;
 
 import image.persistence.entity.Image;
 import image.persistence.repository.ImageRepository;
-import image.persistence.repository.springconfig.HbmProdJdbcDsConfig;
+import image.persistence.repository.springconfig.HbmProdJdbcDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -21,8 +21,8 @@ import static org.hamcrest.Matchers.anything;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@HbmProdJdbcDsConfig
-@Category(HbmProdJdbcDsConfig.class)
+@HbmProdJdbcDbConfig
+@Category(HbmProdJdbcDbConfig.class)
 public class ImageRepositoryTest {
 	@Autowired
 	private ImageRepository imageRepository;
