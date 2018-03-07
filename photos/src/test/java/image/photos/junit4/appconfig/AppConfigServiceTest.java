@@ -1,4 +1,4 @@
-package image.photos.junit4.config;
+package image.photos.junit4.appconfig;
 
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;

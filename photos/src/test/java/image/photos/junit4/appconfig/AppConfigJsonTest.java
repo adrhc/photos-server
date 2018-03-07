@@ -1,4 +1,4 @@
-package image.photos.junit4.config;
+package image.photos.junit4.appconfig;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
