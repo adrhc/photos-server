@@ -2,7 +2,7 @@ package image.photos.junit4.album;
 
 import image.cdm.album.cover.AlbumCover;
 import image.photos.album.AlbumCoverService;
-import image.photos.springtestconfig.PhotosProdJdbcDbConfig;
+import image.photos.springconfig.PhotosProdJdbcDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

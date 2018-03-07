@@ -3,7 +3,7 @@ package image.photos.junit4.appconfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springtestconfig.PhotosProdJdbcDbConfig;
+import image.photos.springconfig.PhotosProdJdbcDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;

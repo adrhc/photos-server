@@ -947,7 +947,7 @@
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springtestconfig.PhotosInMemoryDbConfig.class
+                    image.photos.springconfig.PhotosInMemoryDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     junit5&amp;hbm&amp;inmemorydb
@@ -955,7 +955,7 @@
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springtestconfig.PhotosInMemoryDbConfig,
+                    image.photos.springconfig.PhotosInMemoryDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
@@ -977,8 +977,8 @@
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springtestconfig.PhotosInMemoryDbConfig.class,
-                    image.photos.springtestconfig.PhotosProdJdbcDbConfig.class
+                    image.photos.springconfig.PhotosInMemoryDbConfig.class,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig,
@@ -988,8 +988,8 @@
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springtestconfig.PhotosInMemoryDbConfig,
-                    image.photos.springtestconfig.PhotosProdJdbcDbConfig,
+                    image.photos.springconfig.PhotosInMemoryDbConfig,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     misc
                 </junit5.photos.groups>
@@ -1008,8 +1008,8 @@
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springtestconfig.PhotosInMemoryDbConfig.class,
-                    image.photos.springtestconfig.PhotosProdJdbcDbConfig.class
+                    image.photos.springconfig.PhotosInMemoryDbConfig.class,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig,
@@ -1019,8 +1019,8 @@
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springtestconfig.PhotosInMemoryDbConfig,
-                    image.photos.springtestconfig.PhotosProdJdbcDbConfig,
+                    image.photos.springconfig.PhotosInMemoryDbConfig,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     misc
                 </junit5.photos.groups>
