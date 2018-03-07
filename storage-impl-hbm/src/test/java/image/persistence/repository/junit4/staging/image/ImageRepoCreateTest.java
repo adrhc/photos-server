@@ -6,7 +6,7 @@ import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
-import image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig;
+import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.ITransactionalAction;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.After;

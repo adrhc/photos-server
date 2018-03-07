@@ -1,6 +1,6 @@
 package image.persistence.repository.junit5.testconfig;
 
-import image.persistence.repository.springtestconfig.HbmInMemoryDbConfig;
+import image.persistence.repository.springconfig.HbmInMemoryDbConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;

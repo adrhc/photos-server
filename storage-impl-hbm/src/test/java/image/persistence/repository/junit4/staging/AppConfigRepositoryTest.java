@@ -3,7 +3,7 @@ package image.persistence.repository.junit4.staging;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
-import image.persistence.repository.springtestconfig.HbmInMemoryDbConfig;
+import image.persistence.repository.springconfig.HbmInMemoryDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Before;

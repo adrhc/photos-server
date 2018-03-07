@@ -5,7 +5,7 @@ import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
-import image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig;
+import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.IDateNoMillisSupplier;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;

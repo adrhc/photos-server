@@ -1,7 +1,7 @@
 package image.persistence.repository.junit4.staging.album;
 
 import image.persistence.entity.Album;
-import image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig;
+import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;

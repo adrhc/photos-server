@@ -2,7 +2,7 @@ package image.persistence.repository.junit4.production;
 
 import image.persistence.entity.Image;
 import image.persistence.repository.ImageRepository;
-import image.persistence.repository.springtestconfig.HbmProdJdbcDsConfig;
+import image.persistence.repository.springconfig.HbmProdJdbcDsConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

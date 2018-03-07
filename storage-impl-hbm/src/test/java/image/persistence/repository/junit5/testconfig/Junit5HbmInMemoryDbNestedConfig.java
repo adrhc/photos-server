@@ -1,6 +1,6 @@
 package image.persistence.repository.junit5.testconfig;
 
-import image.persistence.repository.springtestconfig.HbmInMemoryDbConfig;
+import image.persistence.repository.springconfig.HbmInMemoryDbConfig;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 

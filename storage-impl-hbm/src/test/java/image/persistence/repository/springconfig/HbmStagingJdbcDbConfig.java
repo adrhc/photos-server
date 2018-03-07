@@ -1,7 +1,7 @@
-package image.persistence.repository.springtestconfig;
+package image.persistence.repository.springconfig;
 
 import image.persistence.HibernateConfig;
-import image.persistence.repository.springtestconfig.profile.TestJdbcDbProfile;
+import image.persistence.repository.springconfig.profile.TestJdbcDbProfile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 

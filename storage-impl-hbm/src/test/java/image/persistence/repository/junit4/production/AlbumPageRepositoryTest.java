@@ -3,7 +3,7 @@ package image.persistence.repository.junit4.production;
 import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.persistence.repository.springtestconfig.HbmProdJdbcDsConfig;
+import image.persistence.repository.springconfig.HbmProdJdbcDsConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
