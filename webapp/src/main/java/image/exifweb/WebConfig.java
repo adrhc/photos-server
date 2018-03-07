@@ -1,8 +1,10 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -38,9 +40,20 @@ import java.util.*;
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(RestController.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
+@PropertySource(value = {"classpath:/exifweb.properties",
+		"classpath*:/exifweb-overridden.properties"},
+		ignoreResourceNotFound = true)
 public class WebConfig implements WebMvcConfigurer {
 	@Inject
 	private ObjectMapper objectMapper;
+	@Value("${async.timeout}")
+	private long asyncTimeout;
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer
+	propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 
 //	@Bean
 //	public static PropertySourcesPlaceholderConfigurer
@@ -73,7 +86,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-		configurer.setDefaultTimeout(7200000);
+		configurer.setDefaultTimeout(this.asyncTimeout);
 	}
 
 	@Override

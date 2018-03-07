@@ -30,17 +30,18 @@ public class PhotosConfig {
 
 	/**
 	 * see @EnableWebMvc
-	 * see @Bean public FormattingConversionService mvcConversionService() from WebMvcConfigurationSupport
+	 * see @Bean public FormattingConversionService WebMvcConfigurationSupport.mvcConversionService()
+	 * Order matters for @Bean({"mvcConversionService", "conversionService"}).
 	 * <p>
 	 * ERROR when using conversionService() with ConversionServiceFactoryBean:
-	 * expected single matching bean but found 2: mvcConversionService,conversionService
+	 * "expected single matching bean but found 2: mvcConversionService,conversionService"
 	 *
 	 * @param converterSet
 	 * @param converterFactories
 	 * @return
 	 */
 	@Autowired
-	@Bean({"conversionService", "mvcConversionService"})
+	@Bean({"mvcConversionService", "conversionService"})
 	public FormattingConversionService mvcConversionService(
 			Set<Converter> converterSet,
 			Set<ConverterFactory> converterFactories) {
