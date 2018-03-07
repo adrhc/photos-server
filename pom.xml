@@ -971,7 +971,7 @@
             <properties>
                 <junit4.storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.HbmInMemoryDbTestConfig.class,
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
+                    image.persistence.repository.springtestconfig.HbmTestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.HbmProdJdbcDsTestConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
@@ -981,7 +981,7 @@
                     image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig,
+                    image.persistence.repository.springtestconfig.HbmTestJdbcDsTestConfig,
                     image.persistence.repository.springtestconfig.HbmProdJdbcDsTestConfig,
                     junit5&amp;hbm&amp;inmemorydb
                 </junit5.storage-impl-hbm.groups>
@@ -1002,7 +1002,7 @@
             <properties>
                 <junit4.storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.HbmInMemoryDbTestConfig.class,
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
+                    image.persistence.repository.springtestconfig.HbmTestJdbcDsTestConfig.class,
                     image.persistence.repository.springtestconfig.HbmProdJdbcDsTestConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
@@ -1012,7 +1012,7 @@
                     image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig,
+                    image.persistence.repository.springtestconfig.HbmTestJdbcDsTestConfig,
                     image.persistence.repository.springtestconfig.HbmProdJdbcDsTestConfig,
                     junit5&amp;hbm&amp;inmemorydb
                 </junit5.storage-impl-hbm.groups>
