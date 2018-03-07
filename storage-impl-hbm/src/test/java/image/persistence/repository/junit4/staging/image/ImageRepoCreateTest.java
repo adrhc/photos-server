@@ -6,7 +6,7 @@ import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
-import image.persistence.repository.springtestconfig.HbmStagingJdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.HbmStagingJdbcDsConfig;
 import image.persistence.repository.util.ITransactionalAction;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.After;
@@ -26,8 +26,8 @@ import javax.inject.Inject;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@HbmStagingJdbcDsTestConfig
-@Category(HbmStagingJdbcDsTestConfig.class)
+@HbmStagingJdbcDsConfig
+@Category(HbmStagingJdbcDsConfig.class)
 public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier, ITransactionalAction {
 	protected static final Logger logger = LoggerFactory.getLogger(ImageRepoCreateTest.class);
 

@@ -5,7 +5,7 @@ import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
 import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
-import image.persistence.repository.springtestconfig.HbmStagingJdbcDsTestConfig;
+import image.persistence.repository.springtestconfig.HbmStagingJdbcDsConfig;
 import image.persistence.repository.util.IDateNoMillisSupplier;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
@@ -18,8 +18,8 @@ import java.util.Date;
  * Created by adr on 2/25/18.
  */
 @NotThreadSafe
-@HbmStagingJdbcDsTestConfig
-@Category(HbmStagingJdbcDsTestConfig.class)
+@HbmStagingJdbcDsConfig
+@Category(HbmStagingJdbcDsConfig.class)
 public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		implements IDateNoMillisSupplier {
 	@Test
