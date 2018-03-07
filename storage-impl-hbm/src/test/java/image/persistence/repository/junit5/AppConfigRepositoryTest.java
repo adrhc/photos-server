@@ -96,29 +96,30 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@Junit5HbmInMemoryDbNestedConfig
 	class UpdateValueTest {
 		private List<AppConfig> appConfigs = new ArrayList<>();
+		private AppConfig appConfig0;
+		private AppConfig appConfig1;
 
 		@BeforeEach
 		void setUp() {
-			IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
+			IntStream.range(0, 2).boxed().map(i -> supplyEntityAppConfig())
 					.peek(this.appConfigs::add)
 					.forEach(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig);
-			AppConfig appConfig0 = this.appConfigs.get(0);
-			appConfig0.setValue(appConfig0.getValue().concat("-updated"));
+			this.appConfig0 = this.appConfigs.get(0);
+			this.appConfig1 = this.appConfigs.get(1);
 		}
 
 		@Test
 		void updateValue() {
-			AppConfig appConfig0 = this.appConfigs.get(0);
-			AppConfig appConfig1 = this.appConfigs.get(1);
 			AppConfigRepositoryTest.this.appConfigRepository.updateValue(
-					appConfig0.getValue(), appConfig0.getId());
+					this.appConfig0.getValue().concat("-updated"), this.appConfig0.getId());
 			AppConfig updatedAppConfig0 = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(appConfig0.getId());
+					.appConfigRepository.getAppConfigById(this.appConfig0.getId());
 			AppConfig notUpdatedAppConfig1 = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(appConfig1.getId());
+					.appConfigRepository.getAppConfigById(this.appConfig1.getId());
 			assertAll(
-					() -> assertEquals(appConfig0.getValue(), updatedAppConfig0.getValue()),
-					() -> assertEquals(appConfig1.getValue(), notUpdatedAppConfig1.getValue())
+					() -> assertEquals(
+							this.appConfig0.getValue().concat("-updated"), updatedAppConfig0.getValue()),
+					() -> assertEquals(this.appConfig1.getValue(), notUpdatedAppConfig1.getValue())
 			);
 		}
 	}
