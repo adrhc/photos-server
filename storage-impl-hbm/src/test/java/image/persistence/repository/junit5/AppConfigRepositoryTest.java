@@ -94,6 +94,37 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
+	class UpdateValueTest {
+		private List<AppConfig> appConfigs = new ArrayList<>();
+
+		@BeforeEach
+		void setUp() {
+			IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
+					.peek(this.appConfigs::add)
+					.forEach(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig);
+			AppConfig appConfig0 = this.appConfigs.get(0);
+			appConfig0.setValue(appConfig0.getValue().concat("-updated"));
+		}
+
+		@Test
+		void updateValue() {
+			AppConfig appConfig0 = this.appConfigs.get(0);
+			AppConfig appConfig1 = this.appConfigs.get(1);
+			AppConfigRepositoryTest.this.appConfigRepository.updateValue(
+					appConfig0.getValue(), appConfig0.getId());
+			AppConfig updatedAppConfig0 = AppConfigRepositoryTest.this
+					.appConfigRepository.getAppConfigById(appConfig0.getId());
+			AppConfig notUpdatedAppConfig1 = AppConfigRepositoryTest.this
+					.appConfigRepository.getAppConfigById(appConfig1.getId());
+			assertAll(
+					() -> assertEquals(appConfig0.getValue(), updatedAppConfig0.getValue()),
+					() -> assertEquals(appConfig1.getValue(), notUpdatedAppConfig1.getValue())
+			);
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmInMemoryDbNestedConfig
 	class GetAppConfigByName {
 		@BeforeAll
 		void beforeAll() {
