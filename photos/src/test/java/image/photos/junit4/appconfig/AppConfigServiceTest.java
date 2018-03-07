@@ -3,7 +3,7 @@ package image.photos.junit4.appconfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig;
+import image.photos.springtestconfig.PhotosProdJdbcDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,8 +24,8 @@ import static org.junit.Assert.assertNotNull;
  */
 @RunWith(SpringRunner.class)
 @NotThreadSafe
-@ProdJdbcDsPhotosTestConfig
-@Category(ProdJdbcDsPhotosTestConfig.class)
+@PhotosProdJdbcDbConfig
+@Category(PhotosProdJdbcDbConfig.class)
 public class AppConfigServiceTest {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigServiceTest.class);
 

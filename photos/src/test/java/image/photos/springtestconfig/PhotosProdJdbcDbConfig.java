@@ -19,5 +19,5 @@ import java.lang.annotation.Target;
 @ContextConfiguration(classes = {HibernateConfig.class, PhotosConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @ProdJdbcDbProfile
-public @interface ProdJdbcDsPhotosTestConfig {
+public @interface PhotosProdJdbcDbConfig {
 }

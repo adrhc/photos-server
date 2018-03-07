@@ -978,7 +978,7 @@
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
                     image.photos.springtestconfig.InMemoryDbPhotosConfig.class,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
+                    image.photos.springtestconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig,
@@ -989,7 +989,7 @@
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
                     image.photos.springtestconfig.InMemoryDbPhotosConfig,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig,
+                    image.photos.springtestconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     misc
                 </junit5.photos.groups>
@@ -1009,7 +1009,7 @@
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
                     image.photos.springtestconfig.InMemoryDbPhotosConfig.class,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
+                    image.photos.springtestconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springtestconfig.HbmStagingJdbcDbConfig,
@@ -1020,7 +1020,7 @@
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
                     image.photos.springtestconfig.InMemoryDbPhotosConfig,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig,
+                    image.photos.springtestconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     misc
                 </junit5.photos.groups>
