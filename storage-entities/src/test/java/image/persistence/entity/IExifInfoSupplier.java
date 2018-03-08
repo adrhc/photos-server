@@ -1,13 +1,13 @@
 package image.persistence.entity;
 
 import image.cdm.image.ExifInfo;
-import image.persistence.util.IPositiveRandom;
+import image.persistence.util.IPositiveIntegerRandom;
 
 import java.util.Date;
 
-public interface IExifInfoSupplier extends IPositiveRandom {
+public interface IExifInfoSupplier extends IPositiveIntegerRandom {
 	default ExifInfo supplyExifInfo() {
-		int random = positiveRandom();
+		int random = randomPositiveInt();
 		ExifInfo exifInfo = new ExifInfo();
 		exifInfo.setApertureValue("apertureValue-" + random);
 		exifInfo.setContrast("contrast-" + random);

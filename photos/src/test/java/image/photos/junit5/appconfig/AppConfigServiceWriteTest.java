@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,7 +39,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	@BeforeEach
 	void setUp() {
-		IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
+		randomAppConfigStream(3, false, AppConfig.class)
 				.forEach(this.appConfigRepository::createAppConfig);
 	}
 

@@ -24,7 +24,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.EnumSet;
-import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -58,7 +57,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 		photosJsonFSPath.setValue(this.tempDir.toAbsolutePath().toString());
 		this.appConfigRepository.createAppConfig(photosJsonFSPath);
 		// some other random AppConfig
-		IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
+		randomAppConfigStream(3, false, AppConfig.class)
 				.forEach(this.appConfigRepository::createAppConfig);
 	}
 

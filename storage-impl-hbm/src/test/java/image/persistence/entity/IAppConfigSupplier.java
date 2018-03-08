@@ -1,7 +1,6 @@
 package image.persistence.entity;
 
 import image.persistence.repository.util.IEnhancedRandom;
-import image.persistence.util.IPositiveRandom;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,34 +9,22 @@ import java.util.stream.Stream;
 /**
  * Created by adr on 2/26/18.
  */
-public interface IAppConfigSupplier extends IPositiveRandom, IEnhancedRandom {
-	default AppConfig supplyEntityAppConfig() {
-		return supplyEntityAppConfig(null, null);
+public interface IAppConfigSupplier extends IEnhancedRandom {
+	default <T> T randomAppConfig(boolean withId, Class<T> clazz) {
+		return randomAppConfigStream(1, withId, clazz).findAny().get();
 	}
 
-	default AppConfig supplyEntityAppConfig(String name, String value) {
-		AppConfig appConfig = new AppConfig();
-		int random = positiveRandom();
-		appConfig.setName(name != null ? name : "entityAppConfig-" + random);
-		appConfig.setValue(value != null ? value : "entityAppConfigValue-" + random);
-		return appConfig;
+	default <T> List<T> randomAppConfigList(int amount, boolean withId, Class<T> clazz) {
+		return randomAppConfigStream(amount, withId, clazz).collect(Collectors.toList());
 	}
 
-	default image.cdm.AppConfig randomCdmAppConfig(boolean withId) {
-		return randomCdmAppConfigsStream(1, withId).findAny().get();
-	}
-
-	default List<image.cdm.AppConfig> randomCdmAppConfigsList(int amount, boolean withId) {
-		return randomCdmAppConfigsStream(amount, withId).collect(Collectors.toList());
-	}
-
-	default Stream<image.cdm.AppConfig> randomCdmAppConfigsStream(int amount, boolean withId) {
+	default <T> Stream<T> randomAppConfigStream(int amount, boolean withId, Class<T> clazz) {
 		if (withId) {
 			return IEnhancedRandom.random.objects(
-					image.cdm.AppConfig.class, amount, "lastUpdate");
+					clazz, amount, "lastUpdate");
 		} else {
 			return IEnhancedRandom.random.objects(
-					image.cdm.AppConfig.class, amount, "id", "lastUpdate");
+					clazz, amount, "id", "lastUpdate");
 		}
 	}
 
@@ -46,6 +33,13 @@ public interface IAppConfigSupplier extends IPositiveRandom, IEnhancedRandom {
 		appConfig.setId(withId ? 1 : null);
 		appConfig.setName("cdmAppConfig-1");
 		appConfig.setValue("cdmAppConfigValue-1");
+		return appConfig;
+	}
+
+	default AppConfig entityAppConfigOf(String name, String value) {
+		AppConfig appConfig = new AppConfig();
+		appConfig.setName(name);
+		appConfig.setValue(value);
 		return appConfig;
 	}
 }

@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @NotThreadSafe
 @Junit5PhotosInMemoryDbConfig
@@ -26,13 +24,7 @@ public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier, I
 
 	@BeforeEach
 	void beforeAll() {
-		this.appConfigs = IntStream.range(0, 3).boxed()
-				.map(i -> {
-					AppConfig source = supplyEntityAppConfig();
-					source.setId(i);
-					return source;
-				})
-				.collect(Collectors.toList());
+		this.appConfigs = randomAppConfigList(3, true, AppConfig.class);
 	}
 
 	@Test

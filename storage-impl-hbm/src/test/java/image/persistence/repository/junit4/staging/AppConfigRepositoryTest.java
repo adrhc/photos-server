@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,10 +36,7 @@ public class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 	@Before
 	public void setUp() {
-		this.appConfigs = new ArrayList<>();
-		this.appConfigs.add(supplyEntityAppConfig());
-		this.appConfigs.add(supplyEntityAppConfig());
-		this.appConfigs.add(supplyEntityAppConfig());
+		this.appConfigs = randomAppConfigList(3, false, AppConfig.class);
 		for (AppConfig appConfig : this.appConfigs) {
 			this.appConfigRepository.createAppConfig(appConfig);
 		}

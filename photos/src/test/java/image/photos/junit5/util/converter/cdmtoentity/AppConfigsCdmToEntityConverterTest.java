@@ -24,7 +24,7 @@ public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, I
 
 	@BeforeEach
 	void setUp() {
-		this.appConfigs = randomCdmAppConfigsList(3, true);
+		this.appConfigs = randomAppConfigList(3, true, AppConfig.class);
 	}
 
 	@Test

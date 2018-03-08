@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,7 +42,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	class CreateAppConfig {
 		@RepeatedTest(3)
 		void createAppConfig() {
-			AppConfig appConfig = supplyEntityAppConfig();
+			AppConfig appConfig = randomAppConfig(false, AppConfig.class);
 			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
 			AppConfig dbAppConfig = AppConfigRepositoryTest.this
 					.appConfigRepository.getAppConfigById(appConfig.getId());
@@ -58,7 +57,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			AppConfig appConfig = supplyEntityAppConfig("byId", "byId-value");
+			AppConfig appConfig = entityAppConfigOf("byId", "byId-value");
 			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
 			this.idAppConfig = appConfig.getId();
 		}
@@ -80,7 +79,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			IntStream.range(0, 3).boxed().map(i -> supplyEntityAppConfig())
+			randomAppConfigStream(3, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.peek(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig)
 					.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
@@ -128,8 +127,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			IntStream.range(0, 2).boxed()
-					.map(i -> supplyEntityAppConfig())
+			randomAppConfigStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.forEach(this.appConfigRepository::createAppConfig);
 			this.appConfig0 = this.appConfigs.get(0);
@@ -172,7 +170,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
-					.createAppConfig(supplyEntityAppConfig("byName", "byName-value"));
+					.createAppConfig(entityAppConfigOf("byName", "byName-value"));
 		}
 
 		@Test
@@ -203,9 +201,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			this.appConfigRepository.createAppConfig(
-					supplyEntityAppConfig(AppConfigEnum.albums_path.getValue(), "/dummy-path"));
+					entityAppConfigOf(AppConfigEnum.albums_path.getValue(), "/dummy-path"));
 			this.appConfigRepository.createAppConfig(
-					supplyEntityAppConfig(AppConfigEnum.photos_per_page.getValue(), "10"));
+					entityAppConfigOf(AppConfigEnum.photos_per_page.getValue(), "10"));
 		}
 
 		@Test

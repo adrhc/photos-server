@@ -16,8 +16,7 @@ public class AppConfigEntityToCdmConverterTest
 
 	@BeforeAll
 	void beforeAll() {
-		this.source = supplyEntityAppConfig();
-		this.source.setId(1);
+		this.source = randomAppConfig(true, AppConfig.class);
 	}
 
 	@Test
