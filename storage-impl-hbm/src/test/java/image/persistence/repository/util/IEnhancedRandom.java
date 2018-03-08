@@ -25,17 +25,17 @@ public interface IEnhancedRandom {
 			.scanClasspathForConcreteTypes(true)
 			.build();
 
-	default <T> T randomAppConfig(boolean withId, Class<T> clazz) {
-		Optional<T> randomT = randomAppConfigStream(1, withId, clazz).findAny();
+	default <T> T randomInstance(boolean withId, Class<T> clazz) {
+		Optional<T> randomT = randomInstanceStream(1, withId, clazz).findAny();
 		assert randomT.isPresent() : "random " + clazz.getSimpleName() + " is null!";
 		return randomT.get();
 	}
 
-	default <T> List<T> randomAppConfigList(int amount, boolean withId, Class<T> clazz) {
-		return randomAppConfigStream(amount, withId, clazz).collect(Collectors.toList());
+	default <T> List<T> randomInstanceList(int amount, boolean withId, Class<T> clazz) {
+		return randomInstanceStream(amount, withId, clazz).collect(Collectors.toList());
 	}
 
-	default <T> Stream<T> randomAppConfigStream(int amount, boolean withId, Class<T> clazz) {
+	default <T> Stream<T> randomInstanceStream(int amount, boolean withId, Class<T> clazz) {
 		if (withId) {
 			return IEnhancedRandom.random.objects(
 					clazz, amount, "lastUpdate");

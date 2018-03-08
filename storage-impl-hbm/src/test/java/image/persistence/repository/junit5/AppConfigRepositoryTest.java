@@ -42,7 +42,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	class CreateAppConfig {
 		@RepeatedTest(3)
 		void createAppConfig() {
-			AppConfig appConfig = randomAppConfig(false, AppConfig.class);
+			AppConfig appConfig = randomInstance(false, AppConfig.class);
 			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
 			AppConfig dbAppConfig = AppConfigRepositoryTest.this
 					.appConfigRepository.getAppConfigById(appConfig.getId());
@@ -79,7 +79,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			randomAppConfigStream(3, false, AppConfig.class)
+			randomInstanceStream(3, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.peek(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig)
 					.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
@@ -127,7 +127,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			randomAppConfigStream(2, false, AppConfig.class)
+			randomInstanceStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.forEach(this.appConfigRepository::createAppConfig);
 			this.appConfig0 = this.appConfigs.get(0);

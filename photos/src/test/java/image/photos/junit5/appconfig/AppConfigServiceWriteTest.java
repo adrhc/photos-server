@@ -39,7 +39,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	@BeforeEach
 	void setUp() {
-		randomAppConfigStream(3, false, AppConfig.class)
+		randomInstanceStream(3, false, AppConfig.class)
 				.forEach(this.appConfigRepository::createAppConfig);
 	}
 
