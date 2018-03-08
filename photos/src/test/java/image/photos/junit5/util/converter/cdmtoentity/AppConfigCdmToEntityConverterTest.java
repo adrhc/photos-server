@@ -13,7 +13,7 @@ public class AppConfigCdmToEntityConverterTest extends ConversionTestBase
 
 	@BeforeEach
 	void setUp() {
-		this.sourceAppConfig = supplyCdmAppConfig();
+		this.sourceAppConfig = randomCdmAppConfig(true);
 	}
 
 	@Test
