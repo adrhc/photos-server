@@ -6,7 +6,6 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbNestedConfig;
-import image.persistence.repository.util.random.IEnhancedRandom;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;
@@ -158,7 +157,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			IEnhancedRandom.random.objects(AppConfig.class, 2, "id", "lastUpdate")
+			randomInstanceStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.forEach(this.appConfigRepository::createAppConfig);
 			this.appConfig0 = this.appConfigs.get(0);
