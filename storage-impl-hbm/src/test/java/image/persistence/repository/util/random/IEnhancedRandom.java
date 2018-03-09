@@ -1,4 +1,4 @@
-package image.persistence.repository.util;
+package image.persistence.repository.util.random;
 
 import io.github.benas.randombeans.EnhancedRandomBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;

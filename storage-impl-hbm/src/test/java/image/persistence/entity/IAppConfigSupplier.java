@@ -1,6 +1,6 @@
 package image.persistence.entity;
 
-import image.persistence.repository.util.IEnhancedRandom;
+import image.persistence.repository.util.random.IEnhancedRandom;
 
 /**
  * Created by adr on 2/26/18.

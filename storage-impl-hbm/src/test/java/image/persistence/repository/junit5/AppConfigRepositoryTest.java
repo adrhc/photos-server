@@ -6,9 +6,9 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbNestedConfig;
-import image.persistence.repository.util.IEnhancedRandom;
+import image.persistence.repository.util.random.IEnhancedRandom;
+import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
-import io.github.glytching.junit.extension.random.RandomBeansExtension;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,13 +29,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(RandomBeansExtension.class)
+@ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
 @Junit5HbmInMemoryDbConfig
 class AppConfigRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 	@Autowired
 	private AppConfigRepository appConfigRepository;
+//	@RegisterExtension
+//	static RandomBeansExtension random = new RandomBeansExtensionEx();
 
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
