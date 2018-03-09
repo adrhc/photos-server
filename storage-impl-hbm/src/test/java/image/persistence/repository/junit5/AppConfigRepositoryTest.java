@@ -203,9 +203,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			this.appConfigRepository.createAppConfig(
-					entityAppConfigOf(AppConfigEnum.albums_path.getValue(), "/dummy-path"));
+					entityAppConfigOf(AppConfigEnum.albums_path, "/dummy-path"));
 			this.appConfigRepository.createAppConfig(
-					entityAppConfigOf(AppConfigEnum.photos_per_page.getValue(), "10"));
+					entityAppConfigOf(AppConfigEnum.photos_per_page, "10"));
 		}
 
 		@Test
