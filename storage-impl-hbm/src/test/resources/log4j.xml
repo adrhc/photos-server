@@ -40,12 +40,12 @@
     </logger>
 
     <logger name="image.persistence.repository.junit4" additivity="false">
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>
 
     <logger name="image.persistence.repository.junit5" additivity="false">
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>
 

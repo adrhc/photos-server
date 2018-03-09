@@ -40,13 +40,13 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 	public void createAnAlbumWithImage() {
 		doTransaction(() -> {
 			this.album = this.albumRepository.createAlbum(supplyAlbumName());
-			this.albumId = this.album.getId();
-			logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());
 			this.image = supplyImage(this.album);
 			this.imageRepository.persistImage(this.image);
-			this.imageId = this.image.getId();
-			logger.debug("image.id = {}, image.name = {}", this.image.getId(), this.image.getName());
 		});
+		this.albumId = this.album.getId();
+		logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());
+		this.imageId = this.image.getId();
+		logger.debug("image.id = {}, image.name = {}", this.image.getId(), this.image.getName());
 	}
 
 	@After

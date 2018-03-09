@@ -24,7 +24,7 @@ public class RemoveAlbumCoverTest extends AlbumRepoWriteTestBase {
 
 	@Test
 	public void removeAlbumCover() throws Exception {
-		boolean result = this.albumRepository.removeAlbumCover(this.imageId);
+		boolean result = this.albumRepository.removeAlbumCover(this.albumId);
 		Assert.assertTrue(result);
 		Album alteredAlbum = this.albumRepository.getAlbumById(this.albumId);
 		Assert.assertNull(alteredAlbum.getCover());
