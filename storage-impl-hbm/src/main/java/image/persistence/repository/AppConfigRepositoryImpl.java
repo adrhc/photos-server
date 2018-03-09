@@ -31,6 +31,13 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 		this.sessionFactory.getCurrentSession().persist(appConfig);
 	}
 
+	@Override
+	@Transactional
+	public void deleteAppConfig(AppConfigEnum ace) {
+		AppConfig appConfig = getAppConfigByName(ace.getValue());
+		this.sessionFactory.getCurrentSession().delete(appConfig);
+	}
+
 	private Integer getConfigInteger(AppConfigEnum ace) {
 		String s = getConfig(ace);
 		if (s == null) {

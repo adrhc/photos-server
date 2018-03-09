@@ -14,6 +14,9 @@ public interface AppConfigRepository {
 	@Transactional
 	void createAppConfig(AppConfig appConfig);
 
+	@Transactional
+	void deleteAppConfig(AppConfigEnum ace);
+
 	String getConfig(AppConfigEnum appConfigEnum);
 
 	Integer getPhotosPerPage();
