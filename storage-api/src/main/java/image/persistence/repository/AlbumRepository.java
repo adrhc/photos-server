@@ -16,6 +16,9 @@ public interface AlbumRepository {
 	Album createAlbum(String name);
 
 	@Transactional
+	void createAlbum(Album album);
+
+	@Transactional
 	void deleteAlbum(Integer id);
 
 	@Transactional

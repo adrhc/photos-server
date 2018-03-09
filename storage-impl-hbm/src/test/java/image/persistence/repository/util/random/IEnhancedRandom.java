@@ -15,6 +15,7 @@ import static java.nio.charset.Charset.forName;
 public interface IEnhancedRandom {
 	EnhancedRandom random = EnhancedRandomBuilder.aNewEnhancedRandomBuilder()
 			.objectPoolSize(100)
+			.overrideDefaultInitialization(true)
 			.charset(forName("UTF-8"))
 			.randomize(Integer.class, (Supplier<Integer>) () ->
 					ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE))

@@ -48,6 +48,12 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
+	public void createAlbum(Album album) {
+		this.sessionFactory.getCurrentSession().persist(album);
+	}
+
+	@Override
+	@Transactional
 	public void deleteAlbum(Integer id) {
 		Album album = this.sessionFactory.getCurrentSession().get(Album.class, id);
 		this.sessionFactory.getCurrentSession().delete(album);
