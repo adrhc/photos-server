@@ -130,7 +130,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	}
 
 	@Test
-	void finding1FullPage() {
+	void finding1FullPageOfImages() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
 				ESortType.ASC, "", true, false, this.album.getId());
 		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
