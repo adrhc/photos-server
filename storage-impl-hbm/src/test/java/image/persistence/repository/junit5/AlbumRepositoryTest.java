@@ -17,9 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
@@ -46,9 +48,16 @@ class AlbumRepositoryTest implements IAlbumSupplier {
 
 	@Test
 	void getAlbumsOrderedByName() {
-		List<Album> albums = this.albumRepository.getAlbumsOrderedByName();
-		assertThat(albums, hasSize((int) this.albums
-				.stream().filter(a -> !a.isDeleted()).count()));
+		List<String> descSortedNames = this.albums.stream()
+				.filter(a -> !a.isDeleted())
+				.map(Album::getName)
+				.sorted((o1, o2) -> o2.toLowerCase().compareTo(o1.toLowerCase()))
+				.collect(Collectors.toList());
+		List<Album> dbAlbums = this.albumRepository.getAlbumsOrderedByName();
+		assertThat("size", dbAlbums, hasSize(descSortedNames.size()));
+		for (Album dbAlbum : dbAlbums) {
+			assertEquals(descSortedNames.remove(0), dbAlbum.getName(), "sorting");
+		}
 	}
 
 	@Test

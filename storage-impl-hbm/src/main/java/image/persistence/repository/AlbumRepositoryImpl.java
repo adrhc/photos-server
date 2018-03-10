@@ -4,14 +4,17 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -32,10 +35,14 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public List<Album> getAlbumsOrderedByName() {
-		return this.sessionFactory.getCurrentSession()
-				.createCriteria(Album.class).setCacheable(true)
-				.add(Restrictions.eq("deleted", false))
-				.addOrder(Order.desc("name")).list();
+		CriteriaBuilder cb = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
+		CriteriaQuery<Album> criteria = cb.createQuery(Album.class);
+		Root<Album> root = criteria.from(Album.class);
+		criteria.select(root)
+				.where(cb.equal(root.get("deleted"), false))
+				.orderBy(cb.desc(root.get("name")));
+		Query<Album> q = this.sessionFactory.getCurrentSession().createQuery(criteria);
+		return q.setCacheable(true).list();
 	}
 
 	@Override
