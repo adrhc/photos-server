@@ -36,7 +36,7 @@ import static org.hamcrest.Matchers.hasSize;
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumPageRepositoryTest implements IAppConfigSupplier {
-	private static final Logger logger = LoggerFactory.getLogger(image.persistence.repository.junit4.production.AlbumPageRepositoryTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 
 	@Autowired
 	private AlbumRepository albumRepository;
@@ -52,14 +52,13 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	private Image hiddenImage;
 
 	@BeforeAll
-	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate"})
+	void beforeAll(@Random(type = Image.class, size = 50,
+			excludes = {"id", "lastUpdate", "deleted", "status"})
 			               Stream<Image> imageStream,
 	               @Random(excludes = {"id", "lastUpdate", "deleted"})
 			               Album album) {
-		// images: not deleted with DEFAULT as status
+		// images: deleted = false, status = EImageStatus.DEFAULT
 		List<Image> images = imageStream.peek(i -> i.setAlbum(album))
-				.peek(i -> i.setDeleted(false))
-				.peek(i -> i.setStatus(EImageStatus.DEFAULT.getValueAsByte()))
 				.collect(Collectors.toList());
 		// all status types available
 		Stream.of(EImageStatus.values())
