@@ -48,15 +48,16 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	private static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
 
-	@Random(excludes = {"id", "lastUpdate", "deleted"})
-	private Album album;
+	private Integer albumId;
 	private Image hiddenImage;
 
 	@BeforeAll
-	void beforeAll(@Random(type = Image.class, size = 50,
-			excludes = {"id", "lastUpdate"}) Stream<Image> imageStream) {
+	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate"})
+			               Stream<Image> imageStream,
+	               @Random(excludes = {"id", "lastUpdate", "deleted"})
+			               Album album) {
 		// images: not deleted with DEFAULT as status
-		List<Image> images = imageStream.peek(i -> i.setAlbum(this.album))
+		List<Image> images = imageStream.peek(i -> i.setAlbum(album))
 				.peek(i -> i.setDeleted(false))
 				.peek(i -> i.setStatus(EImageStatus.DEFAULT.getValueAsByte()))
 				.collect(Collectors.toList());
@@ -69,9 +70,10 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 		this.hiddenImage = images.get(3);
 		this.hiddenImage.setStatus(EImageStatus.HIDDEN.getValueAsByte());
 		// album cover
-		this.album.setCover(images.get(0));
-		this.album.setImages(images);
-		this.albumRepository.createAlbum(this.album);
+		album.setCover(images.get(0));
+		album.setImages(images);
+		this.albumRepository.createAlbum(album);
+		this.albumId = album.getId();
 		// required photos_per_page created
 		this.appConfigRepository.createAppConfig(
 				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
@@ -80,10 +82,10 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	@Test
 	void counting1Page() {
 		int pageCount = this.albumPageRepository.getPageCount(
-				T1_TO_SEARCH, false, false, this.album.getId());
+				T1_TO_SEARCH, false, false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
-				pageCount, T1_TO_SEARCH, this.album.getId());
+				pageCount, T1_TO_SEARCH, this.albumId);
 		Assert.assertEquals(1, pageCount);
 	}
 
@@ -91,30 +93,30 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	void counting0Pages() {
 		int pageCount = this.albumPageRepository.getPageCount(
 				this.hiddenImage.getName(), false,
-				false, this.album.getId());
+				false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
-				pageCount, this.hiddenImage.getName(), this.album.getId());
+				pageCount, this.hiddenImage.getName(), this.albumId);
 		Assert.assertEquals(0, pageCount);
 	}
 
 	@Test
 	void countingAllPagesForAlbum() {
 		int pageCount = this.albumPageRepository.getPageCount("",
-				true, false, this.album.getId());
+				true, false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
-				pageCount, "", this.album.getId());
+				pageCount, "", this.albumId);
 		Assert.assertEquals(3, pageCount);
 	}
 
 	@Test
 	void finding1Image() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
-				ESortType.ASC, T1_TO_SEARCH, false, false, this.album.getId());
+				ESortType.ASC, T1_TO_SEARCH, false, false, this.albumId);
 		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
-				T1_TO_SEARCH, this.album.getId());
+				T1_TO_SEARCH, this.albumId);
 		assertThat(imagesForPage, hasSize(1));
 	}
 
@@ -122,26 +124,26 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	void findingNoImage() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
 				ESortType.ASC, this.hiddenImage.getName(),
-				false, false, this.album.getId());
+				false, false, this.albumId);
 		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
-				this.hiddenImage.getName(), this.album.getId());
+				this.hiddenImage.getName(), this.albumId);
 		assertThat(imagesForPage, hasSize(0));
 	}
 
 	@Test
 	void finding1FullPageOfImages() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
-				ESortType.ASC, "", true, false, this.album.getId());
+				ESortType.ASC, "", true, false, this.albumId);
 		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
-				imagesForPage.size(), "", this.album.getId());
+				imagesForPage.size(), "", this.albumId);
 		assertThat(imagesForPage, hasSize(PAGE_SIZE));
 	}
 
 	@AfterAll
 	void afterAll() {
-		this.albumRepository.deleteAlbum(this.album.getId());
+		this.albumRepository.deleteAlbum(this.albumId);
 		this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page);
 	}
 }
