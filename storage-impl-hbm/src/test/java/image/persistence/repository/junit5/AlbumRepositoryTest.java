@@ -4,6 +4,7 @@ import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmStagingJdbcDbConfig;
+import image.persistence.repository.util.assertion.IAlbumAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;
@@ -22,18 +23,19 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AlbumRepositoryTest implements IAlbumSupplier {
+class AlbumRepositoryTest implements IAlbumSupplier, IAlbumAssertions {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 
 	@Autowired
 	private AlbumRepository albumRepository;
 
-	@Random(type = Album.class, size = 15, excludes = {"id", "images", "cover", "lastUpdate"})
+	@Random(type = Album.class, size = 30, excludes = {"id", "images", "cover", "lastUpdate"})
 	private List<Album> albums;
 
 	@BeforeAll
@@ -61,15 +63,24 @@ class AlbumRepositoryTest implements IAlbumSupplier {
 	}
 
 	@Test
-	void createAlbum() {
+	void createAlbum(@Random(excludes = {"id", "images", "cover", "lastUpdate"}) Album album) {
+		this.albumRepository.createAlbum(album);
+		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
+		assertAlbumEquals(album, dbAlbum);
 	}
 
 	@Test
-	void createAlbum1() {
+	void createAlbumByName(@Random String albumName) {
+		Album dbAlbum = this.albumRepository.createAlbum(albumName);
+		assertEquals(albumName, dbAlbum.getName());
 	}
 
 	@Test
 	void deleteAlbum() {
+		Integer albumId = this.albums.remove(this.albums.size() - 1).getId();
+		this.albumRepository.deleteAlbum(albumId);
+		Album removedAlbum = this.albumRepository.getAlbumById(albumId);
+		assertNull(removedAlbum);
 	}
 
 	@Test

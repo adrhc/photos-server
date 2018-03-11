@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface IAppConfigAssertions {
-
 	default void assertAppConfigEquals(String heading, image.cdm.AppConfig cdmAppConfig,
 	                                   image.persistence.entity.AppConfig entityAppConfig) {
 		assertAll(heading,
