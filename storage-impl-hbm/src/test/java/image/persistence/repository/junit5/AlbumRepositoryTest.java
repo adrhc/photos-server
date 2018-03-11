@@ -2,9 +2,13 @@ package image.persistence.repository.junit5;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;
+import image.persistence.entity.IImageSupplier;
+import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
+import image.persistence.repository.ImageRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.assertion.IAlbumAssertions;
+import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;
@@ -29,11 +33,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @NotThreadSafe
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AlbumRepositoryTest implements IAlbumSupplier, IAlbumAssertions {
+class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAssertions, IImageAssertions {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 
 	@Autowired
 	private AlbumRepository albumRepository;
+	@Autowired
+	private ImageRepository imageRepository;
 
 	@Random(type = Album.class, size = 30, excludes = {"id", "images", "cover", "lastUpdate"})
 	private List<Album> albums;
@@ -98,7 +104,13 @@ class AlbumRepositoryTest implements IAlbumSupplier, IAlbumAssertions {
 	}
 
 	@Test
-	void putAlbumCover() {
+	void putAlbumCover(@Random(excludes = {"id", "lastUpdate", "deleted", "status"}) Image image) {
+		Album album = this.albums.get(0);
+		album.addImage(image);
+		this.imageRepository.persistImage(image);
+		this.albumRepository.putAlbumCover(image.getId());
+		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
+		assertImageEquals(image, dbAlbum.getCover());
 	}
 
 	@Test
