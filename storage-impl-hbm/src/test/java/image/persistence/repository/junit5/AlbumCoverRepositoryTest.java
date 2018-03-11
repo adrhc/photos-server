@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.exparity.hamcrest.date.DateMatchers.sameOrAfter;
 import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
@@ -35,11 +33,9 @@ class AlbumCoverRepositoryTest {
 
 	@BeforeEach
 	void beforeEach(@Random(type = Image.class, excludes = {"id", "lastUpdate"})
-			                Stream<Image> imageStream,
+			                List<Image> images,
 	                @Random(excludes = {"id", "lastUpdate"}) Album album) {
 		this.before = new Date();
-		List<Image> images = imageStream.peek(i -> i.setAlbum(album))
-				.collect(Collectors.toList());
 		album.setCover(images.get(0));
 		album.setImages(images);
 		this.albumRepository.createAlbum(album);

@@ -5,8 +5,8 @@ import image.persistence.entity.IAlbumSupplier;
 import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.ImageRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmStagingJdbcDbConfig;
+import image.persistence.repository.junit5.testconfig.Junit5HbmStagingJdbcDbNestedConfig;
 import image.persistence.repository.util.assertion.IAlbumAssertions;
 import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
@@ -38,14 +37,12 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 	@Autowired
 	private AlbumRepository albumRepository;
-	@Autowired
-	private ImageRepository imageRepository;
 
-	@Random(type = Album.class, size = 30, excludes = {"id", "images", "cover", "lastUpdate"})
+	@Random(type = Album.class, size = 30, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})
 	private List<Album> albums;
 
 	@BeforeAll
-	void beforeAll() {
+	void givenAlbums() {
 		this.albums.forEach(this.albumRepository::createAlbum);
 	}
 
@@ -68,17 +65,45 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@Test
-	void createAlbum(@Random(excludes = {"id", "images", "cover", "lastUpdate"}) Album album) {
-		this.albumRepository.createAlbum(album);
-		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
-		assertAlbumEquals(album, dbAlbum);
+	abstract class AlbumCreationTestBase {
+		@Autowired
+		AlbumRepository albumRepository;
+
+		/**
+		 * @Random on field won't work in abstract class!
+		 */
+		Album album;
+
+		@AfterAll
+		void afterAll() {
+			this.albumRepository.deleteAlbum(this.album.getId());
+		}
 	}
 
-	@Test
-	void createAlbumByName(@Random String albumName) {
-		Album dbAlbum = this.albumRepository.createAlbum(albumName);
-		assertEquals(albumName, dbAlbum.getName());
+	@NotThreadSafe
+	@Junit5HbmStagingJdbcDbNestedConfig
+	class CreateAlbumTest extends AlbumCreationTestBase {
+		@BeforeAll
+		void beforeAll(@Random(excludes = {"id", "images", "cover", "lastUpdate"}) Album album) {
+			this.album = album;
+		}
+
+		@Test
+		void createAlbum() {
+			this.albumRepository.createAlbum(this.album);
+			Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+			assertAlbumEquals(this.album, dbAlbum);
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmStagingJdbcDbNestedConfig
+	class CreateAlbumForNameTest extends AlbumCreationTestBase {
+		@Test
+		void createAlbumForName(@Random String albumName) {
+			this.album = this.albumRepository.createAlbum(albumName);
+			assertEquals(albumName, this.album.getName());
+		}
 	}
 
 	@Test
@@ -103,21 +128,69 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		assertAlbumEquals(album, dbAlbum);
 	}
 
-	@Test
-	void putAlbumCover(@Random(excludes = {"id", "lastUpdate", "deleted", "status"}) Image image) {
-		Album album = this.albums.get(0);
-		album.addImage(image);
-		this.imageRepository.persistImage(image);
-		this.albumRepository.putAlbumCover(image.getId());
-		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
-		assertImageEquals(image, dbAlbum.getCover());
+	abstract class CoverTestBase {
+		@Autowired
+		AlbumRepository albumRepository;
+
+		/**
+		 * @Random on field won't work in abstract class!
+		 */
+		Album album;
+
+		@BeforeAll
+		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
+				                Album album,
+		                @Random(type = Image.class, excludes = {"id", "lastUpdate"})
+				                List<Image> images) {
+			this.album = album;
+			this.album.setImages(images);
+			this.albumRepository.createAlbum(this.album);
+		}
+
+		@AfterAll
+		void afterAll() {
+			this.albumRepository.deleteAlbum(this.album.getId());
+		}
 	}
 
-	@Test
-	void removeAlbumCover() {
+	@NotThreadSafe
+	@Junit5HbmStagingJdbcDbNestedConfig
+	class PutAlbumCoverTest extends CoverTestBase {
+		@Test
+		void putAlbumCover() {
+			Image cover = this.album.getImages().get(0);
+			this.albumRepository.putAlbumCover(cover.getId());
+			Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+			assertImageEquals(cover, dbAlbum.getCover());
+		}
+	}
+
+	@NotThreadSafe
+	@Junit5HbmStagingJdbcDbNestedConfig
+	class RemoveAlbumCoverTest extends CoverTestBase {
+		@Override
+		@BeforeAll
+		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
+				                Album album,
+		                @Random(type = Image.class, excludes = {"id", "lastUpdate"})
+				                List<Image> images) {
+			album.setCover(images.get(0));
+			super.givenAlbum(album, images);
+		}
+
+		@Test
+		void removeAlbumCover() {
+			this.albumRepository.removeAlbumCover(this.album.getId());
+			Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+			assertNull(dbAlbum.getCover());
+		}
 	}
 
 	@Test
 	void clearDirtyForAlbum() {
+		Album album = this.albums.get(0);
+		this.albumRepository.clearDirtyForAlbum(album.getId());
+		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
+		assertFalse(dbAlbum.isDirty());
 	}
 }
