@@ -85,10 +85,16 @@ class AlbumRepositoryTest implements IAlbumSupplier, IAlbumAssertions {
 
 	@Test
 	void getAlbumById() {
+		Album album = this.albums.get(0);
+		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
+		assertAlbumEquals(album, dbAlbum);
 	}
 
 	@Test
 	void getAlbumByName() {
+		Album album = this.albums.get(0);
+		Album dbAlbum = this.albumRepository.getAlbumByName(album.getName());
+		assertAlbumEquals(album, dbAlbum);
 	}
 
 	@Test
