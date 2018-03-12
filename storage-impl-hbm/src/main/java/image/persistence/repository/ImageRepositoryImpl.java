@@ -1,7 +1,7 @@
 package image.persistence.repository;
 
 import image.cdm.image.ImageRating;
-import image.cdm.image.ImageStatus;
+import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;

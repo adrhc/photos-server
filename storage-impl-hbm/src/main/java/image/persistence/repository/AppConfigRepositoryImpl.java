@@ -31,6 +31,13 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 		this.sessionFactory.getCurrentSession().persist(appConfig);
 	}
 
+	@Override
+	@Transactional
+	public void deleteAppConfig(AppConfigEnum ace) {
+		AppConfig appConfig = getAppConfigByName(ace.getValue());
+		this.sessionFactory.getCurrentSession().delete(appConfig);
+	}
+
 	private Integer getConfigInteger(AppConfigEnum ace) {
 		String s = getConfig(ace);
 		if (s == null) {
@@ -39,18 +46,19 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 		return Integer.parseInt(s);
 	}
 
-	private String getConfig(AppConfigEnum appConfigEnum) {
-		return getAppConfigById(appConfigEnum.getValue()).getValue();
+	@Override
+	public String getConfig(AppConfigEnum appConfigEnum) {
+		return getAppConfigByName(appConfigEnum.getValue()).getValue();
 	}
 
 	@Override
 	public Integer getPhotosPerPage() {
-		return getConfigInteger(AppConfigEnum.PHOTOS_PER_PAGE);
+		return getConfigInteger(AppConfigEnum.photos_per_page);
 	}
 
 	@Override
-	public String getLinuxAlbumPath() {
-		return getConfig(AppConfigEnum.LINUX_ALBUMS_PATH);
+	public String getAlbumsPath() {
+		return getConfig(AppConfigEnum.albums_path);
 	}
 
 	@Override
@@ -83,6 +91,14 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 			}
 		}
 	}
+
+	@Override
+	@Transactional
+	public void updateValue(String value, Integer appConfigId) {
+		AppConfig dbAppConfig = getAppConfigById(appConfigId);
+		dbAppConfig.setValue(value);
+	}
+
 
 	@Override
 	@Transactional(readOnly = true)

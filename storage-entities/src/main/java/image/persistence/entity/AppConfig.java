@@ -1,11 +1,8 @@
 package image.persistence.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,9 +13,8 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Entity
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"}, ignoreUnknown = true)
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class AppConfig implements Serializable {
+public class AppConfig implements IStorageEntity {
 	private Integer id;
 	private String name;
 	private String value;
@@ -27,7 +23,7 @@ public class AppConfig implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -36,7 +32,7 @@ public class AppConfig implements Serializable {
 
 	@Column
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -45,7 +41,7 @@ public class AppConfig implements Serializable {
 
 	@Column
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
@@ -66,24 +62,28 @@ public class AppConfig implements Serializable {
 	 * Date represents a specific instant in time, with millisecond precision.
 	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
-	@JsonIgnore
 	@Version
 	@Column(name = "last_update")
 	public Date getLastUpdate() {
-		return lastUpdate;
+		return this.lastUpdate;
 	}
 
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
 
+	public boolean similarTo(AppConfig other) {
+		return this.name == null ? other.getName() == null : this.name.equals(other.getName()) &&
+				this.value == null ? other.getValue() == null : this.value.equals(other.getValue());
+	}
+
 	@Override
 	public String toString() {
 		return "AppConfig{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", value='" + value + '\'' +
-				", lastUpdate=" + lastUpdate +
+				"id=" + this.id +
+				", name='" + this.name + '\'' +
+				", value='" + this.value + '\'' +
+				", lastUpdate=" + this.lastUpdate +
 				'}';
 	}
 }

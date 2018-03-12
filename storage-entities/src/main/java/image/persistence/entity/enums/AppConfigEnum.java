@@ -1,5 +1,9 @@
 package image.persistence.entity.enums;
 
+import lombok.Getter;
+
+import java.io.Serializable;
+
 /**
  * Created with IntelliJ IDEA.
  * User: adrian.petre
@@ -7,15 +11,15 @@ package image.persistence.entity.enums;
  * Time: 5:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public enum AppConfigEnum {
-	LINUX_ALBUMS_PATH(1), PHOTOS_PER_PAGE(2);
-	private Integer value;
+@Getter
+public enum AppConfigEnum implements Serializable {
+	albums_path("albums_path"),
+	photos_per_page("photos_per_page"),
+	photos_json_FS_path("photos json FS path");
 
-	AppConfigEnum(Integer dbIdAppConfig) {
-		this.value = dbIdAppConfig;
-	}
+	private String value;
 
-	public Integer getValue() {
-		return value;
+	private AppConfigEnum(String value) {
+		this.value = value;
 	}
 }

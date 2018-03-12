@@ -1,8 +1,10 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,7 +18,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -38,9 +40,20 @@ import java.util.*;
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(RestController.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
-public class WebConfig extends WebMvcConfigurerAdapter {
+@PropertySource(value = {"classpath:/exifweb.properties",
+		"classpath*:/exifweb-overridden.properties"},
+		ignoreResourceNotFound = true)
+public class WebConfig implements WebMvcConfigurer {
 	@Inject
 	private ObjectMapper objectMapper;
+	@Value("${async.timeout}")
+	private long asyncTimeout;
+
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer
+	propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 
 //	@Bean
 //	public static PropertySourcesPlaceholderConfigurer
@@ -73,13 +86,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-		configurer.setDefaultTimeout(7200000);
-		super.configureAsyncSupport(configurer);
+		configurer.setDefaultTimeout(this.asyncTimeout);
 	}
 
 	@Override
-	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
+	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+		converters.add(new MappingJackson2HttpMessageConverter(this.objectMapper));
 	}
 
 	@Bean
@@ -113,6 +125,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public MappingJackson2JsonView jacksonConverter() {
-		return new MappingJackson2JsonView(objectMapper);
+		return new MappingJackson2JsonView(this.objectMapper);
 	}
 }

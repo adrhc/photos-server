@@ -45,7 +45,7 @@ public class Album implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(Integer id) {
@@ -54,7 +54,7 @@ public class Album implements Serializable {
 
 	@Column(nullable = false, unique = true, length = 512)
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -70,7 +70,7 @@ public class Album implements Serializable {
 	@OneToOne
 	@JoinColumn(name = "FK_IMAGE")
 	public Image getCover() {
-		return cover;
+		return this.cover;
 	}
 
 	public void setCover(Image cover) {
@@ -82,7 +82,7 @@ public class Album implements Serializable {
 
 	@Column(name = "dirty")
 	public boolean isDirty() {
-		return dirty;
+		return this.dirty;
 	}
 
 	public void setDirty(boolean dirty) {
@@ -92,7 +92,7 @@ public class Album implements Serializable {
 
 	@Column(nullable = false)
 	public boolean isDeleted() {
-		return deleted;
+		return this.deleted;
 	}
 
 	public void setDeleted(boolean deleted) {
@@ -118,7 +118,7 @@ public class Album implements Serializable {
 	@Version
 	@Column(name = "last_update")
 	public Date getLastUpdate() {
-		return lastUpdate;
+		return this.lastUpdate;
 	}
 
 	/**
@@ -145,26 +145,29 @@ public class Album implements Serializable {
 //				this.images == null ? null : this.images.size(),
 //				images == null ? null : images.size(),
 //				this.images == images);
+		if (images != null) {
+			images.forEach(i -> i.setAlbum(this));
+		}
 		this.images = images;
 	}
 
 	public void addImage(Image image) {
-		if (images == null) {
-			images = new ArrayList<>();
+		if (this.images == null) {
+			this.images = new ArrayList<>();
 		}
-		images.add(image);
+		this.images.add(image);
 		image.setAlbum(this);
 	}
 
 	@Override
 	public String toString() {
 		return "Album{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				", dirty=" + dirty +
-				", cover=" + (cover == null ? null : cover.getId()) +
-				", lastUpdate=" + (lastUpdate == null ? null : sdf.format(lastUpdate)) +
-				", deleted=" + deleted +
+				"id=" + this.id +
+				", name='" + this.name + '\'' +
+				", dirty=" + this.dirty +
+				", cover=" + (this.cover == null ? null : this.cover.getId()) +
+				", lastUpdate=" + (this.lastUpdate == null ? null : sdf.format(this.lastUpdate)) +
+				", deleted=" + this.deleted +
 				'}';
 	}
 }

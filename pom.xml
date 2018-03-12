@@ -214,6 +214,12 @@
             </dependency>
 
             <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.5</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.drewnoakes</groupId>
                 <artifactId>metadata-extractor</artifactId>
                 <version>${metadata.extractor}</version>
@@ -538,7 +544,21 @@
             <!--<artifactId>jcip-annotations</artifactId>-->
             <!--<version>1.0</version>-->
             <!--</dependency>-->
-
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>2.11.0</version>
+                <scope>test</scope>
+            </dependency>
+            <!--
+                https://glytching.github.io/junit-extensions/
+            -->
+            <dependency>
+                <groupId>io.github.glytching</groupId>
+                <artifactId>junit-extensions</artifactId>
+                <version>1.1.0</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -616,6 +636,14 @@
         <dependency>
             <groupId>com.github.stephenc.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.glytching</groupId>
+            <artifactId>junit-extensions</artifactId>
         </dependency>
     </dependencies>
 
@@ -920,21 +948,23 @@
                     org.junit.Test.class means "no category"
                 -->
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig.class
+                    image.persistence.repository.springconfig.HbmInMemoryDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class
+                    image.photos.springconfig.PhotosInMemoryDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig
+                    image.persistence.repository.springconfig.HbmInMemoryDbConfig,
+                    junit5&amp;hbm&amp;inmemorydb
                 </junit5.storage-impl-hbm.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
-                    junit5&amp;photos&amp;inmemorydb
+                    image.photos.springconfig.PhotosInMemoryDbConfig,
+                    junit5&amp;photos&amp;inmemorydb,
+                    junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
                 <db.host>dummy-host</db.host>
                 <test.db.host>dummy-host</test.db.host>
@@ -947,27 +977,36 @@
             <id>local-db</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig.class,
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
-                    image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
+                    image.persistence.repository.springconfig.HbmInMemoryDbConfig.class,
+                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class,
+                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
+                    image.photos.springconfig.PhotosInMemoryDbConfig.class,
+                    image.photos.springconfig.PhotosStagingJdbcDbConfig.class,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig,
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig,
-                    image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig
+                    image.persistence.repository.springconfig.HbmInMemoryDbConfig,
+                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
+                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
+                    junit5&amp;hbm&amp;inmemorydb,
+                    junit5&amp;hbm&amp;staging,
+                    junit5&amp;hbm&amp;production,
+                    junit5&amp;hbm&amp;misc
                 </junit5.storage-impl-hbm.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig,
-                    junit5&amp;photos&amp;inmemorydb
+                    image.photos.springconfig.PhotosInMemoryDbConfig,
+                    image.photos.springconfig.PhotosStagingJdbcDbConfig,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig,
+                    junit5&amp;photos&amp;inmemorydb,
+                    junit5&amp;photos&amp;staging,
+                    junit5&amp;photos&amp;production,
+                    junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
                 <db.host>127.0.0.1</db.host>
                 <test.db.host>127.0.0.1</test.db.host>
@@ -977,27 +1016,36 @@
             <id>remote-db</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig.class,
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig.class,
-                    image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig.class
+                    image.persistence.repository.springconfig.HbmInMemoryDbConfig.class,
+                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class,
+                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig.class,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig.class
+                    image.photos.springconfig.PhotosInMemoryDbConfig.class,
+                    image.photos.springconfig.PhotosStagingJdbcDbConfig.class,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springtestconfig.InMemoryDbTestConfig,
-                    image.persistence.repository.springtestconfig.TestJdbcDsTestConfig,
-                    image.persistence.repository.springtestconfig.ProdJdbcDsTestConfig
+                    image.persistence.repository.springconfig.HbmInMemoryDbConfig,
+                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
+                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
+                    junit5&amp;hbm&amp;inmemorydb,
+                    junit5&amp;hbm&amp;staging,
+                    junit5&amp;hbm&amp;production,
+                    junit5&amp;hbm&amp;misc
                 </junit5.storage-impl-hbm.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springtestconfig.InMemoryDbPhotosTestConfig,
-                    image.photos.springtestconfig.ProdJdbcDsPhotosTestConfig,
-                    junit5&amp;photos&amp;inmemorydb
+                    image.photos.springconfig.PhotosInMemoryDbConfig,
+                    image.photos.springconfig.PhotosStagingJdbcDbConfig,
+                    image.photos.springconfig.PhotosProdJdbcDbConfig,
+                    junit5&amp;photos&amp;inmemorydb,
+                    junit5&amp;photos&amp;staging,
+                    junit5&amp;photos&amp;production,
+                    junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
                 <db.host>adrhc.go.ro</db.host>
                 <test.db.host>adrhc.go.ro</test.db.host>

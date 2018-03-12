@@ -1,6 +1,6 @@
 package image.photos.album;
 
-import image.cdm.image.EImageStatus;
+import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -85,7 +85,7 @@ public class AlbumImporterService {
 	private ThumbUtils thumbUtils;
 
 	public void importAlbumByName(String albumName) {
-		importAlbumByPath(new File(this.appConfigRepository.getLinuxAlbumPath(), albumName));
+		importAlbumByPath(new File(this.appConfigRepository.getAlbumsPath(), albumName));
 	}
 
 	public void importAllFromAlbumsRoot() {
@@ -104,7 +104,7 @@ public class AlbumImporterService {
 	 * @param albumsFilter
 	 */
 	private void importFromAlbumsRoot(Predicate<File> albumsFilter) {
-		File albumsRoot = new File(this.appConfigRepository.getLinuxAlbumPath());
+		File albumsRoot = new File(this.appConfigRepository.getAlbumsPath());
 		File[] files = albumsRoot.listFiles();
 		if (files == null || files.length == 0) {
 			return;
