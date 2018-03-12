@@ -37,7 +37,7 @@ class AlbumCoverRepositoryTest {
 	                @Random(excludes = {"id", "lastUpdate"}) Album album) {
 		this.before = new Date();
 		album.setCover(images.get(0));
-		album.setImages(images);
+		album.addImages(images);
 		this.albumRepository.createAlbum(album);
 	}
 

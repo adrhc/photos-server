@@ -139,16 +139,15 @@ public class Album implements Serializable {
 	/**
 	 * Nu intra in zona de album cache.
 	 * Dirty insa ar trebui se fie afectat si automat va afecta si album cache.
+	 * <p>
+	 * Only JPA provider is allowed to set Images!
 	 */
-	public void setImages(List<Image> images) {
-//		logger.debug("old images = {}, new images = {}, are equal = {}",
-//				this.images == null ? null : this.images.size(),
-//				images == null ? null : images.size(),
-//				this.images == images);
-		if (images != null) {
-			images.forEach(i -> i.setAlbum(this));
-		}
+	private void setImages(List<Image> images) {
 		this.images = images;
+	}
+
+	public void addImages(List<Image> images) {
+		images.forEach(this::addImage);
 	}
 
 	public void addImage(Image image) {
