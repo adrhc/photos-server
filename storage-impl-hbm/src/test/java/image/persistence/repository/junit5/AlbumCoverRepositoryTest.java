@@ -34,7 +34,7 @@ class AlbumCoverRepositoryTest {
 	@BeforeEach
 	void beforeEach(@Random(type = Image.class, excludes = {"id", "lastUpdate"})
 			                List<Image> images,
-	                @Random(excludes = {"id", "lastUpdate"}) Album album) {
+	                @Random(excludes = {"id", "lastUpdate", "images"}) Album album) {
 		this.before = new Date();
 		album.setCover(images.get(0));
 		album.addImages(images);
