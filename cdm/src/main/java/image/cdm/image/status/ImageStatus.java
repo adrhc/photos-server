@@ -17,15 +17,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageStatus implements Serializable {
-	private Integer id;
+	private Integer imageId;
 	private byte status;
 
-	public Integer getId() {
-		return this.id;
+	public Integer getImageId() {
+		return this.imageId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setImageId(Integer imageId) {
+		this.imageId = imageId;
 	}
 
 	public byte getStatus() {

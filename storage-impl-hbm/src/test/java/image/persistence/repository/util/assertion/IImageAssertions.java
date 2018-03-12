@@ -11,13 +11,14 @@ public interface IImageAssertions {
 		ImageMetadata imageMetadata = image.getImageMetadata();
 		ImageMetadata dbImageMetadata = dbImage.getImageMetadata();
 		assertAll("equals images",
-				() -> assertEquals(image.getId(), dbImage.getId()),
-				() -> assertEquals(image.getName(), dbImage.getName()),
-				() -> assertEquals(image.getRating(), dbImage.getRating()),
-				() -> assertEquals(image.getStatus(), dbImage.getStatus()),
-				() -> assertEquals(image.getLastUpdate(), dbImage.getLastUpdate()),
-				() -> assertEquals(imageMetadata.getDateTime(), dbImageMetadata.getDateTime()),
-				() -> assertEquals(imageMetadata.getThumbLastModified(), dbImageMetadata.getThumbLastModified())
+				() -> assertEquals(image.getId(), dbImage.getId(), "id"),
+				() -> assertEquals(image.getName(), dbImage.getName(), "name"),
+				() -> assertEquals(image.getRating(), dbImage.getRating(), "rating"),
+				() -> assertEquals(image.getStatus(), dbImage.getStatus(), "status"),
+				() -> assertEquals(imageMetadata.getDateTime(),
+						dbImageMetadata.getDateTime(), "dateTime"),
+				() -> assertEquals(imageMetadata.getThumbLastModified(),
+						dbImageMetadata.getThumbLastModified(), "thumbLastModified")
 		);
 	}
 }

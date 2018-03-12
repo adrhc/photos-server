@@ -53,7 +53,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	public boolean changeRating(ImageRating imageRating) {
 //		logger.debug("BEGIN");
 		Session session = this.sessionFactory.getCurrentSession();
-		Image image = (Image) session.load(Image.class, imageRating.getId());
+		Image image = session.load(Image.class, imageRating.getImageId());
 		if (image.getRating() == imageRating.getRating()) {
 //			logger.debug("END (same rating {})", imageRating.getRating());
 			return false;
@@ -71,7 +71,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Transactional
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
-		Image image = session.load(Image.class, imageStatus.getId());
+		Image image = session.load(Image.class, imageStatus.getImageId());
 		if (image.getStatus() == imageStatus.getStatus()) {
 			return false;
 		}

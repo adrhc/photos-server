@@ -17,24 +17,24 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ImageRating implements Serializable {
-	public static final Byte MIN_RATING = 1;
+	public static final byte MIN_RATING = 1;
 
-	private Integer id;
-	private Byte rating;
+	private Integer imageId;
+	private byte rating;
 
-	public Integer getId() {
-		return this.id;
+	public Integer getImageId() {
+		return this.imageId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setImageId(Integer imageId) {
+		this.imageId = imageId;
 	}
 
-	public Byte getRating() {
+	public byte getRating() {
 		return this.rating;
 	}
 
-	public void setRating(Byte status) {
+	public void setRating(byte status) {
 		this.rating = status;
 	}
 }
