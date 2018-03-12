@@ -7,6 +7,10 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public interface IPositiveIntegerRandom {
 	default int randomPositiveInt() {
-		return ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
+		return randomPositiveInt(Integer.MAX_VALUE);
+	}
+
+	default int randomPositiveInt(int max) {
+		return ThreadLocalRandom.current().nextInt(0, max);
 	}
 }

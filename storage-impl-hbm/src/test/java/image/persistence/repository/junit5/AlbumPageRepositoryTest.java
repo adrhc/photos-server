@@ -37,17 +37,14 @@ import static org.hamcrest.Matchers.hasSize;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
-
+	private static final String T1_TO_SEARCH = "DSC_1555";
+	private static final int PAGE_SIZE = 20;
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private AlbumPageRepository albumPageRepository;
-
-	private static final String T1_TO_SEARCH = "DSC_1555";
-	private static final int PAGE_SIZE = 20;
-
 	private Integer albumId;
 	private Image hiddenImage;
 
@@ -55,7 +52,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	void beforeAll(@Random(type = Image.class, size = 50,
 			excludes = {"id", "lastUpdate", "deleted", "status"})
 			               Stream<Image> imageStream,
-	               @Random(excludes = {"id", "lastUpdate", "deleted"})
+	               @Random(excludes = {"id", "lastUpdate", "deleted", "images"})
 			               Album album) {
 		// images: deleted = false, status = EImageStatus.DEFAULT
 		List<Image> images = imageStream.peek(i -> i.setAlbum(album))
@@ -70,7 +67,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 		this.hiddenImage.setStatus(EImageStatus.HIDDEN.getValueAsByte());
 		// album cover
 		album.setCover(images.get(0));
-		album.setImages(images);
+		album.addImages(images);
 		this.albumRepository.createAlbum(album);
 		this.albumId = album.getId();
 		// required photos_per_page created
