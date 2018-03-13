@@ -5,6 +5,7 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.util.conversion.PhotosConversionUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -29,6 +30,8 @@ public class AppConfigService {
 	private AppConfigRepository appConfigRepository;
 	@Inject
 	private PhotosConversionUtil photosConversionSupport;
+	@Value("${app.configs.file}")
+	private String appConfigsFile;
 
 	public boolean getConfigBool(String name) {
 		String s = getConfig(name);
@@ -63,15 +66,16 @@ public class AppConfigService {
 	 *
 	 * @throws IOException
 	 */
-	public void writeJsonForAppConfigs() throws IOException {
+	public File writeJsonForAppConfigs() throws IOException {
 		File dir = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path));
 		dir.mkdirs();
-		File file = new File(dir, "appConfigs.json");
+		File file = new File(dir, this.appConfigsFile);
 		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
 //        logger.debug(ArrayUtils.toString(appConfigs));
 //        logger.debug("lastUpdatedAppConfigs = {}", getLastUpdatedAppConfigs());
 		this.objectMapper.writeValue(file,
 				this.photosConversionSupport.cdmAppConfigsOf(appConfigs));
+		return file;
 	}
 
 	public long getLastUpdatedAppConfigs() {

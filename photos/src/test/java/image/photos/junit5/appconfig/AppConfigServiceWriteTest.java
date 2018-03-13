@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,18 +31,13 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private AppConfigService appConfigService;
+	@Autowired
+	private ConversionService conversionService;
 
 	@BeforeEach
 	void setUp() {
-		randomInstanceStream(3, false, AppConfig.class)
+		randomInstanceStream(5, false, AppConfig.class)
 				.forEach(this.appConfigRepository::createAppConfig);
-	}
-
-	private void createPhotosJsonFSPathAppConfig(String photosJsonFSPath) {
-		AppConfig appConfig = new AppConfig();
-		appConfig.setName(AppConfigEnum.photos_json_FS_path.getValue());
-		appConfig.setValue(photosJsonFSPath);
-		this.appConfigRepository.createAppConfig(appConfig);
 	}
 
 	@Test
@@ -49,7 +45,14 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	public void writeJsonForAppConfigs(TemporaryFolder temporaryFolder) throws IOException {
 		File dir = temporaryFolder.createDirectory("writeJsonForAppConfigs");
 		createPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
-		this.appConfigService.writeJsonForAppConfigs();
-		assertTrue(Files.isRegularFile(dir.toPath().resolve("appConfigs.json")));
+		File file = this.appConfigService.writeJsonForAppConfigs();
+		assertTrue(Files.isRegularFile(file.toPath()));
+	}
+
+	private void createPhotosJsonFSPathAppConfig(String photosJsonFSPath) {
+		AppConfig appConfig = new AppConfig();
+		appConfig.setName(AppConfigEnum.photos_json_FS_path.getValue());
+		appConfig.setValue(photosJsonFSPath);
+		this.appConfigRepository.createAppConfig(appConfig);
 	}
 }
