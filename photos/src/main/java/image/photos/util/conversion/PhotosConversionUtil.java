@@ -18,6 +18,11 @@ public class PhotosConversionUtil {
 	@Inject
 	private ConversionService cs;
 
+	public List<AppConfig> cdmAppConfigsOf(String json) {
+		return (List<AppConfig>) this.cs.convert(json,
+				TypeDescriptor.valueOf(String.class), this.listOfCdmAppConfig);
+	}
+
 	public List<AppConfig> cdmAppConfigsOf(List<image.persistence.entity.AppConfig> appConfigs) {
 		return (List<AppConfig>) this.cs.convert(appConfigs,
 				this.listOfEntityAppConfig, this.listOfCdmAppConfig);

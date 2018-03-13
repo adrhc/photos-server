@@ -4,20 +4,25 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
+import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import image.photos.config.AppConfigService;
 import image.photos.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
+import image.photos.junit5.util.assertion.IAppConfigAssertions;
+import image.photos.util.conversion.PhotosConversionUtil;
 import io.github.glytching.junit.extension.folder.TemporaryFolder;
 import io.github.glytching.junit.extension.folder.TemporaryFolderExtension;
+import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -26,33 +31,44 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @NotThreadSafe
 @Junit5PhotosInMemoryDbConfig
-public class AppConfigServiceWriteTest implements IAppConfigSupplier {
+@ExtendWith(RandomBeansExtensionEx.class)
+public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConfigSupplier {
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private AppConfigService appConfigService;
 	@Autowired
-	private ConversionService conversionService;
+	private PhotosConversionUtil photosConversionUtil;
+
+	@Random(type = AppConfig.class, size = 20, excludes = {"id", "lastUpdate"})
+	private List<AppConfig> appConfigs;
 
 	@BeforeEach
 	void setUp() {
-		randomInstanceStream(5, false, AppConfig.class)
-				.forEach(this.appConfigRepository::createAppConfig);
+		this.appConfigs.forEach(this.appConfigRepository::createAppConfig);
 	}
 
 	@Test
 	@ExtendWith(TemporaryFolderExtension.class)
 	public void writeJsonForAppConfigs(TemporaryFolder temporaryFolder) throws IOException {
 		File dir = temporaryFolder.createDirectory("writeJsonForAppConfigs");
-		createPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
+		insertPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
 		File file = this.appConfigService.writeJsonForAppConfigs();
 		assertTrue(Files.isRegularFile(file.toPath()));
+		List<image.cdm.AppConfig> appConfigsOfJson = loadCdmAppConfigsFromFile(file);
+		assertAppConfigsEquals(appConfigsOfJson, this.appConfigs);
 	}
 
-	private void createPhotosJsonFSPathAppConfig(String photosJsonFSPath) {
+	private List<image.cdm.AppConfig> loadCdmAppConfigsFromFile(File file) throws IOException {
+		String json = FileUtils.readFileToString(file);
+		return this.photosConversionUtil.cdmAppConfigsOf(json);
+	}
+
+	private void insertPhotosJsonFSPathAppConfig(String photosJsonFSPath) {
 		AppConfig appConfig = new AppConfig();
 		appConfig.setName(AppConfigEnum.photos_json_FS_path.getValue());
 		appConfig.setValue(photosJsonFSPath);
 		this.appConfigRepository.createAppConfig(appConfig);
+		this.appConfigs.add(appConfig);
 	}
 }
