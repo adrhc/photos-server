@@ -31,6 +31,13 @@ public class AlbumCoverServiceTest {
 	private AlbumCoverService albumCoverService;
 
 	@Test
+	public void getCovers() {
+		List<AlbumCover> covers = this.albumCoverService.getCovers();
+		assertThat(covers, hasItem(anything()));
+		logger.debug("covers.size = {}", covers.size());
+	}
+
+	@Test
 	public void getCoverById() {
 		AlbumCover cover = this.albumCoverService.getCoverById(45);
 		assertThat(cover, notNullValue());
@@ -42,14 +49,5 @@ public class AlbumCoverServiceTest {
 		AlbumCover cover = this.albumCoverService.getCoverByName("2015-08-23 Natalia");
 		assertThat(cover, notNullValue());
 		logger.debug("{}, pk = {}", cover.getAlbumName(), cover.getId());
-	}
-
-	@Test
-	public void getCovers() {
-		List<AlbumCover> covers = this.albumCoverService.getCovers();
-		assertThat(covers, hasItem(anything()));
-		logger.debug("covers.size = {}", covers.size());
-//		logger.debug(covers.stream().map(AlbumCover::getAlbumName)
-//				.collect(Collectors.joining("\n")));
 	}
 }
