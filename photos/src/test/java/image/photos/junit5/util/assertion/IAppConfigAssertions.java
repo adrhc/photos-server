@@ -1,4 +1,4 @@
-package image.photos.junit5.appconfig;
+package image.photos.junit5.util.assertion;
 
 import image.cdm.AppConfig;
 
