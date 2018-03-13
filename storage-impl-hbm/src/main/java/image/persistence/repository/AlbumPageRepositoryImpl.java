@@ -19,7 +19,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	/**
 	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
 	 * <p>
-	 * image0_.status=IF(false, image0_.status, image0_.status
+	 * image0_.status=IF(:viewHidden, image0_.status, image0_.status
 	 * -(image0_.status & 1)-(image0_.status & 2)-(image0_.status & 4)-(image0_.status & 8))
 	 */
 	private static final String VIEW_HIDDEN_SQL =
@@ -42,7 +42,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	public int getPageCount(String toSearch, boolean viewHidden,
 	                        boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT count(i) FROM Image i " +
@@ -65,7 +65,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		q.setBoolean("viewHidden", viewHidden);
 		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
 		return Double.valueOf(Math.ceil(((Number) q.uniqueResult()).doubleValue() /
-				appConfigRepository.getPhotosPerPage())).intValue();
+				this.appConfigRepository.getPhotosPerPage())).intValue();
 
 	}
 
@@ -88,7 +88,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	                                     boolean viewHidden, boolean viewOnlyPrintable,
 	                                     Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
-		Session session = sessionFactory.getCurrentSession();
+		Session session = this.sessionFactory.getCurrentSession();
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
@@ -126,8 +126,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		}
 		q.setBoolean("viewHidden", viewHidden);
 		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
-		q.setFirstResult((pageNr - 1) * appConfigRepository.getPhotosPerPage());
-		q.setMaxResults(appConfigRepository.getPhotosPerPage());
+		q.setFirstResult((pageNr - 1) * this.appConfigRepository.getPhotosPerPage());
+		q.setMaxResults(this.appConfigRepository.getPhotosPerPage());
 		return q.list();
 	}
 }

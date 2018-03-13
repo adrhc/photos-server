@@ -22,7 +22,7 @@ public interface IEnhancedRandom {
 			.randomize(Long.class, (Supplier<Long>) () ->
 					ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE))
 			.stringLengthRange(3, 15)
-			.collectionSizeRange(1, 20)
+			.collectionSizeRange(1, 50)
 			.scanClasspathForConcreteTypes(true)
 			.build();
 

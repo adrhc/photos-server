@@ -2,6 +2,7 @@ package image.persistence.entity;
 
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.image.ImageMetadata;
+import image.persistence.repository.util.random.IEnhancedRandom;
 import image.persistence.util.IPositiveIntegerRandom;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Date;
 /**
  * Created by adr on 2/25/18.
  */
-public interface IImageSupplier extends IPositiveIntegerRandom {
+public interface IImageSupplier extends IPositiveIntegerRandom, IEnhancedRandom {
 	default Image supplyImage(Album album) {
 		Image image = supplyImage();
 		image.setAlbum(album);

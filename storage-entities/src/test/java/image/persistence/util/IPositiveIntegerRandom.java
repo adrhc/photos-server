@@ -13,4 +13,8 @@ public interface IPositiveIntegerRandom {
 	default int randomPositiveInt(int max) {
 		return ThreadLocalRandom.current().nextInt(0, max);
 	}
+
+	default int randomPositiveInt(int min, int max) {
+		return ThreadLocalRandom.current().nextInt(min, max);
+	}
 }

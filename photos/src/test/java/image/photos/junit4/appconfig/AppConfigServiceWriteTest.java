@@ -41,6 +41,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	@Autowired
 	private AppConfigService appConfigService;
 
+	private String TEMP_DIR_PREFIX = "writeJsonForAppConfigs-";
 	private Path tempDir;
 
 	@Before
@@ -49,7 +50,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 		EnumSet<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
 				PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE,
 				PosixFilePermission.GROUP_READ, PosixFilePermission.GROUP_EXECUTE);
-		this.tempDir = Files.createTempDirectory("writeJsonForAppConfigs-",
+		this.tempDir = Files.createTempDirectory(this.TEMP_DIR_PREFIX,
 				PosixFilePermissions.asFileAttribute(perms));
 		// photosJsonFSPath
 		AppConfig photosJsonFSPath = new AppConfig();
@@ -69,6 +70,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	@After
 	public void teadDown() throws IOException {
+		assertTrue(this.tempDir.getFileName().toString().startsWith(this.TEMP_DIR_PREFIX));
 		Files.walkFileTree(this.tempDir,
 				new SimpleFileVisitor<Path>() {
 					@Override

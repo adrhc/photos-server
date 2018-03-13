@@ -3,12 +3,10 @@ package image.photos.image;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.exif.ExifIFD0Descriptor;
-import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.exif.ExifSubIFDDescriptor;
-import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.exif.*;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
+import exifweb.util.MiscUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.util.process.ProcessRunner;
@@ -31,7 +29,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class ExifExtractorService {
+public class ExifExtractorService implements MiscUtils {
 	private static final Logger logger = LoggerFactory.getLogger(ExifExtractorService.class);
 	/**
 	 * metadata extractor uses this yyyy:MM:dd format
@@ -68,7 +66,7 @@ public class ExifExtractorService {
 			loadDimensions(imageMetadata.getExifData(), imgFile.getPath());
 		}
 
-		Date thumbLastModified = thumbUtils.getThumbLastModified(
+		Date thumbLastModified = this.thumbUtils.getThumbLastModified(
 				imgFile, imageMetadata.getDateTime());
 		imageMetadata.setThumbLastModified(thumbLastModified);
 
@@ -98,7 +96,7 @@ public class ExifExtractorService {
 		safeCall(() -> exifData.setIsoSpeedRatings(
 				Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription())));
 		safeCall(() -> exifData.setDateTimeOriginal(safeDateParse(exifSubIFDDescriptor
-				.getDescription(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL))));
+				.getDescription(ExifDirectoryBase.TAG_DATETIME_ORIGINAL), sdf)));
 		safeCall(() -> exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription()));
 		safeCall(() -> exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription()));
 		safeCall(() -> exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription()));
@@ -115,27 +113,11 @@ public class ExifExtractorService {
 		safeCall(() -> exifData.setSubjectDistanceRange(exifSubIFDDescriptor
 				.getSubjectDistanceRangeDescription()));
 		safeCall(() -> exifData.setLensModel(exifSubIFDDescriptor
-				.getDescription(ExifSubIFDDirectory.TAG_LENS_MODEL)));
+				.getDescription(ExifDirectoryBase.TAG_LENS_MODEL)));
 
 		directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
-		safeCall(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifIFD0Directory.TAG_MODEL)));
-	}
-
-	private Date safeDateParse(String s) {
-		try {
-			return sdf.parse(s);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	private void safeCall(Runnable c) {
-		try {
-			c.run();
-		} catch (Exception e) {
-			logger.trace(e.getMessage(), e);
-		}
+		safeCall(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifDirectoryBase.TAG_MODEL)));
 	}
 
 	private void loadDimensions(ExifData imageDimensions, String path) {
@@ -144,16 +126,16 @@ public class ExifExtractorService {
 //					"/home/adr/x.sh", "image_dims", path);
 			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 					"identify", "-format", "%[fx:w] %[fx:h]", path);
-			String sDimensions = processRunner.getProcessOutput(identifyImgDimensions);
+			String sDimensions = this.processRunner.getProcessOutput(identifyImgDimensions);
 //            logger.debug("dimensions {} for:\n{}", dimensions, path);
 			String[] dims = sDimensions.split("\\s");
 			imageDimensions.setImageWidth(Integer.parseInt(dims[WIDTH]));
 			imageDimensions.setImageHeight(Integer.parseInt(dims[HEIGHT]));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			logger.error("Using default dimensions: {}x{}", maxThumbSizeInt, maxThumbSizeInt);
-			imageDimensions.setImageWidth(maxThumbSizeInt);
-			imageDimensions.setImageHeight(maxThumbSizeInt);
+			logger.error("Using default dimensions: {}x{}", this.maxThumbSizeInt, this.maxThumbSizeInt);
+			imageDimensions.setImageWidth(this.maxThumbSizeInt);
+			imageDimensions.setImageHeight(this.maxThumbSizeInt);
 		}
 	}
 }

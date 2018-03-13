@@ -1,5 +1,6 @@
 package image.persistence.repository.junit5;
 
+import exifweb.util.MiscUtils;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
@@ -35,7 +36,7 @@ import static org.hamcrest.Matchers.hasSize;
 @NotThreadSafe
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlbumPageRepositoryTest implements IAppConfigSupplier {
+public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
@@ -109,22 +110,11 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 	@Test
 	void finding1Image() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
-				ESortType.ASC, T1_TO_SEARCH, false, false, this.albumId);
+				ESortType.ASC, T1_TO_SEARCH, true, false, this.albumId);
 		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
 				T1_TO_SEARCH, this.albumId);
 		assertThat(imagesForPage, hasSize(1));
-	}
-
-	@Test
-	void findingNoImage() {
-		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
-				ESortType.ASC, this.hiddenImage.getName(),
-				false, false, this.albumId);
-		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
-						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
-				this.hiddenImage.getName(), this.albumId);
-		assertThat(imagesForPage, hasSize(0));
 	}
 
 	@Test
@@ -137,9 +127,20 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier {
 		assertThat(imagesForPage, hasSize(PAGE_SIZE));
 	}
 
+	@Test
+	void findNoHidden() {
+		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
+				ESortType.ASC, this.hiddenImage.getName(),
+				false, false, this.albumId);
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
+						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
+				this.hiddenImage.getName(), this.albumId);
+		assertThat(imagesForPage, hasSize(0));
+	}
+
 	@AfterAll
 	void afterAll() {
-		this.albumRepository.deleteAlbum(this.albumId);
-		this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page);
+		safeCall(() -> this.albumRepository.deleteAlbum(this.albumId));
+		safeCall(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
 	}
 }
