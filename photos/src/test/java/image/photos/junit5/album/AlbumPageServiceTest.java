@@ -46,6 +46,8 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@Random(type = Album.class, size = 5, excludes = {"id", "dirty", "cover", "lastUpdate", "images"})
 	private List<Album> albums;
+	//	@Random(excludes = {"id", "dirty", "cover", "lastUpdate", "images.id",
+//			"images.lastUpdate", "images.status", "images.deleted"})
 	@Random(excludes = {"id", "dirty", "cover", "lastUpdate", "images"})
 	private Album specialAlbum;
 	@Random(excludes = {"id", "lastUpdate", "status", "deleted"})
