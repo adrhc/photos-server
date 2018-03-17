@@ -58,8 +58,8 @@ public class Image implements IStorageEntity {
 	@JoinColumn(name = "FK_ALBUM")
 	private Album album;
 	/**
-     * used to compute albumPage Last-Modified (impact browser-cache)
-     *
+	 * used to compute albumPage Last-Modified (impact browser-cache)
+	 * <p>
 	 * nullable version or timestamp property is good:
 	 * A version or timestamp property can never be null for a detached instance. Hibernate detects any instance with a null version or timestamp as transient, regardless of other unsaved-value strategies that you specify. Declaring a nullable version or timestamp property is an easy way to avoid problems with transitive reattachment in Hibernate, especially useful if you use assigned identifiers or composite keys.
 	 * <p>
