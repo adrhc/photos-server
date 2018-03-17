@@ -51,7 +51,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
 
 	@BeforeAll
 	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate",
-			"deleted", "status", "images.album"}) Stream<Image> imageStream,
+			"deleted", "status", "album"}) Stream<Image> imageStream,
 	               @Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
 		// images: deleted = false, status = EImageStatus.DEFAULT
 		List<Image> images = imageStream.peek(i -> i.setAlbum(album))
