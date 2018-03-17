@@ -44,7 +44,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
 	 * Notice that ImageMetadata is generated too and will be used in tests!
 	 */
 	@BeforeAll
-	void setUp(@Random(type = Image.class, size = 30, excludes = {"id", "lastUpdate"})
+	void setUp(@Random(type = Image.class, size = 30, excludes = {"id", "lastUpdate", "album"})
 			           List<Image> images) {
 		// hibernate might proxy images collection so better
 		// just copy images instead of directly using it
@@ -104,7 +104,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
 	}
 
 	@Test
-	void persistImage(@Random(excludes = {"id", "lastUpdate"}) Image image) {
+	void persistImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
 		this.album.addImage(image);
 		this.imageRepository.persistImage(image);
 		Image dbImage = this.imageRepository.getImageById(image.getId());

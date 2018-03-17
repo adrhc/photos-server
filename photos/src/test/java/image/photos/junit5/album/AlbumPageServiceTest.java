@@ -46,19 +46,17 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@Random(type = Album.class, size = 5, excludes = {"id", "dirty", "cover", "lastUpdate", "images"})
 	private List<Album> albums;
-	//	@Random(excludes = {"id", "dirty", "cover", "lastUpdate", "images.id",
-//			"images.lastUpdate", "images.status", "images.deleted"})
-	@Random(excludes = {"id", "dirty", "cover", "lastUpdate", "images"})
+	@Random(excludes = {"id", "dirty", "cover", "lastUpdate", "images.id",
+			"images.lastUpdate", "images.status", "images.deleted", "images.album"})
 	private Album specialAlbum;
-	@Random(excludes = {"id", "lastUpdate", "status", "deleted"})
+	@Random(excludes = {"id", "lastUpdate", "status", "deleted", "album"})
 	private Image hiddenImage;
-	@Random(excludes = {"id", "lastUpdate", "status", "deleted"})
+	@Random(excludes = {"id", "lastUpdate", "status", "deleted", "album"})
 	private Image printableImage;
 
 	@BeforeAll
-	void setUpSpecialAlbum(@Random(type = Image.class, size = 5,
-			excludes = {"id", "lastUpdate", "deleted", "status"}) List<Image> images) {
-		this.specialAlbum.addImages(images);
+	void setUpSpecialAlbum() {
+		this.specialAlbum.getImages().forEach(i -> i.setAlbum(this.specialAlbum));
 		this.hiddenImage.setStatus(EImageStatus.HIDDEN.getValueAsByte());
 		this.specialAlbum.addImage(this.hiddenImage);
 		this.printableImage.setStatus(EImageStatus.PRINTABLE.getValueAsByte());

@@ -148,7 +148,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		@BeforeAll
 		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
 				                Album album,
-		                @Random(type = Image.class, excludes = {"id", "lastUpdate"})
+		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
 				                List<Image> images) {
 			this.album = album;
 			this.album.addImages(images);
@@ -180,7 +180,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		@BeforeAll
 		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
 				                Album album,
-		                @Random(type = Image.class, excludes = {"id", "lastUpdate"})
+		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
 				                List<Image> images) {
 			album.setCover(images.get(0));
 			super.givenAlbum(album, images);

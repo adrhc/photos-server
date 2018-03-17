@@ -1,7 +1,6 @@
 package image.persistence.repository.junit5;
 
 import image.persistence.entity.Album;
-import image.persistence.entity.Image;
 import image.persistence.repository.AlbumCoverRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-import java.util.List;
 
 import static org.exparity.hamcrest.date.DateMatchers.sameOrAfter;
 import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
@@ -32,12 +30,11 @@ class AlbumCoverRepositoryTest {
 	private Date before;
 
 	@BeforeEach
-	void beforeEach(@Random(type = Image.class, excludes = {"id", "lastUpdate"})
-			                List<Image> images,
-	                @Random(excludes = {"id", "lastUpdate", "images"}) Album album) {
+	void beforeEach(@Random(excludes = {"id", "lastUpdate", "images.id",
+			"images.lastUpdate", "images.album"}) Album album) {
 		this.before = new Date();
-		album.setCover(images.get(0));
-		album.addImages(images);
+		album.getImages().forEach(i -> i.setAlbum(album));
+		album.setCover(album.getImages().get(0));
 		this.albumRepository.createAlbum(album);
 	}
 
