@@ -113,7 +113,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 		if (image.isDeleted()) {
 			return false;
 		}
-		checkAndRemoveAlbumCover(image);
+		checkAndRemoveAlbumCoverAndFromAlbumImages(image);
 		image.setDeleted(true);
 		return true;
 	}
@@ -129,7 +129,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 	@Transactional
 	public void safelyDeleteImage(Integer imageId) {
 		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
-		checkAndRemoveAlbumCover(image);
+		checkAndRemoveAlbumCoverAndFromAlbumImages(image);
 		this.sessionFactory.getCurrentSession().delete(image);
 	}
 
@@ -140,8 +140,9 @@ public class ImageRepositoryImpl implements ImageRepository {
 	 * @return whether change occurred or not in DB
 	 */
 	@Transactional(propagation = Propagation.MANDATORY)
-	private void checkAndRemoveAlbumCover(Image image) {
+	private void checkAndRemoveAlbumCoverAndFromAlbumImages(Image image) {
 		Album album = image.getAlbum();
+		album.getImages().removeIf(i -> i.getId().equals(image.getId()));
 		if (album.getCover() == null || !album.getCover().getId().equals(image.getId())) {
 			// image is not cover for its album
 			return;
