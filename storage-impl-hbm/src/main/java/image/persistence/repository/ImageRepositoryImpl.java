@@ -130,7 +130,6 @@ public class ImageRepositoryImpl implements ImageRepository {
 	public void safelyDeleteImage(Integer imageId) {
 		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
 		checkAndRemoveAlbumCoverAndFromAlbumImages(image, false);
-		this.sessionFactory.getCurrentSession().delete(image);
 	}
 
 	/**
