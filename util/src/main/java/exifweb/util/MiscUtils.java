@@ -9,7 +9,7 @@ import java.util.Date;
 public interface MiscUtils {
 	Logger logger = LoggerFactory.getLogger(MiscUtils.class);
 
-	default void safeCall(Runnable r) {
+	default void ignoreExc(Runnable r) {
 		try {
 			r.run();
 		} catch (Exception e) {
@@ -17,7 +17,7 @@ public interface MiscUtils {
 		}
 	}
 
-	default Date safeDateParse(String s, SimpleDateFormat sdf) {
+	default Date ignoreExc(String s, SimpleDateFormat sdf) {
 		try {
 			return sdf.parse(s);
 		} catch (Exception e) {

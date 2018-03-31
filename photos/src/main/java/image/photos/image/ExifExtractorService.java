@@ -90,34 +90,34 @@ public class ExifExtractorService implements MiscUtils {
 
 		directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-		safeCall(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
-		safeCall(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
-		safeCall(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
-		safeCall(() -> exifData.setIsoSpeedRatings(
+		ignoreExc(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
+		ignoreExc(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
+		ignoreExc(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
+		ignoreExc(() -> exifData.setIsoSpeedRatings(
 				Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription())));
-		safeCall(() -> exifData.setDateTimeOriginal(safeDateParse(exifSubIFDDescriptor
+		ignoreExc(() -> exifData.setDateTimeOriginal(ignoreExc(exifSubIFDDescriptor
 				.getDescription(ExifDirectoryBase.TAG_DATETIME_ORIGINAL), sdf)));
-		safeCall(() -> exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription()));
-		safeCall(() -> exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription()));
-		safeCall(() -> exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription()));
-		safeCall(() -> exifData.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription()));
-		safeCall(() -> exifData.setFlash(exifSubIFDDescriptor.getFlashDescription()));
-		safeCall(() -> exifData.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription()));
-		safeCall(() -> exifData.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription()));
-		safeCall(() -> exifData.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription()));
-		safeCall(() -> exifData.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription()));
-		safeCall(() -> exifData.setGainControl(exifSubIFDDescriptor.getGainControlDescription()));
-		safeCall(() -> exifData.setContrast(exifSubIFDDescriptor.getContrastDescription()));
-		safeCall(() -> exifData.setSaturation(exifSubIFDDescriptor.getSaturationDescription()));
-		safeCall(() -> exifData.setSharpness(exifSubIFDDescriptor.getSharpnessDescription()));
-		safeCall(() -> exifData.setSubjectDistanceRange(exifSubIFDDescriptor
+		ignoreExc(() -> exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription()));
+		ignoreExc(() -> exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription()));
+		ignoreExc(() -> exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription()));
+		ignoreExc(() -> exifData.setMeteringMode(exifSubIFDDescriptor.getMeteringModeDescription()));
+		ignoreExc(() -> exifData.setFlash(exifSubIFDDescriptor.getFlashDescription()));
+		ignoreExc(() -> exifData.setFocalLength(exifSubIFDDescriptor.getFocalLengthDescription()));
+		ignoreExc(() -> exifData.setExposureMode(exifSubIFDDescriptor.getExposureModeDescription()));
+		ignoreExc(() -> exifData.setWhiteBalanceMode(exifSubIFDDescriptor.getWhiteBalanceModeDescription()));
+		ignoreExc(() -> exifData.setSceneCaptureType(exifSubIFDDescriptor.getSceneCaptureTypeDescription()));
+		ignoreExc(() -> exifData.setGainControl(exifSubIFDDescriptor.getGainControlDescription()));
+		ignoreExc(() -> exifData.setContrast(exifSubIFDDescriptor.getContrastDescription()));
+		ignoreExc(() -> exifData.setSaturation(exifSubIFDDescriptor.getSaturationDescription()));
+		ignoreExc(() -> exifData.setSharpness(exifSubIFDDescriptor.getSharpnessDescription()));
+		ignoreExc(() -> exifData.setSubjectDistanceRange(exifSubIFDDescriptor
 				.getSubjectDistanceRangeDescription()));
-		safeCall(() -> exifData.setLensModel(exifSubIFDDescriptor
+		ignoreExc(() -> exifData.setLensModel(exifSubIFDDescriptor
 				.getDescription(ExifDirectoryBase.TAG_LENS_MODEL)));
 
 		directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
-		safeCall(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifDirectoryBase.TAG_MODEL)));
+		ignoreExc(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifDirectoryBase.TAG_MODEL)));
 	}
 
 	private void loadDimensions(ExifData imageDimensions, String path) {

@@ -94,6 +94,12 @@
             <!--</dependency>-->
 
             <dependency>
+                <groupId>com.rainerhahnekamp</groupId>
+                <artifactId>sneakythrow</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>exifweb</groupId>
                 <artifactId>storage-entities</artifactId>
                 <version>${project.version}</version>

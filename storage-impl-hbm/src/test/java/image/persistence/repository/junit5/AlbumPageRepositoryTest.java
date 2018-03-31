@@ -138,7 +138,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
 
 	@AfterAll
 	void afterAll() {
-		safeCall(() -> this.albumRepository.deleteAlbum(this.albumId));
-		safeCall(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
+		ignoreExc(() -> this.albumRepository.deleteAlbum(this.albumId));
+		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
 	}
 }
