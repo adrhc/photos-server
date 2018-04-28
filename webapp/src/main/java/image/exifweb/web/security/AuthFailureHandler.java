@@ -5,12 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,11 +23,8 @@ public class AuthFailureHandler implements AuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-	                                    AuthenticationException exception) throws IOException, ServletException {
-		Map<String, String> success = new HashMap<String, String>();
-		success.put("success", "false");
-		success.put("error", "true");
+	                                    AuthenticationException exception) throws IOException {
 		response.setContentType("application/json");
-		objectMapper.writeValue(response.getOutputStream(), success);
+		this.objectMapper.writeValue(response.getOutputStream(), AuthCheckResponse.FAILED_AUTHENTICATION);
 	}
 }
