@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>image</groupId>
@@ -114,7 +114,8 @@
                 <configuration combine.self="append">
                     <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
                     <environmentVariables>
-                        <spring.profiles.active>jdbc-ds</spring.profiles.active>
+                        <!-- for catching tests without proper spring profile annotation -->
+                        <spring.profiles.active>fake-profile</spring.profiles.active>
                     </environmentVariables>
                     <!--<groups>${junit4.photos.groups}</groups>-->
                     <groups>${junit5.photos.groups}</groups>

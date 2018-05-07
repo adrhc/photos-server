@@ -138,7 +138,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration combine.self="append">
                     <environmentVariables>
-                        <spring.profiles.active>jdbc-ds</spring.profiles.active>
+                        <!-- for catching tests without proper spring profile annotation -->
+                        <spring.profiles.active>fake-profile</spring.profiles.active>
                     </environmentVariables>
                     <groups>${junit5.storage-impl-hbm.groups}</groups>
                 </configuration>
