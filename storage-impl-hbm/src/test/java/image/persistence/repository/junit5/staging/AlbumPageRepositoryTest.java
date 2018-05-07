@@ -1,4 +1,4 @@
-package image.persistence.repository.junit5;
+package image.persistence.repository.junit5.staging;
 
 import exifweb.util.MiscUtils;
 import image.cdm.album.page.AlbumPage;

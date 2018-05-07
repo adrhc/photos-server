@@ -1,4 +1,4 @@
-package image.persistence.repository.junit5;
+package image.persistence.repository.junit5.staging;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
