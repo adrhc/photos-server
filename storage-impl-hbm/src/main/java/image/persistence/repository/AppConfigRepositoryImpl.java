@@ -47,16 +47,19 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	}
 
 	@Override
+	@Transactional
 	public String getConfig(AppConfigEnum appConfigEnum) {
 		return getAppConfigByName(appConfigEnum.getValue()).getValue();
 	}
 
 	@Override
+	@Transactional
 	public Integer getPhotosPerPage() {
 		return getConfigInteger(AppConfigEnum.photos_per_page);
 	}
 
 	@Override
+	@Transactional
 	public String getAlbumsPath() {
 		return getConfig(AppConfigEnum.albums_path);
 	}
