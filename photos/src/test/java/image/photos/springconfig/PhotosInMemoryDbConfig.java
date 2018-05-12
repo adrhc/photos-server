@@ -1,7 +1,7 @@
 package image.photos.springconfig;
 
 import image.persistence.HibernateConfig;
-import image.persistence.repository.springconfig.profile.InMemoryDbProfile;
+import image.persistence.repository.springprofile.InMemoryDbProfile;
 import image.photos.PhotosConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
