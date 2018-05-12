@@ -768,8 +768,7 @@
                         <threadCount>4</threadCount>
 
                         <!--
-                            see tech.log
-                            solving "multiple similar but different ApplicationContext in same JVM" problem
+                            see tech.log: multiple similar but different ApplicationContext in same JVM
 
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
                             reuseForks is used to define whether to terminate the spawned process after one test class and to create a new process for the next test
