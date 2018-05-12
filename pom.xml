@@ -953,6 +953,7 @@
 
     <profiles>
         <profile>
+            <!-- in-memory DB -->
             <id>db-off</id>
             <properties>
                 <!--
@@ -985,6 +986,7 @@
             </activation>
         </profile>
         <profile>
+            <!-- DB host is 127.0.0.1 (<properties> same as <id>remote-db</id>) -->
             <id>local-db</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
@@ -1024,6 +1026,7 @@
             </properties>
         </profile>
         <profile>
+            <!-- DB host is adrhc.go.ro (<properties> same as <id>local-db</id>) -->
             <id>remote-db</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
