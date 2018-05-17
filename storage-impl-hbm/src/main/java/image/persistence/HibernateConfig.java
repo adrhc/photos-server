@@ -23,15 +23,8 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@PropertySource(value = {"classpath:/jdbc-datasource.properties",
-		"classpath*:/jdbc-datasource-overridden.properties"},
-		ignoreResourceNotFound = true)
-@PropertySource(value = {"classpath:/jndi-datasource.properties",
-		"classpath*:/jndi-datasource-overridden.properties"},
-		ignoreResourceNotFound = true)
-@PropertySource(value = {"classpath:/hibernate.properties",
-		"classpath*:/hibernate-overridden.properties"},
-		ignoreResourceNotFound = true)
+@PropertySource("jdbc-datasource.properties")
+@PropertySource("jndi-datasource.properties")
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 //@Import(HibernateCacheConfig.class)
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})

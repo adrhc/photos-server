@@ -40,9 +40,7 @@ import java.util.*;
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(RestController.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
-@PropertySource(value = {"classpath:/exifweb.properties",
-		"classpath*:/exifweb-overridden.properties"},
-		ignoreResourceNotFound = true)
+@PropertySource("classpath:/exifweb.properties")
 public class WebConfig implements WebMvcConfigurer {
 	@Inject
 	private ObjectMapper objectMapper;
@@ -60,8 +58,7 @@ public class WebConfig implements WebMvcConfigurer {
 //	propertySourcesPlaceholderConfigurer() {
 //		PropertySourcesPlaceholderConfigurer p =
 //				new PropertySourcesPlaceholderConfigurer();
-//		p.setLocations(new ClassPathResource("exifweb.properties"),
-//				new ClassPathResource("classpath*:exifweb-overridden.properties"));
+//		p.setLocations(new ClassPathResource("exifweb.properties"));
 //		p.setIgnoreResourceNotFound(true);
 //		p.setIgnoreUnresolvablePlaceholders(true);
 //		return p;
