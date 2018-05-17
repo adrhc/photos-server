@@ -38,13 +38,10 @@ public class HibernatePropertiesConfig {
 	@Profile("test-jdbc-ds")
 	@Bean("hibernateProperties")
 	public Properties hibernatePropertiesForTestJdbcDs() {
-		return new Properties() {
-			{
-				setProperty("hibernate.hbm2ddl.auto",
-						HibernatePropertiesConfig.this.env.getProperty("test.hibernate.hbm2ddl.auto"));
-				addCommonHbmProps(this);
-			}
-		};
+		Properties properties = hibernatePropertiesForJdbcDs();
+		properties.setProperty("hibernate.hbm2ddl.auto",
+				HibernatePropertiesConfig.this.env.getProperty("test.hibernate.hbm2ddl.auto"));
+		return properties;
 	}
 
 	@Profile({"prod-jdbc-ds", "prod-jndi-ds"})
