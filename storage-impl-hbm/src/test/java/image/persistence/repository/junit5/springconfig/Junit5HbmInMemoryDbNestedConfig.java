@@ -1,6 +1,6 @@
-package image.persistence.repository.junit5.testconfig;
+package image.persistence.repository.junit5.springconfig;
 
-import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
+import image.persistence.repository.springconfig.HbmInMemoryDbConfig;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.TestInstance;
 
@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@HbmStagingJdbcDbConfig
+@HbmInMemoryDbConfig
 @Nested
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public @interface Junit5HbmStagingJdbcDbNestedConfig {
+public @interface Junit5HbmInMemoryDbNestedConfig {
 }

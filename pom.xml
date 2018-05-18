@@ -741,16 +741,16 @@
                         </dependency>
                     </dependencies>
                     <!--
-                    When directly using surefire-junit47 I get:
-                        NoClassDefFoundError: org/junit/runner/notification/RunListener
+                        When directly using surefire-junit47 I get:
+                            NoClassDefFoundError: org/junit/runner/notification/RunListener
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-junit47</artifactId>
-                            <version>2.20.1</version>
-                        </dependency>
-                    </dependencies>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.20.1</version>
+                            </dependency>
+                        </dependencies>
                     -->
                     <configuration>
                         <!--
@@ -767,7 +767,7 @@
                         <!--
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
 
-                            works with @NotThreadSafe on e.g. @ContextConfiguration tests
+                            Since of maven-surefire-plugin:2.18, you can apply the JCIP annotation @net.jcip.annotations.NotThreadSafe on the Java class of JUnit test (pure test class, Suite, Parameterized, etc.) in order to execute it in single Thread instance. The Thread has name maven-surefire-plugin@NotThreadSafe and it is executed at the end of the test run.
                         -->
                         <parallel>methods</parallel>
                         <threadCount>4</threadCount>
@@ -777,8 +777,14 @@
 
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
                             reuseForks is used to define whether to terminate the spawned process after one test class and to create a new process for the next test
+
+                            In order to avoid JVM fork when testing I have to run separately in-memory, stage and production tests.
+	                        When at least two of them run together the spring configuration overlaps and random errors occur.
+
+	                        It supports the same syntax as -T in maven-core: if you terminate the value with a 'C',
+	                        that value will be multiplied with the number of available CPU cores in your system.
                         -->
-                        <forkCount>4</forkCount>
+                        <forkCount>1C</forkCount>
                         <reuseForks>false</reuseForks>
                         <!--
                             maven-surefire-report-plugin needs false value
@@ -958,7 +964,13 @@
 
     <profiles>
         <profile>
-            <!-- in-memory DB -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!--
+                in-memory only tests using in-memory DB
+                Requires <forkCount> usage!
+            -->
             <id>db-off</id>
             <properties>
                 <!--
@@ -984,12 +996,12 @@
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
-            <!-- on disk DB (stage/production database) -->
+            <!--
+                in-memory, staging and production tests using on disk DB (stage/production database)
+                Requires <forkCount> usage!
+            -->
             <id>db-on</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
@@ -1023,6 +1035,82 @@
                     junit5&amp;photos&amp;staging,
                     junit5&amp;photos&amp;production,
                     junit5&amp;photos&amp;misc
+                </junit5.photos.groups>
+            </properties>
+        </profile>
+        <profile>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <forkCount>1C</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <!-- all @NotThreadSafe classes are run with a single thread! -->
+                            <!--<threadCount>4</threadCount>-->
+                            <!--<parallel>methods</parallel>-->
+                            <disableXmlReport>false</disableXmlReport>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <!--
+                staging only tests using on disk DB
+                Does NOT require <forkCount> usage!
+            -->
+            <id>staging-only</id>
+            <properties>
+                <junit4.storage-impl-hbm.groups>
+                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class
+                </junit4.storage-impl-hbm.groups>
+                <junit4.photos.groups>
+                    image.photos.springconfig.PhotosStagingJdbcDbConfig.class
+                </junit4.photos.groups>
+                <junit5.storage-impl-hbm.groups>
+                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
+                    junit5&amp;hbm&amp;staging
+                </junit5.storage-impl-hbm.groups>
+                <junit5.photos.groups>
+                    image.photos.springconfig.PhotosStagingJdbcDbConfig,
+                    junit5&amp;photos&amp;staging
+                </junit5.photos.groups>
+            </properties>
+        </profile>
+        <profile>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <forkCount>1C</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <!-- all @NotThreadSafe classes are run with a single thread! -->
+                            <!--<threadCount>4</threadCount>-->
+                            <!--<parallel>methods</parallel>-->
+                            <disableXmlReport>false</disableXmlReport>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <!--
+                production only tests using on disk DB
+                Does NOT require <forkCount> usage!
+            -->
+            <id>production-only</id>
+            <properties>
+                <junit4.storage-impl-hbm.groups>
+                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
+                </junit4.storage-impl-hbm.groups>
+                <junit4.photos.groups>
+                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
+                </junit4.photos.groups>
+                <junit5.storage-impl-hbm.groups>
+                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
+                    junit5&amp;hbm&amp;production
+                </junit5.storage-impl-hbm.groups>
+                <junit5.photos.groups>
+                    image.photos.springconfig.PhotosProdJdbcDbConfig,
+                    junit5&amp;photos&amp;production
                 </junit5.photos.groups>
             </properties>
         </profile>

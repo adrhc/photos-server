@@ -138,7 +138,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration combine.self="append">
                     <environmentVariables>
-                        <!-- for catching tests without proper spring profile annotation -->
+                        <!-- spring profile for tests without proper spring profile annotation -->
                         <spring.profiles.active>fake-profile</spring.profiles.active>
                     </environmentVariables>
                     <groups>${junit5.storage-impl-hbm.groups}</groups>

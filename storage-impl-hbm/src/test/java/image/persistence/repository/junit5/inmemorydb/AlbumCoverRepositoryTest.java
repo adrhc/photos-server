@@ -3,7 +3,7 @@ package image.persistence.repository.junit5.inmemorydb;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumCoverRepository;
 import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
+import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;

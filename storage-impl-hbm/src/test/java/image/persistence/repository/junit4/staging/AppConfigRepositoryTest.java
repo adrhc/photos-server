@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 /**
- * Don't delete created configs with an have @After because using @HbmInMemoryDbConfig.
+ * Don't have to cleanup created configs with @After because we are using @HbmInMemoryDbConfig.
  * <p>
  * Created by adr on 2/21/18.
  */

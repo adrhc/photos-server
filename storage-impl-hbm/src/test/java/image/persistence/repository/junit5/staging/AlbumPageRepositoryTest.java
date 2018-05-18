@@ -11,7 +11,7 @@ import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.ESortType;
-import image.persistence.repository.junit5.testconfig.Junit5HbmStagingJdbcDbConfig;
+import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;

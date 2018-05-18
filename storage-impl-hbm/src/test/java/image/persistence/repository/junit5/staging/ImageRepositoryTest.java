@@ -8,7 +8,7 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
-import image.persistence.repository.junit5.testconfig.Junit5HbmStagingJdbcDbConfig;
+import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import image.persistence.util.IPositiveIntegerRandom;
