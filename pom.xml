@@ -1044,8 +1044,11 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <parallel>methods</parallel>
-                            <threadCount>4</threadCount>
+                            <forkCount>1C</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <!-- all @NotThreadSafe classes are run with a single thread! -->
+                            <!--<threadCount>4</threadCount>-->
+                            <!--<parallel>methods</parallel>-->
                             <disableXmlReport>false</disableXmlReport>
                         </configuration>
                     </plugin>
@@ -1079,8 +1082,11 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <parallel>methods</parallel>
-                            <threadCount>4</threadCount>
+                            <forkCount>1C</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <!-- all @NotThreadSafe classes are run with a single thread! -->
+                            <!--<threadCount>4</threadCount>-->
+                            <!--<parallel>methods</parallel>-->
                             <disableXmlReport>false</disableXmlReport>
                         </configuration>
                     </plugin>
