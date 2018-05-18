@@ -777,6 +777,9 @@
 
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
                             reuseForks is used to define whether to terminate the spawned process after one test class and to create a new process for the next test
+
+                            In order to avoid JVM fork when testing I have to run separately in-memory, stage and production tests.
+	                        When at least two of them run together the spring configuration overlaps and random errors occur.
                         -->
                         <forkCount>4</forkCount>
                         <reuseForks>false</reuseForks>
