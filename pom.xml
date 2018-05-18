@@ -741,16 +741,16 @@
                         </dependency>
                     </dependencies>
                     <!--
-                    When directly using surefire-junit47 I get:
-                        NoClassDefFoundError: org/junit/runner/notification/RunListener
+                        When directly using surefire-junit47 I get:
+                            NoClassDefFoundError: org/junit/runner/notification/RunListener
 
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.surefire</groupId>
-                            <artifactId>surefire-junit47</artifactId>
-                            <version>2.20.1</version>
-                        </dependency>
-                    </dependencies>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>2.20.1</version>
+                            </dependency>
+                        </dependencies>
                     -->
                     <configuration>
                         <!--
@@ -964,6 +964,9 @@
 
     <profiles>
         <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <!--
                 in-memory only tests using in-memory DB
                 Requires <forkCount> usage!
@@ -993,9 +996,6 @@
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <!--
@@ -1039,6 +1039,18 @@
             </properties>
         </profile>
         <profile>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <parallel>methods</parallel>
+                            <threadCount>4</threadCount>
+                            <disableXmlReport>false</disableXmlReport>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
             <!--
                 staging only tests using on disk DB
                 Does NOT require <forkCount> usage!
@@ -1062,6 +1074,18 @@
             </properties>
         </profile>
         <profile>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <parallel>methods</parallel>
+                            <threadCount>4</threadCount>
+                            <disableXmlReport>false</disableXmlReport>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
             <!--
                 production only tests using on disk DB
                 Does NOT require <forkCount> usage!

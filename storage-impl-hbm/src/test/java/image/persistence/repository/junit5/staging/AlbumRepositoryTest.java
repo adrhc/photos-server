@@ -22,10 +22,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
@@ -53,15 +52,13 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 	@Test
 	void getAlbumsOrderedByName() {
-		List<String> descSortedNames = this.albums.stream()
-				.filter(a -> !a.isDeleted())
-				.map(Album::getName)
-				.sorted((o1, o2) -> o2.toLowerCase().compareTo(o1.toLowerCase()))
-				.collect(Collectors.toList());
+		List<String> descSortedNames = descSortedAlbumNames(this.albums);
 		List<Album> dbAlbums = this.albumRepository.getAlbumsOrderedByName();
-		assertThat("size", dbAlbums, hasSize(descSortedNames.size()));
-		for (Album dbAlbum : dbAlbums) {
-			assertEquals(descSortedNames.remove(0), dbAlbum.getName(), "sorting");
+		List<String> descDbSortedNames = albumNames(dbAlbums);
+		assertThat("size", dbAlbums.size(), greaterThanOrEqualTo(descSortedNames.size()));
+		descDbSortedNames.retainAll(descSortedNames);
+		for (String dbAlbumName : descDbSortedNames) {
+			assertEquals(descSortedNames.remove(0), dbAlbumName, "sorting");
 		}
 	}
 
