@@ -19,8 +19,8 @@
         <!--<springframework.version>4.3.14.RELEASE</springframework.version>-->
         <!--<spring-security.version>3.2.10.RELEASE</spring-security.version>-->
         <!--<spring-security.version>4.2.4.RELEASE</spring-security.version>-->
-        <springframework.version>5.0.4.RELEASE</springframework.version>
-        <spring-security.version>5.0.2.RELEASE</spring-security.version>
+        <springframework.version>5.0.6.RELEASE</springframework.version>
+        <spring-security.version>5.0.5.RELEASE</spring-security.version>
 
         <!--<hibernate.version>4.3.11.Final</hibernate.version>-->
         <!--<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>-->
@@ -983,16 +983,14 @@
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
-                <db.host>dummy-host</db.host>
-                <test.db.host>dummy-host</test.db.host>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
         <profile>
-            <!-- DB host is 127.0.0.1 (<properties> same as <id>remote-db</id>) -->
-            <id>local-db</id>
+            <!-- on disk DB (stage/production database) -->
+            <id>db-on</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmInMemoryDbConfig.class,
@@ -1026,48 +1024,6 @@
                     junit5&amp;photos&amp;production,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
-                <db.host>127.0.0.1</db.host>
-                <test.db.host>127.0.0.1</test.db.host>
-            </properties>
-        </profile>
-        <profile>
-            <!-- DB host is adrhc.go.ro (<properties> same as <id>local-db</id>) -->
-            <id>remote-db</id>
-            <properties>
-                <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmInMemoryDbConfig.class,
-                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class,
-                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
-                </junit4.storage-impl-hbm.groups>
-                <junit4.photos.groups>
-                    image.photos.junit4.misc.MiscTestCategory.class,
-                    image.photos.JsonMapperConfig.class,
-                    image.photos.springconfig.PhotosInMemoryDbConfig.class,
-                    image.photos.springconfig.PhotosStagingJdbcDbConfig.class,
-                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
-                </junit4.photos.groups>
-                <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmInMemoryDbConfig,
-                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
-                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
-                    junit5&amp;hbm&amp;inmemorydb,
-                    junit5&amp;hbm&amp;staging,
-                    junit5&amp;hbm&amp;production,
-                    junit5&amp;hbm&amp;misc
-                </junit5.storage-impl-hbm.groups>
-                <junit5.photos.groups>
-                    image.photos.junit4.misc.MiscTestCategory,
-                    image.photos.JsonMapperConfig,
-                    image.photos.springconfig.PhotosInMemoryDbConfig,
-                    image.photos.springconfig.PhotosStagingJdbcDbConfig,
-                    image.photos.springconfig.PhotosProdJdbcDbConfig,
-                    junit5&amp;photos&amp;inmemorydb,
-                    junit5&amp;photos&amp;staging,
-                    junit5&amp;photos&amp;production,
-                    junit5&amp;photos&amp;misc
-                </junit5.photos.groups>
-                <db.host>adrhc.go.ro</db.host>
-                <test.db.host>adrhc.go.ro</test.db.host>
             </properties>
         </profile>
     </profiles>
