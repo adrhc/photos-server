@@ -11,21 +11,21 @@ public class HibernatePropertiesConfig {
 	@Profile("in-memory-db")
 	@Bean("hibernateProperties")
 	public PropertiesFactoryBean hibernatePropertiesForInMemoryDb() {
-		return new PropertiesFactoryBeanEx("hibernate-common.properties",
-				"hibernate-in-memory.properties");
+		return new PropertiesFactoryBeanEx("hibernate/hibernate-common.properties",
+				"hibernate/hibernate-in-memory.properties");
 	}
 
 	@Profile("test-jdbc-ds")
 	@Bean("hibernateProperties")
 	public PropertiesFactoryBean hibernatePropertiesForTestJdbcDs() {
-		return new PropertiesFactoryBeanEx("hibernate-common.properties",
-				"hibernate-stage-jdbc.properties");
+		return new PropertiesFactoryBeanEx("hibernate/hibernate-common.properties",
+				"hibernate/hibernate-stage-jdbc.properties");
 	}
 
 	@Profile({"prod-jdbc-ds", "prod-jndi-ds"})
 	@Bean("hibernateProperties")
 	public PropertiesFactoryBean hibernatePropertiesForJdbcDs() {
-		return new PropertiesFactoryBeanEx("hibernate-common.properties",
-				"hibernate-prod-jdbc.properties");
+		return new PropertiesFactoryBeanEx("hibernate/hibernate-common.properties",
+				"hibernate/hibernate-prod-jdbc.properties");
 	}
 }

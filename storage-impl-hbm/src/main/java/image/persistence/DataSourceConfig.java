@@ -52,18 +52,18 @@ public class DataSourceConfig {
 	@Profile("in-memory-db")
 	@Bean("jdbcDsProperties")
 	public PropertiesFactoryBean inMemoryDsProperties() {
-		return new PropertiesFactoryBeanEx("jdbc-in-memory.properties");
+		return new PropertiesFactoryBeanEx("jdbc-datasource/jdbc-in-memory.properties");
 	}
 
 	@Profile("test-jdbc-ds")
 	@Bean("jdbcDsProperties")
 	public PropertiesFactoryBean stageDsProperties() {
-		return new PropertiesFactoryBeanEx("jdbc-stage.properties");
+		return new PropertiesFactoryBeanEx("jdbc-datasource/jdbc-stage.properties");
 	}
 
 	@Profile("prod-jdbc-ds")
 	@Bean("jdbcDsProperties")
 	public PropertiesFactoryBean prodDsProperties() {
-		return new PropertiesFactoryBeanEx("jdbc-production.properties");
+		return new PropertiesFactoryBeanEx("jdbc-datasource/jdbc-production.properties");
 	}
 }
