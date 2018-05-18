@@ -2,6 +2,6 @@
 source env.sh
 
 # $MVN -Dmaven.javadoc.skip=true -Dmaven.test.skip=true clean install
-# $MVN -Dmaven.javadoc.skip=true clean install -P db-off
-# $MVN -Dmaven.javadoc.skip=true clean install -P db-on
+# ./clean.install.sh -P db-off
+# ./clean.install.sh -P db-on
 $MVN -Dmaven.javadoc.skip=true clean install "$@"

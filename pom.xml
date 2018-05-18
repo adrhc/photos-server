@@ -767,7 +767,7 @@
                         <!--
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
 
-                            works with @NotThreadSafe on e.g. @ContextConfiguration tests
+                            Since of maven-surefire-plugin:2.18, you can apply the JCIP annotation @net.jcip.annotations.NotThreadSafe on the Java class of JUnit test (pure test class, Suite, Parameterized, etc.) in order to execute it in single Thread instance. The Thread has name maven-surefire-plugin@NotThreadSafe and it is executed at the end of the test run.
                         -->
                         <parallel>methods</parallel>
                         <threadCount>4</threadCount>
