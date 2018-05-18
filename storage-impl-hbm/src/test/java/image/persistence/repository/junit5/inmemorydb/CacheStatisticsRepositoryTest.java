@@ -2,7 +2,7 @@ package image.persistence.repository.junit5.inmemorydb;
 
 import image.persistence.entity.Album;
 import image.persistence.repository.CacheStatisticsRepository;
-import image.persistence.repository.junit5.testconfig.Junit5HbmInMemoryDbConfig;
+import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.Test;
 
