@@ -24,7 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
@@ -55,11 +56,9 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		List<String> descSortedNames = descSortedAlbumNames(this.albums);
 		List<Album> dbAlbums = this.albumRepository.getAlbumsOrderedByName();
 		List<String> descDbSortedNames = albumNames(dbAlbums);
-		assertThat("size", dbAlbums.size(), greaterThanOrEqualTo(descSortedNames.size()));
 		descDbSortedNames.retainAll(descSortedNames);
-		for (String dbAlbumName : descDbSortedNames) {
-			assertEquals(descSortedNames.remove(0), dbAlbumName, "sorting");
-		}
+		assertThat("size", descDbSortedNames, hasSize(descSortedNames.size()));
+		assertThat("same order", descDbSortedNames, equalTo(descSortedNames));
 	}
 
 	@Test
