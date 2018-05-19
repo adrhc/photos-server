@@ -57,7 +57,5 @@ public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier, ITra
 	@After
 	public void removeAlbumAndImage() {
 		this.albumRepository.deleteAlbum(this.album.getId());
-		logger.debug("removing album.id = {}, album.name = {}",
-				this.album.getId(), this.album.getName());
 	}
 }

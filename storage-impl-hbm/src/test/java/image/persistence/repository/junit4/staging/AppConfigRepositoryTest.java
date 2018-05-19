@@ -5,6 +5,7 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.springconfig.HbmInMemoryDbConfig;
 import net.jcip.annotations.NotThreadSafe;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 /**
- * Don't have to cleanup created configs with @After because we are using @HbmInMemoryDbConfig.
- * <p>
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
@@ -54,6 +53,10 @@ public class AppConfigRepositoryTest implements IAppConfigSupplier {
 					.getAppConfigById(appConfig.getId());
 			Assert.assertEquals(updatedAppConfig.getValue(), appConfig.getValue());
 		}
-		logger.debug("appConfigs updated");
+	}
+
+	@After
+	public void teardown() {
+		this.appConfigs.forEach((ac) -> this.appConfigRepository.deleteById(ac.getId()));
 	}
 }

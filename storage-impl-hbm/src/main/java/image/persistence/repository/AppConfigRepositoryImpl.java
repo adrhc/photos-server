@@ -38,6 +38,13 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 		this.sessionFactory.getCurrentSession().delete(appConfig);
 	}
 
+	@Override
+	@Transactional
+	public void deleteById(Integer id) {
+		AppConfig ac = this.sessionFactory.getCurrentSession().get(AppConfig.class, id);
+		this.sessionFactory.getCurrentSession().delete(ac);
+	}
+
 	private Integer getConfigInteger(AppConfigEnum ace) {
 		String s = getConfig(ace);
 		if (s == null) {

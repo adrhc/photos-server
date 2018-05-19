@@ -14,6 +14,8 @@ public interface AppConfigRepository {
 
 	void deleteAppConfig(AppConfigEnum ace);
 
+	void deleteById(Integer id);
+
 	String getConfig(AppConfigEnum appConfigEnum);
 
 	Integer getPhotosPerPage();
