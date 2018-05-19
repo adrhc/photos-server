@@ -35,8 +35,6 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 	@Autowired
 	private AppConfigRepository appConfigRepository;
-//	@RegisterExtension
-//	static RandomBeansExtension random = new RandomBeansExtensionEx();
 
 	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
