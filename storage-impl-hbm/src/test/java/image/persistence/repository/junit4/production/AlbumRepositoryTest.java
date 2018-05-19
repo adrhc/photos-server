@@ -3,7 +3,6 @@ package image.persistence.repository.junit4.production;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.springconfig.HbmProdJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,7 +22,6 @@ import static org.hamcrest.Matchers.hasItem;
  * Created by adr on 2/23/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @HbmProdJdbcDbConfig
 @Category(HbmProdJdbcDbConfig.class)
 public class AlbumRepositoryTest {

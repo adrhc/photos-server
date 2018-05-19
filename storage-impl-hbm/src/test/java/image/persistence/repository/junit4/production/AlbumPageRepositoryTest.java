@@ -4,7 +4,6 @@ import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.persistence.repository.springconfig.HbmProdJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,7 +22,6 @@ import static org.hamcrest.Matchers.hasSize;
  * Created by adrianpetre on 23.02.2018.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @HbmProdJdbcDbConfig
 @Category(HbmProdJdbcDbConfig.class)
 public class AlbumPageRepositoryTest {

@@ -2,7 +2,6 @@ package image.persistence.repository.junit4.staging.album;
 
 import image.persistence.entity.Album;
 import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.junit.experimental.categories.Category;
 /**
  * Created by adr on 2/26/18.
  */
-@NotThreadSafe
 @HbmStagingJdbcDbConfig
 @Category(HbmStagingJdbcDbConfig.class)
 public class RemoveAlbumCoverTest extends AlbumRepoWriteTestBase {

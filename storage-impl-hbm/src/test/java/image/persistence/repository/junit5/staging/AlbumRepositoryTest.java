@@ -11,7 +11,6 @@ import image.persistence.repository.util.assertion.IAlbumAssertions;
 import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAssertions, IImageAssertions {
@@ -48,7 +46,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 	@AfterAll
 	void afterAll() {
-		this.albums.forEach(a -> this.albumRepository.deleteAlbum(a.getId()));
+		this.albums.forEach(a -> this.albumRepository.deleteAlbumById(a.getId()));
 	}
 
 	@Test
@@ -64,7 +62,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 	@Test
 	void deleteAlbum() {
 		Integer albumId = this.albums.remove(this.albums.size() - 1).getId();
-		this.albumRepository.deleteAlbum(albumId);
+		this.albumRepository.deleteAlbumById(albumId);
 		Album removedAlbum = this.albumRepository.getAlbumById(albumId);
 		assertNull(removedAlbum);
 	}
@@ -102,11 +100,10 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 		@AfterAll
 		void afterAll() {
-			this.albumRepository.deleteAlbum(this.album.getId());
+			this.albumRepository.deleteAlbumById(this.album.getId());
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmStagingJdbcDbNestedConfig
 	class CreateAlbumTest extends AlbumCreationTestBase {
 		@BeforeAll
@@ -122,7 +119,6 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmStagingJdbcDbNestedConfig
 	class CreateAlbumForNameTest extends AlbumCreationTestBase {
 		@Test
@@ -153,11 +149,10 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 		@AfterAll
 		void afterAll() {
-			this.albumRepository.deleteAlbum(this.album.getId());
+			this.albumRepository.deleteAlbumById(this.album.getId());
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmStagingJdbcDbNestedConfig
 	class PutAlbumCoverTest extends CoverTestBase {
 		@Test
@@ -169,7 +164,6 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmStagingJdbcDbNestedConfig
 	class RemoveAlbumCoverTest extends CoverTestBase {
 		@Override

@@ -54,7 +54,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
 
 	@AfterAll
 	void tearDown() {
-		this.albumRepository.deleteAlbum(this.album.getId());
+		this.albumRepository.deleteAlbumById(this.album.getId());
 	}
 
 	@Test

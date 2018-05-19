@@ -14,7 +14,7 @@ public interface AlbumRepository {
 
 	void createAlbum(Album album);
 
-	void deleteAlbum(Integer id);
+	void deleteAlbumById(Integer id);
 
 	Album getAlbumById(Integer id);
 

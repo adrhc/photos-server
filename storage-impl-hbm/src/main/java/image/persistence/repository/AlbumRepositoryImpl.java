@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.text.SimpleDateFormat;
@@ -61,9 +62,13 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
-	public void deleteAlbum(Integer id) {
-		Album album = this.sessionFactory.getCurrentSession().get(Album.class, id);
-		this.sessionFactory.getCurrentSession().delete(album);
+	public void deleteAlbumById(Integer id) {
+		Session session = this.sessionFactory.getCurrentSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaDelete<Album> criteria = cb.createCriteriaDelete(Album.class);
+		Root<Album> root = criteria.from(Album.class);
+		criteria.where(cb.equal(root.get("id"), id));
+		session.createQuery(criteria).executeUpdate();
 	}
 
 	/**
