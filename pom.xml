@@ -1044,6 +1044,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
                             <forkCount>1C</forkCount>
                             <reuseForks>true</reuseForks>
                             <!-- all @NotThreadSafe classes are run with a single thread! -->
@@ -1082,6 +1083,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
                             <forkCount>1C</forkCount>
                             <reuseForks>true</reuseForks>
                             <!-- all @NotThreadSafe classes are run with a single thread! -->
