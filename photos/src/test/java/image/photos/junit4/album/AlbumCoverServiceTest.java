@@ -3,7 +3,6 @@ package image.photos.junit4.album;
 import image.cdm.album.cover.AlbumCover;
 import image.photos.album.AlbumCoverService;
 import image.photos.springconfig.PhotosProdJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -21,7 +20,6 @@ import static org.hamcrest.Matchers.*;
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @PhotosProdJdbcDbConfig
 @Category(PhotosProdJdbcDbConfig.class)
 public class AlbumCoverServiceTest {

@@ -16,7 +16,6 @@ import image.persistence.util.IPositiveIntegerRandom;
 import image.photos.album.AlbumPageService;
 import image.photos.junit5.testconfig.Junit5PhotosStagingDbConfig;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-@NotThreadSafe
 @Junit5PhotosStagingDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -6,6 +6,7 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 
 @ExtendWith(RandomBeansExtensionEx.class)
+@NotThreadSafe
 @Junit5HbmInMemoryDbConfig
 class AlbumCoverRepositoryTest {
 	@Autowired
