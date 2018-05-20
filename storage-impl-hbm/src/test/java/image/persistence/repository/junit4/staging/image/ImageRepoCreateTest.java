@@ -8,7 +8,6 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.ITransactionalAction;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +24,6 @@ import javax.inject.Inject;
  * Created by adr on 2/27/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @HbmStagingJdbcDbConfig
 @Category(HbmStagingJdbcDbConfig.class)
 public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier, ITransactionalAction {
@@ -56,6 +54,6 @@ public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier, ITra
 
 	@After
 	public void removeAlbumAndImage() {
-		this.albumRepository.deleteAlbum(this.album.getId());
+		this.albumRepository.deleteAlbumById(this.album.getId());
 	}
 }

@@ -13,7 +13,6 @@ import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import image.persistence.util.IPositiveIntegerRandom;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
@@ -54,7 +52,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
 
 	@AfterAll
 	void tearDown() {
-		this.albumRepository.deleteAlbum(this.album.getId());
+		this.albumRepository.deleteAlbumById(this.album.getId());
 	}
 
 	@Test

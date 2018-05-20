@@ -51,6 +51,6 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 
 	@After
 	public void removeAlbumAndImage() {
-		this.albumRepository.deleteAlbum(this.albumId);
+		this.albumRepository.deleteAlbumById(this.albumId);
 	}
 }

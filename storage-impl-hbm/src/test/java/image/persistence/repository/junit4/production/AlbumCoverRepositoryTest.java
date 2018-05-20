@@ -2,7 +2,6 @@ package image.persistence.repository.junit4.production;
 
 import image.persistence.repository.AlbumCoverRepository;
 import image.persistence.repository.springconfig.HbmProdJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -21,7 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Created by adr on 2/22/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @HbmProdJdbcDbConfig
 @Category(HbmProdJdbcDbConfig.class)
 public class AlbumCoverRepositoryTest {

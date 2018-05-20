@@ -3,7 +3,6 @@ package image.persistence.repository.junit4.production;
 import image.persistence.entity.Image;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.springconfig.HbmProdJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -20,7 +19,6 @@ import static org.hamcrest.Matchers.anything;
  * Created by adr on 2/25/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @HbmProdJdbcDbConfig
 @Category(HbmProdJdbcDbConfig.class)
 public class ImageRepositoryTest {

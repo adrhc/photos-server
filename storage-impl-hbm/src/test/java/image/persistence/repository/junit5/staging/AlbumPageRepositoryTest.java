@@ -14,7 +14,6 @@ import image.persistence.repository.ESortType;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +32,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
@@ -138,7 +136,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
 
 	@AfterAll
 	void afterAll() {
-		ignoreExc(() -> this.albumRepository.deleteAlbum(this.albumId));
+		ignoreExc(() -> this.albumRepository.deleteAlbumById(this.albumId));
 		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
 	}
 }

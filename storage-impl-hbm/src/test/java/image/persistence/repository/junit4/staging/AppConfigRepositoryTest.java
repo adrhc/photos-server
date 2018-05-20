@@ -4,7 +4,6 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.springconfig.HbmInMemoryDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +21,6 @@ import java.util.List;
  * Created by adr on 2/21/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @HbmInMemoryDbConfig
 @Category(HbmInMemoryDbConfig.class)
 public class AppConfigRepositoryTest implements IAppConfigSupplier {

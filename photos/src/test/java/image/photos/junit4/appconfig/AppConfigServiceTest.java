@@ -4,7 +4,6 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.springconfig.PhotosProdJdbcDbConfig;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -23,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
  * Created by adr on 2/20/18.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @PhotosProdJdbcDbConfig
 @Category(PhotosProdJdbcDbConfig.class)
 public class AppConfigServiceTest {
