@@ -674,6 +674,9 @@
                     <configuration>
                         <source>${source.version}</source>
                         <target>${source.version}</target>
+						<compilerArgs>
+				            <arg>-parameters</arg>
+						</compilerArgs>
                     </configuration>
                 </plugin>
 
