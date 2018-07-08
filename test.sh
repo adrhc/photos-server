@@ -11,4 +11,5 @@ source env.sh
 # these does not require <forkCount> usage:
 # ./test.sh -P staging-only
 # ./test.sh -P production-only
+clean.db.sh
 $MVN test "$@"

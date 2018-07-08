@@ -44,8 +44,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT count(i) FROM Image i " +
-					(emptyAlbumId ? "WHERE i.deleted = 0 " :
-							"JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
+					(emptyAlbumId ? "WHERE i.deleted = false " :
+							"JOIN i.album a WHERE a.id = :albumId AND i.deleted = false ") +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"AND i.name LIKE :toSearch");
 			// searches case-sensitive for name!
@@ -53,7 +53,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		} else {
 			q = session.createQuery("SELECT count(i) FROM Image i JOIN i.album a " +
 					"WHERE a.id = :albumId " +
-					"AND i.deleted = 0 " +
+					"AND i.deleted = false " +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
@@ -98,7 +98,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 //					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
-					(emptyAlbumId ? "WHERE i.deleted = 0 " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = 0 ") +
+					(emptyAlbumId ? "WHERE i.deleted = false " : "JOIN i.album a WHERE a.id = :albumId AND i.deleted = false ") +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"AND i.name LIKE :toSearch " +
 					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort);
@@ -114,7 +114,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 //					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
-					"WHERE a.id = :albumId AND i.deleted = 0 " +
+					"WHERE a.id = :albumId AND i.deleted = false " +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
