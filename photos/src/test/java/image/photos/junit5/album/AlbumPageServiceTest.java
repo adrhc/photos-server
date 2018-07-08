@@ -46,16 +46,19 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	@Random(type = Album.class, size = 5, excludes = {"id", "dirty", "cover", "lastUpdate", "images"})
 	private List<Album> albums;
 	@Random(excludes = {"id", "dirty", "cover", "lastUpdate", "images.id",
-			"images.lastUpdate", "images.status", "images.deleted", "images.album"})
+			"images.lastUpdate", "images.flags", "images.deleted", "images.album"})
 	private Album specialAlbum;
-	@Random(excludes = {"id", "lastUpdate", "status", "deleted", "album"})
+	@Random(excludes = {"id", "lastUpdate", "flags", "deleted", "album"})
 	private Image hiddenImage;
-	@Random(excludes = {"id", "lastUpdate", "status", "deleted", "album"})
+	@Random(excludes = {"id", "lastUpdate", "flags", "deleted", "album"})
 	private Image printableImage;
 
 	@BeforeAll
 	void setUpSpecialAlbum() {
-		this.specialAlbum.getImages().forEach(i -> i.setAlbum(this.specialAlbum));
+		this.specialAlbum.getImages().forEach(i -> {
+			i.setAlbum(this.specialAlbum);
+			i.setFlags(of(EImageStatus.DEFAULT));
+		});
 		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
 		this.specialAlbum.addImage(this.hiddenImage);
 		this.printableImage.setFlags(of(EImageStatus.PRINTABLE));
