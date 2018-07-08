@@ -988,6 +988,7 @@
                     image.photos.JsonMapperConfig.class,
                     image.photos.springconfig.PhotosInMemoryDbConfig.class
                 </junit4.photos.groups>
+                <junit5.storage-entities.groups>junit5</junit5.storage-entities.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmInMemoryDbConfig,
                     junit5&amp;hbm&amp;inmemorydb
@@ -1020,6 +1021,7 @@
                     image.photos.springconfig.PhotosStagingJdbcDbConfig.class,
                     image.photos.springconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
+                <junit5.storage-entities.groups>junit5</junit5.storage-entities.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmInMemoryDbConfig,
                     image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
