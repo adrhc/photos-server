@@ -674,9 +674,9 @@
                     <configuration>
                         <source>${source.version}</source>
                         <target>${source.version}</target>
-						<compilerArgs>
-				            <arg>-parameters</arg>
-						</compilerArgs>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
 
@@ -770,6 +770,7 @@
                         <!--
                             http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html
 
+                            @NotThreadSafe:
                             Since of maven-surefire-plugin:2.18, you can apply the JCIP annotation @net.jcip.annotations.NotThreadSafe on the Java class of JUnit test (pure test class, Suite, Parameterized, etc.) in order to execute it in single Thread instance. The Thread has name maven-surefire-plugin@NotThreadSafe and it is executed at the end of the test run.
                         -->
                         <parallel>methods</parallel>
@@ -1042,6 +1043,7 @@
             </properties>
         </profile>
         <profile>
+            <id>staging-only</id>
             <build>
                 <plugins>
                     <plugin>
@@ -1058,11 +1060,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <!--
-                staging only tests using on disk DB
-                Does NOT require <forkCount> usage!
-            -->
-            <id>staging-only</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class
@@ -1081,6 +1078,7 @@
             </properties>
         </profile>
         <profile>
+            <id>production-only</id>
             <build>
                 <plugins>
                     <plugin>
@@ -1097,11 +1095,6 @@
                     </plugin>
                 </plugins>
             </build>
-            <!--
-                production only tests using on disk DB
-                Does NOT require <forkCount> usage!
-            -->
-            <id>production-only</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
