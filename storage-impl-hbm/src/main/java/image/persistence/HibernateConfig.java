@@ -23,7 +23,7 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@PropertySource("jndi-datasource.properties")
+@PropertySource("classpath:/jndi-datasource.properties")
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 //@Import(HibernateCacheConfig.class)
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
