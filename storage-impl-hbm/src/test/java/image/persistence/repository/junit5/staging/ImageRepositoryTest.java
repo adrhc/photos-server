@@ -5,6 +5,7 @@ import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
+import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
+class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	@Inject
 	private AlbumRepository albumRepository;
 	@Inject
@@ -84,8 +85,8 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom {
 		ImageStatus imageStatus = new ImageStatus(image.getId(), status.getValueAsByte());
 		this.imageRepository.changeStatus(imageStatus);
 		Image dbImage = this.imageRepository.getImageById(image.getId());
-		assertEquals(imageStatus.getStatus(), dbImage.getStatus());
-		image.setStatus(imageStatus.getStatus());
+		assertEquals(of(imageStatus.getStatus()), dbImage.getFlags());
+		image.setFlags(of(imageStatus.getStatus()));
 		assertImageEquals(image, dbImage);
 	}
 

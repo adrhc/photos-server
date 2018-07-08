@@ -40,7 +40,7 @@ public interface IImageAssertions {
 				() -> assertEquals(image.getName(), dbImage.getName(), "name"),
 				() -> assertEquals(image.getRating(), dbImage.getRating(), "rating"),
 				() -> assertEquals(image.isDeleted(), dbImage.isDeleted(), "deleted"),
-				() -> assertEquals(image.getStatus(), dbImage.getStatus(), "status")
+				() -> assertEquals(image.getFlags(), dbImage.getFlags(), "flags")
 		);
 		ImageMetadata imageMetadata = image.getImageMetadata();
 		ImageMetadata dbImageMetadata = dbImage.getImageMetadata();

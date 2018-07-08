@@ -7,6 +7,7 @@ import image.persistence.entity.Album;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
+import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
@@ -34,7 +35,7 @@ import static org.hamcrest.Matchers.hasSize;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
+public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
@@ -56,12 +57,12 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils {
 				.collect(Collectors.toList());
 		// all status types available
 		Stream.of(EImageStatus.values())
-				.forEach(e -> images.get(10 + e.ordinal()).setStatus(e.getValueAsByte()));
+				.forEach(e -> images.get(10 + e.ordinal()).setFlags(of(e)));
 		// one deleted image
 		images.get(1).setDeleted(true);
 		images.get(2).setName(T1_TO_SEARCH);
 		this.hiddenImage = images.get(3);
-		this.hiddenImage.setStatus(EImageStatus.HIDDEN.getValueAsByte());
+		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
 		// album cover
 		album.setCover(images.get(0));
 		album.addImages(images);

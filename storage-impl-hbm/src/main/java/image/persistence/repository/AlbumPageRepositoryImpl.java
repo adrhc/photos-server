@@ -23,13 +23,11 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	 * -(image0_.status & 1)-(image0_.status & 2)-(image0_.status & 4)-(image0_.status & 8))
 	 */
 	private static final String VIEW_HIDDEN_SQL =
-			"AND i.status = IF(:viewHidden, i.status, i.status " +
-					"- i.hidden - i.personal - i.ugly - i.duplicate) ";
+			"AND (:viewHidden = true OR i.flags.hidden = false AND i.flags.personal = false AND i.flags.ugly = false AND i.flags.duplicate = false) ";
 	/**
 	 * Shows only printable images.
 	 */
-	private static final String VIEW_PRINTABLE_SQL =
-			"AND i.status = IF(:viewOnlyPrintable, 16, i.status) ";
+	private static final String VIEW_PRINTABLE_SQL = "AND (:viewOnlyPrintable = false OR i.flags.printable = true) ";
 	private static final Integer NULL_ALBUM_ID = -1;
 
 	@Inject
@@ -92,8 +90,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		Query q;
 		if (StringUtils.hasText(toSearch)) {
 			q = session.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
-					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.printable, i.imageMetadata.exifData.imageHeight, " +
+					"i.id, i.name, i.flags.hidden, i.flags.personal, i.flags.ugly, i.flags.duplicate, " +
+					"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
 					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
 					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
 					"a.name, i.lastUpdate) " +
@@ -108,8 +106,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 			q.setString("toSearch", "%" + toSearch + "%");
 		} else {
 			q = session.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
-					"i.id, i.name, i.hidden, i.personal, i.ugly, i.duplicate, " +
-					"i.printable, i.imageMetadata.exifData.imageHeight, " +
+					"i.id, i.name, i.flags.hidden, i.flags.personal, i.flags.ugly, i.flags.duplicate, " +
+					"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
 					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
 					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
 					"a.name, i.lastUpdate) " +

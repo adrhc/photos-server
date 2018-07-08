@@ -3,6 +3,7 @@ package image.photos.album;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
+import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
@@ -40,7 +41,7 @@ import static image.photos.events.image.EImageEventType.MARKED_DELETED;
  * To change this template use File | Settings | File Templates.
  */
 @Service
-public class AlbumImporterService {
+public class AlbumImporterService implements IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterService.class);
 	@Inject
 	private ImageUtils imageUtils;
@@ -275,7 +276,7 @@ public class AlbumImporterService {
 				this.imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
 				return;
 			}
-			if (image.getStatus() == EImageStatus.DEFAULT.getValueAsByte()) {
+			if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				this.imageRepository.safelyDeleteImage(image.getId());

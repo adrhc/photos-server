@@ -128,3 +128,9 @@ mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -Darche
 mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-webapp -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=exifweb
 mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=photos
 mvn -B archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=RELEASE -DgroupId=exifweb -DartifactId=util
+
+update `exifweb-tests`.Album set `FK_IMAGE` = null;
+delete from `exifweb-tests`.Image;
+delete from `exifweb-tests`.Album;
+delete from `exifweb-tests`.AppConfig;
+delete from `exifweb-tests`.user;

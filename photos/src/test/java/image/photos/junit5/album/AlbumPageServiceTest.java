@@ -8,6 +8,7 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
+import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.ESortType;
@@ -31,7 +32,7 @@ import static org.hamcrest.Matchers.hasSize;
 @Junit5PhotosStagingDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MiscUtils {
+class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MiscUtils, IImageFlagsUtils {
 	private static final int PAGE_SIZE = 20;
 	private static final int MAX_IMAGES_FOR_ALBUM = 30;
 
@@ -55,9 +56,9 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	@BeforeAll
 	void setUpSpecialAlbum() {
 		this.specialAlbum.getImages().forEach(i -> i.setAlbum(this.specialAlbum));
-		this.hiddenImage.setStatus(EImageStatus.HIDDEN.getValueAsByte());
+		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
 		this.specialAlbum.addImage(this.hiddenImage);
-		this.printableImage.setStatus(EImageStatus.PRINTABLE.getValueAsByte());
+		this.printableImage.setFlags(of(EImageStatus.PRINTABLE));
 		this.specialAlbum.addImage(this.printableImage);
 		this.albumRepository.createAlbum(this.specialAlbum);
 	}
@@ -70,7 +71,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		});
 		// set EImageStatus.DEFAULT for all images
 		this.albums.stream().map(Album::getImages).flatMap(List<Image>::stream)
-				.forEach(i -> i.setStatus(EImageStatus.DEFAULT.getValueAsByte()));
+				.forEach(i -> i.setFlags(of(EImageStatus.DEFAULT)));
 		// insert albums
 		this.albums.forEach(this.albumRepository::createAlbum);
 		// create photos_per_page app config

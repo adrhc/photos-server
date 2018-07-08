@@ -1,10 +1,9 @@
 package image.persistence.entity;
 
 import image.cdm.image.ImageRating;
-import image.cdm.image.status.EImageStatus;
+import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,27 +26,12 @@ public class Image implements IStorageEntity {
 	private Integer id;
 	@Column(nullable = false, length = 256)
 	private String name;
-	@Embedded
-	private ImageMetadata imageMetadata;
-
-	/**
-	 * see DEFAULT_STATUS = 0 defined above
-	 */
-	@Column(nullable = false)
-	private byte status = EImageStatus.DEFAULT.getValueAsByte();
-	@Formula("(status & 1)")
-	private boolean hidden;
-	@Formula("(status & 2)")
-	private boolean personal;
-	@Formula("(status & 4)")
-	private boolean ugly;
-	@Formula("(status & 8)")
-	private boolean duplicate;
-	@Formula("(status & 16)")
-	private boolean printable;
-
 	@Column(nullable = false)
 	private boolean deleted;
+	@Embedded
+	private ImageMetadata imageMetadata;
+	@Embedded
+	private ImageFlags flags = new ImageFlags();
 	/**
 	 * see MIN_RATING = 1 (defined above)
 	 */
@@ -112,34 +96,6 @@ public class Image implements IStorageEntity {
 		this.album = album;
 	}
 
-	public byte getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(byte status) {
-		this.status = status;
-	}
-
-	public boolean isHidden() {
-		return this.hidden;
-	}
-
-	public boolean isPersonal() {
-		return this.personal;
-	}
-
-	public boolean isUgly() {
-		return this.ugly;
-	}
-
-	public boolean isDuplicate() {
-		return this.duplicate;
-	}
-
-	public boolean isPrintable() {
-		return this.printable;
-	}
-
 	public boolean isDeleted() {
 		return this.deleted;
 	}
@@ -164,20 +120,24 @@ public class Image implements IStorageEntity {
 		this.imageMetadata = imageMetadata;
 	}
 
+	public ImageFlags getFlags() {
+		return this.flags;
+	}
+
+	public void setFlags(ImageFlags flags) {
+		this.flags = flags;
+	}
+
 	@Override
 	public String toString() {
 		return "Image{" +
 				"id=" + this.id +
 				", name='" + this.name + '\'' +
-				", imageMetadata=" + this.imageMetadata.toString() +
-				", status=" + this.status +
 				", deleted=" + this.deleted +
-				", hidden=" + this.hidden +
-				", personal=" + this.personal +
-				", ugly=" + this.ugly +
-				", duplicate=" + this.duplicate +
-				", printable=" + this.printable +
+				", imageMetadata=" + this.imageMetadata.toString() +
+				", flags=" + this.flags.toString() +
 				", rating=" + this.rating +
+				", album=" + this.album +
 				", lastUpdate=" + this.lastUpdate +
 				'}';
 	}

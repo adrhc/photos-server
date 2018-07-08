@@ -4,6 +4,7 @@ import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
+import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
 import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
 import image.persistence.repository.util.IDateNoMillisSupplier;
@@ -19,7 +20,7 @@ import java.util.Date;
 @HbmStagingJdbcDbConfig
 @Category(HbmStagingJdbcDbConfig.class)
 public class ImageRepositoryTest extends AlbumRepoWriteTestBase
-		implements IDateNoMillisSupplier {
+		implements IDateNoMillisSupplier, IImageFlagsUtils {
 	@Test
 	public void updateThumbLastModifiedForImg() throws Exception {
 		Date date = dateNoMilliseconds();
@@ -47,14 +48,14 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	@Test
 	public void changeStatus() throws Exception {
 		EImageStatus newStatus = EImageStatus.DEFAULT;
-		if (this.image.getStatus() == newStatus.getValueAsByte()) {
+		if (areEquals(this.image.getFlags(), newStatus)) {
 			newStatus = EImageStatus.PRINTABLE;
 		}
 		boolean changed = this.imageRepository.changeStatus(new ImageStatus(
 				this.imageId, newStatus.getValueAsByte()));
 		Assert.assertTrue(changed);
 		Image alteredImage = this.imageRepository.getImageById(this.imageId);
-		Assert.assertEquals(alteredImage.getStatus(), newStatus.getValueAsByte());
+		Assert.assertTrue(areEquals(alteredImage.getFlags(), newStatus));
 	}
 
 	@Test

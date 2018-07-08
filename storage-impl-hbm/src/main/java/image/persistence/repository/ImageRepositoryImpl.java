@@ -4,6 +4,8 @@ import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
+import image.persistence.entity.image.IImageFlagsUtils;
+import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -25,7 +27,7 @@ import java.util.List;
  * Created by adrianpetre on 29.01.2018.
  */
 @Service
-public class ImageRepositoryImpl implements ImageRepository {
+public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(ImageRepositoryImpl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
@@ -72,10 +74,11 @@ public class ImageRepositoryImpl implements ImageRepository {
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Image image = session.load(Image.class, imageStatus.getImageId());
-		if (image.getStatus() == imageStatus.getStatus()) {
+		ImageFlags imageFlags = of(imageStatus.getStatus());
+		if (image.getFlags().equals(imageFlags)) {
 			return false;
 		}
-		image.setStatus(imageStatus.getStatus());
+		image.setFlags(imageFlags);
 		image.getAlbum().setDirty(true);
 		return true;
 	}
@@ -201,7 +204,7 @@ public class ImageRepositoryImpl implements ImageRepository {
 		return session.get(Image.class, imageId);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional(readOnly = true, propagation = Propagation.MANDATORY)
 	private Integer getImageIdByNameAndAlbumId(String name, Integer albumId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query q = session.createQuery("SELECT id FROM Image " +
