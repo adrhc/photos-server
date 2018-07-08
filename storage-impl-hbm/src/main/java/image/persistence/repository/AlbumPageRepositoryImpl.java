@@ -51,9 +51,10 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
 		} else {
-			q = session.createQuery("SELECT count(i) FROM Image i JOIN i.album a " +
-					"WHERE a.id = :albumId " +
-					"AND i.deleted = false " +
+			q = session.createQuery("SELECT count(i) FROM Image i " +
+					(emptyAlbumId ? "" : "JOIN i.album a ") +
+					"WHERE " + (emptyAlbumId ? "" : "a.id = :albumId AND ") +
+					"i.deleted = false " +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
 		}
@@ -113,8 +114,10 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 					"a.name, i.lastUpdate) " +
 //					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
-					"FROM Image i JOIN i.album a " +
-					"WHERE a.id = :albumId AND i.deleted = false " +
+					"FROM Image i " +
+					(emptyAlbumId ? "" : "JOIN i.album a ") +
+					"WHERE " + (emptyAlbumId ? "" : "a.id = :albumId AND ") +
+					"i.deleted = false " +
 					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort);
 			q.setCacheable(!viewHidden && !viewOnlyPrintable);
