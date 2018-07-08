@@ -756,6 +756,7 @@
                         </dependencies>
                     -->
                     <configuration>
+                        <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                         <!--
                             https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
                             parallel=methods -> ApplicationContext fails with this multithreaded environment
@@ -1051,6 +1052,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                             <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
                             <forkCount>1C</forkCount>
                             <reuseForks>true</reuseForks>
@@ -1086,6 +1088,7 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                             <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
                             <forkCount>1C</forkCount>
                             <reuseForks>true</reuseForks>
