@@ -31,7 +31,7 @@ public class Image implements IStorageEntity {
 	@Embedded
 	private ImageMetadata imageMetadata;
 	@Embedded
-	private ImageFlags flags = new ImageFlags();
+	private ImageFlags flags;
 	/**
 	 * see MIN_RATING = 1 (defined above)
 	 */

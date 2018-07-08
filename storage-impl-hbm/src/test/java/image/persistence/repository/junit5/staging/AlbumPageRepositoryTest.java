@@ -60,7 +60,9 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 				.forEach(e -> images.get(10 + e.ordinal()).setFlags(of(e)));
 		// one deleted image
 		images.get(1).setDeleted(true);
+		images.get(2).setDeleted(false);
 		images.get(2).setName(T1_TO_SEARCH);
+		images.get(2).setFlags(of(EImageStatus.DEFAULT));
 		this.hiddenImage = images.get(3);
 		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
 		// album cover
