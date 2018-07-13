@@ -3,7 +3,6 @@ package image.exifweb.album.page;
 import image.cdm.album.page.AlbumPage;
 import image.exifweb.util.date.IDateUtil;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.entity.Album;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
@@ -26,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 /**
  * Created by adr on 2/8/18.
@@ -83,22 +83,15 @@ public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
 					 * location /photos/app/
 					 * location /photosj/app/
 					 *
-					 * ImageLastUpdate means the record in DB but not the actual file!
+					 * ImageLastUpdate means the record in DB (@Version) instead of actual file!
 					 * ThumbLastModified is related to actual image file.
 					 */
 					Optional<Date> imageLastUpdate = albumPages.stream()
-							.map(AlbumPage::getImageLastUpdate)
+							.flatMap(ap -> Stream.of(ap.getImageLastUpdate(), ap.getAlbumLastUpdate()))
 							.max(Date::compareTo);
-					// album page depends on album's cover change too
-					Album album = this.albumRepository.getAlbumById(albumId);
-					if (imageLastUpdate.isPresent()) {
-						// e.g. album's cover might change so the page
-						// might no longer contain the album's cover image
-						return maxDate(imageLastUpdate.get(), album.getLastUpdate());
-					} else {
-						// last album's change (cover, dirty, images)
-						return album.getLastUpdate();
-					}
+					// e.g. album's cover might change so the page
+					// might no longer contain the album's cover image
+					return imageLastUpdate.orElseGet(Date::new);
 				}, webRequest);
 	}
 }

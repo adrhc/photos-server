@@ -28,7 +28,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	 * Shows only printable images.
 	 */
 	private static final String VIEW_PRINTABLE_SQL = "AND (:viewOnlyPrintable = false OR i.flags.printable = true) ";
-	private static final Integer NULL_ALBUM_ID = -1;
+	public static final Integer NULL_ALBUM_ID = -1;
 
 	@Inject
 	private SessionFactory sessionFactory;
@@ -94,7 +94,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 					"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
 					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
 					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
-					"a.name, i.lastUpdate) " +
+					"i.lastUpdate, a.name, a.lastUpdate) " +
 //					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +
@@ -110,7 +110,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 					"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
 					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
 					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
-					"a.name, i.lastUpdate) " +
+					"i.lastUpdate, a.name, a.lastUpdate) " +
 //					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
 //					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
 					"FROM Image i JOIN i.album a " +

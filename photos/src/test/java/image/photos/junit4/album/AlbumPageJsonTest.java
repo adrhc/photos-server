@@ -6,6 +6,7 @@ import image.cdm.album.page.AlbumPage;
 import image.photos.JsonMapperConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Disabled;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ import static org.hamcrest.Matchers.hasSize;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = JsonMapperConfig.class)
 @Category(JsonMapperConfig.class)
+@Disabled()
 public class AlbumPageJsonTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageJsonTest.class);
 

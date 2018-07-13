@@ -29,8 +29,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static image.persistence.repository.AlbumPageRepositoryImpl.NULL_ALBUM_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
@@ -66,6 +69,8 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 		images.get(2).setFlags(of(EImageStatus.DEFAULT));
 		this.hiddenImage = images.get(3);
 		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
+		images.get(4).setDeleted(false);
+		images.get(4).setFlags(of(EImageStatus.PRINTABLE));
 		// album cover
 		album.setCover(images.get(0));
 		album.addImages(images);
@@ -101,7 +106,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 	void countingAllPagesForAlbum() {
 		int pageCount = this.albumPageRepository.getPageCount("",
 				true, false, this.albumId);
-		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
+		logger.debug("imageCount = {}, searching \"{}\", hidden = true, " +
 						"viewOnlyPrintable = false, albumId = {}",
 				pageCount, "", this.albumId);
 		Assert.assertEquals(3, pageCount);
@@ -111,20 +116,58 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 	void finding1Image() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
 				ESortType.ASC, T1_TO_SEARCH, true, false, this.albumId);
-		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = true, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
 				T1_TO_SEARCH, this.albumId);
 		assertThat(imagesForPage, hasSize(1));
 	}
 
 	@Test
-	void finding1FullPageOfImages() {
+	void finding1FullPageForAlbum() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
 				ESortType.ASC, "", true, false, this.albumId);
-		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = false, " +
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = true, " +
 						"viewOnlyPrintable = false, albumId = {}",
 				imagesForPage.size(), "", this.albumId);
 		assertThat(imagesForPage, hasSize(PAGE_SIZE));
+	}
+
+	@Test
+	void finding1FullPageInAllAlbums() {
+		List<AlbumPage> imagesForPage1 = this.albumPageRepository.getPageFromDb(1,
+				ESortType.ASC, "", true, false, null);
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"\", hidden = true, " +
+				"viewOnlyPrintable = false, albumId = null", imagesForPage1.size());
+		assertThat(imagesForPage1, hasSize(PAGE_SIZE));
+		List<AlbumPage> imagesForPage2 = this.albumPageRepository.getPageFromDb(1,
+				ESortType.ASC, "", true, false, NULL_ALBUM_ID);
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"\", hidden = true, " +
+				"viewOnlyPrintable = false, albumId = {}", imagesForPage2.size(), NULL_ALBUM_ID);
+		assertThat(imagesForPage2, hasSize(PAGE_SIZE));
+	}
+
+	@Test
+	void findPrintableInAllAlbums() {
+		List<AlbumPage> imagesForPage1 = this.albumPageRepository.getPageFromDb(1,
+				ESortType.ASC, "", false, true, null);
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"\", hidden = false, " +
+				"viewOnlyPrintable = true, albumId = null", imagesForPage1.size());
+		assertEquals(imagesForPage1.stream().filter(ap -> !ap.isPrintable()).count(), 0L);
+		List<AlbumPage> imagesForPage2 = this.albumPageRepository.getPageFromDb(1,
+				ESortType.ASC, "", false, true, NULL_ALBUM_ID);
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"\", hidden = false, " +
+				"viewOnlyPrintable = true, albumId = {}", imagesForPage2.size(), NULL_ALBUM_ID);
+		assertEquals(imagesForPage2.stream().filter(ap -> !ap.isPrintable()).count(), 0L);
+	}
+
+	@Test
+	void findPrintableForAlbum() {
+		List<AlbumPage> imagesForPage1 = this.albumPageRepository.getPageFromDb(1,
+				ESortType.ASC, "", false, true, this.albumId);
+		logger.debug("imagesForPage.size = {}, sort ASC, searching \"\", hidden = false, " +
+				"viewOnlyPrintable = true, albumId = {}", imagesForPage1.size(), this.albumId);
+		assertEquals(imagesForPage1.stream().filter(ap -> !ap.isPrintable()).count(), 0L);
+		assertThat(imagesForPage1, hasSize(greaterThanOrEqualTo(1)));
 	}
 
 	@Test

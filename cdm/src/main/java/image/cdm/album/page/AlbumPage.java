@@ -47,10 +47,15 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date dateTime;
 	/*
-	 * related to db record change (rating, status, deleted)
+	 * is a @Version field so is related to db record change
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date imageLastUpdate;
+	/*
+	 * is a @Version field so is related to db record change
+	 */
+	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
+	private Date albumLastUpdate;
 
 	/**
 	 * used by AlbumPageJsonTest
@@ -62,7 +67,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 	public AlbumPage(Integer id, String imgName, boolean hidden, boolean personal,
 	                 boolean ugly, boolean duplicate, boolean printable, int imageHeight,
 	                 int imageWidth, byte rating, Integer coverId, Date thumbLastModified,
-	                 Date dateTime, String albumName, Date imageLastUpdate) {
+	                 Date dateTime, Date imageLastUpdate, String albumName, Date albumLastUpdate) {
 		this.id = id;
 		this.imgName = imgName;
 		this.hidden = hidden;
@@ -76,8 +81,9 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 		this.isCover = coverId != null && id.equals(coverId);
 		this.thumbLastModified = thumbLastModified;
 		this.dateTime = dateTime;
-		this.albumName = albumName;
 		this.imageLastUpdate = imageLastUpdate;
+		this.albumName = albumName;
+		this.albumLastUpdate = albumLastUpdate;
 	}
 
 	public Integer getId() {
@@ -224,5 +230,13 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 
 	public void setImageLastUpdate(Date imageLastUpdate) {
 		this.imageLastUpdate = imageLastUpdate;
+	}
+
+	public Date getAlbumLastUpdate() {
+		return this.albumLastUpdate;
+	}
+
+	public void setAlbumLastUpdate(Date albumLastUpdate) {
+		this.albumLastUpdate = albumLastUpdate;
 	}
 }
