@@ -2,17 +2,17 @@ package image.persistence;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import exifweb.util.PropertiesFactoryBeanEx;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
@@ -51,19 +51,19 @@ public class DataSourceConfig {
 
 	@Profile("in-memory-db")
 	@Bean("jdbcDsProperties")
-	public PropertiesFactoryBean inMemoryDsProperties() {
-		return new PropertiesFactoryBeanEx("jdbc-datasource/jdbc-in-memory.properties");
+	public Properties inMemoryDsProperties() throws IOException {
+		return PropertiesLoaderUtils.loadAllProperties("jdbc-datasource/jdbc-in-memory.properties");
 	}
 
 	@Profile("test-jdbc-ds")
 	@Bean("jdbcDsProperties")
-	public PropertiesFactoryBean stageDsProperties() {
-		return new PropertiesFactoryBeanEx("jdbc-datasource/jdbc-stage.properties");
+	public Properties stageDsProperties() throws IOException {
+		return PropertiesLoaderUtils.loadAllProperties("jdbc-datasource/jdbc-stage.properties");
 	}
 
 	@Profile("prod-jdbc-ds")
 	@Bean("jdbcDsProperties")
-	public PropertiesFactoryBean prodDsProperties() {
-		return new PropertiesFactoryBeanEx("jdbc-datasource/jdbc-production.properties");
+	public Properties prodDsProperties() throws IOException {
+		return PropertiesLoaderUtils.loadAllProperties("jdbc-datasource/jdbc-production.properties");
 	}
 }

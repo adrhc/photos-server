@@ -1,6 +1,5 @@
 package image.exifweb;
 
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -25,8 +25,6 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	/**
 	 * <task:annotation-driven executor="asyncExecutor"/>
 	 * <task:executor id="asyncExecutor" pool-size="1-4" queue-capacity="128" keep-alive="30"/>
-	 *
-	 * @return
 	 */
 	@Override
 	public Executor getAsyncExecutor() {
@@ -45,16 +43,8 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 		return executor;
 	}
 
-	@Override
-	public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-		// null can be returned to keep the default settings (see EnableAsync javadoc)
-		return null;
-	}
-
 	/**
 	 * <task:annotation-driven scheduler="scheduler"/>
-	 *
-	 * @param taskRegistrar
 	 */
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
@@ -63,11 +53,9 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 
 	/**
 	 * <task:scheduler id="scheduler" pool-size="1"/>
-	 *
-	 * @return
 	 */
 	@Bean(destroyMethod = "shutdown")
-	public Executor scheduler() {
+	public ExecutorService scheduler() {
 		return Executors.newScheduledThreadPool(1);
 	}
 }

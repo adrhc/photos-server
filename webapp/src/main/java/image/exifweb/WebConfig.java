@@ -40,29 +40,20 @@ import java.util.*;
 		includeFilters = {@ComponentScan.Filter(Controller.class),
 				@ComponentScan.Filter(RestController.class),
 				@ComponentScan.Filter(ControllerAdvice.class)})
-@PropertySource("classpath:/exifweb.properties")
 public class WebConfig implements WebMvcConfigurer {
 	@Inject
 	private ObjectMapper objectMapper;
 	@Value("${async.timeout}")
 	private long asyncTimeout;
 
+	/**
+	 * Using RootConfig:exifweb.properties.
+	 */
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer
 	propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
-
-//	@Bean
-//	public static PropertySourcesPlaceholderConfigurer
-//	propertySourcesPlaceholderConfigurer() {
-//		PropertySourcesPlaceholderConfigurer p =
-//				new PropertySourcesPlaceholderConfigurer();
-//		p.setLocations(new ClassPathResource("exifweb.properties"));
-//		p.setIgnoreResourceNotFound(true);
-//		p.setIgnoreUnresolvablePlaceholders(true);
-//		return p;
-//	}
 
 	/**
 	 * somehow when not using "messageSource" then

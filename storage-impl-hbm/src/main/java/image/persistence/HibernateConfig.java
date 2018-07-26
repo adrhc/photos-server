@@ -20,12 +20,15 @@ import java.util.Properties;
  * @EnableTransactionManagement applicable
  * everywhere where is included (even transitive)!
  * <p>
+ * HibernateCacheConfig: replaced by hibernate-*.properties configuration
+ * <p>
+ * PropertySource: "classpath:" is mandatory!
+ * <p>
  * Created by adr on 2/17/18.
  */
 @Configuration
 @PropertySource("classpath:/jndi-datasource.properties")
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
-//@Import(HibernateCacheConfig.class)
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
@@ -60,8 +63,6 @@ public class HibernateConfig {
 
 	/**
 	 * http://www.baeldung.com/hibernate-4-spring
-	 *
-	 * @return
 	 */
 	@Bean
 	public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {

@@ -15,6 +15,8 @@ import java.util.Set;
 
 /**
  * Created by adr on 2/19/18.
+ * <p>
+ * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
 @PropertySource("classpath:/photos.properties")
