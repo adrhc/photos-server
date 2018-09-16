@@ -91,8 +91,7 @@ public class ExifExtractorService implements MiscUtils {
 
 		directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-		Consumer<Exception> exceptionLogger = e -> logger.error("EXIF error: {}", imgFile.getPath());
-		Consumer<Runnable> ignoreExcWithLog = r -> ignoreExc(r, exceptionLogger);
+		Consumer<Runnable> ignoreExcWithLog = r -> ignoreExc(r, e -> logger.error("EXIF error: {}", imgFile.getPath()));
 		ignoreExcWithLog.accept(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
