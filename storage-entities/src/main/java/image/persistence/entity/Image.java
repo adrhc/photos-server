@@ -1,6 +1,8 @@
 package image.persistence.entity;
 
 import image.cdm.image.ImageRating;
+import image.cdm.image.status.EImageStatus;
+import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -20,7 +22,7 @@ import java.util.Date;
  */
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Image implements IStorageEntity {
+public class Image implements IStorageEntity, IImageFlagsUtils {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -31,7 +33,7 @@ public class Image implements IStorageEntity {
 	@Embedded
 	private ImageMetadata imageMetadata;
 	@Embedded
-	private ImageFlags flags;
+	private ImageFlags flags = of(EImageStatus.DEFAULT);
 	/**
 	 * see MIN_RATING = 1 (defined above)
 	 */
