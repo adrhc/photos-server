@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Consumer;
 
 public interface MiscUtils {
 	Logger logger = LoggerFactory.getLogger(MiscUtils.class);
@@ -17,7 +18,15 @@ public interface MiscUtils {
 		}
 	}
 
-	default Date ignoreExc(String s, SimpleDateFormat sdf) {
+	default void ignoreExc(Runnable r, Consumer<Exception> exceptionConsumer) {
+		try {
+			r.run();
+		} catch (Exception e) {
+			exceptionConsumer.accept(e);
+		}
+	}
+
+	default Date safeDateParse(String s, SimpleDateFormat sdf) {
 		try {
 			return sdf.parse(s);
 		} catch (Exception e) {
