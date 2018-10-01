@@ -3,7 +3,10 @@ package image.exifweb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.MediaType;
@@ -33,8 +36,7 @@ import java.util.*;
 @Import({AsyncAndSchedulingConfig.class,
 		SpringCacheConfig.class})
 @EnableWebMvc
-@EnableGlobalMethodSecurity(prePostEnabled = true,
-		mode = AdviceMode.ASPECTJ, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @ComponentScan(basePackageClasses = WebConfig.class,
 		useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(Controller.class),

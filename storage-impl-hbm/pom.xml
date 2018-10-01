@@ -144,18 +144,18 @@
                     <groups>${junit5.storage-impl-hbm.groups}</groups>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <configuration combine.self="append">
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>spring-aspects</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>aspectj-maven-plugin</artifactId>-->
+            <!--<configuration combine.self="append">-->
+            <!--<aspectLibraries>-->
+            <!--<aspectLibrary>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-aspects</artifactId>-->
+            <!--</aspectLibrary>-->
+            <!--</aspectLibraries>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
     </build>
 

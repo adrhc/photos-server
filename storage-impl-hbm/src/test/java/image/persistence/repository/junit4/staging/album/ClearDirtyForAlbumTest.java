@@ -6,7 +6,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * Created by adr on 2/26/18.
@@ -14,12 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 @HbmStagingJdbcDbConfig
 @Category(HbmStagingJdbcDbConfig.class)
 public class ClearDirtyForAlbumTest extends AlbumRepoWriteTestBase {
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+
 	@Override
 	@Before
-	@Transactional
 	public void createAnAlbumWithImage() {
-		super.createAnAlbumWithImage();
-		this.album.setDirty(true);
+		TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
+		transactionTemplate.execute((ts) -> {
+			super.createAnAlbumWithImage();
+			this.album.setDirty(true);
+			return null;
+		});
 	}
 
 	@Test

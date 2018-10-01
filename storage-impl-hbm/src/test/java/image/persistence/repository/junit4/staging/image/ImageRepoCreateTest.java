@@ -7,7 +7,6 @@ import image.persistence.entity.Image;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
-import image.persistence.repository.util.ITransactionalAction;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,22 +25,19 @@ import javax.inject.Inject;
 @RunWith(SpringRunner.class)
 @HbmStagingJdbcDbConfig
 @Category(HbmStagingJdbcDbConfig.class)
-public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier, ITransactionalAction {
+public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 	protected static final Logger logger = LoggerFactory.getLogger(ImageRepoCreateTest.class);
 
 	@Inject
 	protected AlbumRepository albumRepository;
 	@Inject
 	protected ImageRepository imageRepository;
-
 	protected Album album;
 
 	@Before
 	public void setUp() {
-		doTransaction(() -> {
-			this.album = this.albumRepository.createAlbum(supplyAlbumName());
-			logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());
-		});
+		this.album = this.albumRepository.createAlbum(supplyAlbumName());
+		logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());
 	}
 
 	@Test

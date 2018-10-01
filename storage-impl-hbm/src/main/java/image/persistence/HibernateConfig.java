@@ -28,7 +28,7 @@ import java.util.Properties;
  */
 @Configuration
 @PropertySource("classpath:/jndi-datasource.properties")
-@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+@EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
 @ComponentScan(basePackageClasses = HibernateConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))

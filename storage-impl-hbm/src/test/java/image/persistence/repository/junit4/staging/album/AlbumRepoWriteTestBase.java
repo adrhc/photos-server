@@ -8,11 +8,13 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.junit4.production.AlbumRepositoryTest;
 import image.persistence.repository.junit4.springrunner.SpringRunnerRulesBased;
-import image.persistence.repository.util.ITransactionalAction;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 
@@ -23,25 +25,28 @@ import javax.inject.Inject;
  * Created by adr on 2/25/18.
  */
 public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
-		implements IImageSupplier, IAlbumSupplier, ITransactionalAction {
+		implements IImageSupplier, IAlbumSupplier {
 	protected static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 
 	@Inject
 	protected AlbumRepository albumRepository;
 	@Inject
 	protected ImageRepository imageRepository;
-
 	protected Album album;
 	protected Integer albumId;
 	protected Image image;
 	protected Integer imageId;
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	@Before
 	public void createAnAlbumWithImage() {
-		doTransaction(() -> {
+		TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
+		transactionTemplate.execute((ts) -> {
 			this.album = this.albumRepository.createAlbum(supplyAlbumName());
 			this.image = supplyImage(this.album);
 			this.imageRepository.persistImage(this.image);
+			return null;
 		});
 		this.albumId = this.album.getId();
 		logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());

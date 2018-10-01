@@ -5,7 +5,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
 import org.springframework.cache.support.SimpleCacheManager;
-import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +16,7 @@ import java.util.Collection;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@EnableCaching(mode = AdviceMode.ASPECTJ)
+@EnableCaching
 public class SpringCacheConfig {
 	/**
 	 * http://www.baeldung.com/spring-cache-tutorial

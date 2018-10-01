@@ -674,6 +674,12 @@
                     <configuration>
                         <source>${source.version}</source>
                         <target>${source.version}</target>
+                        <!--
+                            https://maven.apache.org/plugins/maven-compiler-plugin/examples/pass-compiler-arguments.html
+
+                            https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html
+                            To store formal parameter names in a particular .class file, and thus enable the Reflection API to retrieve formal parameter names, compile the source file with the -parameters option to the javac compiler.
+                        -->
                         <compilerArgs>
                             <arg>-parameters</arg>
                         </compilerArgs>
@@ -883,28 +889,28 @@
                     https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
                     multiple goals bound to a phase are executed in the same order as they are declared in the POM
                 -->
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>aspectj-maven-plugin</artifactId>
-                    <version>${aspectj-maven-plugin.version}</version>
-                    <configuration>
-                        <verbose>false</verbose>
-                        <showWeaveInfo>false</showWeaveInfo>
-                        <privateScope>true</privateScope>
-                        <source>${source.version}</source>
-                        <target>${source.version}</target>
-                        <complianceLevel>${source.version}</complianceLevel>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>process-sources</phase>
-                            <goals>
-                                <goal>compile</goal>
-                                <goal>test-compile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+                <!--<plugin>-->
+                <!--<groupId>org.codehaus.mojo</groupId>-->
+                <!--<artifactId>aspectj-maven-plugin</artifactId>-->
+                <!--<version>${aspectj-maven-plugin.version}</version>-->
+                <!--<configuration>-->
+                <!--<verbose>false</verbose>-->
+                <!--<showWeaveInfo>false</showWeaveInfo>-->
+                <!--<privateScope>true</privateScope>-->
+                <!--<source>${source.version}</source>-->
+                <!--<target>${source.version}</target>-->
+                <!--<complianceLevel>${source.version}</complianceLevel>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                <!--<execution>-->
+                <!--<phase>process-sources</phase>-->
+                <!--<goals>-->
+                <!--<goal>compile</goal>-->
+                <!--<goal>test-compile</goal>-->
+                <!--</goals>-->
+                <!--</execution>-->
+                <!--</executions>-->
+                <!--</plugin>-->
             </plugins>
         </pluginManagement>
 

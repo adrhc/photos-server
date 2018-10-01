@@ -1,6 +1,5 @@
 package image.exifweb;
 
-import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -18,7 +17,7 @@ import java.util.concurrent.Executors;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@EnableAsync(mode = AdviceMode.ASPECTJ)
+@EnableAsync
 @EnableScheduling
 public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConfigurer {
 

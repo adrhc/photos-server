@@ -26,7 +26,7 @@ public class HttpdCheckController {
 	@RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void getHttpdRestartLogs(Model model) throws IOException {
-		String logs = httpdCheck.getHttpdRestartLogs();
+		String logs = this.httpdCheck.getHttpdRestartLogs();
 		model.addAttribute("message", logs);
 	}
 
@@ -38,7 +38,7 @@ public class HttpdCheckController {
 	}
 
 	@Async
-	private void checkHttpdAsync() throws IOException, InterruptedException {
-		httpdCheck.checkHttpd();
+	protected void checkHttpdAsync() throws IOException, InterruptedException {
+		this.httpdCheck.checkHttpd();
 	}
 }
