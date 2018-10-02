@@ -1,5 +1,6 @@
 package image.exifweb;
 
+import image.exifweb.web.security.WebSecurityComponent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
