@@ -2,7 +2,6 @@ package image.exifweb;
 
 import image.exifweb.web.security.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,9 +21,6 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableWebSecurity
-@ComponentScan(basePackageClasses = WebSecurityConfig.class,
-		useDefaultFilters = false,
-		includeFilters = {@ComponentScan.Filter(WebSecurityComponent.class)})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
 	private DataSource dataSource;
