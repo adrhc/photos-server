@@ -41,7 +41,7 @@ public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
     @Inject
     private AlbumRepository albumRepository;
 
-    // @PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
     @RequestMapping(value = "/count", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public PageCount pageCount(
