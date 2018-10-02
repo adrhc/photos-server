@@ -14,7 +14,8 @@ import java.util.Map;
 /**
  * Created by adr on 2/2/18.
  */
-@RestController("/cacheStat")
+@RestController
+@RequestMapping("/cacheStat")
 public class CacheStatisticsCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(CacheStatisticsCtrl.class);
 

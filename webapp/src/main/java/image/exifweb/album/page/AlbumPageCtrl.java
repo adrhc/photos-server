@@ -46,26 +46,29 @@ public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
 	@RequestMapping(value = "/count", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Callable<Model> pageCount(
+//	public Callable<Model> pageCount(
+	public Model pageCount(
 			@RequestParam(name = "albumId") Integer albumId,
 			@RequestParam(name = "toSearch", required = false) String toSearch,
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
 			Model model) {
-		return () -> {
+		// return () -> {
 			model.addAttribute(AlbumExporterService.PHOTOS_PER_PAGE,
 					this.appConfigRepository.getPhotosPerPage());
 			model.addAttribute(AlbumExporterService.PAGE_COUNT,
 					this.albumPageRepository.getPageCount(toSearch,
 							viewHidden, viewOnlyPrintable, albumId));
+			logger.debug(model.toString());
 			return model;
-		};
+		// };
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
 	@RequestMapping(method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Callable<List<AlbumPage>> page(
+//	public Callable<List<AlbumPage>> page(
+	public List<AlbumPage> page(
 			@RequestParam(name = "albumId") Integer albumId,
 			@RequestParam(name = "pageNr") int pageNr,
 			@RequestParam(name = "sort", defaultValue = "asc") String sort,
@@ -74,7 +77,8 @@ public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
 			@RequestParam(name = "toSearch", required = false) String toSearch,
 			WebRequest webRequest) {
 		INotModifiedChecker _this = this;
-		return () -> _this.checkNotModified(
+//		return () -> _this.checkNotModified(
+		return _this.checkNotModified(
 				() -> this.albumPageService.getPage(pageNr, ESortType.valueOf(sort.toUpperCase()),
 						toSearch, viewHidden, viewOnlyPrintable, albumId),
 				albumPages -> {
