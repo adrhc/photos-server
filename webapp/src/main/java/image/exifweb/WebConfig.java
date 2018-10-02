@@ -39,7 +39,7 @@ import java.util.*;
                 @ComponentScan.Filter(RestController.class),
                 @ComponentScan.Filter(ControllerAdvice.class)})
 @EnableWebMvc
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, proxyTargetClass = true)
 @Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
     @Inject
