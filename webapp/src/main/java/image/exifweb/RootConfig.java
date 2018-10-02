@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
-@Import({HibernateConfig.class, PhotosConfig.class, SpringCacheConfig.class})
+@Import({HibernateConfig.class, PhotosConfig.class, WebSecurityConfig.class})
 @ComponentScan(basePackageClasses = RootConfig.class,
         basePackages = "subtitles",
         excludeFilters = {@ComponentScan.Filter(Controller.class),

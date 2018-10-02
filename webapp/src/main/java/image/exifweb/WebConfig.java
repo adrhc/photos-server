@@ -40,7 +40,7 @@ import java.util.*;
                 @ComponentScan.Filter(ControllerAdvice.class)})
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Import({AsyncAndSchedulingConfig.class, WebSecurityConfig.class})
+@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
     @Inject
     private ObjectMapper objectMapper;
