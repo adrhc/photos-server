@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -12,15 +11,10 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.accept.ContentNegotiationManager;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -33,14 +27,7 @@ import java.util.*;
  * Created by adr on 2/15/18.
  */
 @Configuration
-@ComponentScan(basePackageClasses = WebConfig.class,
-        useDefaultFilters = false,
-        includeFilters = {@ComponentScan.Filter(Controller.class),
-                @ComponentScan.Filter(RestController.class),
-                @ComponentScan.Filter(ControllerAdvice.class)})
-@EnableWebMvc
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
+@Import({WebMvcConfig.class, AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
     @Inject
     private ObjectMapper objectMapper;
