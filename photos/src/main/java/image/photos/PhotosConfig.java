@@ -19,10 +19,10 @@ import java.util.Set;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
-@PropertySource("classpath:/photos.properties")
-@Import(JsonMapperConfig.class)
 @ComponentScan(basePackageClasses = PhotosConfig.class,
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
+@PropertySource("classpath:/photos.properties")
+@Import(JsonMapperConfig.class)
 public class PhotosConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer

@@ -27,11 +27,11 @@ import java.util.Properties;
  * Created by adr on 2/17/18.
  */
 @Configuration
+@ComponentScan(basePackageClasses = HibernateConfig.class,
+		excludeFilters = @ComponentScan.Filter(Configuration.class))
 @PropertySource("classpath:/jndi-datasource.properties")
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
-@ComponentScan(basePackageClasses = HibernateConfig.class,
-		excludeFilters = @ComponentScan.Filter(Configuration.class))
 public class HibernateConfig {
 	private static final Logger logger = LoggerFactory.getLogger(HibernateConfig.class);
 
