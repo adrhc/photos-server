@@ -16,20 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Configuration
 @ComponentScan(basePackageClasses = RootConfig.class,
-		basePackages = "subtitles",
-		excludeFilters = {@ComponentScan.Filter(Controller.class),
-				@ComponentScan.Filter(RestController.class),
-				@ComponentScan.Filter(ControllerAdvice.class),
-				@ComponentScan.Filter(WebSecurityComponent.class),
-				@ComponentScan.Filter(Configuration.class)})
+        basePackages = "subtitles",
+        excludeFilters = {@ComponentScan.Filter(Controller.class),
+                @ComponentScan.Filter(RestController.class),
+                @ComponentScan.Filter(ControllerAdvice.class),
+                @ComponentScan.Filter(WebSecurityComponent.class),
+                @ComponentScan.Filter(Configuration.class)})
 @PropertySource(value = {"classpath:/exifweb.properties",
-		"classpath:/subs-extract-app-config.properties"},
-		ignoreResourceNotFound = true)
-@Import({HibernateConfig.class, PhotosConfig.class})
+        "classpath:/subs-extract-app-config.properties"},
+        ignoreResourceNotFound = true)
+@Import({HibernateConfig.class, PhotosConfig.class, SpringCacheConfig.class})
 public class RootConfig {
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer
-	propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer
+    propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 }

@@ -1,6 +1,5 @@
 package image.exifweb;
 
-import image.exifweb.web.security.WebSecurityComponent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -35,88 +34,86 @@ import java.util.*;
  */
 @Configuration
 @ComponentScan(basePackageClasses = WebConfig.class,
-		useDefaultFilters = false,
-		includeFilters = {@ComponentScan.Filter(Controller.class),
-				@ComponentScan.Filter(RestController.class),
-				@ComponentScan.Filter(ControllerAdvice.class),
-				@ComponentScan.Filter(WebSecurityComponent.class)})
+        useDefaultFilters = false,
+        includeFilters = {@ComponentScan.Filter(Controller.class),
+                @ComponentScan.Filter(RestController.class),
+                @ComponentScan.Filter(ControllerAdvice.class)})
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Import({AsyncAndSchedulingConfig.class, 
-		WebSecurityConfig.class, SpringCacheConfig.class})
+@Import({AsyncAndSchedulingConfig.class, WebSecurityConfig.class})
 public class WebConfig implements WebMvcConfigurer {
-	@Inject
-	private ObjectMapper objectMapper;
-	@Value("${async.timeout}")
-	private long asyncTimeout;
+    @Inject
+    private ObjectMapper objectMapper;
+    @Value("${async.timeout}")
+    private long asyncTimeout;
 
-	/**
-	 * Using RootConfig:exifweb.properties.
-	 */
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer
-	propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+    /**
+     * Using RootConfig:exifweb.properties.
+     */
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer
+    propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
-	/**
-	 * somehow when not using "messageSource" then
-	 * RequestExceptionHandler can't find this bean
-	 *
-	 * @return
-	 */
-	@Bean(name = {"msg", "messages", "messageSource"})
-	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource ms =
-				new ReloadableResourceBundleMessageSource();
-		ms.setBasenames("classpath:text/messages",
-				"classpath:org/hibernate/validator/ValidationMessages");
-		ms.setDefaultEncoding("UTF-8");
-		ms.setFallbackToSystemLocale(true);
-		return ms;
-	}
+    /**
+     * somehow when not using "messageSource" then
+     * RequestExceptionHandler can't find this bean
+     *
+     * @return
+     */
+    @Bean(name = {"msg", "messages", "messageSource"})
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource ms =
+                new ReloadableResourceBundleMessageSource();
+        ms.setBasenames("classpath:text/messages",
+                "classpath:org/hibernate/validator/ValidationMessages");
+        ms.setDefaultEncoding("UTF-8");
+        ms.setFallbackToSystemLocale(true);
+        return ms;
+    }
 
-	@Override
-	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
-		configurer.setDefaultTimeout(this.asyncTimeout);
-	}
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        configurer.setDefaultTimeout(this.asyncTimeout);
+    }
 
-	@Override
-	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter(this.objectMapper));
-	}
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new MappingJackson2HttpMessageConverter(this.objectMapper));
+    }
 
-	@Bean
-	public ViewResolver contentNegotiatingViewResolver(
-			ContentNegotiationManager manager) {
-		ContentNegotiatingViewResolver resolver =
-				new ContentNegotiatingViewResolver();
-		resolver.setContentNegotiationManager(manager);
-		List<ViewResolver> viewResolvers = new ArrayList<>();
-		InternalResourceViewResolver r2 = new InternalResourceViewResolver();
-		r2.setPrefix("/app/");
-		r2.setSuffix(".jsp");
-		r2.setCache(false);
-		viewResolvers.add(r2);
-		resolver.setViewResolvers(viewResolvers);
-		resolver.setDefaultViews(Collections.singletonList(jacksonConverter()));
-		return resolver;
-	}
+    @Bean
+    public ViewResolver contentNegotiatingViewResolver(
+            ContentNegotiationManager manager) {
+        ContentNegotiatingViewResolver resolver =
+                new ContentNegotiatingViewResolver();
+        resolver.setContentNegotiationManager(manager);
+        List<ViewResolver> viewResolvers = new ArrayList<>();
+        InternalResourceViewResolver r2 = new InternalResourceViewResolver();
+        r2.setPrefix("/app/");
+        r2.setSuffix(".jsp");
+        r2.setCache(false);
+        viewResolvers.add(r2);
+        resolver.setViewResolvers(viewResolvers);
+        resolver.setDefaultViews(Collections.singletonList(jacksonConverter()));
+        return resolver;
+    }
 
-	@Override
-	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
-		Map<String, MediaType> mediaTypes = new HashMap<>();
-		mediaTypes.put("json", MediaType.APPLICATION_JSON_UTF8);
-		mediaTypes.put("atom", MediaType.APPLICATION_ATOM_XML);
-		mediaTypes.put("html", MediaType.TEXT_HTML);
-		mediaTypes.put("xml", MediaType.TEXT_XML);
-		mediaTypes.put("kml", MediaType.valueOf("application/vnd.google-earth.kml"));
-		configurer.mediaTypes(mediaTypes);
-	}
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
+        Map<String, MediaType> mediaTypes = new HashMap<>();
+        mediaTypes.put("json", MediaType.APPLICATION_JSON_UTF8);
+        mediaTypes.put("atom", MediaType.APPLICATION_ATOM_XML);
+        mediaTypes.put("html", MediaType.TEXT_HTML);
+        mediaTypes.put("xml", MediaType.TEXT_XML);
+        mediaTypes.put("kml", MediaType.valueOf("application/vnd.google-earth.kml"));
+        configurer.mediaTypes(mediaTypes);
+    }
 
-	@Bean
-	public MappingJackson2JsonView jacksonConverter() {
-		return new MappingJackson2JsonView(this.objectMapper);
-	}
+    @Bean
+    public MappingJackson2JsonView jacksonConverter() {
+        return new MappingJackson2JsonView(this.objectMapper);
+    }
 }
