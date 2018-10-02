@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
+@Import({HibernateConfig.class, PhotosConfig.class, SpringCacheConfig.class})
 @ComponentScan(basePackageClasses = RootConfig.class,
         basePackages = "subtitles",
         excludeFilters = {@ComponentScan.Filter(Controller.class),
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 @PropertySource(value = {"classpath:/exifweb.properties",
         "classpath:/subs-extract-app-config.properties"},
         ignoreResourceNotFound = true)
-@Import({HibernateConfig.class, PhotosConfig.class, SpringCacheConfig.class})
 public class RootConfig {
     @Bean
     public static PropertySourcesPlaceholderConfigurer
