@@ -41,6 +41,12 @@ public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
     @Inject
     private AlbumRepository albumRepository;
 
+    /**
+     * Test without authorization:
+     * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=false"
+     * Test with authorization:
+     * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=true"
+     */
     @RequestMapping(value = "/count", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
