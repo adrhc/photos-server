@@ -27,7 +27,14 @@ import java.util.*;
  * Created by adr on 2/15/18.
  */
 @Configuration
-@Import({WebMvcConfig.class, AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
+@ComponentScan(basePackageClasses = WebConfig.class,
+        useDefaultFilters = false,
+        includeFilters = {@ComponentScan.Filter(Controller.class),
+                @ComponentScan.Filter(RestController.class),
+                @ComponentScan.Filter(ControllerAdvice.class)})
+@EnableWebMvc
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
     @Inject
     private ObjectMapper objectMapper;

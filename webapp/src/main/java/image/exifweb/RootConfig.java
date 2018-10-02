@@ -1,6 +1,5 @@
 package image.exifweb;
 
-import image.exifweb.web.SubtitlesConfig;
 import image.persistence.HibernateConfig;
 import image.photos.PhotosConfig;
 import org.springframework.context.annotation.Bean;

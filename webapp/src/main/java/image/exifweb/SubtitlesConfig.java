@@ -1,4 +1,4 @@
-package image.exifweb.web;
+package image.exifweb;
 
 import image.exifweb.RootConfig;
 import image.exifweb.web.security.WebSecurityComponent;
