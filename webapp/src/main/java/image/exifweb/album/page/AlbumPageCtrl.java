@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,13 +53,12 @@ public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
             @RequestParam(name = "albumId") Integer albumId,
             @RequestParam(name = "toSearch", required = false) String toSearch,
             @RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
-            @RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
-            Model model) {
+            @RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable) {
         PageCount pageCount = new PageCount();
         pageCount.setPageCount(this.albumPageRepository.getPageCount(
                 toSearch, viewHidden, viewOnlyPrintable, albumId));
         pageCount.setPhotosPerPage(this.appConfigRepository.getPhotosPerPage());
-        logger.debug(model.toString());
+        logger.debug(pageCount.toString());
         return pageCount;
     }
 
