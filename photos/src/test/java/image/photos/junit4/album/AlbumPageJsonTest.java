@@ -43,7 +43,7 @@ public class AlbumPageJsonTest {
 
     @Before
     public void before() {
-        Assume.assumeTrue(!"true".equalsIgnoreCase(System.getenv("EXIFWEB_MISSING_FS")));
+        Assume.assumeTrue(jsonFile.exists());
     }
 
     @Test
