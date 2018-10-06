@@ -14,8 +14,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,8 +24,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @Junit5Jpa2xInMemoryDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ImageRepositoryTest implements IImageAssertions {
-	@PersistenceContext
-	private EntityManager em;
 	@Inject
 	private AlbumRepository albumRepository;
 	@Inject
