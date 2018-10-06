@@ -1130,6 +1130,9 @@
                     image.persistence.repository.springconfig.HbmInMemoryDbConfig,
                     junit5&amp;hbm&amp;inmemorydb
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;inmemorydb
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
@@ -1168,6 +1171,12 @@
                     junit5&amp;hbm&amp;production,
                     junit5&amp;hbm&amp;misc
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;inmemorydb,
+                    junit5&amp;jpa2x&amp;staging,
+                    junit5&amp;jpa2x&amp;production,
+                    junit5&amp;jpa2x&amp;misc
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
@@ -1218,6 +1227,9 @@
                     image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
                     junit5&amp;hbm&amp;staging
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;staging
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
                     image.photos.springconfig.PhotosStagingJdbcDbConfig,
                     junit5&amp;photos&amp;staging
@@ -1261,6 +1273,9 @@
                     image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
                     junit5&amp;hbm&amp;production
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;production
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
                     image.photos.springconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;production

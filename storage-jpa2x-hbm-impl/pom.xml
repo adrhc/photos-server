@@ -33,6 +33,10 @@
             <groupId>exifweb</groupId>
             <artifactId>storage-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-impl-hbm</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
@@ -135,6 +139,13 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-impl-hbm</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
@@ -148,7 +159,7 @@
                         <!-- spring profile for tests without proper spring profile annotation -->
                         <spring.profiles.active>fake-profile</spring.profiles.active>
                     </environmentVariables>
-                    <groups>${junit5.storage-impl-hbm.groups}</groups>
+                    <groups>${junit5.storage-jpa2x-hbm-impl.groups}</groups>
                 </configuration>
             </plugin>
             <!--<plugin>-->

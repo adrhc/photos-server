@@ -22,8 +22,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableWebSecurity
-@ComponentScan(basePackageClasses = WebSecurityConfig.class,
-		useDefaultFilters = false,
+@ComponentScan(useDefaultFilters = false,
 		includeFilters = {@ComponentScan.Filter(WebSecurityComponent.class)})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
@@ -63,17 +62,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/app/https/*").authenticated()
 				.antMatchers("/app/secure/*").authenticated();
 		http.httpBasic()
-				.authenticationEntryPoint(restAuthenticationEntryPoint);
+				.authenticationEntryPoint(this.restAuthenticationEntryPoint);
 		http.formLogin()
 				.loginProcessingUrl("/app/login")
 				.passwordParameter("password").usernameParameter("userName")
-				.successHandler(authSuccessHandler).failureHandler(authFailureHandler);
+				.successHandler(this.authSuccessHandler).failureHandler(this.authFailureHandler);
 		http.rememberMe()
 				.userDetailsService(userDetailsService())
 				.tokenValiditySeconds(1296000)
 				.key("kOQoW357t8HwbeRh7oxSXoXSGmVERKMcGENOxm2qrLZFOF8bxJB4GaIqSoTu9yy");
 		http.logout()
-				.logoutUrl("/app/logout").logoutSuccessHandler(logoutSuccessHandler)
+				.logoutUrl("/app/logout").logoutSuccessHandler(this.logoutSuccessHandler)
 				.deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE");
 	}
 
@@ -91,7 +90,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		jdbcDao.setGroupAuthoritiesByUsernameQuery("select g.id, g.group_name, ga.authority from groups g JOIN group_members gm ON gm.group_id = g.id JOIN group_authorities ga ON ga.group_id = g.id JOIN user u ON u.id = gm.user_id WHERE u.username = ?");
 		jdbcDao.setEnableGroups(true);
 		jdbcDao.setEnableAuthorities(false);
-		jdbcDao.setDataSource(dataSource);
+		jdbcDao.setDataSource(this.dataSource);
 		return jdbcDao;
 	}
 

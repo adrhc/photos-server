@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ import java.util.List;
  * Time: 10:41 PM
  * To change this template use File | Settings | File Templates.
  */
-@Service
+@Component
 public class AlbumRepositoryImpl implements AlbumRepository {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");

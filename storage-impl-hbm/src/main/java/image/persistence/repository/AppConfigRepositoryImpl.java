@@ -7,7 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Created by adr on 2/10/18.
  */
-@Service
+@Component
 public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Inject
 	private SessionFactory sessionFactory;

@@ -43,7 +43,8 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	 * Notice that ImageMetadata is generated too and will be used in tests!
 	 */
 	@BeforeAll
-	void setUp(@Random(type = Image.class, size = 30, excludes = {"id", "lastUpdate", "album"})
+	void setUp(@Random(type = Image.class, size = 30,
+			excludes = {"id", "lastUpdate", "album"})
 			           List<Image> images) {
 		// hibernate might proxy images collection so better
 		// just copy images instead of directly using it

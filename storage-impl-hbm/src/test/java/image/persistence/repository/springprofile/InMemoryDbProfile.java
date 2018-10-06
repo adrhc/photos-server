@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles({"in-memory-db"})
+@ActiveProfiles({"in-memory-db", "hbm-impl"})
 public @interface InMemoryDbProfile {
 }

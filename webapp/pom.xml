@@ -255,20 +255,20 @@
                 multiple goals bound to a phase are executed in the same order as they are declared in the POM
             -->
             <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>aspectj-maven-plugin</artifactId>-->
-                <!--<configuration combine.self="append">-->
-                    <!--<aspectLibraries>-->
-                        <!--<aspectLibrary>-->
-                            <!--<groupId>org.springframework</groupId>-->
-                            <!--<artifactId>spring-aspects</artifactId>-->
-                        <!--</aspectLibrary>-->
-                        <!--<aspectLibrary>-->
-                            <!--<groupId>org.springframework.security</groupId>-->
-                            <!--<artifactId>spring-security-aspects</artifactId>-->
-                        <!--</aspectLibrary>-->
-                    <!--</aspectLibraries>-->
-                <!--</configuration>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>aspectj-maven-plugin</artifactId>-->
+            <!--<configuration combine.self="append">-->
+            <!--<aspectLibraries>-->
+            <!--<aspectLibrary>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-aspects</artifactId>-->
+            <!--</aspectLibrary>-->
+            <!--<aspectLibrary>-->
+            <!--<groupId>org.springframework.security</groupId>-->
+            <!--<artifactId>spring-security-aspects</artifactId>-->
+            <!--</aspectLibrary>-->
+            <!--</aspectLibraries>-->
+            <!--</configuration>-->
             <!--</plugin>-->
 
         </plugins>
