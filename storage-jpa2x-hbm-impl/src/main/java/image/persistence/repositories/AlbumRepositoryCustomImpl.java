@@ -29,4 +29,11 @@ public class AlbumRepositoryCustomImpl implements AlbumRepositoryCustom {
 		album.setDirty(true);
 		return true;
 	}
+
+	@Override
+	public Album createAlbum(String name) {
+		Album album = new Album(name);
+		this.em.persist(album);
+		return album;
+	}
 }

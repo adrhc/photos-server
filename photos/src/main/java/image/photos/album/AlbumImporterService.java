@@ -73,7 +73,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			logger.warn("{} este gol!", albumPath.getPath());
 			return false;
 		}
-		Album album = this.albumRepository.getAlbumByName(albumPath.getName());
+		Album album = this.albumRepository.findAlbumByName(albumPath.getName());
 		if (album != null) {
 			// albumPath este un album deja importat deci NU nou
 			return false;
@@ -138,7 +138,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		if (!noFiles) {
 			Arrays.sort(files);
 		}
-		Album album = this.albumRepository.getAlbumByName(path.getName());
+		Album album = this.albumRepository.findAlbumByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
 			// album inexistent in DB deci nou
@@ -148,7 +148,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				return;
 			}
 			// creem un nou album (dir aferent are poze)
-			album = this.albumRepository.createAlbum(path.getName());
+			album = this.albumRepository.createByName(path.getName());
 		}
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums

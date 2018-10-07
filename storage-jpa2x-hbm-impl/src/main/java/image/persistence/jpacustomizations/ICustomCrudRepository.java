@@ -1,7 +1,7 @@
 package image.persistence.jpacustomizations;
 
 public interface ICustomCrudRepository<T, ID> {
-	<S extends T> S persist(S entity);
+	void persist(T entity);
 
 	/**
 	 * similar to hibernate's Session.get

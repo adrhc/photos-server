@@ -14,14 +14,14 @@ public interface IAlbumSupplier extends IEnhancedRandom, IPositiveIntegerRandom 
 		return "album-" + randomPositiveInt();
 	}
 
-	default List<String> albumNames(List<Album> albums) {
+	default List<String> notDeletedAlbumNames(List<Album> albums) {
 		return albums.stream()
 				.filter(a -> !a.isDeleted())
 				.map(Album::getName)
 				.collect(Collectors.toList());
 	}
 
-	default List<String> descSortedAlbumNames(List<Album> albums) {
+	default List<String> notDeletedAlbumNamesDesc(List<Album> albums) {
 		return albums.stream()
 				.filter(a -> !a.isDeleted())
 				.map(Album::getName)

@@ -41,19 +41,19 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 	@BeforeAll
 	void givenAlbums() {
-		this.albums.forEach(this.albumRepository::createAlbum);
+		this.albums.forEach(this.albumRepository::persist);
 	}
 
 	@AfterAll
 	void afterAll() {
-		this.albums.forEach(a -> this.albumRepository.deleteAlbumById(a.getId()));
+		this.albums.forEach(a -> this.albumRepository.deleteById(a.getId()));
 	}
 
 	@Test
 	void getAlbumsOrderedByName() {
-		List<String> descSortedNames = descSortedAlbumNames(this.albums);
-		List<Album> dbAlbums = this.albumRepository.getAlbumsOrderedByName();
-		List<String> descDbSortedNames = albumNames(dbAlbums);
+		List<String> descSortedNames = notDeletedAlbumNamesDesc(this.albums);
+		List<Album> dbAlbums = this.albumRepository.findByDeletedFalseOrderByNameDesc();
+		List<String> descDbSortedNames = notDeletedAlbumNames(dbAlbums);
 		descDbSortedNames.retainAll(descSortedNames);
 		assertThat("size", descDbSortedNames, hasSize(descSortedNames.size()));
 		assertThat("same order", descDbSortedNames, equalTo(descSortedNames));
@@ -62,22 +62,22 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 	@Test
 	void deleteAlbum() {
 		Integer albumId = this.albums.remove(this.albums.size() - 1).getId();
-		this.albumRepository.deleteAlbumById(albumId);
-		Album removedAlbum = this.albumRepository.getAlbumById(albumId);
+		this.albumRepository.deleteById(albumId);
+		Album removedAlbum = this.albumRepository.getById(albumId);
 		assertNull(removedAlbum);
 	}
 
 	@Test
 	void getAlbumById() {
 		Album album = this.albums.get(0);
-		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
+		Album dbAlbum = this.albumRepository.getById(album.getId());
 		assertAlbumEquals(album, dbAlbum);
 	}
 
 	@Test
 	void getAlbumByName() {
 		Album album = this.albums.get(0);
-		Album dbAlbum = this.albumRepository.getAlbumByName(album.getName());
+		Album dbAlbum = this.albumRepository.findAlbumByName(album.getName());
 		assertAlbumEquals(album, dbAlbum);
 	}
 
@@ -85,7 +85,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 	void clearDirtyForAlbum() {
 		Album album = this.albums.get(0);
 		this.albumRepository.clearDirtyForAlbum(album.getId());
-		Album dbAlbum = this.albumRepository.getAlbumById(album.getId());
+		Album dbAlbum = this.albumRepository.getById(album.getId());
 		assertFalse(dbAlbum.isDirty());
 	}
 
@@ -100,7 +100,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 		@AfterAll
 		void afterAll() {
-			this.albumRepository.deleteAlbumById(this.album.getId());
+			this.albumRepository.deleteById(this.album.getId());
 		}
 	}
 
@@ -113,8 +113,8 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 		@Test
 		void createAlbum() {
-			this.albumRepository.createAlbum(this.album);
-			Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+			this.albumRepository.persist(this.album);
+			Album dbAlbum = this.albumRepository.getById(this.album.getId());
 			assertAlbumEquals(this.album, dbAlbum);
 		}
 	}
@@ -123,7 +123,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 	class CreateAlbumForNameTest extends AlbumCreationTestBase {
 		@Test
 		void createAlbumForName(@Random String albumName) {
-			this.album = this.albumRepository.createAlbum(albumName);
+			this.album = this.albumRepository.createByName(albumName);
 			assertEquals(albumName, this.album.getName());
 		}
 	}
@@ -144,12 +144,12 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 				                List<Image> images) {
 			this.album = album;
 			this.album.addImages(images);
-			this.albumRepository.createAlbum(this.album);
+			this.albumRepository.persist(this.album);
 		}
 
 		@AfterAll
 		void afterAll() {
-			this.albumRepository.deleteAlbumById(this.album.getId());
+			this.albumRepository.deleteById(this.album.getId());
 		}
 	}
 
@@ -159,7 +159,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		void putAlbumCover() {
 			Image cover = this.album.getImages().get(0);
 			this.albumRepository.putAlbumCover(cover.getId());
-			Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+			Album dbAlbum = this.albumRepository.getById(this.album.getId());
 			assertImageEquals(cover, dbAlbum.getCover());
 		}
 	}
@@ -179,7 +179,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		@Test
 		void removeAlbumCover() {
 			this.albumRepository.removeAlbumCover(this.album.getId());
-			Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+			Album dbAlbum = this.albumRepository.getById(this.album.getId());
 			assertNull(dbAlbum.getCover());
 		}
 	}

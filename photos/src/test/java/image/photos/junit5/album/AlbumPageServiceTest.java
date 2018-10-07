@@ -63,7 +63,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		this.specialAlbum.addImage(this.hiddenImage);
 		this.printableImage.setFlags(of(EImageStatus.PRINTABLE));
 		this.specialAlbum.addImage(this.printableImage);
-		this.albumRepository.createAlbum(this.specialAlbum);
+		this.albumRepository.persist(this.specialAlbum);
 	}
 
 	@BeforeAll
@@ -76,7 +76,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		this.albums.stream().map(Album::getImages).flatMap(List<Image>::stream)
 				.forEach(i -> i.setFlags(of(EImageStatus.DEFAULT)));
 		// insert albums
-		this.albums.forEach(this.albumRepository::createAlbum);
+		this.albums.forEach(this.albumRepository::persist);
 		// create photos_per_page app config
 		this.appConfigRepository.createAppConfig(
 				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
@@ -84,8 +84,8 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@AfterAll
 	void tearDown() {
-		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteAlbumById(a.getId())));
-		ignoreExc(() -> this.albumRepository.deleteAlbumById(this.specialAlbum.getId()));
+		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteById(a.getId())));
+		ignoreExc(() -> this.albumRepository.deleteById(this.specialAlbum.getId()));
 		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
 	}
 

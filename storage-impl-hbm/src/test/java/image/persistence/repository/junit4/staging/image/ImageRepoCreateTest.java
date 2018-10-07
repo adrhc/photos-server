@@ -36,7 +36,7 @@ public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 
 	@Before
 	public void setUp() {
-		this.album = this.albumRepository.createAlbum(supplyAlbumName());
+		this.album = this.albumRepository.createByName(supplyAlbumName());
 		logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());
 	}
 
@@ -50,6 +50,6 @@ public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 
 	@After
 	public void removeAlbumAndImage() {
-		this.albumRepository.deleteAlbumById(this.album.getId());
+		this.albumRepository.deleteById(this.album.getId());
 	}
 }

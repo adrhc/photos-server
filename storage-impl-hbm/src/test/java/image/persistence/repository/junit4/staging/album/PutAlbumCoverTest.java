@@ -16,7 +16,7 @@ public class PutAlbumCoverTest extends AlbumRepoWriteTestBase {
 	public void putAlbumCover() throws Exception {
 		boolean result = this.albumRepository.putAlbumCover(this.image.getId());
 		Assert.assertTrue(result);
-		Album alteredAlbum = this.albumRepository.getAlbumById(this.album.getId());
+		Album alteredAlbum = this.albumRepository.getById(this.album.getId());
 		Assert.assertEquals(alteredAlbum.getCover().getId(), this.image.getId());
 		logger.debug("cover set using image.id = {}, image.name = {}",
 				this.image.getId(), this.image.getName());

@@ -164,7 +164,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		log.debug("*** imageRepository.findById ***");
 		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
 		assertFalse(dbImage.isPresent());
-		log.debug("*** albumRepository.getAlbumById ***");
+		log.debug("*** albumRepository.findById ***");
 		Album dbAlbum = this.albumRepository.findById(this.album.getId()).orElseThrow(AssertionError::new);
 		assertNull(dbAlbum.getCover());
 	}

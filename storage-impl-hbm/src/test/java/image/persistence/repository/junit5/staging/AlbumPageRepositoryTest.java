@@ -74,7 +74,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 		// album cover
 		album.setCover(images.get(0));
 		album.addImages(images);
-		this.albumRepository.createAlbum(album);
+		this.albumRepository.persist(album);
 		this.albumId = album.getId();
 		// required photos_per_page created
 		this.appConfigRepository.createAppConfig(
@@ -183,7 +183,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@AfterAll
 	void afterAll() {
-		ignoreExc(() -> this.albumRepository.deleteAlbumById(this.albumId));
+		ignoreExc(() -> this.albumRepository.deleteById(this.albumId));
 		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
 	}
 }

@@ -49,12 +49,12 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		// hibernate might proxy images collection so better
 		// just copy images instead of directly using it
 		this.album.addImages(images);
-		this.albumRepository.createAlbum(this.album);
+		this.albumRepository.persist(this.album);
 	}
 
 	@AfterAll
 	void tearDown() {
-		this.albumRepository.deleteAlbumById(this.album.getId());
+		this.albumRepository.deleteById(this.album.getId());
 	}
 
 	@Test
@@ -137,7 +137,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.safelyDeleteImage(image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertNull(dbImage);
-		Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
+		Album dbAlbum = this.albumRepository.getById(this.album.getId());
 		assertNull(dbAlbum.getCover());
 	}
 

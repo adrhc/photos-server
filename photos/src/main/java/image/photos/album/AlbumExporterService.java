@@ -53,7 +53,7 @@ public class AlbumExporterService {
 	private AlbumCoverService albumCoverService;
 
 	public boolean writeJsonForAlbumSafe(String name) {
-		Album album = this.albumRepository.getAlbumByName(name);
+		Album album = this.albumRepository.findAlbumByName(name);
 		if (album == null) {
 			logger.error("Missing album: {}", name);
 		}
@@ -72,7 +72,7 @@ public class AlbumExporterService {
 	}
 
 	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<Album> albums = this.albumRepository.getAlbumsOrderedByName();
+		List<Album> albums = this.albumRepository.findByDeletedFalseOrderByNameDesc();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (Album album : albums) {
 			successForAlbum = writeJsonForAlbumSafe(album);

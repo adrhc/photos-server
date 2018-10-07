@@ -30,7 +30,7 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		Album album = albumRepository.getAlbumById(id);
+		Album album = this.albumRepository.getById(id);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
@@ -42,7 +42,7 @@ public class AlbumCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Album getAlbumByName(@PathVariable String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		Album album = albumRepository.getAlbumByName(name);
+		Album album = this.albumRepository.findAlbumByName(name);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -52,9 +53,9 @@ public class CustomRepositoryImpl<T, ID extends Serializable>
 	}
 
 	@Override
-	public <S extends T> S persist(S entity) {
+	@Transactional
+	public void persist(T entity) {
 		this.em.persist(entity);
-		return entity;
 	}
 
 	@Override

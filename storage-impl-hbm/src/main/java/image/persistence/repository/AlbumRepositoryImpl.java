@@ -34,7 +34,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
-	public List<Album> getAlbumsOrderedByName() {
+	public List<Album> findByDeletedFalseOrderByNameDesc() {
 		CriteriaBuilder cb = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
 		CriteriaQuery<Album> criteria = cb.createQuery(Album.class);
 		Root<Album> root = criteria.from(Album.class);
@@ -47,7 +47,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
-	public Album createAlbum(String name) {
+	public Album createByName(String name) {
 		Album album = new Album(name);
 		this.sessionFactory.getCurrentSession().persist(album);
 		return album;
@@ -55,13 +55,13 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
-	public void createAlbum(Album album) {
+	public void persist(Album album) {
 		this.sessionFactory.getCurrentSession().persist(album);
 	}
 
 	@Override
 	@Transactional
-	public void deleteAlbumById(Integer id) {
+	public void deleteById(Integer id) {
 		Album album = this.sessionFactory.getCurrentSession().load(Album.class, id);
 		this.sessionFactory.getCurrentSession().delete(album);
 	}
@@ -76,7 +76,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 */
 	@Override
 	@Transactional
-	public Album getAlbumById(Integer id) {
+	public Album getById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
 		return this.sessionFactory.getCurrentSession().get(Album.class, id);
@@ -88,8 +88,8 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 * Scenario (with browser cache disabled):
 	 * 1. ImageService.changeRating sets album.lastModified = 2018:02:04 20:25:34.240
 	 * 2. mysql saves 2018:02:04 20:25:34.000 (without 240 milliseconds!)
-	 * 3. AlbumExporterCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
-	 * 3. getAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
+	 * 3. AlbumExporterCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls findAlbumByName
+	 * 3. findAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
 	 * 4. AlbumRepository.clearDirtyForAlbum will fail with optimistic lock because is using 2018:02:04 20:25:34.240!
 	 * 5. I guess there's a rule that invalidates the cache for the specific entity (Album for this case) involved with a failed transaction.
 	 * 6. Next time the same Album is required it is loaded from DB (so it has the DB value, e.g. 2018:02:04 20:25:34.000).
@@ -99,7 +99,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 */
 	@Override
 	@Transactional
-	public Album getAlbumByName(String name) {
+	public Album findAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
 		Session session = this.sessionFactory.getCurrentSession();
 		return (Album) session.createCriteria(Album.class)
@@ -138,7 +138,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public boolean removeAlbumCover(Integer albumId) {
-		Album album = getAlbumById(albumId);
+		Album album = getById(albumId);
 		// NPE when album is NULL
 		if (album.getCover() == null) {
 			return false;
@@ -157,7 +157,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 //		logger.debug("BEGIN");
-		Album album = getAlbumById(albumId);
+		Album album = getById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
 //			logger.debug("END dirty update cancelled (already false)");

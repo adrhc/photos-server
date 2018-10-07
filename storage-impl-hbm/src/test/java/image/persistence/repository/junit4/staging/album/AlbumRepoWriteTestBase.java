@@ -43,7 +43,7 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 	public void createAnAlbumWithImage() {
 		TransactionTemplate transactionTemplate = new TransactionTemplate(this.transactionManager);
 		transactionTemplate.execute((ts) -> {
-			this.album = this.albumRepository.createAlbum(supplyAlbumName());
+			this.album = this.albumRepository.createByName(supplyAlbumName());
 			this.image = supplyImage(this.album);
 			this.imageRepository.persist(this.image);
 			return null;
@@ -56,6 +56,6 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 
 	@After
 	public void removeAlbumAndImage() {
-		this.albumRepository.deleteAlbumById(this.albumId);
+		this.albumRepository.deleteById(this.albumId);
 	}
 }

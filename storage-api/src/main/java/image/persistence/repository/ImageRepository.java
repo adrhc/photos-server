@@ -34,5 +34,5 @@ public interface ImageRepository {
 
 	List<Image> findByAlbumId(Integer albumId);
 
-	Image persist(Image image);
+	void persist(Image image);
 }

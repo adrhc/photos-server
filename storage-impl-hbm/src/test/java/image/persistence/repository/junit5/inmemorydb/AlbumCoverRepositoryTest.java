@@ -35,7 +35,7 @@ class AlbumCoverRepositoryTest {
 		this.before = new Date();
 		album.getImages().forEach(i -> i.setAlbum(album));
 		album.setCover(album.getImages().get(0));
-		this.albumRepository.createAlbum(album);
+		this.albumRepository.persist(album);
 	}
 
 	@Test

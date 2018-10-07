@@ -104,9 +104,8 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 
 	@Override
 	@Transactional
-	public Image persist(Image image) {
+	public void persist(Image image) {
 		this.sessionFactory.getCurrentSession().persist(image);
-		return image;
 	}
 
 	@Override

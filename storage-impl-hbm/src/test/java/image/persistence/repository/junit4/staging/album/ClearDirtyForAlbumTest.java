@@ -34,7 +34,7 @@ public class ClearDirtyForAlbumTest extends AlbumRepoWriteTestBase {
 	public void clearDirtyForAlbum() {
 		boolean result = this.albumRepository.clearDirtyForAlbum(this.album.getId());
 		Assert.assertTrue(result);
-		Album alteredAlbum = this.albumRepository.getAlbumById(this.album.getId());
+		Album alteredAlbum = this.albumRepository.getById(this.album.getId());
 		Assert.assertFalse(alteredAlbum.isDirty());
 	}
 }
