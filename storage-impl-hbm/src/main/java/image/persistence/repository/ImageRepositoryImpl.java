@@ -15,7 +15,6 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -136,34 +135,10 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 		checkAndRemoveAlbumCoverAndFromAlbumImages(image, false);
 	}
 
-	/**
-	 * Remove album's cover (set it to null) when image is its album's cover.
-	 *
-	 * @param image
-	 * @return whether change occurred or not in DB
-	 */
-	@Transactional(propagation = Propagation.MANDATORY)
-	private void checkAndRemoveAlbumCoverAndFromAlbumImages(Image image, boolean onlyMarkAsDeleted) {
-		Album album = image.getAlbum();
-		if (!onlyMarkAsDeleted) {
-			album.getImages().removeIf(i -> i.getId().equals(image.getId()));
-		}
-		if (album.getCover() == null || !album.getCover().getId().equals(image.getId())) {
-			// image is not cover for its album
-			return;
-		}
-		if (album.getCover() == null) {
-			// cover is already missing
-			return;
-		}
-		// removing cover
-		album.setCover(null);
-	}
-
 	@Override
 	@Transactional
 	public void changeName(String name, Integer imageId) {
-		Image image = (Image) this.sessionFactory.getCurrentSession().get(Image.class, imageId);
+		Image image = this.sessionFactory.getCurrentSession().get(Image.class, imageId);
 		image.setName(name);
 	}
 
@@ -175,9 +150,9 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	@Override
 	@Transactional
 	public Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
-		Image dbImage = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
-		dbImage.setImageMetadata(imageMetadata);
-		return dbImage;
+		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
+		image.setImageMetadata(imageMetadata);
+		return image;
 	}
 
 	/**
@@ -195,17 +170,39 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 		if (imageId == null) {
 			return null;
 		}
-		return findById(imageId);
+		return getById(imageId);
 	}
 
 	@Override
 	@Transactional
-	public Image findById(Integer imageId) {
+	public Image getById(Integer imageId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.get(Image.class, imageId);
 	}
 
-	@Transactional(readOnly = true, propagation = Propagation.MANDATORY)
+	/**
+	 * Remove album's cover (set it to null) when image is its album's cover.
+	 *
+	 * @param image
+	 * @return whether change occurred or not in DB
+	 */
+	private void checkAndRemoveAlbumCoverAndFromAlbumImages(Image image, boolean onlyMarkAsDeleted) {
+		Album album = image.getAlbum();
+		if (!onlyMarkAsDeleted) {
+			album.getImages().removeIf(i -> i.getId().equals(image.getId()));
+		}
+		if (album.getCover() == null) {
+			// cover is already missing
+			return;
+		}
+		if (!album.getCover().getId().equals(image.getId())) {
+			// image is not cover for its album
+			return;
+		}
+		// removing cover
+		album.setCover(null);
+	}
+
 	private Integer getImageIdByNameAndAlbumId(String name, Integer albumId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Query q = session.createQuery("SELECT id FROM Image " +

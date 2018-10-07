@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 @NoRepositoryBean
 public class CustomRepositoryImpl<T, ID extends Serializable>
-		extends SimpleJpaRepository<T, ID> implements ICustomCrudRepository<T> {
+		extends SimpleJpaRepository<T, ID> implements ICustomCrudRepository<T, ID> {
 	private final EntityManager em;
 
 	public CustomRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
@@ -55,6 +55,11 @@ public class CustomRepositoryImpl<T, ID extends Serializable>
 	public <S extends T> S persist(S entity) {
 		this.em.persist(entity);
 		return entity;
+	}
+
+	@Override
+	public T getById(ID id) {
+		return this.em.find(getDomainClass(), id);
 	}
 
 	private String getCountQueryStringSuper() {

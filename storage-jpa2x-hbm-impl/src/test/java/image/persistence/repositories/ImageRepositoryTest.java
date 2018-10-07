@@ -1,10 +1,16 @@
 package image.persistence.repositories;
 
+import image.cdm.image.ImageRating;
+import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageStatus;
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
+import image.persistence.entity.image.IImageFlagsUtils;
+import image.persistence.entity.image.ImageMetadata;
 import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
+import image.persistence.util.IPositiveIntegerRandom;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;
@@ -15,17 +21,21 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
 @Junit5Jpa2xInMemoryDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-class ImageRepositoryTest implements IImageAssertions {
+class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
+	private static final int IMAGE_COUNT = 10;
 	@Inject
 	private AlbumRepository albumRepository;
 	@Inject
@@ -38,18 +48,21 @@ class ImageRepositoryTest implements IImageAssertions {
 	 * Notice that ImageMetadata is generated too and will be used in tests!
 	 */
 	@BeforeAll
-	void setUp(@Random(type = Image.class, size = 30,
+	void setUp(@Random(type = Image.class, size = IMAGE_COUNT,
 			excludes = {"id", "lastUpdate", "album"})
 			           List<Image> images) {
-		// hibernate might proxy images collection so better
-		// just copy images instead of directly using it
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
 	}
 
+	/**
+	 * this.updateThumbLastModifiedForImg() + this.albumRepository.delete(this.album) yield this:
+	 * <p>
+	 * ObjectOptimisticLockingFailureException: Object of class [image.persistence.entity.Image] with identifier [1]: optimistic locking failed; nested exception is org.hibernate.StaleObjectStateException: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [image.persistence.entity.Image#1]
+	 */
 	@AfterAll
 	void tearDown() {
-		this.albumRepository.delete(this.album);
+		this.albumRepository.deleteById(this.album.getId());
 	}
 
 	@Test
@@ -65,8 +78,8 @@ class ImageRepositoryTest implements IImageAssertions {
 
 		// https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
 		log.debug("*** imageRepository.count ***");
-		assertThat(this.imageRepository.count(), equalTo(31L));
-		assertThat(this.imageRepository.count(), equalTo(31L));
+		assertThat(this.imageRepository.count(), equalTo(IMAGE_COUNT + 1L));
+		assertThat(this.imageRepository.count(), equalTo(IMAGE_COUNT + 1L));
 
 		log.debug("*** imageRepository.findAll ***");
 		List<Image> images = this.imageRepository.findAll();
@@ -79,6 +92,94 @@ class ImageRepositoryTest implements IImageAssertions {
 
 		log.debug("*** imageRepository.findByNameAndAlbumId ***");
 		dbImage = this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
+	void updateThumbLastModifiedForImg() {
+		Image image = this.album.getImages().get(0);
+		Date date = new Date();
+		log.debug("*** imageRepository.updateThumbLastModifiedForImg ***");
+		this.imageRepository.updateThumbLastModifiedForImg(date, image.getId());
+		log.debug("*** imageRepository.findById ***");
+		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertEquals(date, dbImage.getImageMetadata().getThumbLastModified());
+		image.getImageMetadata().setThumbLastModified(date);
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
+	void changeRating() {
+		Image image = this.album.getImages().get(0);
+		ImageRating imageRating = new ImageRating(image.getId(),
+				(byte) (1 + randomPositiveInt(5)));
+		log.debug("*** imageRepository.changeRating ***");
+		this.imageRepository.changeRating(imageRating);
+		log.debug("*** imageRepository.findById ***");
+		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertEquals(imageRating.getRating(), dbImage.getRating());
+		image.setRating(imageRating.getRating());
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
+	void changeStatus(@Random EImageStatus status) {
+		Image image = this.album.getImages().get(0);
+		ImageStatus imageStatus = new ImageStatus(image.getId(), status.getValueAsByte());
+		log.debug("*** imageRepository.changeStatus ***");
+		this.imageRepository.changeStatus(imageStatus);
+		log.debug("*** imageRepository.findById ***");
+		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertEquals(of(imageStatus.getStatus()), dbImage.getFlags());
+		image.setFlags(of(imageStatus.getStatus()));
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
+	void markDeleted() {
+		Image image = this.album.getImages().get(0);
+		log.debug("*** imageRepository.markDeleted ***");
+		this.imageRepository.markDeleted(image.getId());
+		log.debug("*** imageRepository.findById ***");
+		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertTrue(dbImage.isDeleted());
+		image.setDeleted(true);
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
+	void safelyDeleteImage() {
+		// this image shall be removed from DB later so we sync this.album
+		Image image = this.album.getImages().get(this.album.getImages().size() - 1);
+		log.debug("*** albumRepository.putAlbumCover ***");
+		this.albumRepository.putAlbumCover(image.getId());
+		log.debug("*** imageRepository.safelyDeleteImage ***");
+		this.imageRepository.safelyDeleteImage(image.getId());
+		log.debug("*** imageRepository.findById ***");
+		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
+		assertFalse(dbImage.isPresent());
+		log.debug("*** albumRepository.getAlbumById ***");
+		Album dbAlbum = this.albumRepository.findById(this.album.getId()).orElseThrow(AssertionError::new);
+		assertNull(dbAlbum.getCover());
+	}
+
+	@Test
+	void changeName(@Random String newName) {
+		Image image = this.album.getImages().get(0);
+		this.imageRepository.changeName(newName, image.getId());
+		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertEquals(newName, dbImage.getName());
+		image.setName(newName);
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
+	void updateImageMetadata(@Random ImageMetadata imageMetadata) {
+		Image image = this.album.getImages().get(0);
+		this.imageRepository.updateImageMetadata(imageMetadata, image.getId());
+		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertImageMetadataEquals(imageMetadata, dbImage.getImageMetadata());
+		image.setImageMetadata(imageMetadata);
 		assertImageEquals(image, dbImage);
 	}
 }

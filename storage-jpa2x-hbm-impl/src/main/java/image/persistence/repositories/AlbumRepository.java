@@ -2,5 +2,7 @@ package image.persistence.repositories;
 
 import image.persistence.entity.Album;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
-public interface AlbumRepository extends PagingAndSortingRepository<Album, Integer> {}
+@Repository
+public interface AlbumRepository extends AlbumRepositoryCustom, PagingAndSortingRepository<Album, Integer> {}

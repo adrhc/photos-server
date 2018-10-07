@@ -25,7 +25,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	public void updateThumbLastModifiedForImg() throws Exception {
 		Date date = dateNoMilliseconds();
 		this.imageRepository.updateThumbLastModifiedForImg(date, this.imageId);
-		Image alteredImage = this.imageRepository.findById(this.imageId);
+		Image alteredImage = this.imageRepository.getById(this.imageId);
 		// @Temporal(TemporalType.TIMESTAMP) thumbLastModified
 		// is in fact a java.sql.TimeStamp
 		Assert.assertEquals(alteredImage.getImageMetadata()
@@ -41,7 +41,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		boolean changed = this.imageRepository.changeRating(
 				new ImageRating(this.imageId, newRating));
 		Assert.assertTrue(changed);
-		Image alteredImage = this.imageRepository.findById(this.imageId);
+		Image alteredImage = this.imageRepository.getById(this.imageId);
 		Assert.assertEquals(alteredImage.getRating(), newRating);
 	}
 
@@ -54,7 +54,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		boolean changed = this.imageRepository.changeStatus(new ImageStatus(
 				this.imageId, newStatus.getValueAsByte()));
 		Assert.assertTrue(changed);
-		Image alteredImage = this.imageRepository.findById(this.imageId);
+		Image alteredImage = this.imageRepository.getById(this.imageId);
 		Assert.assertTrue(areEquals(alteredImage.getFlags(), newStatus));
 	}
 
@@ -62,14 +62,14 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	public void markDeleted() throws Exception {
 		boolean changed = this.imageRepository.markDeleted(this.imageId);
 		Assert.assertTrue(changed);
-		Image alteredImage = this.imageRepository.findById(this.imageId);
+		Image alteredImage = this.imageRepository.getById(this.imageId);
 		Assert.assertTrue(alteredImage.isDeleted());
 	}
 
 	@Test
 	public void changeName() throws Exception {
 		this.imageRepository.changeName(this.image.getName() + "-updated", this.imageId);
-		Image alteredImage = this.imageRepository.findById(this.imageId);
+		Image alteredImage = this.imageRepository.getById(this.imageId);
 		Assert.assertEquals(alteredImage.getName(), this.image.getName() + "-updated");
 	}
 }

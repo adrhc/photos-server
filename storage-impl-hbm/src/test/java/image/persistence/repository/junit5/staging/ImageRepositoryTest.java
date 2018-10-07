@@ -62,7 +62,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		Image image = pickRandomlyAnImage();
 		Date date = new Date();
 		this.imageRepository.updateThumbLastModifiedForImg(date, image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(date, dbImage.getImageMetadata().getThumbLastModified());
 		image.getImageMetadata().setThumbLastModified(date);
 		assertImageEquals(image, dbImage);
@@ -74,7 +74,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		ImageRating imageRating = new ImageRating(image.getId(),
 				(byte) (1 + randomPositiveInt(5)));
 		this.imageRepository.changeRating(imageRating);
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(imageRating.getRating(), dbImage.getRating());
 		image.setRating(imageRating.getRating());
 		assertImageEquals(image, dbImage);
@@ -85,7 +85,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		Image image = pickRandomlyAnImage();
 		ImageStatus imageStatus = new ImageStatus(image.getId(), status.getValueAsByte());
 		this.imageRepository.changeStatus(imageStatus);
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(of(imageStatus.getStatus()), dbImage.getFlags());
 		image.setFlags(of(imageStatus.getStatus()));
 		assertImageEquals(image, dbImage);
@@ -107,7 +107,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	void persistImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
 		this.album.addImage(image);
 		this.imageRepository.persist(image);
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertImageEquals(image, dbImage);
 	}
 
@@ -115,7 +115,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	void markDeleted() {
 		Image image = pickRandomlyAnImage();
 		this.imageRepository.markDeleted(image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertTrue(dbImage.isDeleted());
 		image.setDeleted(true);
 		assertImageEquals(image, dbImage);
@@ -125,16 +125,17 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	void deleteImage() {
 		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
 		this.imageRepository.deleteById(image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertNull(dbImage);
 	}
 
 	@Test
 	void safelyDeleteImage() {
-		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
+		// this image shall be removed from DB later so we sync this.album
+		Image image = this.album.getImages().get(this.album.getImages().size() - 1);
 		this.albumRepository.putAlbumCover(image.getId());
 		this.imageRepository.safelyDeleteImage(image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertNull(dbImage);
 		Album dbAlbum = this.albumRepository.getAlbumById(this.album.getId());
 		assertNull(dbAlbum.getCover());
@@ -144,7 +145,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	void changeName(@Random String newName) {
 		Image image = pickRandomlyAnImage();
 		this.imageRepository.changeName(newName, image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(newName, dbImage.getName());
 		image.setName(newName);
 		assertImageEquals(image, dbImage);
@@ -154,7 +155,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	void updateImageMetadata(@Random ImageMetadata imageMetadata) {
 		Image image = pickRandomlyAnImage();
 		this.imageRepository.updateImageMetadata(imageMetadata, image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertImageMetadataEquals(imageMetadata, dbImage.getImageMetadata());
 		image.setImageMetadata(imageMetadata);
 		assertImageEquals(image, dbImage);
@@ -171,7 +172,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	@Test
 	void getImageById() {
 		Image image = pickRandomlyAnImage();
-		Image dbImage = this.imageRepository.findById(image.getId());
+		Image dbImage = this.imageRepository.getById(image.getId());
 		assertImageEquals(image, dbImage);
 	}
 
