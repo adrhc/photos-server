@@ -40,7 +40,7 @@ public class AlbumCtrl {
 
 	@RequestMapping(value = "/byName/{name}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public Album getAlbumByName(@PathVariable String name, WebRequest webRequest) {
+	public Album findAlbumByName(@PathVariable String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
 		Album album = this.albumRepository.findAlbumByName(name);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {

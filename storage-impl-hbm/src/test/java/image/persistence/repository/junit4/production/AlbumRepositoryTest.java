@@ -45,7 +45,7 @@ public class AlbumRepositoryTest {
 	}
 
 	@Test
-	public void getAlbumByName() throws Exception {
+	public void findAlbumByName() throws Exception {
 		Album album = this.albumRepository.findAlbumByName("2011-08-19-Gradac");
 		Assert.assertNotNull(album);
 		logger.debug("albums:\n{}", album.toString());

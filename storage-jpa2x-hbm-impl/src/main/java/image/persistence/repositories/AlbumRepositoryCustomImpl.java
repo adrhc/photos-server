@@ -31,9 +31,34 @@ public class AlbumRepositoryCustomImpl implements AlbumRepositoryCustom {
 	}
 
 	@Override
-	public Album createAlbum(String name) {
+	public Album createByName(String name) {
 		Album album = new Album(name);
 		this.em.persist(album);
 		return album;
+	}
+
+	@Override
+	public boolean removeAlbumCover(Integer albumId) {
+		Album album = this.em.find(Album.class, albumId);
+		// NPE when album is NULL
+		if (album.getCover() == null) {
+			return false;
+		}
+		album.setCover(null);
+		return true;
+	}
+
+	@Override
+	public boolean clearDirtyForAlbum(Integer albumId) {
+//		logger.debug("BEGIN");
+		Album album = this.em.find(Album.class, albumId);
+		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
+		if (!album.isDirty()) {
+//			logger.debug("END dirty update cancelled (already false)");
+			return false;
+		}
+		album.setDirty(false);
+//		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
+		return true;
 	}
 }

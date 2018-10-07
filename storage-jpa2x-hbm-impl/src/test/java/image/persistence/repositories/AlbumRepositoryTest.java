@@ -1,19 +1,25 @@
 package image.persistence.repositories;
 
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
+import image.persistence.config.NestedPerClass;
 import image.persistence.entity.Album;
+import image.persistence.entity.Image;
 import image.persistence.repository.util.assertion.IAlbumAssertions;
+import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
@@ -24,7 +30,7 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	@Autowired
 	private AlbumRepository albumRepository;
 
-	@Random(type = Album.class, size = 50, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})
+	@Random(type = Album.class, size = 25, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})
 	private List<Album> albums;
 
 	@BeforeAll
@@ -45,20 +51,101 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	}
 
 	@Test
-	void getAlbumByName() {
+	void findAlbumByName() {
 		Album album = this.albums.get(0);
 		Album dbAlbum = this.albumRepository.findAlbumByName(album.getName());
 		assertAlbumEquals(album, dbAlbum);
 	}
 
-	@Nested
+	@Test
+	void clearDirtyForAlbum() {
+		Album album = this.albums.get(0);
+		this.albumRepository.clearDirtyForAlbum(album.getId());
+		Album dbAlbum = this.albumRepository.getById(album.getId());
+		assertFalse(dbAlbum.isDirty());
+	}
+
 	@Junit5Jpa2xInMemoryDbConfig
-	@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+	@NestedPerClass
+	class CreateAlbumTest extends AlbumCreationTestBase {
+		@BeforeAll
+		void beforeAll(@Random(excludes = {"id", "images", "cover", "lastUpdate"}) Album album) {
+			this.album = album;
+		}
+
+		@Test
+		void createAlbum() {
+			this.albumRepository.persist(this.album);
+			Album dbAlbum = this.albumRepository.getById(this.album.getId());
+			assertAlbumEquals(this.album, dbAlbum);
+		}
+	}
+
+	@Junit5Jpa2xInMemoryDbConfig
+	@NestedPerClass
 	class CreateAlbumForNameTest extends AlbumCreationTestBase {
 		@Test
 		void createAlbumForName(@Random String albumName) {
 			this.album = this.albumRepository.createByName(albumName);
 			assertEquals(albumName, this.album.getName());
+		}
+	}
+
+	@Junit5Jpa2xInMemoryDbConfig
+	@NestedPerClass
+	class PutAlbumCoverTest extends CoverTestBase implements IImageAssertions {
+		@Test
+		void putAlbumCover() {
+			Image cover = this.album.getImages().get(0);
+			this.albumRepository.putAlbumCover(cover.getId());
+			Album dbAlbum = this.albumRepository.getById(this.album.getId());
+			assertImageEquals(cover, dbAlbum.getCover());
+		}
+	}
+
+	@Junit5Jpa2xInMemoryDbConfig
+	@NestedPerClass
+	class RemoveAlbumCoverTest extends CoverTestBase {
+		@Override
+		@BeforeAll
+		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
+				                Album album,
+		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+				                List<Image> images) {
+			album.setCover(images.get(0));
+			super.givenAlbum(album, images);
+		}
+
+		@Test
+		void removeAlbumCover() {
+			this.albumRepository.removeAlbumCover(this.album.getId());
+			Album dbAlbum = this.albumRepository.getById(this.album.getId());
+			assertNull(dbAlbum.getCover());
+		}
+	}
+
+	abstract class CoverTestBase {
+		@Autowired
+		AlbumRepository albumRepository;
+
+		/**
+		 * @Random on field won't work in abstract class!
+		 */
+		Album album;
+
+		@BeforeAll
+		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
+				                Album album,
+		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+				                List<Image> images) {
+			this.album = album;
+			this.album.addImages(images);
+			this.albumRepository.persist(this.album);
+		}
+
+		@AfterAll
+		void afterAll() {
+			this.albumRepository.deleteById(this.album.getId());
 		}
 	}
 

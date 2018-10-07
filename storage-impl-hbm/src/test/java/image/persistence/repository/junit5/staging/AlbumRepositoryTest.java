@@ -75,7 +75,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 	}
 
 	@Test
-	void getAlbumByName() {
+	void findAlbumByName() {
 		Album album = this.albums.get(0);
 		Album dbAlbum = this.albumRepository.findAlbumByName(album.getName());
 		assertAlbumEquals(album, dbAlbum);
