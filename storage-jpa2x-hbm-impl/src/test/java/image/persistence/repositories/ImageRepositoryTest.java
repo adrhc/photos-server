@@ -25,8 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
@@ -70,16 +68,23 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.album.addImage(image);
 		log.debug("*** imageRepository.persist(image) ***");
 		this.imageRepository.persist(image);
-
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertImageEquals(image, dbImage);
+	}
+
+
+	@Test
+	void checkQueryCache() {
+		Image image = this.album.getImages().get(0);
+		log.debug("*** imageRepository.findById ***");
+		this.imageRepository.findById(image.getId());
+		this.imageRepository.findById(image.getId());
 
 		// https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
 		log.debug("*** imageRepository.count ***");
-		assertThat(this.imageRepository.count(), equalTo(IMAGE_COUNT + 1L));
-		assertThat(this.imageRepository.count(), equalTo(IMAGE_COUNT + 1L));
+		this.imageRepository.count();
+		this.imageRepository.count();
 
 		log.debug("*** imageRepository.findAll ***");
 		List<Image> images = this.imageRepository.findAll();
@@ -91,8 +96,8 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		images = this.imageRepository.findByAlbumId(this.album.getId());
 
 		log.debug("*** imageRepository.findByNameAndAlbumId ***");
-		dbImage = this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
-		assertImageEquals(image, dbImage);
+		this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
+		this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
 	}
 
 	@Test
