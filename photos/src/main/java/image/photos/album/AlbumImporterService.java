@@ -195,7 +195,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
 		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
-		Image dbImage = this.imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
+		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
@@ -244,7 +244,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		newImg.setImageMetadata(imageMetadata);
 		newImg.setName(imgFile.getName());
 		newImg.setAlbum(album);
-		this.imageRepository.persistImage(newImg);
+		this.imageRepository.persist(newImg);
 		this.imageEventsEmitter.emit(ImageEventBuilder
 				.of(EImageEventType.CREATED)
 				.image(newImg).build());

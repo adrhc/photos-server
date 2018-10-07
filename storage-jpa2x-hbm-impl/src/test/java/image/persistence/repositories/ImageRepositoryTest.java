@@ -61,15 +61,12 @@ class ImageRepositoryTest implements IImageAssertions {
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		assertImageEquals(image, dbImage);
 
 		// https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
 		log.debug("*** imageRepository.count ***");
 		assertThat(this.imageRepository.count(), equalTo(31L));
 		assertThat(this.imageRepository.count(), equalTo(31L));
-		assertThat(this.imageRepository.count(), equalTo(31L));
-
-		assertImageEquals(image, dbImage);
 
 		log.debug("*** imageRepository.findAll ***");
 		List<Image> images = this.imageRepository.findAll();
@@ -79,5 +76,9 @@ class ImageRepositoryTest implements IImageAssertions {
 		log.debug("*** imageRepository.findByAlbumId ***");
 		images = this.imageRepository.findByAlbumId(this.album.getId());
 		images = this.imageRepository.findByAlbumId(this.album.getId());
+
+		log.debug("*** imageRepository.findByNameAndAlbumId ***");
+		dbImage = this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
+		assertImageEquals(image, dbImage);
 	}
 }

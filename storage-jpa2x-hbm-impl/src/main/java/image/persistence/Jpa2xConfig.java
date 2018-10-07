@@ -31,6 +31,10 @@ import java.util.Properties;
 public class Jpa2xConfig {
 	private static final Logger logger = LoggerFactory.getLogger(Jpa2xConfig.class);
 
+	/**
+	 * LocalContainerEntityManagerFactoryBean implements PersistenceExceptionTranslator
+	 * https://stackoverflow.com/questions/41801512/spring-how-exception-translation-works
+	 */
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer
 	propertySourcesPlaceholderConfigurer() {

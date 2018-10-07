@@ -106,7 +106,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	@Test
 	void persistImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
 		this.album.addImage(image);
-		this.imageRepository.persistImage(image);
+		this.imageRepository.persist(image);
 		Image dbImage = this.imageRepository.findById(image.getId());
 		assertImageEquals(image, dbImage);
 	}
@@ -124,7 +124,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	@Test
 	void deleteImage() {
 		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
-		this.imageRepository.deleteImage(image.getId());
+		this.imageRepository.deleteById(image.getId());
 		Image dbImage = this.imageRepository.findById(image.getId());
 		assertNull(dbImage);
 	}
@@ -163,7 +163,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	@Test
 	void getImageByNameAndAlbumId() {
 		Image image = pickRandomlyAnImage();
-		Image dbImage = this.imageRepository.getImageByNameAndAlbumId(
+		Image dbImage = this.imageRepository.findByNameAndAlbumId(
 				image.getName(), this.album.getId());
 		assertImageEquals(image, dbImage);
 	}

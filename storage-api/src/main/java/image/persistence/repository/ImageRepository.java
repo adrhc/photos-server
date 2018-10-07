@@ -18,13 +18,7 @@ public interface ImageRepository {
 
 	boolean changeStatus(ImageStatus imageStatus);
 
-	List<Image> findByAlbumId(Integer albumId);
-
-	void persistImage(Image image);
-
 	boolean markDeleted(Integer imageId);
-
-	void deleteImage(Integer imageId);
 
 	void safelyDeleteImage(Integer imageId);
 
@@ -32,7 +26,13 @@ public interface ImageRepository {
 
 	Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId);
 
-	Image getImageByNameAndAlbumId(String name, Integer albumId);
+	Image findByNameAndAlbumId(String name, Integer albumId);
+
+	void deleteById(Integer imageId);
 
 	Image findById(Integer imageId);
+
+	List<Image> findByAlbumId(Integer albumId);
+
+	Image persist(Image image);
 }

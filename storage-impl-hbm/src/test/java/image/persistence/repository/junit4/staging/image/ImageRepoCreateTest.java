@@ -43,7 +43,7 @@ public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 	@Test
 	public void persistImage() throws Exception {
 		Image image = supplyImage(this.album);
-		this.imageRepository.persistImage(image);
+		this.imageRepository.persist(image);
 		Assert.assertNotNull(image.getId());
 		logger.debug("image.id = {}, image.name = {}", image.getId(), image.getName());
 	}

@@ -16,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 @NoRepositoryBean
 public class CustomRepositoryImpl<T, ID extends Serializable>
-		extends SimpleJpaRepository<T, ID> implements CustomCrudRepository<T> {
+		extends SimpleJpaRepository<T, ID> implements ICustomCrudRepository<T> {
 	private final EntityManager em;
 
 	public CustomRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {

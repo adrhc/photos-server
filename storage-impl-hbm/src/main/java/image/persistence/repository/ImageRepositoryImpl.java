@@ -105,8 +105,9 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 
 	@Override
 	@Transactional
-	public void persistImage(Image image) {
+	public Image persist(Image image) {
 		this.sessionFactory.getCurrentSession().persist(image);
+		return image;
 	}
 
 	@Override
@@ -123,7 +124,7 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 
 	@Override
 	@Transactional
-	public void deleteImage(Integer imageId) {
+	public void deleteById(Integer imageId) {
 		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
 		this.sessionFactory.getCurrentSession().delete(image);
 	}
@@ -189,7 +190,7 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	 */
 	@Override
 	@Transactional
-	public Image getImageByNameAndAlbumId(String name, Integer albumId) {
+	public Image findByNameAndAlbumId(String name, Integer albumId) {
 		Integer imageId = getImageIdByNameAndAlbumId(name, albumId);
 		if (imageId == null) {
 			return null;

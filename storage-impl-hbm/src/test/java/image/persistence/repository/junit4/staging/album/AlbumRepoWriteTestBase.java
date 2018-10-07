@@ -45,7 +45,7 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 		transactionTemplate.execute((ts) -> {
 			this.album = this.albumRepository.createAlbum(supplyAlbumName());
 			this.image = supplyImage(this.album);
-			this.imageRepository.persistImage(this.image);
+			this.imageRepository.persist(this.image);
 			return null;
 		});
 		this.albumId = this.album.getId();
