@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ContextConfiguration(classes = {HibernateConfig.class, PhotosConfig.class})
-@TestPropertySource(properties = "hibernate.show_sql=false")
+@TestPropertySource(properties = "hibernate.show_sql=true")
 @InMemoryDbProfile
 public @interface PhotosInMemoryDbConfig {
 }

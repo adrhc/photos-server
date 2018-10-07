@@ -85,7 +85,7 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 
 	@Override
 	@Transactional
-	public List<Image> getImagesByAlbumId(Integer albumId) {
+	public List<Image> findByAlbumId(Integer albumId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		// gets album and cover too
 //		Criteria ic = session.createCriteria(Image.class)
@@ -194,12 +194,12 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 		if (imageId == null) {
 			return null;
 		}
-		return getImageById(imageId);
+		return findById(imageId);
 	}
 
 	@Override
 	@Transactional
-	public Image getImageById(Integer imageId) {
+	public Image findById(Integer imageId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		return session.get(Image.class, imageId);
 	}

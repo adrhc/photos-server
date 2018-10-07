@@ -18,7 +18,7 @@ public interface ImageRepository {
 
 	boolean changeStatus(ImageStatus imageStatus);
 
-	List<Image> getImagesByAlbumId(Integer albumId);
+	List<Image> findByAlbumId(Integer albumId);
 
 	void persistImage(Image image);
 
@@ -34,5 +34,5 @@ public interface ImageRepository {
 
 	Image getImageByNameAndAlbumId(String name, Integer albumId);
 
-	Image getImageById(Integer imageId);
+	Image findById(Integer imageId);
 }

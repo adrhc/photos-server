@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Jpa2xConfig.class})
-@TestPropertySource(properties = "hibernate.show_sql=false")
+@TestPropertySource(properties = "hibernate.show_sql=true")
 @ActiveProfiles({"in-memory-db", "jpa2x-hbm-impl"})
 @Tag("junit5")
 @Tag("jpa2x")

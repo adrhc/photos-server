@@ -4,13 +4,21 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
+import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Properties;
 
 @Configuration
 public class HibernatePropertiesConfig {
+	@Inject
+	private Environment ev;
+
 	@Profile("in-memory-db")
 	@Bean("hibernateProperties")
 	public PropertiesFactoryBean hibernatePropertiesForInMemoryDb() {
@@ -36,7 +44,25 @@ public class HibernatePropertiesConfig {
 						.map(ClassPathResource::new)
 						.toArray(ClassPathResource[]::new);
 		PropertiesFactoryBean properties = new PropertiesFactoryBean();
+		// allows for @TestPropertySource overrides
+//		properties.setLocalOverride(true);
 		properties.setLocations(locations);
+		try {
+			// force to load the properties
+			properties.afterPropertiesSet();
+			// @TestPropertySource support
+			properties.setProperties(envProps(properties.getObject().stringPropertyNames()));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 		return properties;
+	}
+
+	private Properties envProps(Collection<String> keys) {
+		Properties p = new Properties();
+		keys.stream().map(key -> new String[]{key, this.ev.getProperty(key)})
+				.filter(kvTuple -> kvTuple[1] != null)
+				.forEach(kvTuple -> p.setProperty(kvTuple[0], kvTuple[1]));
+		return p;
 	}
 }

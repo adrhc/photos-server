@@ -75,5 +75,9 @@ class ImageRepositoryTest implements IImageAssertions {
 		List<Image> images = this.imageRepository.findAll();
 		images = this.imageRepository.findAll();
 		images = this.imageRepository.findAll();
+
+		log.debug("*** imageRepository.findByAlbumId ***");
+		images = this.imageRepository.findByAlbumId(this.album.getId());
+		images = this.imageRepository.findByAlbumId(this.album.getId());
 	}
 }

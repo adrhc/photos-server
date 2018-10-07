@@ -34,7 +34,7 @@ public class ImageCtrl {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
-		Image image = this.imageRepository.getImageById(id);
+		Image image = this.imageRepository.findById(id);
 		if (webRequest.checkNotModified(
 				image.getImageMetadata().getDateTime().getTime())) {
 			return null;
@@ -44,7 +44,7 @@ public class ImageCtrl {
 
 	@RequestMapping(value = "/exif/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public ExifInfo getExifById(@PathVariable Integer id, WebRequest webRequest) {
-		Image image = this.imageRepository.getImageById(id);
+		Image image = this.imageRepository.findById(id);
 		if (webRequest.checkNotModified(
 				image.getImageMetadata().getDateTime().getTime())) {
 			return null;
