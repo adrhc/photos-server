@@ -1,6 +1,7 @@
 package image.persistence;
 
 import image.persistence.entity.Image;
+import image.persistence.jpacustomizations.CustomRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +25,7 @@ import java.util.Properties;
 		@ComponentScan.Filter(type = FilterType.REGEX,
 				pattern = "image.persistence.repository.*RepositoryImpl")
 })
-@EnableJpaRepositories
+@EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
 public class Jpa2xConfig {

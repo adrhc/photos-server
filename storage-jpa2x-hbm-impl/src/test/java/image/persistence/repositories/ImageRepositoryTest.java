@@ -6,6 +6,7 @@ import image.persistence.entity.Image;
 import image.persistence.repository.util.assertion.IImageAssertions;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
+import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,6 +24,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @NotThreadSafe
 @Junit5Jpa2xInMemoryDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Slf4j
 class ImageRepositoryTest implements IImageAssertions {
 	@Inject
 	private AlbumRepository albumRepository;
@@ -53,12 +55,25 @@ class ImageRepositoryTest implements IImageAssertions {
 	@Test
 	void persistImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
 		this.album.addImage(image);
-		this.imageRepository.save(image);
+		log.debug("*** imageRepository.persist(image) ***");
+		this.imageRepository.persist(image);
+
+		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+		dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
+
 		// https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
+		log.debug("*** imageRepository.count ***");
 		assertThat(this.imageRepository.count(), equalTo(31L));
 		assertThat(this.imageRepository.count(), equalTo(31L));
 		assertThat(this.imageRepository.count(), equalTo(31L));
+
 		assertImageEquals(image, dbImage);
+
+		log.debug("*** imageRepository.findAll ***");
+		List<Image> images = this.imageRepository.findAll();
+		images = this.imageRepository.findAll();
+		images = this.imageRepository.findAll();
 	}
 }
