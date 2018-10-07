@@ -73,27 +73,28 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		assertImageEquals(image, dbImage);
 	}
 
-
+	/**
+	 * // https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
+	 */
 	@Test
 	void checkQueryCache() {
 		Image image = this.album.getImages().get(0);
+
 		log.debug("*** imageRepository.findById ***");
 		this.imageRepository.findById(image.getId());
 		this.imageRepository.findById(image.getId());
 
-		// https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
 		log.debug("*** imageRepository.count ***");
 		this.imageRepository.count();
 		this.imageRepository.count();
 
 		log.debug("*** imageRepository.findAll ***");
-		List<Image> images = this.imageRepository.findAll();
-		images = this.imageRepository.findAll();
-		images = this.imageRepository.findAll();
+		this.imageRepository.findAll();
+		this.imageRepository.findAll();
 
 		log.debug("*** imageRepository.findByAlbumId ***");
-		images = this.imageRepository.findByAlbumId(this.album.getId());
-		images = this.imageRepository.findByAlbumId(this.album.getId());
+		this.imageRepository.findByAlbumId(this.album.getId());
+		this.imageRepository.findByAlbumId(this.album.getId());
 
 		log.debug("*** imageRepository.findByNameAndAlbumId ***");
 		this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
