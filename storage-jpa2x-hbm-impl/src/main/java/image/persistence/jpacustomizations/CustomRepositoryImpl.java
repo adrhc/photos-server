@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.EntityManager;
@@ -13,8 +14,9 @@ import javax.persistence.TypedQuery;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
+@NoRepositoryBean
 public class CustomRepositoryImpl<T, ID extends Serializable>
-		extends SimpleJpaRepository<T, ID> implements CustomJpaRepository<T> {
+		extends SimpleJpaRepository<T, ID> implements CustomCrudRepository<T> {
 	private final EntityManager em;
 
 	public CustomRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
