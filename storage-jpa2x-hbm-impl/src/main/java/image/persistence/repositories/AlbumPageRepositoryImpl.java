@@ -49,7 +49,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	}
 
 	@Override
-	public List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch, boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
+	public List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
+	                                     boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
 		return null;
 	}
 }
