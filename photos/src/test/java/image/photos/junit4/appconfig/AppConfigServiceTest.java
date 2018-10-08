@@ -34,7 +34,7 @@ public class AppConfigServiceTest {
 
 	@Test
 	public void getConfigs() {
-		String photosJsonFSPath = this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path);
+		String photosJsonFSPath = this.appConfigRepository.findByEnumeratedName(AppConfigEnum.photos_json_FS_path);
 		assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
 		logger.debug("photosJsonFSPath = {}", photosJsonFSPath);
 

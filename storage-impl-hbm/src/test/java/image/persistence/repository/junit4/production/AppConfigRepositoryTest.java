@@ -47,29 +47,29 @@ public class AppConfigRepositoryTest {
 
 	@Test
 	public void getAppConfigById() {
-		AppConfig appConfig = this.appConfigRepository.getAppConfigById(1);
+		AppConfig appConfig = this.appConfigRepository.getById(1);
 		assertThat(appConfig, notNullValue());
 		logger.debug(appConfig.toString());
 	}
 
 	@Test
 	public void getAppConfigByName() {
-		AppConfig appConfig = this.appConfigRepository.getAppConfigByName("albums_path");
+		AppConfig appConfig = this.appConfigRepository.findByName("albums_path");
 		Assert.assertEquals(appConfig.getValue(),
 				"/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums");
 		logger.debug(appConfig.toString());
 	}
 
 	@Test
-	public void testGetNoCacheableAppConfigByName() {
-		AppConfig appConfig = this.appConfigRepository.testGetNoCacheableAppConfigByName("albums_path");
+	public void findByNameNotCached() {
+		AppConfig appConfig = this.appConfigRepository.findByNameNotCached("albums_path");
 		assertThat(appConfig, notNullValue());
 		logger.debug(appConfig.toString());
 	}
 
 	@Test
 	public void getAppConfigs() {
-		List<AppConfig> appConfigs = this.appConfigRepository.getAppConfigs();
+		List<AppConfig> appConfigs = this.appConfigRepository.findAll();
 		assertThat(appConfigs, hasSize(greaterThan(0)));
 		logger.debug("appConfigs.size = {}", appConfigs.size());
 //		logger.debug(appConfigs.stream().map(AppConfig::toString)
@@ -77,8 +77,8 @@ public class AppConfigRepositoryTest {
 	}
 
 	@Test
-	public void testGetNoCacheableOrderedAppConfigs() {
-		List<AppConfig> appConfigs = this.appConfigRepository.testGetNoCacheableOrderedAppConfigs();
+	public void findAllOrderByNameAscNotCached() {
+		List<AppConfig> appConfigs = this.appConfigRepository.findAllOrderByNameAscNotCached();
 		assertThat(appConfigs, hasItem(anything()));
 		logger.debug("appConfigs.size = {}", appConfigs.size());
 //		logger.debug(appConfigs.stream().map(AppConfig::toString)

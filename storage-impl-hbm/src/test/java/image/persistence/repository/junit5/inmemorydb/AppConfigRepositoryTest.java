@@ -42,9 +42,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@RepeatedTest(3)
 		void createAppConfig() {
 			AppConfig appConfig = randomInstance(false, AppConfig.class);
-			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
+			AppConfigRepositoryTest.this.appConfigRepository.persist(appConfig);
 			AppConfig dbAppConfig = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(appConfig.getId());
+					.appConfigRepository.getById(appConfig.getId());
 			assertTrue(dbAppConfig.similarTo(appConfig));
 		}
 	}
@@ -57,14 +57,14 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeEach
 		void setUp() {
 			AppConfig appConfig = entityAppConfigOf("byId", "byId-value");
-			AppConfigRepositoryTest.this.appConfigRepository.createAppConfig(appConfig);
+			AppConfigRepositoryTest.this.appConfigRepository.persist(appConfig);
 			this.idAppConfig = appConfig.getId();
 		}
 
 		@Test
 		void getAppConfigById() {
 			AppConfig appConfig = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigById(this.idAppConfig);
+					.appConfigRepository.getById(this.idAppConfig);
 			assertAll("getAppConfigById",
 					() -> assertEquals("byId", appConfig.getName()),
 					() -> assertEquals("byId-value", appConfig.getValue()));
@@ -80,16 +80,16 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		void setUp() {
 			randomInstanceStream(3, false, AppConfig.class)
 					.peek(this.appConfigs::add)
-					.peek(AppConfigRepositoryTest.this.appConfigRepository::createAppConfig)
+					.peek(AppConfigRepositoryTest.this.appConfigRepository::persist)
 					.forEach(ac -> ac.setValue(ac.getValue() + "-updated"));
 		}
 
 		@Test
 		void update() {
-			AppConfigRepositoryTest.this.appConfigRepository.update(this.appConfigs);
+			AppConfigRepositoryTest.this.appConfigRepository.saveAll(this.appConfigs);
 			this.appConfigs.forEach(ac -> {
 				AppConfig updatedAppConfig = AppConfigRepositoryTest.this
-						.appConfigRepository.getAppConfigById(ac.getId());
+						.appConfigRepository.getById(ac.getId());
 				assertEquals(ac.getValue(), updatedAppConfig.getValue());
 			});
 		}
@@ -109,9 +109,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			this.appConfigRepository.updateValue(
 					"updated-value", this.appConfig0.getId());
 			AppConfig updatedAppConfig0 =
-					this.appConfigRepository.getAppConfigById(this.appConfig0.getId());
+					this.appConfigRepository.getById(this.appConfig0.getId());
 			AppConfig notUpdatedAppConfig1 =
-					this.appConfigRepository.getAppConfigById(this.appConfig1.getId());
+					this.appConfigRepository.getById(this.appConfig1.getId());
 			assertAll(
 					() -> assertEquals("updated-value", updatedAppConfig0.getValue()),
 					() -> assertEquals(this.appConfig1.getValue(), notUpdatedAppConfig1.getValue())
@@ -128,7 +128,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		void setUp() {
 			randomInstanceStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
-					.forEach(this.appConfigRepository::createAppConfig);
+					.forEach(this.appConfigRepository::persist);
 			this.appConfig0 = this.appConfigs.get(0);
 			this.appConfig1 = this.appConfigs.get(1);
 		}
@@ -142,7 +142,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeEach
 		void setUp() {
-			this.appConfigs.forEach(this.appConfigRepository::createAppConfig);
+			this.appConfigs.forEach(this.appConfigRepository::persist);
 			this.appConfig0 = this.appConfigs.get(0);
 			this.appConfig1 = this.appConfigs.get(1);
 		}
@@ -157,7 +157,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		void setUp() {
 			randomInstanceStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
-					.forEach(this.appConfigRepository::createAppConfig);
+					.forEach(this.appConfigRepository::persist);
 			this.appConfig0 = this.appConfigs.get(0);
 			this.appConfig1 = this.appConfigs.get(1);
 		}
@@ -169,23 +169,23 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
-					.createAppConfig(entityAppConfigOf("byName", "byName-value"));
+					.persist(entityAppConfigOf("byName", "byName-value"));
 		}
 
 		@Test
 		void getAppConfigByName() {
 			AppConfig appConfig = AppConfigRepositoryTest.this
-					.appConfigRepository.getAppConfigByName("byName");
+					.appConfigRepository.findByName("byName");
 			assertAll("getAppConfigByName",
 					() -> assertEquals("byName", appConfig.getName()),
 					() -> assertEquals("byName-value", appConfig.getValue()));
 		}
 
 		@Test
-		void testGetNoCacheableAppConfigByName() {
+		void findByNameNotCached() {
 			AppConfig appConfig = AppConfigRepositoryTest.this.appConfigRepository
-					.testGetNoCacheableAppConfigByName("byName");
-			assertAll("testGetNoCacheableAppConfigByName",
+					.findByNameNotCached("byName");
+			assertAll("findByNameNotCached",
 					() -> assertEquals("byName", appConfig.getName()),
 					() -> assertEquals("byName-value", appConfig.getValue()));
 		}
@@ -199,9 +199,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@BeforeAll
 		void beforeAll() {
-			this.appConfigRepository.createAppConfig(
+			this.appConfigRepository.persist(
 					entityAppConfigOf(AppConfigEnum.albums_path, "/dummy-path"));
-			this.appConfigRepository.createAppConfig(
+			this.appConfigRepository.persist(
 					entityAppConfigOf(AppConfigEnum.photos_per_page, "10"));
 		}
 
@@ -220,18 +220,18 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@Test
 		void getAppConfigs() {
 			List<AppConfig> appConfigs =
-					this.appConfigRepository.getAppConfigs();
+					this.appConfigRepository.findAll();
 			logger.debug("appConfigs.size = {}", appConfigs.size());
-			// any createAppConfig add to the same in memory db instance
+			// any persist add to the same in memory db instance
 			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
 		}
 
 		@Test
-		void testGetNoCacheableOrderedAppConfigs() {
+		void findAllOrderByNameAscNotCached() {
 			List<AppConfig> appConfigs = this.appConfigRepository
-					.testGetNoCacheableOrderedAppConfigs();
+					.findAllOrderByNameAscNotCached();
 			logger.debug("appConfigs.size = {}", appConfigs.size());
-			// any createAppConfig add to the same in memory db instance
+			// any persist add to the same in memory db instance
 			assertThat(appConfigs.size(), greaterThanOrEqualTo(2));
 		}
 

@@ -157,7 +157,7 @@ public class AppConfigCtrl implements IAppConfigCache {
 	@RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void update(@RequestBody List<AppConfig> appConfigs, Model model) throws IOException {
-		this.appConfigRepository.update(this.photosConversionSupport.entityAppConfigsOf(appConfigs));
+		this.appConfigRepository.saveAll(this.photosConversionSupport.entityAppConfigsOf(appConfigs));
 		this.appConfigService.writeJsonForAppConfigs();
 		model.addAttribute("message", "App configs updated!");
 	}
@@ -192,32 +192,32 @@ public class AppConfigCtrl implements IAppConfigCache {
 //        logger.debug("modified:\n{}", ArrayUtils.toString(appConfigs));
 //        return appConfigs;
 		return this.photosConversionSupport.cdmAppConfigsOf(
-				this.appConfigRepository.getAppConfigs());
+				this.appConfigRepository.findAll());
 	}
 
-	@RequestMapping(value = "testGetNoCacheableOrderedAppConfigs",
+	@RequestMapping(value = "findAllOrderByNameAscNotCached",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
+	public List<AppConfig> findAllOrderByNameAscNotCached() {
 		return this.photosConversionSupport.cdmAppConfigsOf(
-				this.appConfigRepository.testGetNoCacheableOrderedAppConfigs());
+				this.appConfigRepository.findAllOrderByNameAscNotCached());
 	}
 
-	@RequestMapping(value = "testGetNoCacheableAppConfigByName",
+	@RequestMapping(value = "findByNameNotCached",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public AppConfig testGetNoCacheableAppConfigByName() {
+	public AppConfig findByNameNotCached() {
 		return this.cs.convert(
-				this.appConfigRepository.testGetNoCacheableAppConfigByName("albums_path"),
+				this.appConfigRepository.findByNameNotCached("albums_path"),
 				AppConfig.class);
 	}
 
 	@PostConstruct
 	public void postConstruct() {
 		this.testRAMObjectToJson = this.photosConversionSupport.cdmAppConfigsOf(
-				this.appConfigRepository.getAppConfigs());
+				this.appConfigRepository.findAll());
 		if (this.testRAMString != null) {
-			logger.debug("Using not null testRAMString with length {}", testRAMString.length());
+			logger.debug("Using not null testRAMString with length {}", this.testRAMString.length());
 			return;
-		}			
+		}
 		try {
 			this.testRAMString = this.objectMapper.writeValueAsString(this.testRAMObjectToJson);
 		} catch (JsonProcessingException e) {

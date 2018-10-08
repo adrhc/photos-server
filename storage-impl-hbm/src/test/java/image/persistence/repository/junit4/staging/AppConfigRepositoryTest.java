@@ -35,7 +35,7 @@ public class AppConfigRepositoryTest implements IAppConfigSupplier {
 	public void setUp() {
 		this.appConfigs = randomInstanceList(3, false, AppConfig.class);
 		for (AppConfig appConfig : this.appConfigs) {
-			this.appConfigRepository.createAppConfig(appConfig);
+			this.appConfigRepository.persist(appConfig);
 		}
 	}
 
@@ -44,11 +44,11 @@ public class AppConfigRepositoryTest implements IAppConfigSupplier {
 		for (AppConfig appConfig : this.appConfigs) {
 			appConfig.setValue(appConfig.getValue() + "-updated");
 		}
-		this.appConfigRepository.update(this.appConfigs);
+		this.appConfigRepository.saveAll(this.appConfigs);
 		AppConfig updatedAppConfig;
 		for (AppConfig appConfig : this.appConfigs) {
 			updatedAppConfig = this.appConfigRepository
-					.getAppConfigById(appConfig.getId());
+					.getById(appConfig.getId());
 			Assert.assertEquals(updatedAppConfig.getValue(), appConfig.getValue());
 		}
 	}

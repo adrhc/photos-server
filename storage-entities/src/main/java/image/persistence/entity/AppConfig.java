@@ -12,6 +12,7 @@ import java.util.Date;
  * Time: 5:28 PM
  * To change this template use File | Settings | File Templates.
  */
+@NamedNativeQuery(name = "AppConfig.getDBNow", query = "SELECT now() FROM dual")
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AppConfig implements IStorageEntity {

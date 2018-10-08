@@ -27,14 +27,14 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional
-	public void createAppConfig(AppConfig appConfig) {
+	public void persist(AppConfig appConfig) {
 		this.sessionFactory.getCurrentSession().persist(appConfig);
 	}
 
 	@Override
 	@Transactional
 	public void deleteAppConfig(AppConfigEnum ace) {
-		AppConfig appConfig = getAppConfigByName(ace.getValue());
+		AppConfig appConfig = findByName(ace.getValue());
 		this.sessionFactory.getCurrentSession().delete(appConfig);
 	}
 
@@ -46,7 +46,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	}
 
 	private Integer getConfigInteger(AppConfigEnum ace) {
-		String s = getConfig(ace);
+		String s = findByEnumeratedName(ace);
 		if (s == null) {
 			return 0;
 		}
@@ -55,8 +55,8 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional
-	public String getConfig(AppConfigEnum appConfigEnum) {
-		return getAppConfigByName(appConfigEnum.getValue()).getValue();
+	public String findByEnumeratedName(AppConfigEnum appConfigEnum) {
+		return findByName(appConfigEnum.getValue()).getValue();
 	}
 
 	@Override
@@ -68,18 +68,18 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional
 	public String getAlbumsPath() {
-		return getConfig(AppConfigEnum.albums_path);
+		return findByEnumeratedName(AppConfigEnum.albums_path);
 	}
 
 	@Override
 	@Transactional
-	public AppConfig getAppConfigById(Integer id) {
+	public AppConfig getById(Integer id) {
 		return this.sessionFactory.getCurrentSession().get(AppConfig.class, id);
 	}
 
 	@Override
 	@Transactional
-	public AppConfig getAppConfigByName(String name) {
+	public AppConfig findByName(String name) {
 		CriteriaBuilder builder = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
 		CriteriaQuery<AppConfig> criteria = builder.createQuery(AppConfig.class);
 		Root<AppConfig> root = criteria.from(AppConfig.class);
@@ -90,8 +90,8 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional
-	public void update(List<AppConfig> appConfigs) {
-		List<AppConfig> dbAppConfigs = getAppConfigs();
+	public void saveAll(Iterable<AppConfig> appConfigs) {
+		List<AppConfig> dbAppConfigs = findAll();
 		for (AppConfig dbAppConfig : dbAppConfigs) {
 			for (AppConfig appConfig : appConfigs) {
 				if (dbAppConfig.getId().equals(appConfig.getId())) {
@@ -105,14 +105,14 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional
 	public void updateValue(String value, Integer appConfigId) {
-		AppConfig dbAppConfig = getAppConfigById(appConfigId);
+		AppConfig dbAppConfig = getById(appConfigId);
 		dbAppConfig.setValue(value);
 	}
 
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<AppConfig> getAppConfigs() {
+	public List<AppConfig> findAll() {
 		CriteriaBuilder builder = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
 		CriteriaQuery<AppConfig> criteria = builder.createQuery(AppConfig.class);
 		Root<AppConfig> root = criteria.from(AppConfig.class);
@@ -123,7 +123,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<AppConfig> testGetNoCacheableOrderedAppConfigs() {
+	public List<AppConfig> findAllOrderByNameAscNotCached() {
 		Session session = this.sessionFactory.getCurrentSession();
 		return (List<AppConfig>) session.createCriteria(AppConfig.class)
 				.addOrder(Order.asc("name")).list();
@@ -131,7 +131,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional(readOnly = true)
-	public AppConfig testGetNoCacheableAppConfigByName(String name) {
+	public AppConfig findByNameNotCached(String name) {
 		Session session = this.sessionFactory.getCurrentSession();
 		return (AppConfig) session.createCriteria(AppConfig.class)
 				.add(Restrictions.eq("name", name)).uniqueResult();

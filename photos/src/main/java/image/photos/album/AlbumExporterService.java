@@ -91,7 +91,7 @@ public class AlbumExporterService {
 	 * Necesara doar la debug din js/grunt fara serverul java.
 	 */
 	public boolean writeJsonForAlbumsPageSafe() {
-		File file = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
+		File file = new File(this.appConfigRepository.findByEnumeratedName(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
 		List<AlbumCover> albums = this.albumCoverService.getCovers();
 		try {
@@ -111,7 +111,7 @@ public class AlbumExporterService {
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
-		File dir = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path),
+		File dir = new File(this.appConfigRepository.findByEnumeratedName(AppConfigEnum.photos_json_FS_path),
 				album.getId().toString());
 		dir.mkdirs();
 		File file = new File(dir, "pageCount.json");

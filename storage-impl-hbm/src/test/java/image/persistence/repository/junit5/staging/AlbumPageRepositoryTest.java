@@ -77,7 +77,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 		this.albumRepository.persist(album);
 		this.albumId = album.getId();
 		// required photos_per_page created
-		this.appConfigRepository.createAppConfig(
+		this.appConfigRepository.persist(
 				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
 	}
 

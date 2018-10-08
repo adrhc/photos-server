@@ -78,7 +78,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		// insert albums
 		this.albums.forEach(this.albumRepository::persist);
 		// create photos_per_page app config
-		this.appConfigRepository.createAppConfig(
+		this.appConfigRepository.persist(
 				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
 	}
 

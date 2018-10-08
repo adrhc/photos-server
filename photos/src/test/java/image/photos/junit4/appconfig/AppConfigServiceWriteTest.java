@@ -56,10 +56,10 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 		AppConfig photosJsonFSPath = new AppConfig();
 		photosJsonFSPath.setName(AppConfigEnum.photos_json_FS_path.getValue());
 		photosJsonFSPath.setValue(this.tempDir.toAbsolutePath().toString());
-		this.appConfigRepository.createAppConfig(photosJsonFSPath);
+		this.appConfigRepository.persist(photosJsonFSPath);
 		// some other random AppConfig
 		randomInstanceStream(3, false, AppConfig.class)
-				.forEach(this.appConfigRepository::createAppConfig);
+				.forEach(this.appConfigRepository::persist);
 	}
 
 	@Test

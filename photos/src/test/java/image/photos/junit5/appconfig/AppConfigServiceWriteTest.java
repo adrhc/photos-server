@@ -45,7 +45,7 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 
 	@BeforeEach
 	void setUp() {
-		this.appConfigs.forEach(this.appConfigRepository::createAppConfig);
+		this.appConfigs.forEach(this.appConfigRepository::persist);
 	}
 
 	@Test
@@ -68,7 +68,7 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 		AppConfig appConfig = new AppConfig();
 		appConfig.setName(AppConfigEnum.photos_json_FS_path.getValue());
 		appConfig.setValue(photosJsonFSPath);
-		this.appConfigRepository.createAppConfig(appConfig);
+		this.appConfigRepository.persist(appConfig);
 		this.appConfigs.add(appConfig);
 	}
 }
