@@ -40,7 +40,28 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 	@NestedPerClass
 	@Junit5Jpa2xInMemoryDbConfig
-	class GetAppConfigByName {
+	class UpdateValue {
+		private AppConfig appConfig;
+
+		@BeforeAll
+		void beforeAll() {
+			this.appConfig = AppConfigRepositoryTest.this.appConfigRepository
+					.save(entityAppConfigOf("byName", "byName-value"));
+		}
+
+		@Test
+		void updateValue() {
+			this.appConfig.setValue(this.appConfig.getValue() + "-updated");
+			AppConfigRepositoryTest.this.appConfigRepository
+					.updateValue(this.appConfig.getValue(), this.appConfig.getId());
+			AppConfig dbAppConfig = AppConfigRepositoryTest.this.appConfigRepository.getById(this.appConfig.getId());
+			assertEquals(this.appConfig.getValue(), dbAppConfig.getValue(), "getAppConfigByName");
+		}
+	}
+
+	@NestedPerClass
+	@Junit5Jpa2xInMemoryDbConfig
+	class VariousFinders {
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository

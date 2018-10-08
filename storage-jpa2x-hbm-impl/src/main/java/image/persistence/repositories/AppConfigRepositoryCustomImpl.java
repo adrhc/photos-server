@@ -1,5 +1,6 @@
 package image.persistence.repositories;
 
+import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +30,9 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 	}
 
 	@Override
-	public void updateValue(String value, Integer appConfigId) {
-
+	public void updateValue(String value, Integer id) {
+		AppConfig appConfig = this.em.find(AppConfig.class, id);
+		appConfig.setValue(value);
 	}
 
 	@Override
