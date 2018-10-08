@@ -10,9 +10,9 @@ import java.util.List;
  * Created by adr on 2/22/18.
  */
 public interface AppConfigRepository {
-	void deleteAppConfig(AppConfigEnum ace);
+	void deleteByEnumeratedName(AppConfigEnum ace);
 
-	String findByEnumeratedName(AppConfigEnum appConfigEnum);
+	String findValueByEnumeratedName(AppConfigEnum appConfigEnum);
 
 	Integer getPhotosPerPage();
 

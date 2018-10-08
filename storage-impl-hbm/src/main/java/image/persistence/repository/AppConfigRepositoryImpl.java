@@ -33,7 +33,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional
-	public void deleteAppConfig(AppConfigEnum ace) {
+	public void deleteByEnumeratedName(AppConfigEnum ace) {
 		AppConfig appConfig = findByName(ace.getValue());
 		this.sessionFactory.getCurrentSession().delete(appConfig);
 	}
@@ -46,7 +46,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	}
 
 	private Integer getConfigInteger(AppConfigEnum ace) {
-		String s = findByEnumeratedName(ace);
+		String s = findValueByEnumeratedName(ace);
 		if (s == null) {
 			return 0;
 		}
@@ -55,7 +55,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 
 	@Override
 	@Transactional
-	public String findByEnumeratedName(AppConfigEnum appConfigEnum) {
+	public String findValueByEnumeratedName(AppConfigEnum appConfigEnum) {
 		return findByName(appConfigEnum.getValue()).getValue();
 	}
 
@@ -68,7 +68,7 @@ public class AppConfigRepositoryImpl implements AppConfigRepository {
 	@Override
 	@Transactional
 	public String getAlbumsPath() {
-		return findByEnumeratedName(AppConfigEnum.albums_path);
+		return findValueByEnumeratedName(AppConfigEnum.albums_path);
 	}
 
 	@Override

@@ -86,7 +86,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	void tearDown() {
 		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteById(a.getId())));
 		ignoreExc(() -> this.albumRepository.deleteById(this.specialAlbum.getId()));
-		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
+		ignoreExc(() -> this.appConfigRepository.deleteByEnumeratedName(AppConfigEnum.photos_per_page));
 	}
 
 	@Test

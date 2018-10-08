@@ -3,7 +3,7 @@ package image.persistence.repositories;
 import image.persistence.entity.enums.AppConfigEnum;
 
 public interface AppConfigRepositoryCustom {
-	void deleteAppConfig(AppConfigEnum ace);
+	void deleteByEnumeratedName(AppConfigEnum ace);
 
 	Integer getPhotosPerPage();
 
@@ -11,5 +11,5 @@ public interface AppConfigRepositoryCustom {
 
 	void updateValue(String value, Integer appConfigId);
 
-	String findByEnumeratedName(AppConfigEnum appConfigEnum);
+	String findValueByEnumeratedName(AppConfigEnum appConfigEnum);
 }

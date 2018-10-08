@@ -67,7 +67,7 @@ public class AppConfigService {
 	 * @throws IOException
 	 */
 	public File writeJsonForAppConfigs() throws IOException {
-		File dir = new File(this.appConfigRepository.findByEnumeratedName(AppConfigEnum.photos_json_FS_path));
+		File dir = new File(this.appConfigRepository.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path));
 		dir.mkdirs();
 		File file = new File(dir, this.appConfigsFile);
 		List<AppConfig> appConfigs = this.appConfigRepository.findAll();
