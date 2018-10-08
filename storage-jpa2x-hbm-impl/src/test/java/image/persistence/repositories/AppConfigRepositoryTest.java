@@ -81,7 +81,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@Test
 		void deleteByEnumeratedName() {
-			log.debug("*** appConfigRepository.findAll 2x ***");
+			log.debug("*** appConfigRepository.findAll 2x (using cache) ***");
 			List<AppConfig> all = AppConfigRepositoryTest.this.appConfigRepository.findAll();
 			// served from cache
 			AppConfigRepositoryTest.this.appConfigRepository.findAll();
@@ -89,7 +89,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			log.debug("*** appConfigRepository.deleteByEnumeratedName ***");
 			AppConfigRepositoryTest.this.appConfigRepository
 					.deleteByEnumeratedName(AppConfigEnum.albums_path);
-			log.debug("*** appConfigRepository.findAll (NOT served from cache) ***");
+			log.debug("*** appConfigRepository.findAll (NOT using cache) ***");
 			all = AppConfigRepositoryTest.this.appConfigRepository.findAll();
 			assertThat("getAppConfigByName", all, empty());
 		}
