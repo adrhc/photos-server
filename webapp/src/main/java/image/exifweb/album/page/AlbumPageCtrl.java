@@ -30,69 +30,69 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/json/page")
 public class AlbumPageCtrl implements INotModifiedChecker, IDateUtil {
-    private static final Logger logger = LoggerFactory.getLogger(AlbumPageCtrl.class);
-    @Inject
-    private AlbumPageRepository albumPageRepository;
-    @Inject
-    private AppConfigRepository appConfigRepository;
-    @Inject
-    private AlbumPageService albumPageService;
-    @Inject
-    private AlbumRepository albumRepository;
+	private static final Logger logger = LoggerFactory.getLogger(AlbumPageCtrl.class);
+	@Inject
+	private AlbumPageRepository albumPageRepository;
+	@Inject
+	private AppConfigRepository appConfigRepository;
+	@Inject
+	private AlbumPageService albumPageService;
+	@Inject
+	private AlbumRepository albumRepository;
 
-    /**
-     * Test without authorization:
-     * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=false"
-     * Test with authorization:
-     * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=true"
-     */
-    @RequestMapping(value = "/count", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
-    public PageCount pageCount(
-            @RequestParam(name = "albumId") Integer albumId,
-            @RequestParam(name = "toSearch", required = false) String toSearch,
-            @RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
-            @RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable) {
-        PageCount pageCount = new PageCount();
-        pageCount.setPageCount(this.albumPageRepository.getPageCount(
-                toSearch, viewHidden, viewOnlyPrintable, albumId));
-        pageCount.setPhotosPerPage(this.appConfigRepository.getPhotosPerPage());
-        logger.debug(pageCount.toString());
-        return pageCount;
-    }
+	/**
+	 * Test without authorization:
+	 * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=false"
+	 * Test with authorization:
+	 * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=true"
+	 */
+	@RequestMapping(value = "/count", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
+	public PageCount pageCount(
+			@RequestParam(name = "albumId") Integer albumId,
+			@RequestParam(name = "toSearch", required = false) String toSearch,
+			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
+			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable) {
+		PageCount pageCount = new PageCount();
+		pageCount.setPageCount(this.albumPageRepository.countPages(
+				toSearch, viewHidden, viewOnlyPrintable, albumId));
+		pageCount.setPhotosPerPage(this.appConfigRepository.getPhotosPerPage());
+		logger.debug(pageCount.toString());
+		return pageCount;
+	}
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
-    @RequestMapping(method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<AlbumPage> page(
-            @RequestParam(name = "albumId") Integer albumId,
-            @RequestParam(name = "pageNr") int pageNr,
-            @RequestParam(name = "sort", defaultValue = "asc") String sort,
-            @RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
-            @RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
-            @RequestParam(name = "toSearch", required = false) String toSearch,
-            WebRequest webRequest) {
-        INotModifiedChecker _this = this;
-        return _this.checkNotModified(
-                () -> this.albumPageService.getPage(pageNr,
-                        ESortType.valueOf(sort.toUpperCase()),
-                        toSearch, viewHidden, viewOnlyPrintable, albumId),
-                albumPages -> {
-                    /*
-                     * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
-                     * location /photos/app/
-                     * location /photosj/app/
-                     *
-                     * ImageLastUpdate means the record in DB (@Version) instead of actual file!
-                     * ThumbLastModified is related to actual image file.
-                     */
-                    Optional<Date> imageLastUpdate = albumPages.stream()
-                            .flatMap(ap -> Stream.of(ap.getImageLastUpdate(), ap.getAlbumLastUpdate()))
-                            .max(Date::compareTo);
-                    // e.g. album's cover might change so the page
-                    // might no longer contain the album's cover image
-                    return imageLastUpdate.orElseGet(Date::new);
-                }, webRequest);
-    }
+	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
+	@RequestMapping(method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public List<AlbumPage> page(
+			@RequestParam(name = "albumId") Integer albumId,
+			@RequestParam(name = "pageNr") int pageNr,
+			@RequestParam(name = "sort", defaultValue = "asc") String sort,
+			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
+			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
+			@RequestParam(name = "toSearch", required = false) String toSearch,
+			WebRequest webRequest) {
+		INotModifiedChecker _this = this;
+		return _this.checkNotModified(
+				() -> this.albumPageService.getPage(pageNr,
+						ESortType.valueOf(sort.toUpperCase()),
+						toSearch, viewHidden, viewOnlyPrintable, albumId),
+				albumPages -> {
+					/*
+					 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
+					 * location /photos/app/
+					 * location /photosj/app/
+					 *
+					 * ImageLastUpdate means the record in DB (@Version) instead of actual file!
+					 * ThumbLastModified is related to actual image file.
+					 */
+					Optional<Date> imageLastUpdate = albumPages.stream()
+							.flatMap(ap -> Stream.of(ap.getImageLastUpdate(), ap.getAlbumLastUpdate()))
+							.max(Date::compareTo);
+					// e.g. album's cover might change so the page
+					// might no longer contain the album's cover image
+					return imageLastUpdate.orElseGet(Date::new);
+				}, webRequest);
+	}
 }

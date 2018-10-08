@@ -2,6 +2,7 @@ package image.persistence.repositories;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
+import org.hibernate.jpa.QueryHints;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -43,7 +44,7 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 		TypedQuery<String> q = this.em.createQuery(
 				"select a.value from AppConfig a where a.name = :name", String.class);
 		q.setParameter("name", appConfigEnum.getValue());
-		q.setHint("org.hibernate.cacheable", "true");
+		q.setHint(QueryHints.HINT_CACHEABLE, true);
 		return q.getSingleResult();
 	}
 }

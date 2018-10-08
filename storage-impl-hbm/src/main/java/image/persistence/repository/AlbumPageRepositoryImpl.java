@@ -16,20 +16,6 @@ import java.util.List;
  */
 @Service
 public class AlbumPageRepositoryImpl implements AlbumPageRepository {
-	/**
-	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
-	 * <p>
-	 * image0_.status=IF(:viewHidden, image0_.status, image0_.status
-	 * -(image0_.status & 1)-(image0_.status & 2)-(image0_.status & 4)-(image0_.status & 8))
-	 */
-	private static final String VIEW_HIDDEN_SQL =
-			"AND (:viewHidden = true OR i.flags.hidden = false AND i.flags.personal = false AND i.flags.ugly = false AND i.flags.duplicate = false) ";
-	/**
-	 * Shows only printable images.
-	 */
-	private static final String VIEW_PRINTABLE_SQL = "AND (:viewOnlyPrintable = false OR i.flags.printable = true) ";
-	public static final Integer NULL_ALBUM_ID = -1;
-
 	@Inject
 	private SessionFactory sessionFactory;
 	@Inject
@@ -37,8 +23,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 
 	@Override
 	@Transactional(readOnly = true)
-	public int getPageCount(String toSearch, boolean viewHidden,
-	                        boolean viewOnlyPrintable, Integer albumId) {
+	public int countPages(String toSearch, boolean viewHidden,
+	                      boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
 		Session session = this.sessionFactory.getCurrentSession();
 		Query q;
@@ -64,7 +50,6 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		q.setBoolean("viewOnlyPrintable", viewOnlyPrintable);
 		return Double.valueOf(Math.ceil(((Number) q.uniqueResult()).doubleValue() /
 				this.appConfigRepository.getPhotosPerPage())).intValue();
-
 	}
 
 	/**

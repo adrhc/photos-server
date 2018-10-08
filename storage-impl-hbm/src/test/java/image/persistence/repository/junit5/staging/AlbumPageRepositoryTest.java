@@ -83,7 +83,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@Test
 	void counting1Page() {
-		int pageCount = this.albumPageRepository.getPageCount(
+		int pageCount = this.albumPageRepository.countPages(
 				T1_TO_SEARCH, false, false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
@@ -93,7 +93,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@Test
 	void counting0Pages() {
-		int pageCount = this.albumPageRepository.getPageCount(
+		int pageCount = this.albumPageRepository.countPages(
 				this.hiddenImage.getName(), false,
 				false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
@@ -104,7 +104,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@Test
 	void countingAllPagesForAlbum() {
-		int pageCount = this.albumPageRepository.getPageCount("",
+		int pageCount = this.albumPageRepository.countPages("",
 				true, false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = true, " +
 						"viewOnlyPrintable = false, albumId = {}",

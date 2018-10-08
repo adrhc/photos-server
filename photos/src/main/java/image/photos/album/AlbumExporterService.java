@@ -106,7 +106,7 @@ public class AlbumExporterService {
 
 	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
-		int pageCount = this.albumPageRepository.getPageCount(null, false, false, album.getId());
+		int pageCount = this.albumPageRepository.countPages(null, false, false, album.getId());
 		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
