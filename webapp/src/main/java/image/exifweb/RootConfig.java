@@ -5,9 +5,9 @@ import image.persistence.HibernateConfig;
 import image.photos.PhotosConfig;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.Controller;
 
 /**
  * Created by adr on 2/16/18.
