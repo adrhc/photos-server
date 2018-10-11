@@ -61,6 +61,6 @@ class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfi
 		// cache loading
 		this.albumRepository.getById(this.albums.get(0).getId());
 		this.albumPageRepository.countPages(null, false, false, AlbumPageRepository.NULL_ALBUM_ID);
-		this.cacheStatisticsRepository.getSecondLevelCacheStatistics(null);
+		this.cacheStatisticsRepository.getSecondLevelCacheStatistics(Album.class.getName());
 	}
 }
