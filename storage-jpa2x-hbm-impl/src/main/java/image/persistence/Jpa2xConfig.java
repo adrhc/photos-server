@@ -1,7 +1,7 @@
 package image.persistence;
 
 import image.persistence.entity.Image;
-import image.persistence.jpacustomizations.CustomRepositoryImpl;
+import image.persistence.jpacustomizations.CustomJpaRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,12 +20,10 @@ import java.util.Properties;
 
 @Profile("jpa2x-hbm-impl")
 @Configuration
-@ComponentScan(excludeFilters = {
-		@ComponentScan.Filter(Configuration.class),
-		@ComponentScan.Filter(type = FilterType.REGEX,
-				pattern = "image.persistence.repository.*RepositoryImpl")
-})
-@EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
+@ComponentScan(basePackages = {
+		"image.persistence.repositories",
+		"image.persistence.services"})
+@EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
 public class Jpa2xConfig {

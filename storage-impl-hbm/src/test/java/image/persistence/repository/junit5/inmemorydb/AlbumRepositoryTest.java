@@ -1,7 +1,6 @@
 package image.persistence.repository.junit5.inmemorydb;
 
 import image.persistence.entity.Album;
-import image.persistence.repository.AlbumCoverRepository;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.util.random.RandomBeansExtensionEx;
@@ -22,11 +21,9 @@ import static org.hamcrest.Matchers.both;
 @ExtendWith(RandomBeansExtensionEx.class)
 @NotThreadSafe
 @Junit5HbmInMemoryDbConfig
-class AlbumCoverRepositoryTest {
+class AlbumRepositoryTest {
 	@Autowired
 	private AlbumRepository albumRepository;
-	@Autowired
-	private AlbumCoverRepository albumCoverRepository;
 	private Date before;
 
 	@BeforeEach
@@ -40,7 +37,7 @@ class AlbumCoverRepositoryTest {
 
 	@Test
 	void getAlbumCoversLastUpdateDate() {
-		Date date = this.albumCoverRepository.getAlbumCoversLastUpdateDate();
+		Date date = this.albumRepository.getAlbumCoversLastUpdateDate();
 		assertThat(date, both(sameOrAfter(this.before))
 				.and(sameOrBefore(new Date())));
 	}

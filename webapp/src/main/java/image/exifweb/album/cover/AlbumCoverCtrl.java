@@ -2,7 +2,7 @@ package image.exifweb.album.cover;
 
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.repository.AlbumCoverRepository;
+import image.persistence.repository.AlbumRepository;
 import image.photos.album.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class AlbumCoverCtrl implements INotModifiedChecker {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverCtrl.class);
 
 	@Inject
-	private AlbumCoverRepository albumCoverRepository;
+	private AlbumRepository albumRepository;
 	@Inject
 	private AlbumCoverService albumCoverService;
 
@@ -30,15 +30,15 @@ public class AlbumCoverCtrl implements INotModifiedChecker {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
-		return checkNotModified(albumCoverRepository::getAlbumCoversLastUpdateDate,
-				albumCoverService::getCovers, webRequest);
+		return checkNotModified(this.albumRepository::getAlbumCoversLastUpdateDate,
+				this.albumCoverService::getCovers, webRequest);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public AlbumCover getAlbumCoverById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		return checkNotModified(() -> albumCoverService.getCoverById(id),
+		return checkNotModified(() -> this.albumCoverService.getCoverById(id),
 				AlbumCover::getLastUpdate, webRequest);
 	}
 
@@ -46,7 +46,7 @@ public class AlbumCoverCtrl implements INotModifiedChecker {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public AlbumCover searchAlbumCover(@RequestParam String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		return checkNotModified(() -> albumCoverService.getCoverByName(name),
+		return checkNotModified(() -> this.albumCoverService.getCoverByName(name),
 				AlbumCover::getLastUpdate, webRequest);
 	}
 }

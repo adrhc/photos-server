@@ -2,6 +2,7 @@ package image.persistence.repository;
 
 import image.persistence.entity.Album;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,4 +26,6 @@ public interface AlbumRepository {
 	boolean removeAlbumCover(Integer albumId);
 
 	boolean clearDirtyForAlbum(Integer albumId);
+
+	Date getAlbumCoversLastUpdateDate();
 }

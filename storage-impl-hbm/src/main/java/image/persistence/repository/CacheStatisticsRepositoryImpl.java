@@ -2,7 +2,6 @@ package image.persistence.repository;
 
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -16,10 +15,8 @@ public class CacheStatisticsRepositoryImpl implements CacheStatisticsRepository 
 	private SessionFactory sessionFactory;
 
 	@Override
-	@Transactional(readOnly = true)
 	public Map getSecondLevelCacheStatistics(String name) {
-		return sessionFactory.getStatistics()
-				.getSecondLevelCacheStatistics(name)
-				.getEntries();
+		return this.sessionFactory.getStatistics()
+				.getSecondLevelCacheStatistics(name).getEntries();
 	}
 }

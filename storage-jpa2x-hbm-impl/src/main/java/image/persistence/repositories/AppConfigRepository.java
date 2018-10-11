@@ -21,5 +21,8 @@ public interface AppConfigRepository extends AppConfigRepositoryCustom, ICustomJ
 	@Query("select a from AppConfig a order by a.name asc")
 	List<AppConfig> findAllOrderByNameAscNotCached();
 
+	/**
+	 * see NamedNativeQuery(name = "AppConfig.getDBNow" ...)
+	 */
 	Date getDBNow();
 }

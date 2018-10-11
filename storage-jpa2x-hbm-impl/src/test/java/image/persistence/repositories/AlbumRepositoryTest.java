@@ -17,8 +17,13 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
 
+import static org.exparity.hamcrest.date.DateMatchers.sameOrAfter;
+import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.both;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
@@ -32,9 +37,11 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 
 	@Random(type = Album.class, size = 25, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})
 	private List<Album> albums;
+	private Date before;
 
 	@BeforeAll
 	void givenAlbums() {
+		this.before = new Date();
 		this.albums.forEach(this.albumRepository::persist);
 	}
 
@@ -63,6 +70,13 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 		this.albumRepository.clearDirtyForAlbum(album.getId());
 		Album dbAlbum = this.albumRepository.getById(album.getId());
 		assertFalse(dbAlbum.isDirty());
+	}
+
+	@Test
+	void getAlbumCoversLastUpdateDate() {
+		Date date = this.albumRepository.getAlbumCoversLastUpdateDate();
+		assertThat(date, both(sameOrAfter(this.before))
+				.and(sameOrBefore(new Date())));
 	}
 
 	@Junit5Jpa2xInMemoryDbConfig

@@ -38,8 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Junit5Jpa2xInMemoryDbConfig
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-class AlbumPageRepositoryImplTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
-	private static final String T1_TO_SEARCH = "DSC_1555";
+public class AlbumPageRepositoryImplTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
+	public static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
 	@Autowired
 	private AlbumRepository albumRepository;

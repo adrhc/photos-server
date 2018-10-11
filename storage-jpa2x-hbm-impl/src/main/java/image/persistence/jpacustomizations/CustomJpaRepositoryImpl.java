@@ -16,16 +16,16 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 @NoRepositoryBean
-public class CustomRepositoryImpl<T, ID extends Serializable>
+public class CustomJpaRepositoryImpl<T, ID extends Serializable>
 		extends SimpleJpaRepository<T, ID> implements ICustomCrudRepository<T, ID> {
 	private final EntityManager em;
 
-	public CustomRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
+	public CustomJpaRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
 		super(entityInformation, entityManager);
 		this.em = entityManager;
 	}
 
-	public CustomRepositoryImpl(Class<T> domainClass, EntityManager em) {
+	public CustomJpaRepositoryImpl(Class<T> domainClass, EntityManager em) {
 		super(domainClass, em);
 		this.em = em;
 	}

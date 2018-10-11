@@ -6,8 +6,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +13,9 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.text.SimpleDateFormat;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,8 +27,8 @@ import java.util.List;
  */
 @Component
 public class AlbumRepositoryImpl implements AlbumRepository {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+	//	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
+//	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Inject
 	private SessionFactory sessionFactory;
 
@@ -166,5 +166,32 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 		album.setDirty(false);
 //		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
 		return true;
+	}
+
+	/**
+	 * Is about which is the latest time when an AlbumCover was modified.
+	 * A last-modified date change might set dirty to false
+	 * so while album is AlbumCover is no longer dirty.
+	 * <p>
+	 * returning Timestamp because Timestamp.getTime() adds nanos
+	 *
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public Date getAlbumCoversLastUpdateDate() {
+		Session session = this.sessionFactory.getCurrentSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Date> criteria = cb.createQuery(Date.class);
+		Root<Album> root = criteria.from(Album.class);
+		criteria.select(cb.greatest(root.get(lastUpdate())));
+		Query<Date> q = session.createQuery(criteria);
+		return q.setCacheable(true).getSingleResult();
+	}
+
+	private SingularAttribute<Album, Date> lastUpdate() {
+		Session session = this.sessionFactory.getCurrentSession();
+		EntityType<Album> type = session.getMetamodel().entity(Album.class);
+		return type.getDeclaredSingularAttribute("lastUpdate", Date.class);
 	}
 }
