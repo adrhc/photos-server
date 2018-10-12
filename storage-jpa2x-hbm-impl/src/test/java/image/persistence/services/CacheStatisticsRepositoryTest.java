@@ -9,7 +9,7 @@ import image.persistence.repositories.AlbumRepository;
 import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.CacheStatisticsRepository;
-import image.persistence.repository.util.random.RandomBeansExtensionEx;
+import image.persistence.util.random.RandomBeansExtensionEx;
 import image.persistence.util.IPositiveIntegerRandom;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;

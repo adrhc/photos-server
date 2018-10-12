@@ -7,7 +7,7 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
 import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
-import image.persistence.repository.util.IDateNoMillisSupplier;
+import image.persistence.util.IDateNoMillisSupplier;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

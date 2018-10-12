@@ -6,7 +6,7 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbNestedConfig;
-import image.persistence.repository.util.random.RandomBeansExtensionEx;
+import image.persistence.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;

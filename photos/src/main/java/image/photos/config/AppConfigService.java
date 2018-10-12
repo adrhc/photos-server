@@ -3,7 +3,7 @@ package image.photos.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repository.AppConfigRepository;
+import image.persistence.repositories.AppConfigRepository;
 import image.photos.util.conversion.PhotosConversionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,9 @@
 package image.persistence.config;
 
 import image.persistence.Jpa2xConfig;
+import image.persistence.config.profiles.StagingJdbcDbProfile;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Jpa2xConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=true")
-@ActiveProfiles({"test-jdbc-ds", "jpa2x-hbm-impl"})
+@StagingJdbcDbProfile
 @Tag("junit5")
 @Tag("jpa2x")
 @Tag("staging")

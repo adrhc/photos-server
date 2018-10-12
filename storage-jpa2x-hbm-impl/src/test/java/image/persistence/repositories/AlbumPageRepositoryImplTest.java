@@ -11,7 +11,7 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.persistence.repository.util.random.RandomBeansExtensionEx;
+import image.persistence.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;

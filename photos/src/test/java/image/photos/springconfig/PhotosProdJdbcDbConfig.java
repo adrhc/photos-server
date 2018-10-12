@@ -1,6 +1,6 @@
 package image.photos.springconfig;
 
-import image.persistence.repository.springprofile.ProdJdbcDbProfile;
+import image.persistence.config.profiles.ProdJdbcDbProfile;
 import image.photos.PhotosConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;

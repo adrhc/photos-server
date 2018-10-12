@@ -3,7 +3,7 @@ package image.persistence.entity;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
-import image.persistence.repository.util.random.IEnhancedRandom;
+import image.persistence.util.random.IEnhancedRandom;
 import image.persistence.util.IPositiveIntegerRandom;
 
 import java.util.Date;

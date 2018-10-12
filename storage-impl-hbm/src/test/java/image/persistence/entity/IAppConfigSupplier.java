@@ -1,7 +1,7 @@
 package image.persistence.entity;
 
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repository.util.random.IEnhancedRandom;
+import image.persistence.util.random.IEnhancedRandom;
 
 /**
  * Created by adr on 2/26/18.

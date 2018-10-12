@@ -1,6 +1,6 @@
 package image.persistence.entity;
 
-import image.persistence.repository.util.random.IEnhancedRandom;
+import image.persistence.util.random.IEnhancedRandom;
 import image.persistence.util.IPositiveIntegerRandom;
 
 import java.util.List;

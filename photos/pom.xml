@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>exifweb</groupId>
-            <artifactId>storage-impl-hbm</artifactId>
+            <artifactId>storage-jpa2x-hbm-impl</artifactId>
         </dependency>
 
         <dependency>
@@ -97,6 +97,13 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-impl-hbm</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

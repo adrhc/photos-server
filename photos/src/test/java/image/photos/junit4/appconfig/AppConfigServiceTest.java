@@ -1,7 +1,7 @@
 package image.photos.junit4.appconfig;
 
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repository.AppConfigRepository;
+import image.persistence.repositories.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.springconfig.PhotosProdJdbcDbConfig;
 import org.junit.Assert;
