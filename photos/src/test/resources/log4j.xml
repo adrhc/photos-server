@@ -39,6 +39,11 @@
         <appender-ref ref="console"/>
     </logger>
 
+    <logger name="image.persistence.Jpa2xConfig" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="console"/>
+    </logger>
+
     <logger name="image.exifweb.system.persistence" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>

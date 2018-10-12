@@ -1,6 +1,6 @@
 package image.photos;
 
-import image.persistence.HibernateConfig;
+import image.persistence.Jpa2xConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -21,7 +21,7 @@ import java.util.Set;
  */
 @Configuration
 @ComponentScan
-@Import({HibernateConfig.class})
+@Import({Jpa2xConfig.class})
 @PropertySource("classpath:/photos.properties")
 public class PhotosConfig {
 	@Bean
