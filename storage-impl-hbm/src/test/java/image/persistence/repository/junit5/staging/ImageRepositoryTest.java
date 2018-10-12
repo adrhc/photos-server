@@ -45,7 +45,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	@BeforeAll
 	void setUp(@Random(type = Image.class, size = 30,
 			excludes = {"id", "lastUpdate", "album"})
-			           List<Image> images) {
+			List<Image> images) {
 		// hibernate might proxy images collection so better
 		// just copy images instead of directly using it
 		this.album.addImages(images);
@@ -98,7 +98,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 			List<Image> dbImgs = dbImages.stream()
 					.filter(i -> i.getId().equals(img.getId()))
 					.collect(Collectors.toList());
-			assertEquals(1, dbImgs.size());
+			assertEquals(1, dbImgs.size(), "in memory image not found in DB");
 			assertImageEquals(img, dbImgs.get(0));
 		});
 	}

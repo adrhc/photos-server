@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface IImageAssertions {
 	default void assertExifDataEquals(ExifData exifData, ExifData dbExifData) {
-		assertAll("ExifData",
+		assertAll("ExifData equality",
 				() -> assertEquals(exifData.getApertureValue(),
 						dbExifData.getApertureValue(), "apertureValue"),
 				() -> assertEquals(exifData.getContrast(),
@@ -26,7 +26,7 @@ public interface IImageAssertions {
 	}
 
 	default void assertImageMetadataEquals(ImageMetadata imageMetadata, ImageMetadata dbImageMetadata) {
-		assertAll("ImageMetadata",
+		assertAll("ImageMetadata equality",
 				() -> assertEquals(imageMetadata.getDateTime(),
 						dbImageMetadata.getDateTime(), "dateTime"),
 				() -> assertEquals(imageMetadata.getThumbLastModified(),
@@ -35,7 +35,7 @@ public interface IImageAssertions {
 	}
 
 	default void assertImageEquals(Image image, Image dbImage) {
-		assertAll("Image",
+		assertAll("Image equality",
 				() -> assertEquals(image.getId(), dbImage.getId(), "id"),
 				() -> assertEquals(image.getName(), dbImage.getName(), "name"),
 				() -> assertEquals(image.getRating(), dbImage.getRating(), "rating"),
