@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>exifweb</artifactId>
         <groupId>image</groupId>
+        <artifactId>exifweb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -142,7 +142,7 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-impl-hbm</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

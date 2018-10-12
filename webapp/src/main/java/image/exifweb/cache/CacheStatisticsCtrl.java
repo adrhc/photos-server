@@ -1,7 +1,7 @@
 package image.exifweb.cache;
 
 import image.persistence.entity.Album;
-import image.persistence.repository.CacheStatisticsRepository;
+import image.persistence.repositories.CacheStatisticsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +24,7 @@ public class CacheStatisticsCtrl {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public void printCacheStatistics() {
-		Map cacheEntries = statisticsRepository
+		Map cacheEntries = this.statisticsRepository
 				.getSecondLevelCacheStatistics(Album.class.getName());
 		logger.debug("END {}", cacheEntries);
 	}

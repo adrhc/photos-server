@@ -2,7 +2,7 @@ package image.exifweb.album.cover;
 
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.repository.AlbumRepository;
+import image.persistence.repositories.AlbumRepository;
 import image.photos.album.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

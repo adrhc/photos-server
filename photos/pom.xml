@@ -21,6 +21,11 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
+            <!--
+                needs version because including test-jar also
+                solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+            -->
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -106,6 +111,11 @@
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
+            <!--
+                needs version because including jar also
+                solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+            -->
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
