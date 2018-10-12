@@ -48,7 +48,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	@BeforeAll
 	void setUp(@Random(type = Image.class, size = IMAGE_COUNT,
 			excludes = {"id", "lastUpdate", "album"})
-			           List<Image> images) {
+			List<Image> images) {
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
 	}
@@ -155,7 +155,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 
 	@Test
 	void safelyDeleteImage() {
-		// this image shall be removed from DB later so we sync this.album
+		// sync in memory album with subsequent image db deletion
 		Image image = this.album.getImages().get(this.album.getImages().size() - 1);
 		log.debug("*** albumRepository.putAlbumCover ***");
 		this.albumRepository.putAlbumCover(image.getId());

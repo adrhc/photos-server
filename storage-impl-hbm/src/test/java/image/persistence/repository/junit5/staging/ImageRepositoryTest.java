@@ -126,7 +126,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	}
 
 	@Test
-	void deleteImage() {
+	void deleteById() {
 		// sync in memory album with subsequent image db deletion
 		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
 		this.imageRepository.deleteById(image.getId());
