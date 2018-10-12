@@ -1,6 +1,5 @@
 package image.photos.springconfig;
 
-import image.persistence.HibernateConfig;
 import image.persistence.repository.springprofile.StagingJdbcDbProfile;
 import image.photos.PhotosConfig;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,7 +12,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ContextConfiguration(classes = {HibernateConfig.class, PhotosConfig.class})
+@ContextConfiguration(classes = {PhotosConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=true")
 @StagingJdbcDbProfile
 public @interface PhotosStagingJdbcDbConfig {
