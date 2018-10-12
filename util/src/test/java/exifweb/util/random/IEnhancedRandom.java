@@ -1,4 +1,4 @@
-package image.persistence.util.random;
+package exifweb.util.random;
 
 import io.github.benas.randombeans.EnhancedRandomBuilder;
 import io.github.benas.randombeans.api.EnhancedRandom;

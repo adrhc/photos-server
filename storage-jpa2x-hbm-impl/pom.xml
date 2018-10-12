@@ -135,14 +135,13 @@
 
         <dependency>
             <groupId>exifweb</groupId>
-            <artifactId>storage-entities</artifactId>
+            <artifactId>util</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>exifweb</groupId>
-            <artifactId>storage-impl-hbm</artifactId>
-            <version>${project.version}</version>
+            <artifactId>storage-entities</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

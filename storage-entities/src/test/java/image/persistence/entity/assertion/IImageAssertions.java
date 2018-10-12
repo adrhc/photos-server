@@ -1,4 +1,4 @@
-package image.persistence.util.assertion;
+package image.persistence.entity.assertion;
 
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ExifData;

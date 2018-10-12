@@ -148,6 +148,14 @@
 
             <dependency>
                 <groupId>exifweb</groupId>
+                <artifactId>util</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
                 <artifactId>storage-entities</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>

@@ -13,7 +13,7 @@ import image.persistence.repositories.AlbumRepository;
 import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.ESortType;
 import image.persistence.util.IPositiveIntegerRandom;
-import image.persistence.util.random.RandomBeansExtensionEx;
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.photos.album.AlbumPageService;
 import image.photos.junit5.testconfig.Junit5PhotosStagingDbConfig;
 import io.github.glytching.junit.extension.random.Random;

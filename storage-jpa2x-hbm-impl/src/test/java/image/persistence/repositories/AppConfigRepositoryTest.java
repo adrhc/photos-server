@@ -5,7 +5,7 @@ import image.persistence.config.NestedPerClass;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.util.random.RandomBeansExtensionEx;
+import exifweb.util.random.RandomBeansExtensionEx;
 import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;
 import org.hamcrest.Matchers;

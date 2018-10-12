@@ -89,19 +89,19 @@
             <artifactId>HikariCP</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>util</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
         <!--
             https://stackoverflow.com/questions/174560/sharing-test-code-in-maven
         -->
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-entities</artifactId>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>exifweb</groupId>
-            <artifactId>storage-impl-hbm</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

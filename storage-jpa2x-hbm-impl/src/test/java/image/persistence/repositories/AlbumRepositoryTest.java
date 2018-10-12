@@ -4,9 +4,9 @@ import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.config.NestedPerClass;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.persistence.util.assertion.IAlbumAssertions;
-import image.persistence.util.assertion.IImageAssertions;
-import image.persistence.util.random.RandomBeansExtensionEx;
+import image.persistence.entity.assertion.IAlbumAssertions;
+import image.persistence.entity.assertion.IImageAssertions;
+import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import net.jcip.annotations.NotThreadSafe;
@@ -123,9 +123,9 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 		@Override
 		@BeforeAll
 		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
-				                Album album,
-		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
-				                List<Image> images) {
+				Album album,
+				@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+						List<Image> images) {
 			album.setCover(images.get(0));
 			super.givenAlbum(album, images);
 		}
@@ -149,9 +149,9 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 
 		@BeforeAll
 		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
-				                Album album,
-		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
-				                List<Image> images) {
+				Album album,
+				@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+						List<Image> images) {
 			this.album = album;
 			this.album.addImages(images);
 			this.albumRepository.persist(this.album);

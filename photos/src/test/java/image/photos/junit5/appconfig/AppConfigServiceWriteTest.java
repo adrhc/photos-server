@@ -4,7 +4,7 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repositories.AppConfigRepository;
-import image.persistence.util.random.RandomBeansExtensionEx;
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.photos.config.AppConfigService;
 import image.photos.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photos.junit5.util.assertion.IAppConfigAssertions;

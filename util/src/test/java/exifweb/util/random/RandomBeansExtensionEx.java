@@ -1,4 +1,4 @@
-package image.persistence.util.random;
+package exifweb.util.random;
 
 import io.github.glytching.junit.extension.random.RandomBeansExtension;
 import org.apache.commons.lang3.reflect.FieldUtils;

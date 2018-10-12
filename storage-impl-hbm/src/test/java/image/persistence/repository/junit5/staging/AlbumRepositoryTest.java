@@ -4,12 +4,12 @@ import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;
 import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
+import image.persistence.entity.assertion.IAlbumAssertions;
+import image.persistence.entity.assertion.IImageAssertions;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbNestedConfig;
-import image.persistence.util.assertion.IAlbumAssertions;
-import image.persistence.util.assertion.IImageAssertions;
-import image.persistence.util.random.RandomBeansExtensionEx;
+import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -139,9 +139,9 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 
 		@BeforeAll
 		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
-				                Album album,
-		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
-				                List<Image> images) {
+				Album album,
+				@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+						List<Image> images) {
 			this.album = album;
 			this.album.addImages(images);
 			this.albumRepository.persist(this.album);
@@ -169,9 +169,9 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		@Override
 		@BeforeAll
 		void givenAlbum(@Random(excludes = {"id", "deleted", "images", "cover", "lastUpdate"})
-				                Album album,
-		                @Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
-				                List<Image> images) {
+				Album album,
+				@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+						List<Image> images) {
 			album.setCover(images.get(0));
 			super.givenAlbum(album, images);
 		}
