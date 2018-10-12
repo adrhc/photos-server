@@ -64,6 +64,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.updateThumbLastModifiedForImg(date, image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(date, dbImage.getImageMetadata().getThumbLastModified());
+		// sync in memory image with db
 		image.getImageMetadata().setThumbLastModified(date);
 		assertImageEquals(image, dbImage);
 	}
@@ -76,6 +77,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.changeRating(imageRating);
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(imageRating.getRating(), dbImage.getRating());
+		// sync in memory image with db
 		image.setRating(imageRating.getRating());
 		assertImageEquals(image, dbImage);
 	}
@@ -87,6 +89,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.changeStatus(imageStatus);
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(of(imageStatus.getStatus()), dbImage.getFlags());
+		// sync in memory image with db
 		image.setFlags(of(imageStatus.getStatus()));
 		assertImageEquals(image, dbImage);
 	}
@@ -117,12 +120,14 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.markDeleted(image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertTrue(dbImage.isDeleted());
+		// sync in memory image with db
 		image.setDeleted(true);
 		assertImageEquals(image, dbImage);
 	}
 
 	@Test
 	void deleteImage() {
+		// sync in memory album with subsequent image db deletion
 		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
 		this.imageRepository.deleteById(image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
@@ -131,8 +136,8 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 
 	@Test
 	void safelyDeleteImage() {
-		// this image shall be removed from DB later so we sync this.album
-		Image image = this.album.getImages().get(this.album.getImages().size() - 1);
+		// sync in memory album with subsequent image db deletion
+		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
 		this.albumRepository.putAlbumCover(image.getId());
 		this.imageRepository.safelyDeleteImage(image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
@@ -147,6 +152,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.changeName(newName, image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertEquals(newName, dbImage.getName());
+		// sync in memory image with db
 		image.setName(newName);
 		assertImageEquals(image, dbImage);
 	}
@@ -157,6 +163,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.imageRepository.updateImageMetadata(imageMetadata, image.getId());
 		Image dbImage = this.imageRepository.getById(image.getId());
 		assertImageMetadataEquals(imageMetadata, dbImage.getImageMetadata());
+		// sync in memory image with db
 		image.setImageMetadata(imageMetadata);
 		assertImageEquals(image, dbImage);
 	}
