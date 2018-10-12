@@ -38,13 +38,15 @@ public class HibernatePropertiesConfig {
 	}
 
 	private PropertiesFactoryBean propsFrom(String... paths) {
+		PropertiesFactoryBean properties = new PropertiesFactoryBean();
 		Resource[] locations =
 				Arrays.stream(paths)
 						.map(s -> "hibernate/" + s + ".properties")
 						.map(ClassPathResource::new)
 						.toArray(ClassPathResource[]::new);
-		PropertiesFactoryBean properties = new PropertiesFactoryBean();
-		// allows for @TestPropertySource overrides
+		/*
+		 * allows for @TestPropertySource overrides
+		 */
 //		properties.setLocalOverride(true);
 		properties.setLocations(locations);
 		try {

@@ -2,8 +2,6 @@ package image.persistence;
 
 import image.persistence.entity.Image;
 import image.persistence.jpacustomizations.CustomJpaRepositoryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -27,8 +25,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
 public class Jpa2xConfig {
-	private static final Logger logger = LoggerFactory.getLogger(Jpa2xConfig.class);
-
 	/**
 	 * LocalContainerEntityManagerFactoryBean implements PersistenceExceptionTranslator
 	 * https://stackoverflow.com/questions/41801512/spring-how-exception-translation-works
