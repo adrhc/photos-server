@@ -27,7 +27,6 @@ import java.util.Properties;
 @Profile("hbm-impl")
 @Configuration
 @ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
-@PropertySource("classpath:/jndi-datasource.properties")
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
 public class HibernateConfig {
