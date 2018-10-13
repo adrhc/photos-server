@@ -13,4 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/json/darkstat")
-public class DarkStatCtrl extends AppManagerCtrl {}
+public class DarkStatCtrl extends AppManagerCtrl<DarkStatService> {}

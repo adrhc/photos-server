@@ -13,4 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/json/pyload")
-public class PyLoadCtrl extends AppManagerCtrl {}
+public class PyLoadCtrl extends AppManagerCtrl<PyLoadService> {}

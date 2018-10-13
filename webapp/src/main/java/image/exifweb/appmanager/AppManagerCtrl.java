@@ -16,9 +16,9 @@ import java.io.IOException;
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class AppManagerCtrl {
+public abstract class AppManagerCtrl<T extends AppManagerService> {
 	@Inject
-	protected AppManagerService appManagerService;
+	protected T appManagerService;
 
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value = "/start", method = RequestMethod.POST,

@@ -13,4 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/json/plex")
-public class PlexCtrl extends AppManagerCtrl {}
+public class PlexCtrl extends AppManagerCtrl<PlexService> {}

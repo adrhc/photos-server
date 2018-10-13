@@ -13,4 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/json/transmission")
-public class TransmissionCtrl extends AppManagerCtrl {}
+public class TransmissionCtrl extends AppManagerCtrl<TransmissionService> {}

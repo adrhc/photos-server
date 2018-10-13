@@ -13,4 +13,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/json/stunnel")
-public class StunnelCtrl extends AppManagerCtrl {}
+public class StunnelCtrl extends AppManagerCtrl<StunnelService> {}
