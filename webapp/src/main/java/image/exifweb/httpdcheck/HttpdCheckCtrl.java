@@ -38,7 +38,7 @@ public class HttpdCheckCtrl {
 	}
 
 	@Async
-	protected void checkHttpdAsync() throws IOException, InterruptedException {
+	public void checkHttpdAsync() throws IOException, InterruptedException {
 		this.httpdCheck.checkHttpd();
 	}
 }

@@ -6,13 +6,12 @@ import image.exifweb.web.json.JsonStringValue;
 import image.photos.config.AppConfigService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.inject.Inject;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Created by adrian.petre on 18-06-2014.
  */
-@Controller
+@RestController
 @RequestMapping("/json/subtitle")
 public class SubtitleCtrl {
 	@Inject
@@ -89,7 +88,6 @@ public class SubtitleCtrl {
 	}
 
 	@RequestMapping(value = "/videoFolders", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	@ResponseBody
 	public List<JsonStringValue> videoFolders(WebRequest webRequest) throws IOException {
 		File videoRoot = new File(this.appConfigService.getConfig("video root folder"));
 		File[] videoRootFolders = videoRoot.listFiles(new FileFilter() {

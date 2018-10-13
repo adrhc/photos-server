@@ -1,10 +1,12 @@
 package image.exifweb.appmanager;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -14,30 +16,33 @@ import java.io.IOException;
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AppManagerCtrl {
+public abstract class AppManagerCtrl {
+	@Inject
 	protected AppManagerService appManagerService;
 
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(value = "/start", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/start", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public void start(Model model) throws IOException, InterruptedException {
-		if (appManagerService.isRunning()) {
+		if (this.appManagerService.isRunning()) {
 			model.addAttribute("message",
-					appManagerService.getAppProcName() + " already running!");
+					this.appManagerService.getAppProcName() + " already running!");
 			return;
 		}
-		appManagerService.start();
-		model.addAttribute("message", appManagerService.getAppProcName() + " started!");
+		this.appManagerService.start();
+		model.addAttribute("message", this.appManagerService.getAppProcName() + " started!");
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@RequestMapping(value = "/stop", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/stop", method = RequestMethod.POST,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public void stop(Model model) throws IOException, InterruptedException {
-		if (!appManagerService.isRunning()) {
+		if (!this.appManagerService.isRunning()) {
 			model.addAttribute("message",
-					appManagerService.getAppProcName() + " NOT running!");
+					this.appManagerService.getAppProcName() + " NOT running!");
 			return;
 		}
-		appManagerService.stop();
-		model.addAttribute("message", appManagerService.getAppProcName() + " stopped!");
+		this.appManagerService.stop();
+		model.addAttribute("message", this.appManagerService.getAppProcName() + " stopped!");
 	}
 }
