@@ -1,5 +1,6 @@
 package image.exifweb.httpdcheck;
 
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -23,14 +24,16 @@ public class HttpdCheckCtrl {
 	@Inject
 	private HttpdCheck httpdCheck;
 
-	@RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void getHttpdRestartLogs(Model model) throws IOException {
 		String logs = this.httpdCheck.getHttpdRestartLogs();
 		model.addAttribute("message", logs);
 	}
 
-	@RequestMapping(value = "/checkHttpd", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/checkHttpd", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void checkHttpd(Model model) throws IOException, InterruptedException {
 		checkHttpdAsync();

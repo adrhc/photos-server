@@ -29,7 +29,7 @@ import java.util.Map;
 		includeFilters = @ComponentScan.Filter({Controller.class, ControllerAdvice.class}))
 @EnableWebMvc
 // use proxyTargetClass = true when not having interfaces for @Controller classes
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
 	@Inject

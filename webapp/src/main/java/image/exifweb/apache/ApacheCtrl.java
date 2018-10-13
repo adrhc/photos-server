@@ -2,6 +2,7 @@ package image.exifweb.apache;
 
 import image.exifweb.web.json.JsonStringValue;
 import org.apache.commons.io.FileUtils;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +25,8 @@ public class ApacheCtrl {
 	@Inject
 	private ApacheService apacheService;
 
-	@RequestMapping(value = "/getApacheLog", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/getApacheLog", method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public JsonStringValue getApacheLog(@RequestParam String type,
 			WebRequest webRequest) throws IOException {
