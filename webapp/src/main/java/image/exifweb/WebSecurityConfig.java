@@ -1,8 +1,10 @@
 package image.exifweb;
 
-import image.exifweb.web.security.*;
+import image.exifweb.web.security.AuthFailureHandler;
+import image.exifweb.web.security.AuthSuccessHandler;
+import image.exifweb.web.security.LogoutSuccessHandler;
+import image.exifweb.web.security.RestAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,11 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -27,38 +24,28 @@ import javax.sql.DataSource;
  */
 @Configuration
 @EnableWebSecurity
-@ComponentScan(useDefaultFilters = false,
-		excludeFilters = @ComponentScan.Filter({Configuration.class,
-				Controller.class, RestController.class, ControllerAdvice.class,
-				Component.class, Service.class}),
-		includeFilters = @ComponentScan.Filter(WebSecurityComponent.class))
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
 	private DataSource dataSource;
-	@Inject
-	private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-	@Inject
-	private AuthSuccessHandler authSuccessHandler;
-	@Inject
-	private AuthFailureHandler authFailureHandler;
-	@Inject
-	private LogoutSuccessHandler logoutSuccessHandler;
 
-	/**
-	 * "@Bean" usage: see javadoc for this override
-	 *
-	 * @return
-	 * @throws Exception
-	 */
 	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+	RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
+		return new RestAuthenticationEntryPoint();
 	}
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService());
+	@Bean
+	AuthSuccessHandler authSuccessHandler() {
+		return new AuthSuccessHandler();
+	}
+
+	@Bean
+	AuthFailureHandler authFailureHandler() {
+		return new AuthFailureHandler();
+	}
+
+	@Bean
+	LogoutSuccessHandler logoutSuccessHandler() {
+		return new LogoutSuccessHandler();
 	}
 
 	@Override
@@ -70,18 +57,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/app/https/*").authenticated()
 				.antMatchers("/app/secure/*").authenticated();
 		http.httpBasic()
-				.authenticationEntryPoint(this.restAuthenticationEntryPoint);
+				.authenticationEntryPoint(this.restAuthenticationEntryPoint());
 		http.formLogin()
 				.loginProcessingUrl("/app/login")
 				.passwordParameter("password").usernameParameter("userName")
-				.successHandler(this.authSuccessHandler).failureHandler(this.authFailureHandler);
+				.successHandler(this.authSuccessHandler()).failureHandler(this.authFailureHandler());
 		http.rememberMe()
 				.userDetailsService(userDetailsService())
 				.tokenValiditySeconds(1296000)
 				.key("kOQoW357t8HwbeRh7oxSXoXSGmVERKMcGENOxm2qrLZFOF8bxJB4GaIqSoTu9yy");
 		http.logout()
-				.logoutUrl("/app/logout").logoutSuccessHandler(this.logoutSuccessHandler)
+				.logoutUrl("/app/logout").logoutSuccessHandler(this.logoutSuccessHandler())
 				.deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE");
+	}
+
+	/**
+	 * "@Bean" usage: see javadoc for this override
+	 * <p>
+	 * exposing as @Bean the return of super.authenticationManagerBean()
+	 */
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService());
 	}
 
 	/**
