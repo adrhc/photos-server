@@ -3,7 +3,6 @@ package image.exifweb.album.page;
 import image.cdm.album.page.AlbumPage;
 import image.exifweb.util.date.IDateUtil;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.repositories.AlbumRepository;
 import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
@@ -37,8 +36,6 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil, AlbumP
 	private AppConfigRepository appConfigRepository;
 	@Inject
 	private AlbumPageService albumPageService;
-	@Inject
-	private AlbumRepository albumRepository;
 
 	/**
 	 * Test without authorization:
@@ -55,7 +52,7 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil, AlbumP
 			@RequestParam(name = "toSearch", required = false) String toSearch,
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable) {
-		PageCountImpl pageCount = new PageCountImpl();
+		PageCount pageCount = new PageCount();
 		pageCount.setPageCount(this.albumPageRepository.countPages(
 				toSearch, viewHidden, viewOnlyPrintable, albumId));
 		pageCount.setPhotosPerPage(this.appConfigRepository.getPhotosPerPage());
