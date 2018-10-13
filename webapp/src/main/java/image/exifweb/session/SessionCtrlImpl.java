@@ -5,10 +5,9 @@ import image.exifweb.web.security.AuthData;
 import image.exifweb.web.security.AuthUtil;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpSession;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpSession;
  * Time: 6:18 PM
  * To change this template use File | Settings | File Templates.
  */
-@Controller
+@RestController
 @RequestMapping("/json/session")
 public class SessionCtrlImpl implements SessionCtrl {
 	private AuthUtil authUtil = new AuthUtil();
@@ -29,7 +28,6 @@ public class SessionCtrlImpl implements SessionCtrl {
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
 	public AuthCheckResponse getSessionData(WebRequest webRequest, HttpSession httpSession) {
 		if (webRequest.checkNotModified(httpSession.getCreationTime())) {
 			return null;
