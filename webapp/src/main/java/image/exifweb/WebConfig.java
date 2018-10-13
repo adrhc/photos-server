@@ -1,7 +1,6 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.exifweb.web.security.WebSecurityComponent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -26,8 +25,8 @@ import java.util.Map;
  * Created by adr on 2/15/18.
  */
 @Configuration
-@ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class,
-		Component.class, Service.class, WebSecurityComponent.class}))
+@ComponentScan(useDefaultFilters = false,
+		includeFilters = @ComponentScan.Filter({Controller.class, ControllerAdvice.class}))
 @EnableWebMvc
 // use proxyTargetClass = true when not having interfaces for @Controller classes
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
