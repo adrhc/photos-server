@@ -14,7 +14,6 @@ import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAssertions, IImageAssertions {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 

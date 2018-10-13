@@ -3,7 +3,7 @@ package image.photos.junit4.appconfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repositories.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springconfig.PhotosProdJdbcDbConfig;
+import image.photos.junit4.testconfig.PhotosProdJdbcDbConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

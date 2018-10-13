@@ -17,7 +17,6 @@ import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
@@ -29,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	@Inject
 	private AlbumRepository albumRepository;

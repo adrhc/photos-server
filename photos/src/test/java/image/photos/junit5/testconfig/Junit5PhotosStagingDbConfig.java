@@ -1,6 +1,6 @@
 package image.photos.junit5.testconfig;
 
-import image.photos.springconfig.PhotosStagingJdbcDbConfig;
+import image.photos.junit4.testconfig.PhotosStagingJdbcDbConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;

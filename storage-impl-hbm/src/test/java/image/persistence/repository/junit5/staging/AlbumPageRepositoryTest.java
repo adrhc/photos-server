@@ -19,7 +19,6 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";

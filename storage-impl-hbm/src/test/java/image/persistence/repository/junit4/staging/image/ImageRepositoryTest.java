@@ -26,7 +26,7 @@ import java.util.Date;
 public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		implements IDateNoMillisSupplier, IImageFlagsUtils {
 	@Test
-	public void updateThumbLastModifiedForImg() throws Exception {
+	public void updateThumbLastModifiedForImg() {
 		Date date = dateNoMilliseconds();
 		this.imageRepository.updateThumbLastModifiedForImg(date, this.imageId);
 		Image alteredImage = this.imageRepository.getById(this.imageId);
@@ -37,7 +37,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	}
 
 	@Test
-	public void changeRating() throws Exception {
+	public void changeRating() {
 		byte newRating = ImageRating.MIN_RATING;
 		if (this.image.getRating() == newRating) {
 			newRating++;
@@ -50,7 +50,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	}
 
 	@Test
-	public void changeStatus() throws Exception {
+	public void changeStatus() {
 		EImageStatus newStatus = EImageStatus.DEFAULT;
 		if (areEquals(this.image.getFlags(), newStatus)) {
 			newStatus = EImageStatus.PRINTABLE;
@@ -63,7 +63,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	}
 
 	@Test
-	public void markDeleted() throws Exception {
+	public void markDeleted() {
 		boolean changed = this.imageRepository.markDeleted(this.imageId);
 		Assert.assertTrue(changed);
 		Image alteredImage = this.imageRepository.getById(this.imageId);
@@ -71,7 +71,7 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 	}
 
 	@Test
-	public void changeName() throws Exception {
+	public void changeName() {
 		this.imageRepository.changeName(this.image.getName() + "-updated", this.imageId);
 		Image alteredImage = this.imageRepository.getById(this.imageId);
 		Assert.assertEquals(alteredImage.getName(), this.image.getName() + "-updated");

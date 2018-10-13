@@ -14,11 +14,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = {Jpa2xConfig.class})
+@ContextConfiguration(classes = Jpa2xConfig.class)
 @TestPropertySource(properties = "hibernate.show_sql=true")
 @InMemoryDbProfile
 @Tag("junit5")

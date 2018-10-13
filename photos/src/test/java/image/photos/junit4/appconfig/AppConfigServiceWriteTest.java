@@ -5,7 +5,7 @@ import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repositories.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springconfig.PhotosInMemoryDbConfig;
+import image.photos.junit4.testconfig.PhotosInMemoryDbConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
