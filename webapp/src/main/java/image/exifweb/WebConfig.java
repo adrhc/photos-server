@@ -3,46 +3,34 @@ package image.exifweb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.exifweb.web.security.WebSecurityComponent;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
-import org.springframework.web.accept.ContentNegotiationManager;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by adr on 2/15/18.
  */
 @Configuration
-@ComponentScan(useDefaultFilters = false, basePackageClasses = WebConfig.class,
-		excludeFilters = @ComponentScan.Filter({Configuration.class,
-				Component.class, Service.class, WebSecurityComponent.class}),
-		includeFilters = @ComponentScan.Filter({Controller.class,
-				RestController.class, ControllerAdvice.class}))
+@ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class,
+		Component.class, Service.class, WebSecurityComponent.class}))
 @EnableWebMvc
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, proxyTargetClass = true)
+// use proxyTargetClass = true when not having interfaces for @Controller classes
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
 	@Inject
@@ -59,23 +47,6 @@ public class WebConfig implements WebMvcConfigurer {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	/**
-	 * somehow when not using "messageSource" then
-	 * RequestExceptionHandler can't find this bean
-	 *
-	 * @return
-	 */
-	@Bean(name = {"msg", "messages", "messageSource"})
-	public MessageSource messageSource() {
-		ReloadableResourceBundleMessageSource ms =
-				new ReloadableResourceBundleMessageSource();
-		ms.setBasenames("classpath:text/messages",
-				"classpath:org/hibernate/validator/ValidationMessages");
-		ms.setDefaultEncoding("UTF-8");
-		ms.setFallbackToSystemLocale(true);
-		return ms;
-	}
-
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
 		configurer.setDefaultTimeout(this.asyncTimeout);
@@ -86,21 +57,10 @@ public class WebConfig implements WebMvcConfigurer {
 		converters.add(new MappingJackson2HttpMessageConverter(this.objectMapper));
 	}
 
-	@Bean
-	public ViewResolver contentNegotiatingViewResolver(
-			ContentNegotiationManager manager) {
-		ContentNegotiatingViewResolver resolver =
-				new ContentNegotiatingViewResolver();
-		resolver.setContentNegotiationManager(manager);
-		List<ViewResolver> viewResolvers = new ArrayList<>();
-		InternalResourceViewResolver r2 = new InternalResourceViewResolver();
-		r2.setPrefix("/app/");
-		r2.setSuffix(".jsp");
-		r2.setCache(false);
-		viewResolvers.add(r2);
-		resolver.setViewResolvers(viewResolvers);
-		resolver.setDefaultViews(Collections.singletonList(jacksonConverter()));
-		return resolver;
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		registry.jsp("/app/", ".jsp").cache(false);
+		registry.enableContentNegotiation(jacksonConverter());
 	}
 
 	@Override
