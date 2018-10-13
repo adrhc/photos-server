@@ -1,10 +1,10 @@
 package image.photos.junit5.appconfig;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repositories.AppConfigRepository;
-import exifweb.util.random.RandomBeansExtensionEx;
 import image.photos.config.AppConfigService;
 import image.photos.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photos.junit5.util.assertion.IAppConfigAssertions;
@@ -12,9 +12,8 @@ import image.photos.util.conversion.PhotosConversionUtil;
 import io.github.glytching.junit.extension.folder.TemporaryFolder;
 import io.github.glytching.junit.extension.folder.TemporaryFolderExtension;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Created by adrianpetre on 23.02.2018.
  */
-@NotThreadSafe
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConfigSupplier {
@@ -43,8 +41,8 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 	@Random(type = AppConfig.class, size = 20, excludes = {"id", "lastUpdate"})
 	private List<AppConfig> appConfigs;
 
-	@BeforeEach
-	void setUp() {
+	@BeforeAll
+	void beforeAll() {
 		this.appConfigs.forEach(this.appConfigRepository::persist);
 	}
 

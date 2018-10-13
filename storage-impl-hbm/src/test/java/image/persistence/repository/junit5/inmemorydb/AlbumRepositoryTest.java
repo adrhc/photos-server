@@ -1,11 +1,10 @@
 package image.persistence.repository.junit5.inmemorydb;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.entity.Album;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5HbmInMemoryDbConfig
 class AlbumRepositoryTest {
 	@Autowired

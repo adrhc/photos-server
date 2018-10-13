@@ -1,19 +1,17 @@
 package image.persistence.repositories;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
-import image.persistence.config.NestedPerClass;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.assertion.IAlbumAssertions;
 import image.persistence.entity.assertion.IImageAssertions;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,9 +25,7 @@ import static org.hamcrest.Matchers.both;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5Jpa2xInMemoryDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 public class AlbumRepositoryTest implements IAlbumAssertions {
 	@Autowired
@@ -80,7 +76,7 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	}
 
 	@Junit5Jpa2xInMemoryDbConfig
-	@NestedPerClass
+	@Nested
 	class CreateAlbumTest extends AlbumCreationTestBase {
 		@BeforeAll
 		void beforeAll(@Random(excludes = {"id", "images", "cover", "lastUpdate"}) Album album) {
@@ -96,7 +92,7 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	}
 
 	@Junit5Jpa2xInMemoryDbConfig
-	@NestedPerClass
+	@Nested
 	class CreateAlbumForNameTest extends AlbumCreationTestBase {
 		@Test
 		void createAlbumForName(@Random String albumName) {
@@ -106,7 +102,7 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	}
 
 	@Junit5Jpa2xInMemoryDbConfig
-	@NestedPerClass
+	@Nested
 	class PutAlbumCoverTest extends CoverTestBase implements IImageAssertions {
 		@Test
 		void putAlbumCover() {
@@ -118,7 +114,7 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	}
 
 	@Junit5Jpa2xInMemoryDbConfig
-	@NestedPerClass
+	@Nested
 	class RemoveAlbumCoverTest extends CoverTestBase {
 		@Override
 		@BeforeAll

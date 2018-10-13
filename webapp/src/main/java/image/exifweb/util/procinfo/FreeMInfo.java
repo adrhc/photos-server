@@ -19,8 +19,8 @@ public class FreeMInfo implements Serializable {
 	private String usedSwapPercent;
 
 	public FreeMInfo(String totalMemory, String usedMemory, String usedMemoryPercent,
-	                 String usedMemoryPercentInt, String usedSwap, String totalSwap,
-	                 String usedSwapPercent) {
+			String usedMemoryPercentInt, String usedSwap, String totalSwap,
+			String usedSwapPercent) {
 		this.totalMemory = totalMemory;
 		this.usedMemory = usedMemory;
 		this.usedMemoryPercent = usedMemoryPercent;

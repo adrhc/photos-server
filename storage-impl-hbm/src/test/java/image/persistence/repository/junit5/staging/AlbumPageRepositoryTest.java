@@ -1,6 +1,7 @@
 package image.persistence.repository.junit5.staging;
 
 import exifweb.util.MiscUtils;
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
@@ -13,7 +14,6 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.ESortType;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
@@ -54,7 +54,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 	@BeforeAll
 	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate",
 			"deleted", "album"}) Stream<Image> imageStream,
-	               @Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
+			@Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
 		// images: deleted = false, status = EImageStatus.DEFAULT
 		List<Image> images = imageStream
 				.peek(i -> i.setAlbum(album))

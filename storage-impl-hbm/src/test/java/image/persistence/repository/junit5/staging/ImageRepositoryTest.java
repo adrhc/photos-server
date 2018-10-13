@@ -1,5 +1,6 @@
 package image.persistence.repository.junit5.staging;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
@@ -12,7 +13,6 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.util.IPositiveIntegerRandom;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

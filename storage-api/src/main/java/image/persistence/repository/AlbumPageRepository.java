@@ -23,9 +23,9 @@ public interface AlbumPageRepository {
 	Integer NULL_ALBUM_ID = -1;
 
 	int countPages(String toSearch, boolean viewHidden,
-	               boolean viewOnlyPrintable, Integer albumId);
+			boolean viewOnlyPrintable, Integer albumId);
 
 	List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
-	                              boolean viewHidden, boolean viewOnlyPrintable,
-	                              Integer albumId);
+			boolean viewHidden, boolean viewOnlyPrintable,
+			Integer albumId);
 }

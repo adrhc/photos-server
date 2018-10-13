@@ -1166,6 +1166,7 @@
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
+                <junit5.webapp.groups>root,webapp</junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1214,6 +1215,7 @@
                     junit5&amp;photos&amp;production,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
+                <junit5.webapp.groups>root,webapp</junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1260,6 +1262,10 @@
                     image.photos.springconfig.PhotosStagingJdbcDbConfig,
                     junit5&amp;photos&amp;staging
                 </junit5.photos.groups>
+                <junit5.webapp.groups>
+                    root&amp;junit5&amp;staging,
+                    webapp&amp;junit5&amp;staging
+                </junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1306,6 +1312,10 @@
                     image.photos.springconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;production
                 </junit5.photos.groups>
+                <junit5.webapp.groups>
+                    root&amp;junit5&amp;production,
+                    webapp&amp;junit5&amp;production
+                </junit5.webapp.groups>
             </properties>
         </profile>
     </profiles>

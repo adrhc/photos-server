@@ -1,5 +1,6 @@
 package image.persistence.repository.junit5.staging;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;
 import image.persistence.entity.IImageSupplier;
@@ -9,7 +10,6 @@ import image.persistence.entity.assertion.IImageAssertions;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbNestedConfig;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

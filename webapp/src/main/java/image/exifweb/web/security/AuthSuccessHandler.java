@@ -28,7 +28,7 @@ public class AuthSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-	                                    Authentication authentication) throws IOException {
+			Authentication authentication) throws IOException {
 		logger.debug("Log on user: {}",
 				SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 		response.setContentType("application/json");

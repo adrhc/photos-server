@@ -20,12 +20,12 @@ public class AlbumPageService {
 	private AlbumPageRepository albumPageRepository;
 
 	public List<AlbumPage> getPage(int pageNr, ESortType sort, String toSearch,
-	                               boolean viewHidden, boolean viewOnlyPrintable,
-	                               Integer albumId) {
-		List<AlbumPage> thumbs = albumPageRepository.getPageFromDb(pageNr, sort,
+			boolean viewHidden, boolean viewOnlyPrintable,
+			Integer albumId) {
+		List<AlbumPage> thumbs = this.albumPageRepository.getPageFromDb(pageNr, sort,
 				toSearch, viewHidden, viewOnlyPrintable, albumId);
-		imageUtils.appendImageDimensions(thumbs);
-		imageUtils.appendImagePaths(thumbs);
+		this.imageUtils.appendImageDimensions(thumbs);
+		this.imageUtils.appendImagePaths(thumbs);
 		return thumbs;
 	}
 }

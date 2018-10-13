@@ -50,7 +50,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 
 	@Override
 	public List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
-	                                     boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
+			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
 		TypedQuery<AlbumPage> q;
 		if (StringUtils.hasText(toSearch)) {

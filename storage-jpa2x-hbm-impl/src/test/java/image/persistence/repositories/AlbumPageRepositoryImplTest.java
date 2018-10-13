@@ -1,6 +1,7 @@
 package image.persistence.repositories;
 
 import exifweb.util.MiscUtils;
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
@@ -11,15 +12,12 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,9 +32,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5Jpa2xInMemoryDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 public class AlbumPageRepositoryImplTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
 	public static final String T1_TO_SEARCH = "DSC_1555";
@@ -53,7 +49,7 @@ public class AlbumPageRepositoryImplTest implements IAppConfigSupplier, IImageFl
 	@BeforeAll
 	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate",
 			"deleted", "album"}) Stream<Image> imageStream,
-	               @Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
+			@Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
 		// images: deleted = false, status = EImageStatus.DEFAULT
 		List<Image> images = imageStream
 				.peek(i -> i.setAlbum(album))

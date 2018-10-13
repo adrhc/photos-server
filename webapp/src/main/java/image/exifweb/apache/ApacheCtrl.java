@@ -29,12 +29,12 @@ public class ApacheCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@ResponseBody
 	public JsonStringValue getApacheLog(@RequestParam String type,
-	                                    WebRequest webRequest) throws IOException {
+			WebRequest webRequest) throws IOException {
 		File file;
 		if (type.equalsIgnoreCase(LOG_TYPE_ACCESS)) {
-			file = apacheService.getAccessLogFile();
+			file = this.apacheService.getAccessLogFile();
 		} else {
-			file = apacheService.getErrorLogFile();
+			file = this.apacheService.getErrorLogFile();
 		}
 		if (webRequest.checkNotModified(file.lastModified())) {
 			return null;

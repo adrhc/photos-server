@@ -2,6 +2,7 @@ package image.photos.junit5.testconfig;
 
 import image.photos.springconfig.PhotosStagingJdbcDbConfig;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -13,6 +14,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @PhotosStagingJdbcDbConfig
 @Tag("junit5")
 @Tag("photos")

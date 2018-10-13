@@ -1,9 +1,9 @@
 package image.persistence.entity;
 
+import exifweb.util.random.IEnhancedRandom;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
-import exifweb.util.random.IEnhancedRandom;
 import image.persistence.util.IPositiveIntegerRandom;
 
 import java.util.Date;

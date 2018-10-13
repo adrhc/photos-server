@@ -39,7 +39,7 @@ public class AlbumCover implements IImageDimensions, ICdmEntity {
 	}
 
 	public AlbumCover(Integer albumId, String albumName, String imgName,
-	                  int imageHeight, int imageWidth, boolean dirty, Date lastUpdate) {
+			int imageHeight, int imageWidth, boolean dirty, Date lastUpdate) {
 		this(albumId, albumName, dirty, lastUpdate);
 		this.imgName = imgName;
 		this.imageHeight = imageHeight;

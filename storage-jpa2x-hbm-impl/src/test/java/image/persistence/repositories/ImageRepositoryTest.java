@@ -1,5 +1,6 @@
 package image.persistence.repositories;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
@@ -10,14 +11,11 @@ import image.persistence.entity.assertion.IImageAssertions;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.util.IPositiveIntegerRandom;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
@@ -28,9 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5Jpa2xInMemoryDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	private static final int IMAGE_COUNT = 10;

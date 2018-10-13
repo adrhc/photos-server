@@ -1,5 +1,6 @@
 package image.persistence.services;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.IAppConfigSupplier;
@@ -9,14 +10,11 @@ import image.persistence.repositories.AlbumRepository;
 import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.CacheStatisticsRepository;
-import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.util.IPositiveIntegerRandom;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
@@ -24,8 +22,6 @@ import java.util.List;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@NotThreadSafe
 class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfigSupplier {
 	@Inject
 	private CacheStatisticsRepository cacheStatisticsRepository;
@@ -40,7 +36,7 @@ class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfi
 	private List<Album> albums;
 
 	@BeforeAll
-	void givenAlbums() {
+	void beforeAll() {
 		// add images to albums
 		this.albums.forEach(a -> {
 			a.addImages(randomInstanceList(randomPositiveInt(1, 10), false, Image.class));

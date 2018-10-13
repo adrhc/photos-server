@@ -19,7 +19,7 @@ public interface INotModifiedChecker {
 	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
 	default <T> T checkNotModified(Supplier<Date> lastUpdateSupplier,
-	                               Supplier<T> valueSupplier, WebRequest webRequest) {
+			Supplier<T> valueSupplier, WebRequest webRequest) {
 		Date lastUpdate = lastUpdateSupplier.get();
 		if (lastUpdate != null && webRequest.checkNotModified(lastUpdate.getTime())) {
 			logger.trace("browser cache valid since: {}", sdf.format(lastUpdate));
@@ -30,8 +30,8 @@ public interface INotModifiedChecker {
 	}
 
 	default <T> T checkNotModified(Supplier<T> valueSupplier,
-	                               Function<T, Date> lastUpdateFunction,
-	                               WebRequest webRequest) {
+			Function<T, Date> lastUpdateFunction,
+			WebRequest webRequest) {
 		T value = valueSupplier.get();
 		Date lastUpdate = lastUpdateFunction.apply(value);
 		if (lastUpdate != null && webRequest.checkNotModified(lastUpdate.getTime())) {

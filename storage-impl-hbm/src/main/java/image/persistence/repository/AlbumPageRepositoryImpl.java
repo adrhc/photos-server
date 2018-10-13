@@ -24,7 +24,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public int countPages(String toSearch, boolean viewHidden,
-	                      boolean viewOnlyPrintable, Integer albumId) {
+			boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
 		Session session = this.sessionFactory.getCurrentSession();
 		Query q;
@@ -68,8 +68,8 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	@Override
 	@Transactional(readOnly = true)
 	public List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
-	                                     boolean viewHidden, boolean viewOnlyPrintable,
-	                                     Integer albumId) {
+			boolean viewHidden, boolean viewOnlyPrintable,
+			Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
 		Session session = this.sessionFactory.getCurrentSession();
 		Query q;

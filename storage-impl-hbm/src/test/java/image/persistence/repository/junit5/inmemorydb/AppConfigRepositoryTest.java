@@ -1,14 +1,13 @@
 package image.persistence.repository.junit5.inmemorydb;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.repository.junit5.springconfig.Junit5HbmInMemoryDbNestedConfig;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
@@ -29,14 +28,12 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5HbmInMemoryDbConfig
 class AppConfigRepositoryTest implements IAppConfigSupplier {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigRepositoryTest.class);
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class CreateAppConfig {
 		@RepeatedTest(3)
@@ -49,13 +46,12 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class GetAppConfigById {
 		private Integer idAppConfig;
 
 		@BeforeEach
-		void setUp() {
+		void beforeEach() {
 			AppConfig appConfig = entityAppConfigOf("byId", "byId-value");
 			AppConfigRepositoryTest.this.appConfigRepository.persist(appConfig);
 			this.idAppConfig = appConfig.getId();
@@ -71,13 +67,12 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class UpdateTest {
 		private List<AppConfig> appConfigs = new ArrayList<>();
 
 		@BeforeEach
-		void setUp() {
+		void beforeEach() {
 			randomInstanceStream(3, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.peek(AppConfigRepositoryTest.this.appConfigRepository::persist)
@@ -119,13 +114,12 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class UpdateValueTest1 extends UpdateValueTestBase {
 		private List<AppConfig> appConfigs = new ArrayList<>();
 
 		@BeforeEach
-		void setUp() {
+		void beforeEach() {
 			randomInstanceStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.forEach(this.appConfigRepository::persist);
@@ -134,27 +128,25 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class UpdateValueTest2 extends UpdateValueTestBase {
 		@Random(size = 2, type = AppConfig.class, excludes = {"id", "lastUpdate"})
 		private List<AppConfig> appConfigs;
 
 		@BeforeEach
-		void setUp() {
+		void beforeEach() {
 			this.appConfigs.forEach(this.appConfigRepository::persist);
 			this.appConfig0 = this.appConfigs.get(0);
 			this.appConfig1 = this.appConfigs.get(1);
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class UpdateValueTest3 extends UpdateValueTestBase {
 		private List<AppConfig> appConfigs = new ArrayList<>();
 
 		@BeforeEach
-		void setUp() {
+		void beforeEach() {
 			randomInstanceStream(2, false, AppConfig.class)
 					.peek(this.appConfigs::add)
 					.forEach(this.appConfigRepository::persist);
@@ -163,7 +155,6 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class GetAppConfigByName {
 		@BeforeAll
@@ -191,7 +182,6 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NotThreadSafe
 	@Junit5HbmInMemoryDbNestedConfig
 	class AppConfigOtherTest {
 		@Autowired

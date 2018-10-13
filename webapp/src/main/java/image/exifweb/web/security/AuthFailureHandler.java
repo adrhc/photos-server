@@ -23,7 +23,7 @@ public class AuthFailureHandler implements AuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-	                                    AuthenticationException exception) throws IOException {
+			AuthenticationException exception) throws IOException {
 		response.setContentType("application/json");
 		this.objectMapper.writeValue(response.getOutputStream(), AuthCheckResponse.FAILED_AUTHENTICATION);
 	}

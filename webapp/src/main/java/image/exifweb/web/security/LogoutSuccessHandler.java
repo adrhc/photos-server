@@ -29,12 +29,12 @@ public class LogoutSuccessHandler implements
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-	                            Authentication authentication) throws IOException, ServletException {
+			Authentication authentication) throws IOException, ServletException {
 		logger.debug("Log off user: {}", authentication);
 		Map<String, Object> success = new HashMap<String, Object>();
 		success.put("success", "true");
 		success.put("error", "false");
 		response.setContentType("application/json");
-		objectMapper.writeValue(response.getOutputStream(), success);
+		this.objectMapper.writeValue(response.getOutputStream(), success);
 	}
 }

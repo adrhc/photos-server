@@ -65,9 +65,9 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 	}
 
 	public AlbumPage(Integer id, String imgName, boolean hidden, boolean personal,
-	                 boolean ugly, boolean duplicate, boolean printable, int imageHeight,
-	                 int imageWidth, byte rating, Integer coverId, Date thumbLastModified,
-	                 Date dateTime, Date imageLastUpdate, String albumName, Date albumLastUpdate) {
+			boolean ugly, boolean duplicate, boolean printable, int imageHeight,
+			int imageWidth, byte rating, Integer coverId, Date thumbLastModified,
+			Date dateTime, Date imageLastUpdate, String albumName, Date albumLastUpdate) {
 		this.id = id;
 		this.imgName = imgName;
 		this.hidden = hidden;

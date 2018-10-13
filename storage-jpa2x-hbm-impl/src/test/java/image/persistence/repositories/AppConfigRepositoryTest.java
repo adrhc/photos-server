@@ -1,18 +1,16 @@
 package image.persistence.repositories;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
-import image.persistence.config.NestedPerClass;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
-import exifweb.util.random.RandomBeansExtensionEx;
 import lombok.extern.slf4j.Slf4j;
-import net.jcip.annotations.NotThreadSafe;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
@@ -25,9 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5Jpa2xInMemoryDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@Inject
@@ -39,8 +35,8 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		assertThat("getDBNow", dbNow, Matchers.lessThanOrEqualTo(new Date()));
 	}
 
-	@NestedPerClass
 	@Junit5Jpa2xInMemoryDbConfig
+	@Nested
 	class UpdateValue {
 		private AppConfig appConfig;
 
@@ -65,8 +61,8 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NestedPerClass
 	@Junit5Jpa2xInMemoryDbConfig
+	@Nested
 	class DeleteByEnumeratedName {
 		@BeforeAll
 		void beforeAll() {
@@ -95,8 +91,8 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		}
 	}
 
-	@NestedPerClass
 	@Junit5Jpa2xInMemoryDbConfig
+	@Nested
 	class VariousFinders {
 		@BeforeAll
 		void beforeAll() {

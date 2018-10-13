@@ -4,15 +4,15 @@ import image.cdm.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.photos.junit5.util.assertion.IAppConfigAssertions;
 import image.photos.junit5.util.converter.ConversionTestBase;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class AppConfigCdmToEntityConverterTest extends ConversionTestBase
 		implements IAppConfigSupplier, IAppConfigAssertions {
 	private AppConfig sourceAppConfig;
 
-	@BeforeEach
-	void setUp() {
+	@BeforeAll
+	void beforeAll() {
 		this.sourceAppConfig = randomInstance(true, AppConfig.class);
 	}
 

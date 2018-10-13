@@ -1,16 +1,14 @@
 package image.persistence.repositories;
 
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.config.Junit5Jpa2xStageDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.IAlbumSupplier;
-import exifweb.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
-import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,9 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@NotThreadSafe
 @Junit5Jpa2xStageDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 class AlbumRepositoryStageTest implements IAlbumSupplier {
 	@Autowired
@@ -33,7 +29,7 @@ class AlbumRepositoryStageTest implements IAlbumSupplier {
 	private List<Album> albums;
 
 	@BeforeAll
-	void givenAlbums() {
+	void beforeAll() {
 		this.albums.forEach(this.albumRepository::persist);
 	}
 

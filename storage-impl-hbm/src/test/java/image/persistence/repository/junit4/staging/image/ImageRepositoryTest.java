@@ -8,6 +8,7 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repository.junit4.staging.album.AlbumRepoWriteTestBase;
 import image.persistence.repository.springconfig.HbmStagingJdbcDbConfig;
 import image.persistence.util.IDateNoMillisSupplier;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -16,7 +17,10 @@ import java.util.Date;
 
 /**
  * Created by adr on 2/25/18.
+ *
+ * @NotThreadSafe: because it has multiple @Test and also @Before (in AlbumRepoWriteTestBase)
  */
+@NotThreadSafe
 @HbmStagingJdbcDbConfig
 @Category(HbmStagingJdbcDbConfig.class)
 public class ImageRepositoryTest extends AlbumRepoWriteTestBase
