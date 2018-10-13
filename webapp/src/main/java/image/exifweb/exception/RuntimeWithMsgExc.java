@@ -1,4 +1,4 @@
-package image.exifweb.system.exception;
+package image.exifweb.exception;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,7 +32,7 @@ public class RuntimeWithMsgExc extends RuntimeException {
 	}
 
 	public Object[] getArgs() {
-		return args;
+		return this.args;
 	}
 
 	public void setArgs(Object[] args) {
@@ -40,7 +40,7 @@ public class RuntimeWithMsgExc extends RuntimeException {
 	}
 
 	public String getMessageKey() {
-		return messageKey;
+		return this.messageKey;
 	}
 
 	public void setMessageKey(String messageKey) {

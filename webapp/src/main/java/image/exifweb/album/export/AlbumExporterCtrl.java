@@ -1,7 +1,7 @@
 package image.exifweb.album.export;
 
-import image.exifweb.util.json.JsonStringValue;
 import image.exifweb.web.controller.KeyValueDeferredResult;
+import image.exifweb.web.json.JsonStringValue;
 import image.photos.album.AlbumExporterService;
 import image.photos.util.status.E3ResultTypes;
 import org.slf4j.Logger;
@@ -60,10 +60,10 @@ public class AlbumExporterCtrl {
 	public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			albumExporterService.writeJsonForAlbumsPageSafe();
+			this.albumExporterService.writeJsonForAlbumsPageSafe();
 			deferredResult.setResult("message", AlbumExporterService.ALBUMS_PAGE_JSON + " updated!");
 			logger.debug("[updateJsonForAlbumsPage] END");
-		}, asyncExecutor);
+		}, this.asyncExecutor);
 	}
 
 	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
@@ -72,10 +72,10 @@ public class AlbumExporterCtrl {
 	public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			E3ResultTypes e3Result = albumExporterService.writeJsonForAllAlbumsSafe();
+			E3ResultTypes e3Result = this.albumExporterService.writeJsonForAllAlbumsSafe();
 			deferredResult.setResult("message", ALL_ALBUMS_JSON_UPDATE_MSG.get(e3Result));
 			logger.debug("[updateJsonForAllAlbums] END");
-		}, asyncExecutor);
+		}, this.asyncExecutor);
 	}
 
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
@@ -84,11 +84,11 @@ public class AlbumExporterCtrl {
 	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonStringValue jsonStringValue) {
 		logger.debug("BEGIN {}", jsonStringValue.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			Boolean success = albumExporterService
+			Boolean success = this.albumExporterService
 					.writeJsonForAlbumSafe(jsonStringValue.getValue());
 			deferredResult.setResult("message",
 					ALBUM_JSON_UPDATE_MSG.get(success).apply(jsonStringValue.getValue()));
 			logger.debug("[updateJsonFor1Album] END");
-		}, asyncExecutor);
+		}, this.asyncExecutor);
 	}
 }

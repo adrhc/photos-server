@@ -20,8 +20,8 @@ import java.util.Set;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
-@ComponentScan
-@Import({Jpa2xConfig.class})
+@ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
+@Import({Jpa2xConfig.class, JsonMapperConfig.class})
 @PropertySource("classpath:/photos.properties")
 public class PhotosConfig {
 	@Bean

@@ -1,6 +1,6 @@
 package image.exifweb.web.config;
 
-import image.exifweb.system.exception.RuntimeWithMsgExc;
+import image.exifweb.exception.RuntimeWithMsgExc;
 import image.exifweb.web.security.AuthData;
 import image.exifweb.web.security.AuthUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;

@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping("/https/httpdCheck")
-public class HttpdCheckController {
+public class HttpdCheckCtrl {
 	@Inject
 	private HttpdCheck httpdCheck;
 

@@ -1,8 +1,8 @@
 package image.exifweb.subtitle;
 
 import image.exifweb.util.io.EndingLinesFileReader;
-import image.exifweb.util.json.JsonStringValue;
 import image.exifweb.util.procinfo.ProcessInfoService;
+import image.exifweb.web.json.JsonStringValue;
 import image.photos.config.AppConfigService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,10 +42,10 @@ public class SubtitleCtrl {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void checkSubtitlesExtractor(Model model) throws Exception {
 		String runningMessage;
-		if (subtitleService.isSubtitlesExtractorRunning()) {
+		if (this.subtitleService.isSubtitlesExtractorRunning()) {
 			runningMessage = "Subtitles extractor is running !";
 		} else {
-			List<String> runningCmds = processInfoService.getProcessesRunning(SubtitleService.SUBTITLE_EXTRACT_COMMANDS);
+			List<String> runningCmds = this.processInfoService.getProcessesRunning(SubtitleService.SUBTITLE_EXTRACT_COMMANDS);
 			if (runningCmds.isEmpty()) {
 				runningMessage =
 						StringUtils.arrayToCommaDelimitedString(SubtitleService.SUBTITLE_EXTRACT_COMMANDS) + " NOT running !";
@@ -54,7 +54,7 @@ public class SubtitleCtrl {
 						StringUtils.collectionToCommaDelimitedString(runningCmds) + " running !";
 			}
 		}
-		EndingLinesFileReader endingLinesFileReader = ac.getBean(EndingLinesFileReader.class);
+		EndingLinesFileReader endingLinesFileReader = this.ac.getBean(EndingLinesFileReader.class);
 		endingLinesFileReader.setRunningMessage(runningMessage);
 		model.addAttribute("subLogLines", endingLinesFileReader.getLines());
 	}
@@ -62,7 +62,7 @@ public class SubtitleCtrl {
 	@RequestMapping(value = "/extractSubtitles", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public synchronized void extractSubtitles(@RequestBody JsonStringValue jsonStringValue, Model model) throws IOException, InterruptedException {
-		boolean mkvExtractStarted = subtitleService.extractSubtitles(jsonStringValue.getValue(), true);
+		boolean mkvExtractStarted = this.subtitleService.extractSubtitles(jsonStringValue.getValue(), true);
 		if (mkvExtractStarted) {
 			if (StringUtils.hasText(jsonStringValue.getValue())) {
 				model.addAttribute("message", "extractSubtitles started for " + jsonStringValue.getValue() + " !");
@@ -71,7 +71,7 @@ public class SubtitleCtrl {
 			}
 		} else {
 			model.addAttribute("message", "extractSubtitles already running for " +
-					subtitleService.getMkvExtractorProcessFolder() + " !");
+					this.subtitleService.getMkvExtractorProcessFolder() + " !");
 			model.addAttribute("error", Boolean.TRUE);
 		}
 	}
@@ -79,7 +79,7 @@ public class SubtitleCtrl {
 	@RequestMapping(value = "/stopExtractingSubtitles", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public synchronized void stopExtractingSubtitles(Model model) throws IOException, InterruptedException {
-		boolean mkvExtractStopped = subtitleService.stopExtractingSubtitles();
+		boolean mkvExtractStopped = this.subtitleService.stopExtractingSubtitles();
 		if (mkvExtractStopped) {
 			model.addAttribute("message", "extractSubtitles stopped !");
 		} else {
@@ -91,7 +91,7 @@ public class SubtitleCtrl {
 	@RequestMapping(value = "/videoFolders", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public List<JsonStringValue> videoFolders(WebRequest webRequest) throws IOException {
-		File videoRoot = new File(appConfigService.getConfig("video root folder"));
+		File videoRoot = new File(this.appConfigService.getConfig("video root folder"));
 		File[] videoRootFolders = videoRoot.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {

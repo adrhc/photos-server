@@ -1,6 +1,7 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import image.exifweb.web.security.WebSecurityComponent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,12 +37,13 @@ import java.util.*;
  */
 @Configuration
 @ComponentScan(useDefaultFilters = false,
-		includeFilters = {@ComponentScan.Filter(Controller.class),
-				@ComponentScan.Filter(RestController.class),
-				@ComponentScan.Filter(ControllerAdvice.class)})
+		excludeFilters = @ComponentScan.Filter({Configuration.class,
+				Component.class, Service.class, WebSecurityComponent.class}),
+		includeFilters = @ComponentScan.Filter({Controller.class,
+				RestController.class, ControllerAdvice.class}))
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, proxyTargetClass = true)
-@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
+@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class, WebSecurityConfig.class})
 public class WebConfig implements WebMvcConfigurer {
 	@Inject
 	private ObjectMapper objectMapper;

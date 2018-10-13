@@ -19,8 +19,8 @@ import java.util.Properties;
 @Profile("jpa2x-hbm-impl")
 @Configuration
 @ComponentScan(basePackages = {
-		"image.persistence.repositories",
-		"image.persistence.services"})
+		"image.persistence.repositories", "image.persistence.services"},
+		excludeFilters = @ComponentScan.Filter(Configuration.class))
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})

@@ -13,6 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -23,7 +28,10 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @ComponentScan(useDefaultFilters = false,
-		includeFilters = {@ComponentScan.Filter(WebSecurityComponent.class)})
+		excludeFilters = @ComponentScan.Filter({Configuration.class,
+				Controller.class, RestController.class, ControllerAdvice.class,
+				Component.class, Service.class}),
+		includeFilters = @ComponentScan.Filter(WebSecurityComponent.class))
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Inject
 	private DataSource dataSource;

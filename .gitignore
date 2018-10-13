@@ -13,3 +13,4 @@ nohup.out
 *.iws
 /.project
 dependency.txt
+exifweb-test.log

@@ -1,6 +1,6 @@
 package image.exifweb.apache;
 
-import image.exifweb.util.json.JsonStringValue;
+import image.exifweb.web.json.JsonStringValue;
 import org.apache.commons.io.FileUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

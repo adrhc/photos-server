@@ -26,14 +26,23 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp</artifactId>
-            <scope>${run-jetty}</scope>
+            <groupId>subtitles</groupId>
+            <artifactId>subtitles-extractor</artifactId>
+        </dependency>
+
+        <!--
+            check dependency.txt:
+                exifweb:storage-jpa2x-hbm-impl:test-jar:tests:1.0-SNAPSHOT:test
+        -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>subtitles</groupId>
-            <artifactId>subtitles-extractor</artifactId>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <scope>${run-jetty}</scope>
         </dependency>
 
         <dependency>
@@ -106,18 +115,23 @@
             <artifactId>spring-security-aspects</artifactId>
         </dependency>
 
-        <!--
-            ERROR
-                Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
-            SOLUTION
-                Let this dependency the last!
-
-            see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
-        -->
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <scope>provided</scope>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>util</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-entities</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -130,6 +144,20 @@
                 solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
             -->
             <version>${project.version}</version>
+        </dependency>
+
+        <!--
+            ERROR
+                Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
+            SOLUTION
+                Let this dependency the last!
+
+            see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
+        -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

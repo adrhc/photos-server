@@ -17,7 +17,7 @@ import java.io.IOException;
  * Time: 12:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AppManagerService {
+public abstract class AppManagerService {
 	private static final Logger logger = LoggerFactory.getLogger(ProcessInfoService.class);
 	/**
 	 * appProcName folosit de pidof si in loguri
@@ -35,26 +35,26 @@ public class AppManagerService {
 	private int waitToVerifyKill;
 
 	public boolean isRunning() throws IOException, InterruptedException {
-		if (appStatus != null) {
-			return StringUtils.hasText(processRunner.getProcessOutput(appStatus));
+		if (this.appStatus != null) {
+			return StringUtils.hasText(this.processRunner.getProcessOutput(this.appStatus));
 		} else {
 			return StringUtils.hasText(getPID());
 		}
 	}
 
 	public void start() throws IOException {
-		appStart.start();
+		this.appStart.start();
 	}
 
 	public void stop() throws IOException, InterruptedException {
 		try {
-			if (appStop == null) {
+			if (this.appStop == null) {
 				String pid = getPID();
 				if (StringUtils.hasText(pid)) {
 					new ProcessBuilder("kill", pid).start();
 				}
 			} else {
-				appStop.start();
+				this.appStop.start();
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -62,15 +62,15 @@ public class AppManagerService {
 		safeWait();
 		if (isRunning()) {
 			try {
-				if (appStopForce == null) {
+				if (this.appStopForce == null) {
 					String pid = getPID();
 					if (StringUtils.hasText(pid)) {
-						logger.warn("Forced kill of {}", appProcName);
+						logger.warn("Forced kill of {}", this.appProcName);
 						new ProcessBuilder("kill", "-9", pid).start();
 					}
 				} else {
-					logger.warn("Forced kill of {}", appProcName);
-					appStopForce.start();
+					logger.warn("Forced kill of {}", this.appProcName);
+					this.appStopForce.start();
 				}
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
@@ -79,7 +79,7 @@ public class AppManagerService {
 	}
 
 	protected String getPID() throws IOException, InterruptedException {
-		String[] pids = processInfoService.pidof(appProcName);
+		String[] pids = this.processInfoService.pidof(this.appProcName);
 		if (pids.length == 0) {
 			return null;
 		}
@@ -88,13 +88,13 @@ public class AppManagerService {
 
 	private void safeWait() {
 		try {
-			Thread.sleep(waitToVerifyKill);
+			Thread.sleep(this.waitToVerifyKill);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 	}
 
 	public String getAppProcName() {
-		return appProcName;
+		return this.appProcName;
 	}
 }

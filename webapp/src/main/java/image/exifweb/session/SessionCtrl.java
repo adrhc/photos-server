@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 @RequestMapping("/json/session")
-public class SessionController {
+public class SessionCtrl {
 	private AuthUtil authUtil = new AuthUtil();
 
 	@PreAuthorize("isAuthenticated()")

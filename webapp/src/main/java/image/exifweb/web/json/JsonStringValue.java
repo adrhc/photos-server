@@ -1,4 +1,4 @@
-package image.exifweb.util.json;
+package image.exifweb.web.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -18,7 +18,7 @@ public class JsonStringValue implements Comparable<JsonStringValue>, Serializabl
 	}
 
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	public void setValue(String value) {
@@ -27,20 +27,20 @@ public class JsonStringValue implements Comparable<JsonStringValue>, Serializabl
 
 	@JsonIgnore
 	public Integer getValueAsInteger() {
-		return new Integer(value);
+		return new Integer(this.value);
 	}
 
 	@Override
 	public int compareTo(JsonStringValue o) {
 		if (o == null || o.value == null) {
-			if (value == null) {
+			if (this.value == null) {
 				return 0;
 			} else {
 				return 1;
 			}
-		} else if (value == null) {
+		} else if (this.value == null) {
 			return -1;
 		}
-		return value.compareToIgnoreCase(o.value);
+		return this.value.compareToIgnoreCase(o.value);
 	}
 }

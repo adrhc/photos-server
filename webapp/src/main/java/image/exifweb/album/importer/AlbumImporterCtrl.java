@@ -1,7 +1,7 @@
 package image.exifweb.album.importer;
 
-import image.exifweb.util.json.JsonStringValue;
 import image.exifweb.web.controller.KeyValueDeferredResult;
+import image.exifweb.web.json.JsonStringValue;
 import image.persistence.entity.Album;
 import image.photos.album.AlbumImporterService;
 import image.photos.events.album.AlbumEventsEmitter;
@@ -50,12 +50,12 @@ public class AlbumImporterCtrl {
 			REIMPORT_CHOICES =
 			new HashMap<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>>() {{
 				put(TRUE, (albumName, deferredResult) -> {
-					albumImporterService.importAlbumByName(albumName);
+					AlbumImporterCtrl.this.albumImporterService.importAlbumByName(albumName);
 					deferredResult.setResult("message",
 							REIMPORT_MSG_PATTERN.format(new Object[]{albumName}));
 				});
 				put(FALSE, (albumName, deferredResult) -> {
-					albumImporterService.importAllFromAlbumsRoot();
+					AlbumImporterCtrl.this.albumImporterService.importAllFromAlbumsRoot();
 					deferredResult.setResult("message",
 							REIMPORT_MSG_PATTERN.format(new Object[]{"all albums"}));
 				});
@@ -70,10 +70,10 @@ public class AlbumImporterCtrl {
 		logger.debug("BEGIN {}", json1Value.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			String albumName = json1Value.getValue();
-			REIMPORT_CHOICES.get(StringUtils.hasText(albumName))
+			this.REIMPORT_CHOICES.get(StringUtils.hasText(albumName))
 					.accept(albumName, deferredResult);
 			logger.debug("[reImport] END {}", json1Value.getValue());
-		}, asyncExecutor);
+		}, this.asyncExecutor);
 	}
 
 	@RequestMapping(value = "/importNewAlbumsOnly", method = RequestMethod.POST,
@@ -83,7 +83,7 @@ public class AlbumImporterCtrl {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			List<Album> newAlbums = new ArrayList<>();
-			Disposable subscription = albumEventsEmitter
+			Disposable subscription = this.albumEventsEmitter
 					.albumEventsByTypes(true, ALBUM_IMPORTED)
 					.take(1L)
 					.subscribe(
@@ -92,7 +92,7 @@ public class AlbumImporterCtrl {
 								logger.error(t.getMessage(), t);
 								logger.error("[ALBUM_IMPORTED] newAlbums");
 							});
-			albumImporterService.importNewAlbumsOnly();
+			this.albumImporterService.importNewAlbumsOnly();
 			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
 			if (newAlbums.isEmpty()) {
 				deferredResult.setResult("message", "No new album to import!");
@@ -104,7 +104,7 @@ public class AlbumImporterCtrl {
 			// todo: make sure to dispose even when an exception occurs
 			subscription.dispose();
 			logger.debug("[importNewAlbumsOnly] END");
-		}, asyncExecutor);
+		}, this.asyncExecutor);
 	}
 
 }
