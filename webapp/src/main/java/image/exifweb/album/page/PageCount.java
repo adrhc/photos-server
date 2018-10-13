@@ -1,13 +1,11 @@
 package image.exifweb.album.page;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public interface PageCount {
+	Number getPhotosPerPage();
 
-import java.io.Serializable;
+	Number getPageCount();
 
-@Data
-@NoArgsConstructor
-public class PageCount implements Serializable {
-	private Number photosPerPage;
-	private Number pageCount;
+	void setPhotosPerPage(Number photosPerPage);
+
+	void setPageCount(Number pageCount);
 }
