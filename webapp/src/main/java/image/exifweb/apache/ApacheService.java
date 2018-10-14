@@ -23,15 +23,15 @@ public class ApacheService {
 	private String apacheErrorLogPrefix;
 
 	public File getAccessLogFile() {
-		return getLogFile(apacheAccessLogPrefix);
+		return getLogFile(this.apacheAccessLogPrefix);
 	}
 
 	public File getErrorLogFile() {
-		return getLogFile(apacheErrorLogPrefix);
+		return getLogFile(this.apacheErrorLogPrefix);
 	}
 
-	public File getLogFile(final String fileNamePrefix) {
-		File dir = new File(appConfigService.getConfig("apache-log-dir"));
+	private File getLogFile(final String fileNamePrefix) {
+		File dir = new File(this.appConfigService.getConfig("apache-log-dir"));
 		File[] files = dir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {

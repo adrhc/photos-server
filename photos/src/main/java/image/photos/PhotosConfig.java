@@ -1,5 +1,6 @@
 package image.photos;
 
+import image.persistence.Jpa2xConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -19,10 +20,9 @@ import java.util.Set;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
-@ComponentScan(basePackageClasses = PhotosConfig.class,
-		excludeFilters = @ComponentScan.Filter(Configuration.class))
+@ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
+@Import({Jpa2xConfig.class, JsonMapperConfig.class})
 @PropertySource("classpath:/photos.properties")
-@Import(JsonMapperConfig.class)
 public class PhotosConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer

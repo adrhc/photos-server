@@ -3,10 +3,9 @@ package image.photos.junit4.appconfig;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.IAppConfigSupplier;
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repository.AppConfigRepository;
+import image.persistence.repositories.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springconfig.PhotosInMemoryDbConfig;
-import net.jcip.annotations.NotThreadSafe;
+import image.photos.junit4.testconfig.PhotosInMemoryDbConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import static org.junit.Assert.assertTrue;
  * Created by adrianpetre on 23.02.2018.
  */
 @RunWith(SpringRunner.class)
-@NotThreadSafe
 @PhotosInMemoryDbConfig
 @Category(PhotosInMemoryDbConfig.class)
 public class AppConfigServiceWriteTest implements IAppConfigSupplier {
@@ -45,7 +43,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	private Path tempDir;
 
 	@Before
-	public void setUp() throws IOException {
+	public void beforeEach() throws IOException {
 		// temp directory
 		EnumSet<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
 				PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE,
@@ -56,10 +54,10 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 		AppConfig photosJsonFSPath = new AppConfig();
 		photosJsonFSPath.setName(AppConfigEnum.photos_json_FS_path.getValue());
 		photosJsonFSPath.setValue(this.tempDir.toAbsolutePath().toString());
-		this.appConfigRepository.createAppConfig(photosJsonFSPath);
+		this.appConfigRepository.persist(photosJsonFSPath);
 		// some other random AppConfig
 		randomInstanceStream(3, false, AppConfig.class)
-				.forEach(this.appConfigRepository::createAppConfig);
+				.forEach(this.appConfigRepository::persist);
 	}
 
 	@Test
@@ -69,7 +67,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 	}
 
 	@After
-	public void teadDown() throws IOException {
+	public void afterEach() throws IOException {
 		assertTrue(this.tempDir.getFileName().toString().startsWith(this.TEMP_DIR_PREFIX));
 		Files.walkFileTree(this.tempDir,
 				new SimpleFileVisitor<Path>() {

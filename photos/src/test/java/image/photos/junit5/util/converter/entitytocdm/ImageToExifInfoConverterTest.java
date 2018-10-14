@@ -5,27 +5,27 @@ import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.photos.junit5.util.converter.ConversionTestBase;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
  * Created by adr on 2/10/18.
  */
-public class ImageToExifInfoConverterTest extends ConversionTestBase implements IImageSupplier {
+class ImageToExifInfoConverterTest extends ConversionTestBase implements IImageSupplier {
 	private Image image;
 
 	/**
 	 * https://www.mkyong.com/hibernate/java-lang-classformaterror-absent-code-attribute-in-method-that-is-not-native-or-abstract-in-class-file/
 	 */
-	@BeforeEach
-	void setUp() {
+	@BeforeAll
+	void beforeAll() {
 		this.image = supplyImage();
 		// some versions of beanutils fail with Date null
 		this.image.getImageMetadata().setDateTime(null);
 	}
 
 	@Test
-	public void convert() {
+	void convert() {
 		ExifInfo exifInfo = this.cs.convert(this.image, ExifInfo.class);
 		Assertions.assertAll(
 				() -> Assertions.assertEquals(this.image.getName(), exifInfo.getName(), "name"),

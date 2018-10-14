@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface IAppConfigAssertions {
 	default void assertAppConfigEquals(String heading, AppConfig cdmAppConfig,
-	                                   image.persistence.entity.AppConfig entityAppConfig) {
+			image.persistence.entity.AppConfig entityAppConfig) {
 		assertAll(heading,
 				() -> assertEquals(cdmAppConfig.getId(), entityAppConfig.getId()),
 				() -> assertEquals(cdmAppConfig.getName(), entityAppConfig.getName()),
@@ -20,7 +20,7 @@ public interface IAppConfigAssertions {
 	}
 
 	default void assertAppConfigsEquals(List<AppConfig> cdmAppConfigs,
-	                                    List<image.persistence.entity.AppConfig> entityAppConfigs) {
+			List<image.persistence.entity.AppConfig> entityAppConfigs) {
 		cdmAppConfigs.forEach(cdm -> {
 			List<image.persistence.entity.AppConfig> foundEntityAppConfig =
 					entityAppConfigs.stream().filter(ac -> ac.getId().equals(cdm.getId()))

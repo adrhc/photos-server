@@ -2,6 +2,7 @@ package image.persistence.entity.image;
 
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.testconfig.Junit5MiscNoSpringConfig;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -63,11 +64,12 @@ class IImageFlagsUtilsTest implements IImageFlagsUtils {
 	}
 
 	@Nested
+	@NotThreadSafe
 	class AreEqualsTest implements IImageFlagsUtils {
 		private ImageFlags imageFlags;
 
 		@BeforeEach
-		void setup() {
+		void beforeEach() {
 			this.imageFlags = new ImageFlags();
 		}
 

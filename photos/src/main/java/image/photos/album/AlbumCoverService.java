@@ -3,7 +3,7 @@ package image.photos.album;
 import image.cdm.album.cover.AlbumCover;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.persistence.repository.AlbumRepository;
+import image.persistence.repositories.AlbumRepository;
 import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Component;
 
@@ -23,18 +23,18 @@ public class AlbumCoverService {
 	private ImageUtils imageUtils;
 
 	public List<AlbumCover> getCovers() {
-		return albumRepository.getAlbumsOrderedByName().stream()
+		return this.albumRepository.findByDeletedFalseOrderByNameDesc().stream()
 				.map(this::convertAlbumToCover)
 				.collect(Collectors.toList());
 	}
 
 	public AlbumCover getCoverById(Integer albumId) {
-		Album album = albumRepository.getAlbumById(albumId);
+		Album album = this.albumRepository.getById(albumId);
 		return convertAlbumToCover(album);
 	}
 
 	public AlbumCover getCoverByName(String albumName) {
-		Album album = albumRepository.getAlbumByName(albumName);
+		Album album = this.albumRepository.findAlbumByName(albumName);
 		return convertAlbumToCover(album);
 	}
 
@@ -49,8 +49,8 @@ public class AlbumCoverService {
 					cover.getImageMetadata().getExifData().getImageHeight(),
 					cover.getImageMetadata().getExifData().getImageWidth(),
 					album.isDirty(), album.getLastUpdate());
-			imageUtils.appendImageDimensions(ac);
-			imageUtils.appendImagePaths(ac, cover.getImageMetadata().getThumbLastModified().getTime());
+			this.imageUtils.appendImageDimensions(ac);
+			this.imageUtils.appendImagePaths(ac, cover.getImageMetadata().getThumbLastModified().getTime());
 		}
 		return ac;
 	}

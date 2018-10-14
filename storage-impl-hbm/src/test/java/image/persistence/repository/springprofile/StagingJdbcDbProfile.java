@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles({"test-jdbc-ds"})
+@ActiveProfiles({"test-jdbc-ds", "hbm-impl"})
 public @interface StagingJdbcDbProfile {
 }

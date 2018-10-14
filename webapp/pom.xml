@@ -26,14 +26,23 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp</artifactId>
-            <scope>${run-jetty}</scope>
+            <groupId>subtitles</groupId>
+            <artifactId>subtitles-extractor</artifactId>
+        </dependency>
+
+        <!--
+            check dependency.txt:
+                exifweb:storage-jpa2x-hbm-impl:test-jar:tests:1.0-SNAPSHOT:test
+        -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>subtitles</groupId>
-            <artifactId>subtitles-extractor</artifactId>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <scope>${run-jetty}</scope>
         </dependency>
 
         <dependency>
@@ -96,68 +105,45 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-expression</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-aspects</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>util</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-entities</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>storage-jpa2x-hbm-impl</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <!--
+                needs version because including jar also
+                solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+            -->
+            <version>${project.version}</version>
         </dependency>
 
         <!--
@@ -255,21 +241,41 @@
                 multiple goals bound to a phase are executed in the same order as they are declared in the POM
             -->
             <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>aspectj-maven-plugin</artifactId>-->
-                <!--<configuration combine.self="append">-->
-                    <!--<aspectLibraries>-->
-                        <!--<aspectLibrary>-->
-                            <!--<groupId>org.springframework</groupId>-->
-                            <!--<artifactId>spring-aspects</artifactId>-->
-                        <!--</aspectLibrary>-->
-                        <!--<aspectLibrary>-->
-                            <!--<groupId>org.springframework.security</groupId>-->
-                            <!--<artifactId>spring-security-aspects</artifactId>-->
-                        <!--</aspectLibrary>-->
-                    <!--</aspectLibraries>-->
-                <!--</configuration>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>aspectj-maven-plugin</artifactId>-->
+            <!--<configuration combine.self="append">-->
+            <!--<aspectLibraries>-->
+            <!--<aspectLibrary>-->
+            <!--<groupId>org.springframework</groupId>-->
+            <!--<artifactId>spring-aspects</artifactId>-->
+            <!--</aspectLibrary>-->
+            <!--<aspectLibrary>-->
+            <!--<groupId>org.springframework.security</groupId>-->
+            <!--<artifactId>spring-security-aspects</artifactId>-->
+            <!--</aspectLibrary>-->
+            <!--</aspectLibraries>-->
+            <!--</configuration>-->
             <!--</plugin>-->
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration combine.self="append">
+                    <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
+                    <environmentVariables>
+                        <!-- for catching tests without proper spring profile annotation -->
+                        <spring.profiles.active>fake-profile</spring.profiles.active>
+                    </environmentVariables>
+                    <groups>${junit5.webapp.groups}</groups>
+                    <!--<properties>-->
+                    <!--<includeTags>MiscTestCategory</includeTags>-->
+                    <!--<includeTags>image.photos.JsonMapperConfig</includeTags>-->
+                    <!--<includeTags>image.photos.springconfigtosInMemoryDbConfig</includeTags>-->
+                    <!--<includeTags>junit5&amp;photos&amp;inmemorydb</includeTags>-->
+                    <!--<includeTags>junit5&amp;photos&amp;json</includeTags>-->
+                    <!--<includeTags>junit5&amp;photos&amp;misc</includeTags>-->
+                    <!--</properties>-->
+                </configuration>
+            </plugin>
 
         </plugins>
         <finalName>exifweb</finalName>

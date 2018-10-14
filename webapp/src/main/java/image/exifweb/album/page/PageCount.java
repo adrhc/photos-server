@@ -8,6 +8,6 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 public class PageCount implements Serializable {
-    private Number photosPerPage;
-    private Number pageCount;
+	private Number photosPerPage;
+	private Number pageCount;
 }

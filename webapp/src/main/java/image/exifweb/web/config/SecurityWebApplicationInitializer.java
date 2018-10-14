@@ -1,5 +1,7 @@
 package image.exifweb.web.config;
 
+import image.exifweb.RootConfig;
+import image.exifweb.WebSecurityConfig;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
 /**
@@ -7,4 +9,7 @@ import org.springframework.security.web.context.AbstractSecurityWebApplicationIn
  */
 public class SecurityWebApplicationInitializer
 		extends AbstractSecurityWebApplicationInitializer {
+	public SecurityWebApplicationInitializer() {
+		super(RootConfig.class, WebSecurityConfig.class);
+	}
 }

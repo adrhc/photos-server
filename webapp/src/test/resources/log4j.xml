@@ -14,19 +14,30 @@
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
-            <param name="ConversionPattern" value="[%-5p] [%C{1}.%M] %m%n"/>
+            <param name="ConversionPattern" value="[%-5p] [%C{2}.%M] %m%n"/>
             <!--<param name="ConversionPattern" value="[%-5p] [%t] %m%n"/>-->
         </layout>
     </appender>
 
+    <appender name="exifweb-file" class="org.apache.log4j.RollingFileAppender">
+        <param name="Threshold" value="debug"/>
+        <param name="file" value="exifweb-test.log"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <!-- Keep one backup file -->
+        <param name="MaxBackupIndex" value="1"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
+        </layout>
+    </appender>
+
     <!--<appender name="subtitles-extractor-file" class="org.apache.log4j.RollingFileAppender">-->
-        <!--<param name="Threshold" value="debug"/>-->
-        <!--<param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>-->
-        <!--<param name="MaxFileSize" value="10MB"/>-->
-        <!--<param name="MaxBackupIndex" value="3"/>-->
-        <!--<layout class="org.apache.log4j.PatternLayout">-->
-            <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
-        <!--</layout>-->
+    <!--<param name="Threshold" value="debug"/>-->
+    <!--<param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>-->
+    <!--<param name="MaxFileSize" value="10MB"/>-->
+    <!--<param name="MaxBackupIndex" value="3"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+    <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
+    <!--</layout>-->
     <!--</appender>-->
 
     <logger name="image" additivity="false">
@@ -83,6 +94,7 @@
     <root>
         <priority value="warn"/>
         <appender-ref ref="console"/>
+        <appender-ref ref="exifweb-file"/>
     </root>
 
 </log4j:configuration>

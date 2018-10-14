@@ -1,6 +1,7 @@
 package image.photos.junit5.album;
 
 import exifweb.util.MiscUtils;
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
@@ -9,10 +10,9 @@ import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
-import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.AppConfigRepository;
+import image.persistence.repositories.AlbumRepository;
+import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.ESortType;
-import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import image.persistence.util.IPositiveIntegerRandom;
 import image.photos.album.AlbumPageService;
 import image.photos.junit5.testconfig.Junit5PhotosStagingDbConfig;
@@ -20,7 +20,6 @@ import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,7 +30,6 @@ import static org.hamcrest.Matchers.hasSize;
 
 @Junit5PhotosStagingDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MiscUtils, IImageFlagsUtils {
 	private static final int PAGE_SIZE = 20;
 	private static final int MAX_IMAGES_FOR_ALBUM = 30;
@@ -54,7 +52,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	private Image printableImage;
 
 	@BeforeAll
-	void setUpSpecialAlbum() {
+	void beforeAll1() {
 		this.specialAlbum.getImages().forEach(i -> {
 			i.setAlbum(this.specialAlbum);
 			i.setFlags(of(EImageStatus.DEFAULT));
@@ -63,11 +61,11 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		this.specialAlbum.addImage(this.hiddenImage);
 		this.printableImage.setFlags(of(EImageStatus.PRINTABLE));
 		this.specialAlbum.addImage(this.printableImage);
-		this.albumRepository.createAlbum(this.specialAlbum);
+		this.albumRepository.persist(this.specialAlbum);
 	}
 
 	@BeforeAll
-	void setUp() {
+	void beforeAll2() {
 		// add images to albums
 		this.albums.forEach(a -> {
 			a.addImages(randomInstanceList(randomPositiveInt(1, MAX_IMAGES_FOR_ALBUM), false, Image.class));
@@ -76,17 +74,17 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		this.albums.stream().map(Album::getImages).flatMap(List<Image>::stream)
 				.forEach(i -> i.setFlags(of(EImageStatus.DEFAULT)));
 		// insert albums
-		this.albums.forEach(this.albumRepository::createAlbum);
+		this.albums.forEach(this.albumRepository::persist);
 		// create photos_per_page app config
-		this.appConfigRepository.createAppConfig(
+		this.appConfigRepository.persist(
 				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
 	}
 
 	@AfterAll
-	void tearDown() {
-		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteAlbumById(a.getId())));
-		ignoreExc(() -> this.albumRepository.deleteAlbumById(this.specialAlbum.getId()));
-		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
+	void afterAll() {
+		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteById(a.getId())));
+		ignoreExc(() -> this.albumRepository.deleteById(this.specialAlbum.getId()));
+		ignoreExc(() -> this.appConfigRepository.deleteByEnumeratedName(AppConfigEnum.photos_per_page));
 	}
 
 	@Test

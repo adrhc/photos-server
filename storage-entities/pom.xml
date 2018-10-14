@@ -31,6 +31,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>util</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -42,7 +48,6 @@
                         <!-- for catching tests without proper spring profile annotation -->
                         <spring.profiles.active>fake-profile</spring.profiles.active>
                     </environmentVariables>
-                    <!--<groups>${junit4.photos.groups}</groups>-->
                     <groups>${junit5.storage-entities.groups}</groups>
                     <forkCount>0</forkCount>
                     <reuseForks>true</reuseForks>

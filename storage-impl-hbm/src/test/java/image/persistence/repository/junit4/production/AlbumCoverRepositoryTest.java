@@ -1,6 +1,6 @@
 package image.persistence.repository.junit4.production;
 
-import image.persistence.repository.AlbumCoverRepository;
+import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.springconfig.HbmProdJdbcDbConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -27,11 +27,11 @@ public class AlbumCoverRepositoryTest {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
 	@Autowired
-	private AlbumCoverRepository albumCoverRepository;
+	private AlbumRepository albumRepository;
 
 	@Test
 	public void getAlbumCoversLastUpdateDate() {
-		Date date = this.albumCoverRepository.getAlbumCoversLastUpdateDate();
+		Date date = this.albumRepository.getAlbumCoversLastUpdateDate();
 		assertThat(date, sameOrBefore(new Date()));
 		logger.debug("albumCoversLastUpdateDate: {}", sdf.format(date));
 	}

@@ -32,21 +32,21 @@ public class AlbumRepositoryTest {
 
 	@Test
 	public void getAlbumsOrderedByName() throws Exception {
-		List<Album> albums = this.albumRepository.getAlbumsOrderedByName();
+		List<Album> albums = this.albumRepository.findByDeletedFalseOrderByNameDesc();
 		assertThat(albums, hasItem(anything()));
 		logger.debug("albums.size = {}", albums.size());
 	}
 
 	@Test
 	public void getAlbumById() throws Exception {
-		Album album = this.albumRepository.getAlbumById(1);
+		Album album = this.albumRepository.getById(1);
 		Assert.assertNotNull(album);
 		logger.debug("albums:\n{}", album.toString());
 	}
 
 	@Test
-	public void getAlbumByName() throws Exception {
-		Album album = this.albumRepository.getAlbumByName("2011-08-19-Gradac");
+	public void findAlbumByName() throws Exception {
+		Album album = this.albumRepository.findAlbumByName("2011-08-19-Gradac");
 		Assert.assertNotNull(album);
 		logger.debug("albums:\n{}", album.toString());
 	}

@@ -1,7 +1,7 @@
 package image.exifweb.util.io;
 
 import image.photos.config.AppConfigService;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,9 +36,9 @@ public class EndingLinesFileReader {
 
 	@PostConstruct
 	public void postConstruct() {
-		this.videoFolder = appConfigService.getConfig("video root folder");
-		this.linesToRead = appConfigService.getConfigInteger("subtitles-extractor-lines");
-		this.path = getLastModifiedPath(appConfigService.getConfig("subtitles-extractor.log"));
+		this.videoFolder = this.appConfigService.getConfig("video root folder");
+		this.linesToRead = this.appConfigService.getConfigInteger("subtitles-extractor-lines");
+		this.path = getLastModifiedPath(this.appConfigService.getConfig("subtitles-extractor.log"));
 	}
 
 	private String getLastModifiedPath(String path) {
@@ -62,23 +62,23 @@ public class EndingLinesFileReader {
 	}
 
 	public List<String> getLines() throws IOException {
-		List<String> lines = new ArrayList<>(linesToRead);
-		if (path == null) {
+		List<String> lines = new ArrayList<>(this.linesToRead);
+		if (this.path == null) {
 			lines.add("Nu exista fisiere de log!");
 			lines.add(DateFormatUtils.format(System.currentTimeMillis(), "dd-MM-yyyy HH:mm:ss"));
 			return lines;
 		}
-		lines.add("Using " + path);// linia 1 la pozitia 0
-		lines.add(runningMessage);// linia 2 la pozitia 1
+		lines.add("Using " + this.path);// linia 1 la pozitia 0
+		lines.add(this.runningMessage);// linia 2 la pozitia 1
 		lines.add("");// linia 3 la pozitia 2
-		RandomAccessFile fis = new RandomAccessFile(path, "r");
+		RandomAccessFile fis = new RandomAccessFile(this.path, "r");
 		long size = fis.length();
 		if (size == 0) {
-			lines.add(path + " este gol!");
+			lines.add(this.path + " este gol!");
 			lines.add(DateFormatUtils.format(System.currentTimeMillis(), "dd-MM-yyyy HH:mm:ss"));
 			return lines;
 		}
-		linesToRead -= 4;// liniile ramase disponibile de a se mai adauga (fara cele de mai jos comentate cu "linia x")
+		this.linesToRead -= 4;// liniile ramase disponibile de a se mai adauga (fara cele de mai jos comentate cu "linia x")
 		long position1 = Math.max(size - CHUNK_SIZE, 0), position2 = size;
 		byte[] bytes;
 		int bcount;
@@ -111,7 +111,7 @@ public class EndingLinesFileReader {
 				}
 				if (!doneWithLines) {
 					lines.add(3, slines[i]);// 3 linii adaugate mai sus pana acum
-					doneWithLines = linesToRead == lines.size();
+					doneWithLines = this.linesToRead == lines.size();
 				} else if (doneWithMovieInfo) {
 					break;
 				}
@@ -136,7 +136,7 @@ public class EndingLinesFileReader {
 	}
 
 	private String getExtractedMovieFolder(String line) {
-		int idx = line.indexOf(videoFolder);
+		int idx = line.indexOf(this.videoFolder);
 		if (idx < 0) {
 			return null;
 		}
@@ -144,11 +144,11 @@ public class EndingLinesFileReader {
 	}
 
 	private String getExtractedMovieName(String line) {
-		int idx = line.indexOf(movieNamePrefix);
+		int idx = line.indexOf(this.movieNamePrefix);
 		if (idx < 0) {
 			return null;
 		}
-		return line.substring(idx + movieNamePrefix.length()).trim();
+		return line.substring(idx + this.movieNamePrefix.length()).trim();
 	}
 
 	public void setRunningMessage(String runningMessage) {

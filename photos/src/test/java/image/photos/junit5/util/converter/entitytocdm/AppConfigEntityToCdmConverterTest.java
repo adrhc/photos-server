@@ -6,9 +6,7 @@ import image.photos.junit5.util.assertion.IAppConfigAssertions;
 import image.photos.junit5.util.converter.ConversionTestBase;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AppConfigEntityToCdmConverterTest
 		extends ConversionTestBase
 		implements IAppConfigSupplier, IAppConfigAssertions {

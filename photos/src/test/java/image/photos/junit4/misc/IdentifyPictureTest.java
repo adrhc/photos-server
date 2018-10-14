@@ -26,7 +26,7 @@ public class IdentifyPictureTest {
 	private static final String IMAGE = "/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums/2017-10-14 Family/20171105_130105.jpg";
 
 	@Before
-	public void beforeMethod() {
+	public void beforeEach() {
 		assumeTrue("missing " + ITENTIFY, Files.isRegularFile(Paths.get(ITENTIFY)));
 		assumeTrue("missing " + IMAGE, Files.isRegularFile(Paths.get(IMAGE)));
 	}

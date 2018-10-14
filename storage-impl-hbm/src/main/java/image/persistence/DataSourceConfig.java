@@ -4,18 +4,16 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
+@Import({DataSourcePropertiesConfig.class})
+@PropertySource("classpath:/jndi-datasource.properties")
 public class DataSourceConfig {
 	/**
 	 * SQLErrorCodeSQLExceptionTranslator (uses sql-error-codes.xml) -> for jdbc only?
@@ -27,43 +25,24 @@ public class DataSourceConfig {
 	@Profile("prod-jndi-ds")
 	@Bean
 	public DataSource jndiDataSource(@Value("${jndi.name}") String jndiName) {
-		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-		return lookup.getDataSource(jndiName);
+		return new JndiDataSourceLookup().getDataSource(jndiName);
 	}
 
 	/**
-	 * When using same name (e.g. dataSource) for jdbc and jndi datasources
+	 * When using same name (e.g. dataSource) for jdbc and jndi data sources
 	 * though they have different @Profile still won't work (none will be found).
 	 */
 	@Profile({"test-jdbc-ds", "prod-jdbc-ds"})
 	@Bean
 	public DataSource stageOrProdJdbcDataSource(
-			@Qualifier("jdbcDsProperties") Properties jdbcDsProperties) {
-		return new HikariDataSource(new HikariConfig(jdbcDsProperties));
+			@Qualifier("jdbcProperties") Properties jdbcProperties) {
+		return new HikariDataSource(new HikariConfig(jdbcProperties));
 	}
 
 	@Profile("in-memory-db")
 	@Bean
 	public DataSource inMemoryJdbcDataSource(
-			@Qualifier("jdbcDsProperties") Properties jdbcDsProperties) {
-		return new DriverManagerDataSource(jdbcDsProperties.getProperty("url"), jdbcDsProperties);
-	}
-
-	@Profile("in-memory-db")
-	@Bean("jdbcDsProperties")
-	public Properties inMemoryDsProperties() throws IOException {
-		return PropertiesLoaderUtils.loadAllProperties("jdbc-datasource/jdbc-in-memory.properties");
-	}
-
-	@Profile("test-jdbc-ds")
-	@Bean("jdbcDsProperties")
-	public Properties stageDsProperties() throws IOException {
-		return PropertiesLoaderUtils.loadAllProperties("jdbc-datasource/jdbc-stage.properties");
-	}
-
-	@Profile("prod-jdbc-ds")
-	@Bean("jdbcDsProperties")
-	public Properties prodDsProperties() throws IOException {
-		return PropertiesLoaderUtils.loadAllProperties("jdbc-datasource/jdbc-production.properties");
+			@Qualifier("jdbcProperties") Properties jdbcProperties) {
+		return new DriverManagerDataSource(jdbcProperties.getProperty("url"), jdbcProperties);
 	}
 }

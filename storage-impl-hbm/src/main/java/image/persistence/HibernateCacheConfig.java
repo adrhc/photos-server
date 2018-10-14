@@ -5,16 +5,15 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * see tech.log
+ * Replaced by hibernate-*.properties configuration (see tech.log).
  * <p>
  * Created by adr on 2/25/18.
  */
-@Configuration
+//@Configuration
 public class HibernateCacheConfig {
 	@Autowired
 	private Environment env;
@@ -23,7 +22,7 @@ public class HibernateCacheConfig {
 	public EhCacheManagerFactoryBean ehCacheManagerFactory() {
 		EhCacheManagerFactoryBean cacheManagerFactoryBean = new EhCacheManagerFactoryBean();
 		cacheManagerFactoryBean.setConfigLocation(new ClassPathResource(
-				env.getProperty("net.sf.ehcache.configurationResourceName")));
+				this.env.getProperty("net.sf.ehcache.configurationResourceName")));
 //		cacheManagerFactoryBean.setCacheManagerName(env.get("ehcache.hibernate.name"));
 		cacheManagerFactoryBean.setShared(true);
 //		cacheManagerFactoryBean.setAcceptExisting(true);

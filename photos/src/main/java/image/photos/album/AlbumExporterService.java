@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
+import image.persistence.repositories.AlbumRepository;
+import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
-import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.ESortType;
 import image.photos.config.AppConfigService;
 import image.photos.events.album.AlbumEventsEmitter;
@@ -53,7 +53,7 @@ public class AlbumExporterService {
 	private AlbumCoverService albumCoverService;
 
 	public boolean writeJsonForAlbumSafe(String name) {
-		Album album = this.albumRepository.getAlbumByName(name);
+		Album album = this.albumRepository.findAlbumByName(name);
 		if (album == null) {
 			logger.error("Missing album: {}", name);
 		}
@@ -72,7 +72,7 @@ public class AlbumExporterService {
 	}
 
 	public E3ResultTypes writeJsonForAllAlbumsSafe() {
-		List<Album> albums = this.albumRepository.getAlbumsOrderedByName();
+		List<Album> albums = this.albumRepository.findByDeletedFalseOrderByNameDesc();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (Album album : albums) {
 			successForAlbum = writeJsonForAlbumSafe(album);
@@ -91,7 +91,7 @@ public class AlbumExporterService {
 	 * Necesara doar la debug din js/grunt fara serverul java.
 	 */
 	public boolean writeJsonForAlbumsPageSafe() {
-		File file = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
+		File file = new File(this.appConfigRepository.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
 		file.getParentFile().mkdirs();
 		List<AlbumCover> albums = this.albumCoverService.getCovers();
 		try {
@@ -106,12 +106,12 @@ public class AlbumExporterService {
 
 	private void writeJsonForAlbum(Album album) throws IOException {
 		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
-		int pageCount = this.albumPageRepository.getPageCount(null, false, false, album.getId());
+		int pageCount = this.albumPageRepository.countPages(null, false, false, album.getId());
 		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
-		File dir = new File(this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path),
+		File dir = new File(this.appConfigRepository.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path),
 				album.getId().toString());
 		dir.mkdirs();
 		File file = new File(dir, "pageCount.json");

@@ -10,31 +10,31 @@ import java.util.List;
  * Created by adr on 2/22/18.
  */
 public interface AppConfigRepository {
-	void createAppConfig(AppConfig appConfig);
+	void deleteByEnumeratedName(AppConfigEnum ace);
 
-	void deleteAppConfig(AppConfigEnum ace);
-
-	void deleteById(Integer id);
-
-	String getConfig(AppConfigEnum appConfigEnum);
+	String findValueByEnumeratedName(AppConfigEnum appConfigEnum);
 
 	Integer getPhotosPerPage();
 
 	String getAlbumsPath();
 
-	AppConfig getAppConfigById(Integer id);
-
-	AppConfig getAppConfigByName(String name);
-
-	void update(List<AppConfig> appConfigs);
-
 	void updateValue(String value, Integer appConfigId);
 
-	List<AppConfig> getAppConfigs();
+	List<AppConfig> findAllOrderByNameAscNotCached();
 
-	List<AppConfig> testGetNoCacheableOrderedAppConfigs();
-
-	AppConfig testGetNoCacheableAppConfigByName(String name);
+	AppConfig findByNameNotCached(String name);
 
 	Date getDBNow();
+
+	AppConfig findByName(String name);
+
+	List<AppConfig> findAll();
+
+	AppConfig getById(Integer id);
+
+	void persist(AppConfig appConfig);
+
+	void deleteById(Integer id);
+
+	void saveAll(Iterable<AppConfig> appConfigs);
 }

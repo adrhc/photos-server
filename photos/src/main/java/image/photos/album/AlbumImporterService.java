@@ -5,9 +5,9 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
-import image.persistence.repository.AlbumRepository;
-import image.persistence.repository.AppConfigRepository;
-import image.persistence.repository.ImageRepository;
+import image.persistence.repositories.AlbumRepository;
+import image.persistence.repositories.AppConfigRepository;
+import image.persistence.repositories.ImageRepository;
 import image.photos.events.album.AlbumEventBuilder;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.events.album.EAlbumEventType;
@@ -73,7 +73,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			logger.warn("{} este gol!", albumPath.getPath());
 			return false;
 		}
-		Album album = this.albumRepository.getAlbumByName(albumPath.getName());
+		Album album = this.albumRepository.findAlbumByName(albumPath.getName());
 		if (album != null) {
 			// albumPath este un album deja importat deci NU nou
 			return false;
@@ -138,7 +138,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		if (!noFiles) {
 			Arrays.sort(files);
 		}
-		Album album = this.albumRepository.getAlbumByName(path.getName());
+		Album album = this.albumRepository.findAlbumByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
 			// album inexistent in DB deci nou
@@ -148,7 +148,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				return;
 			}
 			// creem un nou album (dir aferent are poze)
-			album = this.albumRepository.createAlbum(path.getName());
+			album = this.albumRepository.createByName(path.getName());
 		}
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
@@ -195,7 +195,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
 		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
-		Image dbImage = this.imageRepository.getImageByNameAndAlbumId(imgFile.getName(), album.getId());
+		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
@@ -244,7 +244,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		newImg.setImageMetadata(imageMetadata);
 		newImg.setName(imgFile.getName());
 		newImg.setAlbum(album);
-		this.imageRepository.persistImage(newImg);
+		this.imageRepository.persist(newImg);
 		this.imageEventsEmitter.emit(ImageEventBuilder
 				.of(EImageEventType.CREATED)
 				.image(newImg).build());
@@ -258,7 +258,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	public void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		logger.debug("BEGIN {}", album.getName());
-		List<Image> images = this.imageRepository.getImagesByAlbumId(album.getId());
+		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
 			int fsNameIdx = foundImageNames.indexOf(dbName);

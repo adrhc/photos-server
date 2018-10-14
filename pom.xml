@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>image</groupId>
@@ -21,6 +21,7 @@
         <!--<spring-security.version>4.2.4.RELEASE</spring-security.version>-->
         <springframework.version>5.0.6.RELEASE</springframework.version>
         <spring-security.version>5.0.5.RELEASE</spring-security.version>
+        <spring-data-jpa.version>2.1.0.RELEASE</spring-data-jpa.version>
 
         <!--<hibernate.version>4.3.11.Final</hibernate.version>-->
         <!--<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>-->
@@ -42,7 +43,8 @@
         <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
         <run-tomcat-embedded>provided</run-tomcat-embedded>
         <run-jetty>provided</run-jetty>
-        <source.version>1.8</source.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <commons.io>2.4</commons.io>
         <mysql.connector>5.1.38</mysql.connector>
         <metadata.extractor>2.11.0</metadata.extractor>
@@ -81,6 +83,15 @@
             <id>projectlombok.org</id>
             <name>Project Lombok</name>
             <url>http://projectlombok.org/mavenrepo</url>
+        </repository>
+
+        <repository>
+            <id>spring-libs-release</id>
+            <name>Spring Releases</name>
+            <url>https://repo.spring.io/libs-release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -131,6 +142,20 @@
 
             <dependency>
                 <groupId>exifweb</groupId>
+                <artifactId>storage-jpa2x-hbm-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
+                <artifactId>util</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
                 <artifactId>storage-entities</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
@@ -140,6 +165,14 @@
             <dependency>
                 <groupId>exifweb</groupId>
                 <artifactId>storage-impl-hbm</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>exifweb</groupId>
+                <artifactId>storage-jpa2x-hbm-impl</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
@@ -171,6 +204,10 @@
                     <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-lang</groupId>
+                        <artifactId>commons-lang</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -226,9 +263,9 @@
             </dependency>
 
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.5</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.8.1</version>
             </dependency>
 
             <dependency>
@@ -243,6 +280,7 @@
                 <version>${javax.inject}</version>
             </dependency>
 
+            <!-- org.springframework -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
@@ -275,8 +313,198 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-instrument</artifactId>
+                <version>${springframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
                 <version>${springframework.version}</version>
+            </dependency>
+
+            <!-- spring-data-jpa -->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-orm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-instrument</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aspects</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${spring-data-jpa.version}</version>
+            </dependency>
+
+            <!-- org.springframework.security -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-expression</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jdbc</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webflux</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-test</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jdbc</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-tx</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-web</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webflux</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-webmvc</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-websocket</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-expression</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-orm</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-test</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-aspects</artifactId>
+                <version>${spring-security.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-beans</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-aop</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-test</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -324,76 +552,6 @@
             <!--<artifactId>jstl</artifactId>-->
             <!--<version>${jstl}</version>-->
             <!--</dependency>-->
-
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-aspects</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
 
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -672,8 +830,6 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>${source.version}</source>
-                        <target>${source.version}</target>
                         <!--
                             https://maven.apache.org/plugins/maven-compiler-plugin/examples/pass-compiler-arguments.html
 
@@ -897,9 +1053,9 @@
                 <!--<verbose>false</verbose>-->
                 <!--<showWeaveInfo>false</showWeaveInfo>-->
                 <!--<privateScope>true</privateScope>-->
-                <!--<source>${source.version}</source>-->
-                <!--<target>${source.version}</target>-->
-                <!--<complianceLevel>${source.version}</complianceLevel>-->
+                <!--<source>${maven.compiler.source}</source>-->
+                <!--<target>${maven.compiler.target}</target>-->
+                <!--<complianceLevel>${maven.compiler.source}</complianceLevel>-->
                 <!--</configuration>-->
                 <!--<executions>-->
                 <!--<execution>-->
@@ -993,20 +1149,24 @@
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springconfig.PhotosInMemoryDbConfig.class
+                    image.photos.junit4.testconfig.PhotosInMemoryDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-entities.groups>junit5</junit5.storage-entities.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmInMemoryDbConfig,
                     junit5&amp;hbm&amp;inmemorydb
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;inmemorydb
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springconfig.PhotosInMemoryDbConfig,
+                    image.photos.junit4.testconfig.PhotosInMemoryDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
+                <junit5.webapp.groups>root,webapp</junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1024,9 +1184,9 @@
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
                     image.photos.JsonMapperConfig.class,
-                    image.photos.springconfig.PhotosInMemoryDbConfig.class,
-                    image.photos.springconfig.PhotosStagingJdbcDbConfig.class,
-                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
+                    image.photos.junit4.testconfig.PhotosInMemoryDbConfig.class,
+                    image.photos.junit4.testconfig.PhotosStagingJdbcDbConfig.class,
+                    image.photos.junit4.testconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-entities.groups>junit5</junit5.storage-entities.groups>
                 <junit5.storage-impl-hbm.groups>
@@ -1038,17 +1198,24 @@
                     junit5&amp;hbm&amp;production,
                     junit5&amp;hbm&amp;misc
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;inmemorydb,
+                    junit5&amp;jpa2x&amp;staging,
+                    junit5&amp;jpa2x&amp;production,
+                    junit5&amp;jpa2x&amp;misc
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory,
                     image.photos.JsonMapperConfig,
-                    image.photos.springconfig.PhotosInMemoryDbConfig,
-                    image.photos.springconfig.PhotosStagingJdbcDbConfig,
-                    image.photos.springconfig.PhotosProdJdbcDbConfig,
+                    image.photos.junit4.testconfig.PhotosInMemoryDbConfig,
+                    image.photos.junit4.testconfig.PhotosStagingJdbcDbConfig,
+                    image.photos.junit4.testconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;staging,
                     junit5&amp;photos&amp;production,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
+                <junit5.webapp.groups>root,webapp</junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1082,16 +1249,23 @@
                     image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
-                    image.photos.springconfig.PhotosStagingJdbcDbConfig.class
+                    image.photos.junit4.testconfig.PhotosStagingJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
                     junit5&amp;hbm&amp;staging
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;staging
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
-                    image.photos.springconfig.PhotosStagingJdbcDbConfig,
+                    image.photos.junit4.testconfig.PhotosStagingJdbcDbConfig,
                     junit5&amp;photos&amp;staging
                 </junit5.photos.groups>
+                <junit5.webapp.groups>
+                    root&amp;junit5&amp;staging,
+                    webapp&amp;junit5&amp;staging
+                </junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1125,16 +1299,23 @@
                     image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
-                    image.photos.springconfig.PhotosProdJdbcDbConfig.class
+                    image.photos.junit4.testconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
                     image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
                     junit5&amp;hbm&amp;production
                 </junit5.storage-impl-hbm.groups>
+                <junit5.storage-jpa2x-hbm-impl.groups>
+                    junit5&amp;jpa2x&amp;production
+                </junit5.storage-jpa2x-hbm-impl.groups>
                 <junit5.photos.groups>
-                    image.photos.springconfig.PhotosProdJdbcDbConfig,
+                    image.photos.junit4.testconfig.PhotosProdJdbcDbConfig,
                     junit5&amp;photos&amp;production
                 </junit5.photos.groups>
+                <junit5.webapp.groups>
+                    root&amp;junit5&amp;production,
+                    webapp&amp;junit5&amp;production
+                </junit5.webapp.groups>
             </properties>
         </profile>
     </profiles>
@@ -1146,6 +1327,7 @@
         <module>storage-entities</module>
         <module>storage-api</module>
         <module>storage-impl-hbm</module>
+        <module>storage-jpa2x-hbm-impl</module>
         <!-- photos = business logic -->
         <module>photos</module>
         <module>webapp</module>

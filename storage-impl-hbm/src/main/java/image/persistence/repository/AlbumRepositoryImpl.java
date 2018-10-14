@@ -6,16 +6,16 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.text.SimpleDateFormat;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,16 +25,16 @@ import java.util.List;
  * Time: 10:41 PM
  * To change this template use File | Settings | File Templates.
  */
-@Service
+@Component
 public class AlbumRepositoryImpl implements AlbumRepository {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+	//	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
+//	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Inject
 	private SessionFactory sessionFactory;
 
 	@Override
 	@Transactional
-	public List<Album> getAlbumsOrderedByName() {
+	public List<Album> findByDeletedFalseOrderByNameDesc() {
 		CriteriaBuilder cb = this.sessionFactory.getCurrentSession().getCriteriaBuilder();
 		CriteriaQuery<Album> criteria = cb.createQuery(Album.class);
 		Root<Album> root = criteria.from(Album.class);
@@ -47,7 +47,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
-	public Album createAlbum(String name) {
+	public Album createByName(String name) {
 		Album album = new Album(name);
 		this.sessionFactory.getCurrentSession().persist(album);
 		return album;
@@ -55,13 +55,13 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 
 	@Override
 	@Transactional
-	public void createAlbum(Album album) {
+	public void persist(Album album) {
 		this.sessionFactory.getCurrentSession().persist(album);
 	}
 
 	@Override
 	@Transactional
-	public void deleteAlbumById(Integer id) {
+	public void deleteById(Integer id) {
 		Album album = this.sessionFactory.getCurrentSession().load(Album.class, id);
 		this.sessionFactory.getCurrentSession().delete(album);
 	}
@@ -76,7 +76,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 */
 	@Override
 	@Transactional
-	public Album getAlbumById(Integer id) {
+	public Album getById(Integer id) {
 //		logger.debug("BEGIN id = {}", id);
 		// get initializes entity
 		return this.sessionFactory.getCurrentSession().get(Album.class, id);
@@ -88,8 +88,8 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 * Scenario (with browser cache disabled):
 	 * 1. ImageService.changeRating sets album.lastModified = 2018:02:04 20:25:34.240
 	 * 2. mysql saves 2018:02:04 20:25:34.000 (without 240 milliseconds!)
-	 * 3. AlbumExporterCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls getAlbumByName
-	 * 3. getAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
+	 * 3. AlbumExporterCtrl.updateJsonFor1Album (/updateJsonForAlbum) calls findAlbumByName
+	 * 3. findAlbumByName sets album.lastModified = 2018:02:04 20:25:34.000
 	 * 4. AlbumRepository.clearDirtyForAlbum will fail with optimistic lock because is using 2018:02:04 20:25:34.240!
 	 * 5. I guess there's a rule that invalidates the cache for the specific entity (Album for this case) involved with a failed transaction.
 	 * 6. Next time the same Album is required it is loaded from DB (so it has the DB value, e.g. 2018:02:04 20:25:34.000).
@@ -99,7 +99,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	 */
 	@Override
 	@Transactional
-	public Album getAlbumByName(String name) {
+	public Album findAlbumByName(String name) {
 //		logger.debug("BEGIN name = {}", name);
 		Session session = this.sessionFactory.getCurrentSession();
 		return (Album) session.createCriteria(Album.class)
@@ -138,7 +138,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public boolean removeAlbumCover(Integer albumId) {
-		Album album = getAlbumById(albumId);
+		Album album = getById(albumId);
 		// NPE when album is NULL
 		if (album.getCover() == null) {
 			return false;
@@ -157,7 +157,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 //		logger.debug("BEGIN");
-		Album album = getAlbumById(albumId);
+		Album album = getById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
 //			logger.debug("END dirty update cancelled (already false)");
@@ -166,5 +166,32 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 		album.setDirty(false);
 //		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
 		return true;
+	}
+
+	/**
+	 * Is about which is the latest time when an AlbumCover was modified.
+	 * A last-modified date change might set dirty to false
+	 * so while album is AlbumCover is no longer dirty.
+	 * <p>
+	 * returning Timestamp because Timestamp.getTime() adds nanos
+	 *
+	 * @return
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public Date getAlbumCoversLastUpdateDate() {
+		Session session = this.sessionFactory.getCurrentSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Date> criteria = cb.createQuery(Date.class);
+		Root<Album> root = criteria.from(Album.class);
+		criteria.select(cb.greatest(root.get(lastUpdate())));
+		Query<Date> q = session.createQuery(criteria);
+		return q.setCacheable(true).getSingleResult();
+	}
+
+	private SingularAttribute<Album, Date> lastUpdate() {
+		Session session = this.sessionFactory.getCurrentSession();
+		EntityType<Album> type = session.getMetamodel().entity(Album.class);
+		return type.getDeclaredSingularAttribute("lastUpdate", Date.class);
 	}
 }

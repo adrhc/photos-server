@@ -36,20 +36,20 @@ public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 
 	@Before
 	public void setUp() {
-		this.album = this.albumRepository.createAlbum(supplyAlbumName());
+		this.album = this.albumRepository.createByName(supplyAlbumName());
 		logger.debug("album.id = {}, album.name = {}", this.album.getId(), this.album.getName());
 	}
 
 	@Test
 	public void persistImage() throws Exception {
 		Image image = supplyImage(this.album);
-		this.imageRepository.persistImage(image);
+		this.imageRepository.persist(image);
 		Assert.assertNotNull(image.getId());
 		logger.debug("image.id = {}, image.name = {}", image.getId(), image.getName());
 	}
 
 	@After
 	public void removeAlbumAndImage() {
-		this.albumRepository.deleteAlbumById(this.album.getId());
+		this.albumRepository.deleteById(this.album.getId());
 	}
 }

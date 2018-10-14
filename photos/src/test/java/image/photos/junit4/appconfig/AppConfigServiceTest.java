@@ -1,9 +1,9 @@
 package image.photos.junit4.appconfig;
 
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repository.AppConfigRepository;
+import image.persistence.repositories.AppConfigRepository;
 import image.photos.config.AppConfigService;
-import image.photos.springconfig.PhotosProdJdbcDbConfig;
+import image.photos.junit4.testconfig.PhotosProdJdbcDbConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,7 +34,7 @@ public class AppConfigServiceTest {
 
 	@Test
 	public void getConfigs() {
-		String photosJsonFSPath = this.appConfigRepository.getConfig(AppConfigEnum.photos_json_FS_path);
+		String photosJsonFSPath = this.appConfigRepository.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path);
 		assertThat(photosJsonFSPath, not(isEmptyOrNullString()));
 		logger.debug("photosJsonFSPath = {}", photosJsonFSPath);
 

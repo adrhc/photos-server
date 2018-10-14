@@ -1,6 +1,7 @@
 package image.persistence.repository.junit5.staging;
 
 import exifweb.util.MiscUtils;
+import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.Album;
@@ -13,13 +14,11 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.AppConfigRepository;
 import image.persistence.repository.ESortType;
 import image.persistence.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
-import image.persistence.repository.util.random.RandomBeansExtensionEx;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";
@@ -54,7 +52,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 	@BeforeAll
 	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate",
 			"deleted", "album"}) Stream<Image> imageStream,
-	               @Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
+			@Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
 		// images: deleted = false, status = EImageStatus.DEFAULT
 		List<Image> images = imageStream
 				.peek(i -> i.setAlbum(album))
@@ -74,16 +72,16 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 		// album cover
 		album.setCover(images.get(0));
 		album.addImages(images);
-		this.albumRepository.createAlbum(album);
+		this.albumRepository.persist(album);
 		this.albumId = album.getId();
 		// required photos_per_page created
-		this.appConfigRepository.createAppConfig(
+		this.appConfigRepository.persist(
 				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
 	}
 
 	@Test
 	void counting1Page() {
-		int pageCount = this.albumPageRepository.getPageCount(
+		int pageCount = this.albumPageRepository.countPages(
 				T1_TO_SEARCH, false, false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
@@ -93,7 +91,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@Test
 	void counting0Pages() {
-		int pageCount = this.albumPageRepository.getPageCount(
+		int pageCount = this.albumPageRepository.countPages(
 				this.hiddenImage.getName(), false,
 				false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = false, " +
@@ -104,7 +102,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@Test
 	void countingAllPagesForAlbum() {
-		int pageCount = this.albumPageRepository.getPageCount("",
+		int pageCount = this.albumPageRepository.countPages("",
 				true, false, this.albumId);
 		logger.debug("imageCount = {}, searching \"{}\", hidden = true, " +
 						"viewOnlyPrintable = false, albumId = {}",
@@ -183,7 +181,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, I
 
 	@AfterAll
 	void afterAll() {
-		ignoreExc(() -> this.albumRepository.deleteAlbumById(this.albumId));
-		ignoreExc(() -> this.appConfigRepository.deleteAppConfig(AppConfigEnum.photos_per_page));
+		ignoreExc(() -> this.albumRepository.deleteById(this.albumId));
+		ignoreExc(() -> this.appConfigRepository.deleteByEnumeratedName(AppConfigEnum.photos_per_page));
 	}
 }

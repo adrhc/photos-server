@@ -27,7 +27,7 @@ public class ImageRepositoryTest {
 
 	@Test
 	public void getImagesByAlbumId() throws Exception {
-		List<Image> images = this.imageRepository.getImagesByAlbumId(1);
+		List<Image> images = this.imageRepository.findByAlbumId(1);
 		assertThat(images, hasItem(anything()));
 	}
 }

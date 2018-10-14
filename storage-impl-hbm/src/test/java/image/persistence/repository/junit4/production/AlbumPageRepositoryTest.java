@@ -37,13 +37,13 @@ public class AlbumPageRepositoryTest {
 
 	@Test
 	public void getPageCount() {
-		int pageCount = this.albumPageRepository.getPageCount(
+		int pageCount = this.albumPageRepository.countPages(
 				T1_TO_SEARCH, false, false, T1_ALBUM_ID);
 		logger.debug("imageCount = {}, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
 				pageCount, T1_TO_SEARCH, T1_ALBUM_ID);
 		Assert.assertTrue(pageCount == 1);
-		pageCount = this.albumPageRepository.getPageCount(
+		pageCount = this.albumPageRepository.countPages(
 				T2_TO_SEARCH, true, false, T2_ALBUM_ID);
 		logger.debug("imageCount = {}, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",

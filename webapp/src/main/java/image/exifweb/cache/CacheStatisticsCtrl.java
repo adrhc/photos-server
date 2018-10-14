@@ -24,7 +24,7 @@ public class CacheStatisticsCtrl {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public void printCacheStatistics() {
-		Map cacheEntries = statisticsRepository
+		Map cacheEntries = this.statisticsRepository
 				.getSecondLevelCacheStatistics(Album.class.getName());
 		logger.debug("END {}", cacheEntries);
 	}
