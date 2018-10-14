@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  */
 @RestController
 @RequestMapping("/json/page")
-public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil, AlbumPageCtrl {
+public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageCtrlImpl.class);
 	@Inject
 	private AlbumPageRepository albumPageRepository;
@@ -43,7 +43,6 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil, AlbumP
 	 * Test with authorization:
 	 * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=true"
 	 */
-	@Override
 	@RequestMapping(value = "/count", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
@@ -60,7 +59,6 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil, AlbumP
 		return pageCount;
 	}
 
-	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
 	@RequestMapping(method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

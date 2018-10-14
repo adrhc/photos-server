@@ -1,5 +1,6 @@
 package image.exifweb.httpdcheck;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,8 +20,10 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 @Controller
-@RequestMapping("/https/httpdCheck")
+@RequestMapping("/httpd/httpdCheck")
 public class HttpdCheckCtrl {
+	@Inject
+	private ApplicationContext ac;
 	@Inject
 	private HttpdCheck httpdCheck;
 
@@ -36,10 +39,13 @@ public class HttpdCheckCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void checkHttpd(Model model) throws IOException, InterruptedException {
-		checkHttpdAsync();
+		this.ac.getBean(HttpdCheckCtrl.class).checkHttpdAsync();
 		model.addAttribute("message", "Starting checkHttpd ...");
 	}
 
+	/**
+	 * @Async in @Controller method test
+	 */
 	@Async
 	public void checkHttpdAsync() throws IOException, InterruptedException {
 		this.httpdCheck.checkHttpd();
