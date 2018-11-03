@@ -1,4 +1,4 @@
-package image.persistence.entity.image;
+package image.persistence.entitytests.image;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

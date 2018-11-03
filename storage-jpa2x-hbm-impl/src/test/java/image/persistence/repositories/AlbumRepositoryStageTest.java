@@ -3,7 +3,7 @@ package image.persistence.repositories;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.config.Junit5Jpa2xStageDbConfig;
 import image.persistence.entity.Album;
-import image.persistence.entity.IAlbumSupplier;
+import image.persistence.entitytests.IAlbumSupplier;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;

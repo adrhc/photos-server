@@ -1,7 +1,7 @@
 package image.photos.junit5.util.converter.entitytocdm;
 
 import image.persistence.entity.AppConfig;
-import image.persistence.entity.IAppConfigSupplier;
+import image.persistence.entitytests.IAppConfigSupplier;
 import image.photos.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photos.junit5.util.assertion.IAppConfigAssertions;
 import image.photos.util.conversion.PhotosConversionUtil;

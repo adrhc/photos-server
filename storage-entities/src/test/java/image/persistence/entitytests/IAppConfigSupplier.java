@@ -1,6 +1,7 @@
-package image.persistence.entity;
+package image.persistence.entitytests;
 
 import exifweb.util.random.IEnhancedRandom;
+import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 
 /**

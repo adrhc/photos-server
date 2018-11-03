@@ -1,4 +1,4 @@
-package image.persistence.entity.image;
+package image.persistence.entitytests.image;
 
 import image.cdm.image.status.EImageStatus;
 

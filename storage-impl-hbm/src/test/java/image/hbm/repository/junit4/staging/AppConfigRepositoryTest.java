@@ -2,7 +2,7 @@ package image.hbm.repository.junit4.staging;
 
 import image.hbm.repository.springconfig.HbmInMemoryDbConfig;
 import image.persistence.entity.AppConfig;
-import image.persistence.entity.IAppConfigSupplier;
+import image.persistence.entitytests.IAppConfigSupplier;
 import image.persistence.repository.AppConfigRepository;
 import org.junit.After;
 import org.junit.Assert;

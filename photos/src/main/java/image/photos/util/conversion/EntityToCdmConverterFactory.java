@@ -21,7 +21,7 @@ public class EntityToCdmConverterFactory implements
 			new HashMap<Class<? extends IStorageEntity>,
 					Class<? extends ICdmEntity>>() {{
 				put(image.persistence.entity.AppConfig.class, AppConfig.class);
-				put(image.persistence.entity.image.ExifData.class, ExifInfo.class);
+				put(image.persistence.entitytests.image.ExifData.class, ExifInfo.class);
 			}};
 
 	@Override

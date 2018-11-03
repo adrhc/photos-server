@@ -1,10 +1,12 @@
-package image.persistence.entity;
+package image.persistence.entitytests;
 
 import exifweb.util.random.IEnhancedRandom;
 import exifweb.util.random.IPositiveIntegerRandom;
 import image.cdm.image.status.EImageStatus;
-import image.persistence.entity.image.IImageFlagsUtils;
-import image.persistence.entity.image.ImageMetadata;
+import image.persistence.entity.Album;
+import image.persistence.entity.Image;
+import image.persistence.entitytests.image.IImageFlagsUtils;
+import image.persistence.entitytests.image.ImageMetadata;
 
 import java.util.Date;
 

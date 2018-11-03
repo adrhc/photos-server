@@ -1,4 +1,4 @@
-package image.persistence.entity;
+package image.persistence.entitytests;
 
 import exifweb.util.random.IPositiveIntegerRandom;
 import image.cdm.image.ExifInfo;

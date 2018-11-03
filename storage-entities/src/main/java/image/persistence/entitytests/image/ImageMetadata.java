@@ -1,4 +1,4 @@
-package image.persistence.entity.image;
+package image.persistence.entitytests.image;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,7 +37,7 @@ public class ImageMetadata implements Serializable {
 	}
 
 	public Date getThumbLastModified() {
-		return thumbLastModified;
+		return this.thumbLastModified;
 	}
 
 	public void setThumbLastModified(Date thumbLastModified) {
@@ -45,7 +45,7 @@ public class ImageMetadata implements Serializable {
 	}
 
 	public Date getDateTime() {
-		return dateTime;
+		return this.dateTime;
 	}
 
 	public void setDateTime(Date dateTime) {
@@ -53,7 +53,7 @@ public class ImageMetadata implements Serializable {
 	}
 
 	public ExifData getExifData() {
-		return exifData;
+		return this.exifData;
 	}
 
 	public void setExifData(ExifData exifData) {
@@ -63,9 +63,9 @@ public class ImageMetadata implements Serializable {
 	@Override
 	public String toString() {
 		return "ImageMetadata{" +
-				"dateTime=" + dateTime +
-				", thumbLastModified=" + thumbLastModified +
-				", exifData=" + exifData.toString() +
+				"dateTime=" + this.dateTime +
+				", thumbLastModified=" + this.thumbLastModified +
+				", exifData=" + this.exifData.toString() +
 				'}';
 	}
 }

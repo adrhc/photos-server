@@ -1,4 +1,4 @@
-package image.persistence.entity.assertion;
+package image.persistence.entitytests.assertion;
 
 import image.persistence.entity.Album;
 

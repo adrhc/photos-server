@@ -1,4 +1,4 @@
-package image.persistence.entity.testconfig;
+package image.persistence.entitytests.testconfig;
 
 import org.junit.jupiter.api.Tag;
 

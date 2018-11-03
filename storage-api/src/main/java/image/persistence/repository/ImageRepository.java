@@ -3,7 +3,7 @@ package image.persistence.repository;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
 import image.persistence.entity.Image;
-import image.persistence.entity.image.ImageMetadata;
+import image.persistence.entitytests.image.ImageMetadata;
 
 import java.util.Date;
 import java.util.List;

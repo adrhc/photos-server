@@ -2,9 +2,9 @@ package image.hbm.repository.junit4.staging.image;
 
 import image.hbm.repository.springconfig.HbmStagingJdbcDbConfig;
 import image.persistence.entity.Album;
-import image.persistence.entity.IAlbumSupplier;
-import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
+import image.persistence.entitytests.IAlbumSupplier;
+import image.persistence.entitytests.IImageSupplier;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import org.junit.After;

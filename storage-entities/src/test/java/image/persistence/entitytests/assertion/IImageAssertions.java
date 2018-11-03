@@ -1,8 +1,8 @@
-package image.persistence.entity.assertion;
+package image.persistence.entitytests.assertion;
 
 import image.persistence.entity.Image;
-import image.persistence.entity.image.ExifData;
-import image.persistence.entity.image.ImageMetadata;
+import image.persistence.entitytests.image.ExifData;
+import image.persistence.entitytests.image.ImageMetadata;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

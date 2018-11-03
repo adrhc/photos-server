@@ -1,8 +1,8 @@
 package image.photos.junit5.util.converter.entitytocdm;
 
 import image.cdm.image.ExifInfo;
-import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
+import image.persistence.entitytests.IImageSupplier;
 import image.photos.junit5.util.converter.ConversionTestBase;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

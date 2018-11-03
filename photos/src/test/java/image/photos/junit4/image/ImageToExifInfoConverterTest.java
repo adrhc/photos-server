@@ -1,8 +1,8 @@
 package image.photos.junit4.image;
 
 import image.cdm.image.ExifInfo;
-import image.persistence.entity.IImageSupplier;
 import image.persistence.entity.Image;
+import image.persistence.entitytests.IImageSupplier;
 import image.photos.image.ImageToExifInfoConverter;
 import image.photos.junit4.misc.MiscTestCategory;
 import org.junit.Assert;

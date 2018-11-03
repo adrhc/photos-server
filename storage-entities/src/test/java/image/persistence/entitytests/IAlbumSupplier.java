@@ -1,7 +1,8 @@
-package image.persistence.entity;
+package image.persistence.entitytests;
 
 import exifweb.util.random.IEnhancedRandom;
 import exifweb.util.random.IPositiveIntegerRandom;
+import image.persistence.entity.Album;
 
 import java.util.List;
 import java.util.stream.Collectors;
