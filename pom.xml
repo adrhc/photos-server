@@ -1166,7 +1166,7 @@
                     org.junit.Test.class means "no category"
                 -->
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmInMemoryDbConfig.class
+                    image.hbm.repository.springconfig.HbmInMemoryDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
@@ -1175,7 +1175,7 @@
                 </junit4.photos.groups>
                 <junit5.storage-entities.groups>junit5</junit5.storage-entities.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmInMemoryDbConfig,
+                    image.hbm.repository.springconfig.HbmInMemoryDbConfig,
                     junit5&amp;hbm&amp;inmemorydb
                 </junit5.storage-impl-hbm.groups>
                 <junit5.storage-jpa2x-hbm-impl.groups>
@@ -1199,9 +1199,9 @@
             <id>db-on</id>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmInMemoryDbConfig.class,
-                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class,
-                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
+                    image.hbm.repository.springconfig.HbmInMemoryDbConfig.class,
+                    image.hbm.repository.springconfig.HbmStagingJdbcDbConfig.class,
+                    image.hbm.repository.springconfig.HbmProdJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.misc.MiscTestCategory.class,
@@ -1212,9 +1212,9 @@
                 </junit4.photos.groups>
                 <junit5.storage-entities.groups>junit5</junit5.storage-entities.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmInMemoryDbConfig,
-                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
-                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
+                    image.hbm.repository.springconfig.HbmInMemoryDbConfig,
+                    image.hbm.repository.springconfig.HbmStagingJdbcDbConfig,
+                    image.hbm.repository.springconfig.HbmProdJdbcDbConfig,
                     junit5&amp;hbm&amp;inmemorydb,
                     junit5&amp;hbm&amp;staging,
                     junit5&amp;hbm&amp;production,
@@ -1268,13 +1268,13 @@
             </build>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig.class
+                    image.hbm.repository.springconfig.HbmStagingJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.testconfig.PhotosStagingJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmStagingJdbcDbConfig,
+                    image.hbm.repository.springconfig.HbmStagingJdbcDbConfig,
                     junit5&amp;hbm&amp;staging
                 </junit5.storage-impl-hbm.groups>
                 <junit5.storage-jpa2x-hbm-impl.groups>
@@ -1318,13 +1318,13 @@
             </build>
             <properties>
                 <junit4.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig.class
+                    image.hbm.repository.springconfig.HbmProdJdbcDbConfig.class
                 </junit4.storage-impl-hbm.groups>
                 <junit4.photos.groups>
                     image.photos.junit4.testconfig.PhotosProdJdbcDbConfig.class
                 </junit4.photos.groups>
                 <junit5.storage-impl-hbm.groups>
-                    image.persistence.repository.springconfig.HbmProdJdbcDbConfig,
+                    image.hbm.repository.springconfig.HbmProdJdbcDbConfig,
                     junit5&amp;hbm&amp;production
                 </junit5.storage-impl-hbm.groups>
                 <junit5.storage-jpa2x-hbm-impl.groups>

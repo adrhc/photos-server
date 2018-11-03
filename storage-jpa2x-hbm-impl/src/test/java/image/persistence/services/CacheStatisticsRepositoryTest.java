@@ -1,5 +1,6 @@
 package image.persistence.services;
 
+import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Album;
@@ -10,7 +11,6 @@ import image.persistence.repositories.AlbumRepository;
 import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.CacheStatisticsRepository;
-import image.persistence.util.IPositiveIntegerRandom;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

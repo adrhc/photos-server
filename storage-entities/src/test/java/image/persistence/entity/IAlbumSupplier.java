@@ -1,7 +1,7 @@
 package image.persistence.entity;
 
 import exifweb.util.random.IEnhancedRandom;
-import image.persistence.util.IPositiveIntegerRandom;
+import exifweb.util.random.IPositiveIntegerRandom;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,5 +1,7 @@
 package image.persistence;
 
+import image.hbm.DataSourceConfig;
+import image.hbm.HibernatePropertiesConfig;
 import image.persistence.entity.Image;
 import image.persistence.jpacustomizations.CustomJpaRepositoryImpl;
 import org.springframework.beans.factory.annotation.Qualifier;

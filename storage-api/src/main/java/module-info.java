@@ -1,5 +1,4 @@
 module adrhc.exifweb.storage.api {
-	requires adrhc.exifweb.cdm;
-	requires adrhc.exifweb.storage.entities;
+	requires transitive adrhc.exifweb.storage.entities;
 	exports image.persistence.repository;
 }

@@ -1,7 +1,7 @@
 package image.persistence.entity;
 
+import exifweb.util.random.IPositiveIntegerRandom;
 import image.cdm.image.ExifInfo;
-import image.persistence.util.IPositiveIntegerRandom;
 
 import java.util.Date;
 

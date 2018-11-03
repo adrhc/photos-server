@@ -1,6 +1,7 @@
 package image.photos.junit5.album;
 
 import exifweb.util.MiscUtils;
+import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
@@ -13,7 +14,6 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.repositories.AlbumRepository;
 import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.ESortType;
-import image.persistence.util.IPositiveIntegerRandom;
 import image.photos.album.AlbumPageService;
 import image.photos.junit5.testconfig.Junit5PhotosStagingDbConfig;
 import io.github.glytching.junit.extension.random.Random;

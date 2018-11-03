@@ -1,5 +1,6 @@
 package image.persistence.repositories;
 
+import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
@@ -10,7 +11,6 @@ import image.persistence.entity.Image;
 import image.persistence.entity.assertion.IImageAssertions;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
-import image.persistence.util.IPositiveIntegerRandom;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
