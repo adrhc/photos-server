@@ -92,7 +92,8 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>util</artifactId>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -102,14 +103,15 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-entities</artifactId>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
             <scope>test</scope>
             <!--
                 needs version because including jar also
