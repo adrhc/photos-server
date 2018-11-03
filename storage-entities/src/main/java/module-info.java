@@ -1,7 +1,7 @@
 module adrhc.exifweb.storage.entities {
-	requires lombok;
-	requires adrhc.exifweb.cdm;
+	requires static lombok;
 	requires java.persistence;
 	requires org.hibernate.orm.core;
+	requires adrhc.exifweb.cdm;
 	exports image.persistence.entity;
 }
