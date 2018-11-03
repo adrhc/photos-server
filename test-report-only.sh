@@ -1,5 +1,4 @@
 #!/bin/bash
-source env.sh
 
 # these require <forkCount> usage:
 # ./test-report-only.sh -P db-off	-> equivalent to in-memory-only
@@ -8,4 +7,4 @@ source env.sh
 # these does not require <forkCount> usage:
 # ./test-report-only.sh -P staging-only
 # ./test-report-only.sh -P production-only
-$MVN surefire-report:report-only
+./mvnw -e surefire-report:report-only

@@ -1,5 +1,4 @@
 #!/bin/bash
-source env.sh
 
 # ehcache static instance is overriden when using stage and production same time so we 
 # need forked tests when running stage and production tests in same mvn test command
@@ -13,4 +12,4 @@ source env.sh
 # ./test.sh -P production-only
 echo "./test.sh -P db-off|db-on|staging-only|production-only"
 ./clean.stage-db.sh
-$MVN test "$@"
+./mvnw -e test "$@"
