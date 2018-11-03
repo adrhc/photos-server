@@ -9,8 +9,17 @@
     <name>exifweb</name>
 
     <properties>
-        <tomcat.version>7.0.64</tomcat.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--
+            see https://mincong-h.github.io/2018/08/29/maven-compiler-plugin-understanding/
+        -->
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <!--
+            see javac - - help
+            see https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html
+        -->
+        <maven.compiler.release>${maven.compiler.target}</maven.compiler.release>
 
         <!--
             https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
@@ -19,79 +28,62 @@
         <!--<springframework.version>4.3.14.RELEASE</springframework.version>-->
         <!--<spring-security.version>3.2.10.RELEASE</spring-security.version>-->
         <!--<spring-security.version>4.2.4.RELEASE</spring-security.version>-->
-        <springframework.version>5.0.6.RELEASE</springframework.version>
-        <spring-security.version>5.0.5.RELEASE</spring-security.version>
-        <spring-data-jpa.version>2.1.0.RELEASE</spring-data-jpa.version>
+        <springframework.version>5.1.2.RELEASE</springframework.version>
+        <spring-security.version>5.1.1.RELEASE</spring-security.version>
+        <spring-data-jpa.version>2.1.2.RELEASE</spring-data-jpa.version>
 
         <!--<hibernate.version>4.3.11.Final</hibernate.version>-->
         <!--<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>-->
-        <hibernate.version>5.2.13.Final</hibernate.version>
-        <jackson-datatype-hibernate5.version>2.9.4</jackson-datatype-hibernate5.version>
+        <hibernate.version>5.3.7.Final</hibernate.version>
+        <jackson-datatype-hibernate5.version>2.9.7</jackson-datatype-hibernate5.version>
 
-        <slf4j.version>1.7.7</slf4j.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <!-- sync with slf4j-parent-*.pom -->
         <log4j.version>1.2.17</log4j.version>
 
-        <javaee-api.version>6.0</javaee-api.version>
+        <javaee-api.version>7.0</javaee-api.version>
 
-        <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
+        <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
         <!-- same as aspectjtools within aspectj-maven-plugin -->
-        <aspectjrt.version>1.8.9</aspectjrt.version>
+        <aspectjrt.version>1.9.2</aspectjrt.version>
         <!--
             java8 won't work with version (2.5.1, 3.7.0]
             I guess it determines also the spring-instrument-tomcat version.
         -->
-        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <run-tomcat-embedded>provided</run-tomcat-embedded>
         <run-jetty>provided</run-jetty>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <commons.io>2.4</commons.io>
+        <tomcat.version>7.0.64</tomcat.version>
+
+        <commons.io>2.6</commons.io>
         <mysql.connector>5.1.38</mysql.connector>
-        <metadata.extractor>2.11.0</metadata.extractor>
+        <metadata.extractor.version>2.11.0</metadata.extractor.version>
         <net.sf.json>2.4</net.sf.json>
-        <javax.inject>1</javax.inject>
+        <javax.inject.version>1</javax.inject.version>
         <jstl>1.2</jstl>
-        <lombok.version>1.16.20</lombok.version>
-        <lombok-maven-plugin.version>1.16.20.0</lombok-maven-plugin.version>
+        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+        <!--
+            https://projectlombok.org/download-edge
+        -->
+        <!--<lombok.version>edge-SNAPSHOT</lombok.version>-->
+        <lombok.version>1.18.4</lombok.version>
+        <lombok-maven-plugin.version>1.18.4.0</lombok-maven-plugin.version>
 
         <junit.version>4.12</junit.version>
-        <junit.jupiter.version>5.1.0</junit.jupiter.version>
-        <junit.vintage.version>5.1.0</junit.vintage.version>
-        <junit.platform.version>1.1.0</junit.platform.version>
+        <junit.jupiter.version>5.3.1</junit.jupiter.version>
+        <junit.vintage.version>${junit.jupiter.version}</junit.vintage.version>
+        <junit.platform.version>1.3.1</junit.platform.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>mvnrepository</id>
-            <name>mvnrepository</name>
-            <url>http://mvnrepository.com/artifact</url>
-        </repository>
-
-        <repository>
-            <id>com.springsource.repository.libraries.release</id>
-            <name>SpringSource Enterprise Bundle Repository - SpringSource Library Releases</name>
-            <url>http://repository.springsource.com/maven/libraries/release</url>
-        </repository>
-
-        <repository>
-            <id>com.springsource.repository.libraries.external</id>
-            <name>SpringSource Enterprise Bundle Repository - External Library Releases</name>
-            <url>http://repository.springsource.com/maven/libraries/external</url>
-        </repository>
-
-        <repository>
             <id>projectlombok.org</id>
-            <name>Project Lombok</name>
-            <url>http://projectlombok.org/mavenrepo</url>
+            <url>https://projectlombok.org/edge-releases</url>
         </repository>
-
         <repository>
-            <id>spring-libs-release</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <id>central.maven.org</id>
+            <url>http://central.maven.org/maven2/</url>
         </repository>
     </repositories>
 
@@ -103,12 +95,6 @@
             <!--&lt;!&ndash;<version>4.2.9.RELEASE</version>&ndash;&gt;-->
             <!--<version>4.3.13.RELEASE</version>-->
             <!--</dependency>-->
-
-            <dependency>
-                <groupId>com.rainerhahnekamp</groupId>
-                <artifactId>sneakythrow</artifactId>
-                <version>1.0.0</version>
-            </dependency>
 
             <dependency>
                 <groupId>exifweb</groupId>
@@ -185,6 +171,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.rainerhahnekamp</groupId>
+                <artifactId>sneakythrow</artifactId>
+                <version>1.1.0</version>
+            </dependency>
+
+            <dependency>
                 <groupId>com.jolbox</groupId>
                 <artifactId>bonecp</artifactId>
                 <version>0.8.0.RELEASE</version>
@@ -215,7 +207,7 @@
             <dependency>
                 <groupId>io.reactivex.rxjava2</groupId>
                 <artifactId>rxjava</artifactId>
-                <version>2.1.9</version>
+                <version>2.2.3</version>
             </dependency>
 
             <dependency>
@@ -265,19 +257,19 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.8.1</version>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.drewnoakes</groupId>
                 <artifactId>metadata-extractor</artifactId>
-                <version>${metadata.extractor}</version>
+                <version>${metadata.extractor.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>javax.inject</groupId>
                 <artifactId>javax.inject</artifactId>
-                <version>${javax.inject}</version>
+                <version>${javax.inject.version}</version>
             </dependency>
 
             <!-- org.springframework -->
@@ -331,6 +323,7 @@
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-jpa</artifactId>
+                <version>${spring-data-jpa.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
@@ -365,7 +358,6 @@
                         <artifactId>spring-aspects</artifactId>
                     </exclusion>
                 </exclusions>
-                <version>${spring-data-jpa.version}</version>
             </dependency>
 
             <!-- org.springframework.security -->
@@ -569,7 +561,7 @@
             <dependency>
                 <groupId>com.zaxxer</groupId>
                 <artifactId>HikariCP</artifactId>
-                <version>2.7.7</version>
+                <version>3.2.0</version>
             </dependency>
 
             <!--
@@ -589,7 +581,7 @@
             <dependency>
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
-                <version>1.4.196</version>
+                <version>1.4.197</version>
                 <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
@@ -709,20 +701,15 @@
             <!--</dependency>-->
             <!-- https://mvnrepository.com/artifact/net.jcip/jcip-annotations -->
             <dependency>
-                <groupId>com.github.stephenc.jcip</groupId>
+                <groupId>net.jcip</groupId>
                 <artifactId>jcip-annotations</artifactId>
-                <version>1.0-1</version>
+                <version>1.0</version>
                 <scope>test</scope>
             </dependency>
-            <!--<dependency>-->
-            <!--<groupId>net.jcip</groupId>-->
-            <!--<artifactId>jcip-annotations</artifactId>-->
-            <!--<version>1.0</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.11.0</version>
+                <version>2.23.0</version>
                 <scope>test</scope>
             </dependency>
             <!--
@@ -731,7 +718,7 @@
             <dependency>
                 <groupId>io.github.glytching</groupId>
                 <artifactId>junit-extensions</artifactId>
-                <version>1.1.0</version>
+                <version>2.3.0</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -742,10 +729,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.github.peichhorn</groupId>-->
-        <!--<artifactId>lombok-pg</artifactId>-->
-        <!--</dependency>-->
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -809,7 +792,7 @@
             <artifactId>takari-cpsuite</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.stephenc.jcip</groupId>
+            <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
         </dependency>
         <dependency>
@@ -836,8 +819,19 @@
                             https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html
                             To store formal parameter names in a particular .class file, and thus enable the Reflection API to retrieve formal parameter names, compile the source file with the -parameters option to the javac compiler.
                         -->
+                        <fork>true</fork>
                         <compilerArgs>
                             <arg>-parameters</arg>
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>-->
+                            <!--<arg>-J&#45;&#45;add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>-->
+                            <arg>-J--illegal-access=warn</arg>
                         </compilerArgs>
                     </configuration>
                 </plugin>
@@ -875,7 +869,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <goals>
@@ -887,13 +881,17 @@
 
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>${maven-surefire-plugin.version}</version>
                     <dependencies>
-                        <dependency>
-                            <groupId>org.junit.platform</groupId>
-                            <artifactId>junit-platform-surefire-provider</artifactId>
-                            <version>${junit.platform.version}</version>
-                        </dependency>
+                        <!--<dependency>-->
+                        <!--
+                            https://github.com/junit-team/junit5/issues/1367
+                                When you update to Surefire 2.20.0, make sure to remove your junit-platform-surefire-provider plugin dependency declaration for the surefire plugin or you will keep getting this error.
+                        -->
+                        <!--<groupId>org.junit.platform</groupId>-->
+                        <!--<artifactId>junit-platform-surefire-provider</artifactId>-->
+                        <!--<version>${junit.platform.version}</version>-->
+                        <!--</dependency>-->
                         <dependency>
                             <groupId>org.junit.jupiter</groupId>
                             <artifactId>junit-jupiter-engine</artifactId>
@@ -1036,7 +1034,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
 
                 <!--
