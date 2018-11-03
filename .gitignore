@@ -14,3 +14,4 @@ nohup.out
 /.project
 dependency.txt
 exifweb-test.log
+/.mvn/wrapper/maven-wrapper.jar
