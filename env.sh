@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+# export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 export MVN="mvn -e"
 
 # export JAVA_HOME=$TOOLS/jdk1.8.0_141
