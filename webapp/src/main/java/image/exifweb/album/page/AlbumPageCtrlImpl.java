@@ -3,7 +3,7 @@ package image.exifweb.album.page;
 import image.cdm.album.page.AlbumPage;
 import image.exifweb.util.date.IDateUtil;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.persistence.repositories.AppConfigRepository;
+import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.photos.album.AlbumPageService;

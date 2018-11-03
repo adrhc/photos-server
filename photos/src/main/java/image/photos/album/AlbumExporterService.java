@@ -2,10 +2,10 @@ package image.photos.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
+import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repositories.AlbumRepository;
-import image.persistence.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.photos.config.AppConfigService;

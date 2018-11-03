@@ -1,6 +1,6 @@
 package image.photos;
 
-import image.persistence.Jpa2xConfig;
+import image.jpa2x.Jpa2xConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;

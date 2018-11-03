@@ -1,7 +1,7 @@
-package image.exifweb.config;
+package image.jpa2xtests.config;
 
-import image.exifweb.RootConfig;
-import image.jpa2xtests.config.profiles.InMemoryDbProfile;
+import image.jpa2x.Jpa2xConfig;
+import image.jpa2xtests.config.profiles.StagingJdbcDbProfile;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,15 +14,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = RootConfig.class)
+@ContextConfiguration(classes = {Jpa2xConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=true")
-@InMemoryDbProfile
+@StagingJdbcDbProfile
 @Tag("junit5")
-@Tag("inmemorydb")
-@Tag("root")
-public @interface RootInMemoryDbConfig {
-}
+@Tag("jpa2x")
+@Tag("staging")
+public @interface Junit5Jpa2xStageDbConfig {}

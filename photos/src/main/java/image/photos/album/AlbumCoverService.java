@@ -1,9 +1,9 @@
 package image.photos.album;
 
 import image.cdm.album.cover.AlbumCover;
+import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.persistence.repositories.AlbumRepository;
 import image.photos.image.ImageUtils;
 import org.springframework.stereotype.Component;
 

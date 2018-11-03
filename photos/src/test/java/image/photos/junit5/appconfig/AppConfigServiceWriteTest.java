@@ -1,10 +1,10 @@
 package image.photos.junit5.appconfig;
 
 import exifweb.util.random.RandomBeansExtensionEx;
+import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entitytests.IAppConfigSupplier;
-import image.persistence.repositories.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photos.junit5.util.assertion.IAppConfigAssertions;

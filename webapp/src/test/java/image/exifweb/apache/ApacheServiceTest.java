@@ -1,8 +1,8 @@
 package image.exifweb.apache;
 
 import image.exifweb.config.RootInMemoryDbConfig;
+import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entitytests.IAppConfigSupplier;
-import image.persistence.repositories.AppConfigRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

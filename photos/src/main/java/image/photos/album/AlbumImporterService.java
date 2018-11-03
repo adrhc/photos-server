@@ -1,13 +1,13 @@
 package image.photos.album;
 
 import image.cdm.image.status.EImageStatus;
+import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.image.IImageFlagsUtils;
 import image.persistence.entitytests.image.ImageMetadata;
-import image.persistence.repositories.AlbumRepository;
-import image.persistence.repositories.AppConfigRepository;
-import image.persistence.repositories.ImageRepository;
 import image.photos.events.album.AlbumEventBuilder;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.events.album.EAlbumEventType;

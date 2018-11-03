@@ -1,7 +1,7 @@
 package image.exifweb.album;
 
+import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
-import image.persistence.repositories.AlbumRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
