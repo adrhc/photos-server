@@ -1,5 +1,6 @@
 module adrhc.exifweb.storage.impl.hbm {
 	requires java.xml;
+	requires adrhc.exifweb.util;
 	requires transitive adrhc.exifweb.storage.api;
 	requires spring.context;
 	requires spring.beans;
