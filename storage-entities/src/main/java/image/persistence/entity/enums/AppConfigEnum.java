@@ -19,7 +19,7 @@ public enum AppConfigEnum implements Serializable {
 
 	private String value;
 
-	private AppConfigEnum(String value) {
+	AppConfigEnum(String value) {
 		this.value = value;
 	}
 }
