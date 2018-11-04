@@ -13,13 +13,13 @@
         <!--
             see https://mincong-h.github.io/2018/08/29/maven-compiler-plugin-understanding/
         -->
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <!--
             see javac - - help
             see https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html
         -->
-        <maven.compiler.release>${maven.compiler.target}</maven.compiler.release>
+        <!--<maven.compiler.release>${maven.compiler.target}</maven.compiler.release>-->
 
         <!--
             https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
@@ -853,30 +853,6 @@
                                 To store formal parameter names in a particular .class file, and thus enable the Reflection API to retrieve formal parameter names, compile the source file with the -parameters option to the javac compiler.
                             -->
                             <arg>-parameters</arg>
-                            <!--
-                                https://docs.oracle.com/javase/7/docs/technotes/tools/windows/javac.html
-                                -J option
-                                    Pass option to the java launcher called by javac
-                            -->
-                            <arg>-J--illegal-access=warn</arg>
-                            <!--
-                                https://github.com/rzwitserloot/lombok/issues/985
-                                
-                                Lombok uses non-exposed APIs. We need to instruct the jvm that that's okay.
-                            -->
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-                            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-                            <arg>-sourcepath</arg>
-                            <arg>
-                                ${project.basedir}/src/main/java${path.separator}${project.basedir}/target/generated-sources/annotations${path.separator}/
-                            </arg>
                         </compilerArgs>
                         <!--
                             https://github.com/rzwitserloot/lombok/issues/1723
