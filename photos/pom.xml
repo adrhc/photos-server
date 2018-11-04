@@ -123,7 +123,6 @@
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-            <optional>true</optional>
             <!--
                 needs version because including jar also
                 solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
