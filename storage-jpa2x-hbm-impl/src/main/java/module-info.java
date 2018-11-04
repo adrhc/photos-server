@@ -11,7 +11,7 @@ module adrhc.exifweb.storage.jpa2x.hbm.impl {
 	requires spring.beans;
 	requires org.apache.commons.lang3;
 	requires javax.inject;
-	requires lombok;
+	requires static lombok;
 	requires adrhc.exifweb.storage.impl.hbm;
 	requires java.sql;
 	exports image.jpa2x;

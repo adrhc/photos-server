@@ -1,5 +1,20 @@
 module adrhc.exifweb.webapp {
 	requires adrhc.exifweb.photos;
+	requires spring.context;
+	requires spring.security.config;
+	requires spring.webmvc;
+	requires javax.inject;
+	requires spring.web;
+	requires com.fasterxml.jackson.databind;
+	requires spring.beans;
+	requires subtitles.extractor;
+	requires slf4j.api;
+	requires spring.security.core;
+	requires javax.servlet.api;
+	requires static lombok;
+	requires spring.security.web;
+	requires java.sql;
+	requires ehcache;
 	exports image.exifweb;
 	exports image.exifweb.cache;
 	exports image.exifweb.web.context;
