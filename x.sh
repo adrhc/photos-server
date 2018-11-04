@@ -7,6 +7,34 @@
 
 TOMCAT_STOP_TIME=5
 
+undeploy() {
+	if [ "$1" == "deploy" ]; then
+		shift
+	fi
+    local TOMCAT="$1"
+    if [ "$TOMCAT" != "tomcat" ]; then
+        TOMCAT="apache-tomcat-$TOMCAT"
+    fi
+    echo "removing $HOME/apps/opt/$TOMCAT/webapps/exifweb"
+    rm -r $HOME/apps/opt/$TOMCAT/webapps/exifweb 2>/dev/null
+    echo "removing $HOME/apps/opt/tomcat/work/Catalina/localhost/exifweb"
+    rm -r $HOME/apps/opt/$TOMCAT/work/Catalina/localhost/exifweb 2>/dev/null
+    echo "exifweb undeploy done"
+}
+
+deploy() {
+	if [ "$1" == "deploy" ]; then
+		shift
+	fi
+    local TOMCAT="$1"
+    if [ "$TOMCAT" != "tomcat" ]; then
+        TOMCAT="apache-tomcat-$TOMCAT"
+    fi
+    cp -r webapp/target/exifweb $HOME/apps/opt/$TOMCAT/webapps/
+    touch $HOME/apps/opt/$TOMCAT/webapps/exifweb/WEB-INF/web.xml && echo "touched web.xml"
+    echo "exifweb deploy done"
+}
+
 # ./x.sh startWith "9.0.12"
 startWith() {
 	if [ "$1" == "startWith" ]; then
@@ -37,8 +65,7 @@ startWith() {
     fi
     rm -v $HOME/apps/opt/$TOMCAT/logs/*
     echo -e "$TOMCAT logs removed\n"
-    ./deploy.sh
-    echo -e "exifweb application deployed\n"
+    deploy "$1"
     LD_LIBRARY_PATH=$HOME/apps/opt/$TOMCAT/lib $HOME/apps/opt/$TOMCAT/bin/startup.sh
     echo -e "\n$TOMCAT process details:\n"
     ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"
