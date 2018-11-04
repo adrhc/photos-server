@@ -26,6 +26,7 @@
                 solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
             -->
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
