@@ -19,7 +19,7 @@ undeploy() {
     rm -r $HOME/apps/opt/$TOMCAT/webapps/exifweb 2>/dev/null
     echo "removing $HOME/apps/opt/tomcat/work/Catalina/localhost/exifweb"
     rm -r $HOME/apps/opt/$TOMCAT/work/Catalina/localhost/exifweb 2>/dev/null
-    echo "exifweb undeploy done"
+    echo "exifweb undeployed"
 }
 
 deploy() {
@@ -32,7 +32,7 @@ deploy() {
     fi
     cp -r webapp/target/exifweb $HOME/apps/opt/$TOMCAT/webapps/
     touch $HOME/apps/opt/$TOMCAT/webapps/exifweb/WEB-INF/web.xml && echo "touched web.xml"
-    echo "exifweb deploy done"
+    echo "exifweb deployed"
 }
 
 # ./x.sh startWith "9.0.12"
