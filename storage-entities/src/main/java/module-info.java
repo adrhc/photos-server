@@ -6,6 +6,6 @@ module adrhc.exifweb.storage.entities {
 	requires hibernate.core;
 	requires hibernate.jpa;
 	exports image.persistence.entity;
-	exports image.persistence.entitytests.image;
+	exports image.persistence.entity.image;
 	exports image.persistence.entity.enums;
 }

@@ -1,6 +1,8 @@
 package image.persistence.entitytests.image;
 
 import image.cdm.image.status.EImageStatus;
+import image.persistence.entity.image.IImageFlagsUtils;
+import image.persistence.entity.image.ImageFlags;
 import image.persistence.entitytests.testconfig.Junit5MiscNoSpringConfig;
 import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.Assertions;

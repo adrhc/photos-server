@@ -2,9 +2,9 @@ package image.persistence.entity;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
-import image.persistence.entitytests.image.IImageFlagsUtils;
-import image.persistence.entitytests.image.ImageFlags;
-import image.persistence.entitytests.image.ImageMetadata;
+import image.persistence.entity.image.IImageFlagsUtils;
+import image.persistence.entity.image.ImageFlags;
+import image.persistence.entity.image.ImageMetadata;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;

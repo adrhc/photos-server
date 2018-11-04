@@ -4,6 +4,7 @@ import image.cdm.AppConfig;
 import image.cdm.ICdmEntity;
 import image.cdm.image.ExifInfo;
 import image.persistence.entity.IStorageEntity;
+import image.persistence.entity.image.ExifData;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalConverter;
 import org.springframework.core.convert.converter.Converter;
@@ -21,7 +22,7 @@ public class CdmToEntityConverterFactory implements
 			new HashMap<Class<? extends ICdmEntity>,
 					Class<? extends IStorageEntity>>() {{
 				put(AppConfig.class, image.persistence.entity.AppConfig.class);
-				put(ExifInfo.class, image.persistence.entitytests.image.ExifData.class);
+				put(ExifInfo.class, ExifData.class);
 			}};
 
 	@Override
