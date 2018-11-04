@@ -1,4 +1,4 @@
-package image.exifweb.config;
+package image.exifwebtests.config;
 
 import image.exifweb.RootConfig;
 import image.jpa2xtests.config.profiles.InMemoryDbProfile;

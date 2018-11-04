@@ -1,6 +1,7 @@
-package image.exifweb.apache;
+package image.exifwebtests.apache;
 
-import image.exifweb.config.RootInMemoryDbConfig;
+import image.exifweb.apache.ApacheService;
+import image.exifwebtests.config.RootInMemoryDbConfig;
 import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entitytests.IAppConfigSupplier;
 import org.junit.jupiter.api.BeforeAll;
