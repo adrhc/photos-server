@@ -130,6 +130,14 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <!--
+            copy to tomcat/lib
+        -->
+        <!--<dependency>-->
+        <!--<groupId>org.glassfish.jaxb</groupId>-->
+        <!--<artifactId>jaxb-runtime</artifactId>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>util</artifactId>

@@ -34,7 +34,7 @@
 
         <!--<hibernate.version>4.3.11.Final</hibernate.version>-->
         <!--<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>-->
-        <hibernate.version>5.3.7.Final</hibernate.version>
+        <hibernate.version>5.2.17.Final</hibernate.version>
         <jackson-datatype-hibernate5.version>2.9.7</jackson-datatype-hibernate5.version>
 
         <slf4j.version>1.7.25</slf4j.version>
@@ -74,6 +74,8 @@
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
         <junit.vintage.version>${junit.jupiter.version}</junit.vintage.version>
         <junit.platform.version>1.3.1</junit.platform.version>
+
+        <jaxb.version>2.3.1</jaxb.version>
     </properties>
 
     <repositories>
@@ -594,6 +596,17 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>4.0.1</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb.version}</version>
             </dependency>
 
             <dependency>

@@ -1,7 +1,10 @@
 module adrhc.exifweb.storage.jpa2x.hbm.impl {
+	requires static lombok;
 	requires transitive adrhc.exifweb.storage.api;
-	requires java.persistence;
-	requires org.hibernate.orm.core;
+	requires adrhc.exifweb.storage.impl.hbm;
+//	requires java.persistence;
+//	requires org.hibernate.orm.core;
+	requires hibernate.core;
 	requires spring.data.commons;
 	requires spring.data.jpa;
 	requires spring.core;
@@ -11,8 +14,7 @@ module adrhc.exifweb.storage.jpa2x.hbm.impl {
 	requires spring.beans;
 	requires org.apache.commons.lang3;
 	requires javax.inject;
-	requires static lombok;
-	requires adrhc.exifweb.storage.impl.hbm;
+	requires java.xml.bind;
 	requires java.sql;
 	exports image.jpa2x;
 	exports image.jpa2x.jpacustomizations;

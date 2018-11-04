@@ -1,4 +1,5 @@
 module adrhc.exifweb.webapp {
+	requires static lombok;
 	requires adrhc.exifweb.photos;
 	requires spring.context;
 	requires spring.security.config;
@@ -11,7 +12,6 @@ module adrhc.exifweb.webapp {
 	requires slf4j.api;
 	requires spring.security.core;
 	requires javax.servlet.api;
-	requires static lombok;
 	requires spring.security.web;
 	requires java.sql;
 	requires ehcache;
