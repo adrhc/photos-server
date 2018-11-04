@@ -12,6 +12,8 @@ module adrhc.exifweb.photos {
 	requires spring.beans;
 	requires metadata.extractor;
 	requires org.apache.commons.io;
+	requires com.fasterxml.jackson.datatype.hibernate5;
+	requires com.fasterxml.jackson.core;
 	exports image.photos;
 	exports image.photos.album;
 	exports image.photos.config;

@@ -90,6 +90,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
         </dependency>
@@ -123,11 +128,6 @@
                 solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
             -->
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
 
