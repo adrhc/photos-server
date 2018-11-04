@@ -1,5 +1,17 @@
 module adrhc.exifweb.photos {
 	requires transitive adrhc.exifweb.storage.jpa2x.hbm.impl;
+	requires adrhc.exifweb.util;
+	requires spring.core;
+	requires spring.context;
+	requires javax.inject;
+	requires slf4j.api;
+	requires com.fasterxml.jackson.databind;
+	requires io.reactivex.rxjava2;
+	requires java.annotation;
+	requires commons.beanutils;
+	requires spring.beans;
+	requires metadata.extractor;
+	requires org.apache.commons.io;
 	exports image.photos;
 	exports image.photos.album;
 	exports image.photos.config;

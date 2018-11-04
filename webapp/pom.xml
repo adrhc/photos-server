@@ -121,23 +121,31 @@
         </dependency>
 
         <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>exifweb</groupId>
             <artifactId>util</artifactId>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-entities</artifactId>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
+            <version>${project.version}</version>
             <scope>test</scope>
             <!--
                 needs version because including jar also
@@ -147,18 +155,20 @@
         </dependency>
 
         <!--
-            ERROR
-                Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
-            SOLUTION
-                Let this dependency the last!
+                &lt;!&ndash;
+                    ERROR
+                        Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
+                    SOLUTION
+                        Let this dependency the last!
 
-            see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
+                    see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
+                &ndash;&gt;
+                <dependency>
+                    <groupId>javax</groupId>
+                    <artifactId>javaee-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
         -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
     </dependencies>
 
