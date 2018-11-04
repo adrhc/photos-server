@@ -13,7 +13,7 @@
         <!--
             see https://mincong-h.github.io/2018/08/29/maven-compiler-plugin-understanding/
         -->
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.source>10</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <!--
             see javac - - help
