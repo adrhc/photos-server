@@ -29,8 +29,7 @@ public class ImageMetadata implements Serializable {
 	/**
 	 * required by hibernate
 	 */
-	public ImageMetadata() {
-	}
+	public ImageMetadata() {}
 
 	public ImageMetadata(Date dateTime) {
 		this.dateTime = dateTime;

@@ -35,8 +35,7 @@ public class Album implements Serializable {
 	private Date lastUpdate;
 	private boolean deleted;
 
-	public Album() {
-	}
+	public Album() {}
 
 	public Album(String name) {
 		this.name = name;
