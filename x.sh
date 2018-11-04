@@ -15,7 +15,7 @@ undeploy() {
     fi
     echo "removing $HOME/apps/opt/$TOMCAT/webapps/exifweb"
     rm -r $HOME/apps/opt/$TOMCAT/webapps/exifweb 2>/dev/null
-    echo "removing $HOME/apps/opt/tomcat/work/Catalina/localhost/exifweb"
+    echo "removing $HOME/apps/opt/$TOMCAT/work/Catalina/localhost/exifweb"
     rm -r $HOME/apps/opt/$TOMCAT/work/Catalina/localhost/exifweb 2>/dev/null
     echo "exifweb undeployed"
 }
@@ -60,6 +60,7 @@ startWith() {
     fi
     rm -v $HOME/apps/opt/$TOMCAT/logs/*
     echo -e "$TOMCAT logs removed\n"
+    undeploy "$1"
     deploy "$1"
     LD_LIBRARY_PATH=$HOME/apps/opt/$TOMCAT/lib $HOME/apps/opt/$TOMCAT/bin/startup.sh
     echo -e "\n$TOMCAT process details:\n"
