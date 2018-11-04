@@ -141,17 +141,23 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>exifweb</groupId>
-            <artifactId>storage-jpa2x-hbm-impl</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <!--
-                needs version because including jar also
-                solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
-            -->
-            <version>${project.version}</version>
-        </dependency>
+        <!--
+            disabled till solving:
+                https://issues.apache.org/jira/browse/SUREFIRE-1534
+                ClassNotFoundException: org.apache.maven.plugin.surefire.StartupReportConfiguration
+                
+                <dependency>
+                    <groupId>exifweb</groupId>
+                    <artifactId>storage-jpa2x-hbm-impl</artifactId>
+                    <classifier>tests</classifier>
+                    <scope>test</scope>
+                    &lt;!&ndash;
+                        needs version because including jar also
+                        solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
+                    &ndash;&gt;
+                    <version>${project.version}</version>
+                </dependency>
+        -->
 
         <!--
                 &lt;!&ndash;
