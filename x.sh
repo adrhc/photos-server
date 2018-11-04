@@ -5,8 +5,6 @@
 # echo "cp: $EXIFWEB_DIR/WEB-INF/classes:$EXIFWEB_DIR/WEB-INF/lib/*"
 # java -Dfile.encoding=UTF-8 -classpath "$EXIFWEB_DIR/WEB-INF/classes:$EXIFWEB_DIR/WEB-INF/lib/*" image.exifweb.ExifWebApp
 
-TOMCAT_STOP_TIME=5
-
 undeploy() {
 	if [ "$1" == "deploy" ]; then
 		shift
@@ -50,13 +48,10 @@ startWith() {
     fi
     if [ "`ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"`" != "" ]; then
         /home/adr/apps/opt/$TOMCAT/bin/shutdown.sh
-        sleep $TOMCAT_STOP_TIME
-        if [ "`ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"`" != "" ]; then
-            echo -e "stopped $TOMCAT\n"
-        else
-            echo -e "can't stop $TOMCAT\n"
-            exit 1
-        fi
+        while [ "`ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"`" != "" ]; do
+            echo "waiting for $TOMCAT to stop"
+            sleep 1
+        done
     fi
     if [[ "$TOMCAT" == "9.0.12" && ! -e "$HOME/apps/opt/$TOMCAT/lib/jaxb-runtime-2.3.1.jar" ]]; then
         cp -v /home/adr/.m2/repository/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar $HOME/apps/opt/$TOMCAT/lib/
@@ -83,13 +78,10 @@ stopWith() {
     fi
     if [ "`ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"`" != "" ]; then
         /home/adr/apps/opt/$TOMCAT/bin/shutdown.sh
-        sleep $TOMCAT_STOP_TIME
-        if [ "`ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"`" != "" ]; then
-            echo -e "stopped $TOMCAT\n"
-        else
-            echo -e "can't stop $TOMCAT\n"
-            exit 1
-        fi
+        while [ "`ps aux | grep "[c]lasspath /home/adr/apps/opt/$TOMCAT/bin/bootstrap.jar"`" != "" ]; do
+            echo "waiting for $TOMCAT to stop"
+            sleep 1
+        done
     else
         echo "$TOMCAT is already stopped"
     fi
