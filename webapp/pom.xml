@@ -145,7 +145,6 @@
             <groupId>exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <classifier>tests</classifier>
-            <version>${project.version}</version>
             <scope>test</scope>
             <!--
                 needs version because including jar also
