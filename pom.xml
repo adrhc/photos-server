@@ -13,7 +13,7 @@
         <!--
             see https://mincong-h.github.io/2018/08/29/maven-compiler-plugin-understanding/
         -->
-        <maven.compiler.source>9</maven.compiler.source>
+        <maven.compiler.source>10</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <!--
             see javac - - help
@@ -845,12 +845,19 @@
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <fork>true</fork>
+                        <meminitial>256m</meminitial>
+                        <maxmem>1024m</maxmem>
                         <compilerArgs>
                             <!--
                                 https://maven.apache.org/plugins/maven-compiler-plugin/examples/pass-compiler-arguments.html
 
                                 https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html
                                 To store formal parameter names in a particular .class file, and thus enable the Reflection API to retrieve formal parameter names, compile the source file with the -parameters option to the javac compiler.
+
+                                https://docs.oracle.com/javase/10/tools/javac.htm#JSWOR627
+                                -J option
+                                    Passes option to the runtime system, where option is one of the Java options described on javacommand. 
+                                    For example, -J-Xms48m sets the startup memory to 48 MB.
                             -->
                             <arg>-parameters</arg>
                         </compilerArgs>
