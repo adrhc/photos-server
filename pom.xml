@@ -855,7 +855,7 @@
                                 To store formal parameter names in a particular .class file, and thus enable the Reflection API to retrieve formal parameter names, compile the source file with the -parameters option to the javac compiler.
 
                                 https://docs.oracle.com/javase/10/tools/javac.htm#JSWOR627
-                                -J option
+                                javac -J option
                                     Passes option to the runtime system, where option is one of the Java options described on javacommand. 
                                     For example, -J-Xms48m sets the startup memory to 48 MB.
                             -->
