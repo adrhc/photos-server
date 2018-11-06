@@ -131,12 +131,18 @@
         </dependency>
 
         <!--
-            copy to tomcat/lib
+            copy to tomcat/lib for java > 8 with modules
+
+	    when NOT using modules but using java > 8 this must be enabled
         -->
-        <!--<dependency>-->
-        <!--<groupId>org.glassfish.jaxb</groupId>-->
-        <!--<artifactId>jaxb-runtime</artifactId>-->
-        <!--</dependency>-->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+            </dependency>
+        <!--dependency>
+	        <groupId>org.glassfish.jaxb</groupId>
+        	<artifactId>jaxb-runtime</artifactId>
+        </dependency-->
 
         <dependency>
             <groupId>exifweb</groupId>

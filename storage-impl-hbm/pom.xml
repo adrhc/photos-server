@@ -83,6 +83,16 @@
             <artifactId>spring-aspects</artifactId>
         </dependency>
 
+        <!--
+            copy to tomcat/lib for java > 8 with modules
+
+            when NOT using modules but using java > 8 this must be enabled
+        -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+            </dependency>
+
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
@@ -117,10 +127,10 @@
         	ERROR (at compilation when missing aspectjrt):
         		couldn't find aspectjrt.jar on classpath, checked ...
         -->
-        <dependency>
+        <!--dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>exifweb</groupId>
