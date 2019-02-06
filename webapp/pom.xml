@@ -133,7 +133,10 @@
         <!--
             copy to tomcat/lib for java > 8 with modules
 
-	        when NOT using modules but using java > 8 this must be enabled
+	        when NOT using modules but using java 10:
+	        - this mvn dependency must be enabled
+	        - need in setenv.sh: JAVA_MODULES="--add-modules java.xml.bind"
+	        - jaxb-api and jaxb-runtime need not to be copied into tomcat/lib
         -->
         <dependency>
             <groupId>javax.xml.bind</groupId>

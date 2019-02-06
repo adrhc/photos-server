@@ -9,7 +9,7 @@ undeploy() {
 	if [ "$1" == "deploy" ]; then
 		shift
 	fi
-    local TOMCAT="$1"
+    local TOMCAT="${1:-tomcat}"
     if [ "$TOMCAT" != "tomcat" ]; then
         TOMCAT="apache-tomcat-$TOMCAT"
     fi
@@ -24,7 +24,7 @@ deploy() {
 	if [ "$1" == "deploy" ]; then
 		shift
 	fi
-    local TOMCAT="$1"
+    local TOMCAT="${1:-tomcat}"
     if [ "$TOMCAT" != "tomcat" ]; then
         TOMCAT="apache-tomcat-$TOMCAT"
     fi
@@ -38,10 +38,11 @@ startWith() {
 	if [ "$1" == "startWith" ]; then
 		shift
 	fi
-    local TOMCAT="$1"
+    local TOMCAT="${1:-tomcat}"
     if [ "$TOMCAT" != "tomcat" ]; then
         TOMCAT="apache-tomcat-$TOMCAT"
     fi
+    # echo "TOMCAT: $TOMCAT"; exit
 	if [ "`$HOME/bin/tomcat.sh status | grep -i '[i]s running'`" != "" ]; then
         sudo systemctl stop tomcat
         echo -e "stopped systemd tomcat service\n"
@@ -53,11 +54,11 @@ startWith() {
             sleep 1
         done
     fi
-    if [[ "$TOMCAT" == "9.0.12" && ! -e "$HOME/apps/opt/$TOMCAT/lib/jaxb-runtime-2.3.1.jar" ]]; then
-        cp -v /home/adr/.m2/repository/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar $HOME/apps/opt/$TOMCAT/lib/
-        cp -v /home/adr/.m2/repository/org/glassfish/jaxb/jaxb-runtime/2.3.1/jaxb-runtime-2.3.1.jar $HOME/apps/opt/$TOMCAT/lib/
-        echo -e "copied jaxb libs to $TOMCAT\n"
-    fi
+#    if [[ "$TOMCAT" == "9.0.12" && ! -e "$HOME/apps/opt/$TOMCAT/lib/jaxb-runtime-2.3.1.jar" ]]; then
+#        cp -v /home/adr/.m2/repository/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar $HOME/apps/opt/$TOMCAT/lib/
+#        cp -v /home/adr/.m2/repository/org/glassfish/jaxb/jaxb-runtime/2.3.1/jaxb-runtime-2.3.1.jar $HOME/apps/opt/$TOMCAT/lib/
+#        echo -e "copied jaxb libs to $TOMCAT\n"
+#    fi
     rm -v $HOME/apps/opt/$TOMCAT/logs/*
     echo -e "$TOMCAT logs removed\n"
     undeploy "$1"
@@ -73,7 +74,7 @@ stopWith() {
 	if [ "$1" == "stopWith" ]; then
 		shift
 	fi
-    local TOMCAT="$1"
+    local TOMCAT="${1:-tomcat}"
     if [ "$TOMCAT" != "tomcat" ]; then
         TOMCAT="apache-tomcat-$TOMCAT"
     fi
