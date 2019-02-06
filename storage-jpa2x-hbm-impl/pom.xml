@@ -133,10 +133,10 @@
         	ERROR (at compilation when missing aspectjrt):
         		couldn't find aspectjrt.jar on classpath, checked ...
         -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>exifweb</groupId>
