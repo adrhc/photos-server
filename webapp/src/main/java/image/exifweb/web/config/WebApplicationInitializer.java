@@ -1,6 +1,8 @@
 package image.exifweb.web.config;
 
+import image.exifweb.RootConfig;
 import image.exifweb.WebConfig;
+import image.exifweb.WebSecurityConfig;
 import image.exifweb.web.context.ContextLoaderListenerEx;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -10,14 +12,13 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  */
 public class WebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 	/**
-	 * When using spring security with java config, meaning
-	 * AbstractSecurityWebApplicationInitializer, the root config class
-	 * must be moved to spring security's java config!
+	 * 6.1.3 AbstractSecurityWebApplicationInitializer with Spring MVC
+	 * <p>
+	 * https://docs.spring.io/spring-security/site/docs/5.1.3.RELEASE/reference/htmlsingle/#abstractsecuritywebapplicationinitializer-with-spring-mvc
 	 */
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-//		return new Class[]{RootConfig.class};
-		return null;
+		return new Class[]{RootConfig.class, WebSecurityConfig.class};
 	}
 
 	@Override
