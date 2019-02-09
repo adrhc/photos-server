@@ -150,6 +150,11 @@
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>util</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>exifweb</groupId>
+            <artifactId>util</artifactId>
             <classifier>tests</classifier>
             <version>${project.version}</version>
             <scope>test</scope>

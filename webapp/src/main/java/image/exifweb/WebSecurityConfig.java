@@ -4,6 +4,9 @@ import image.exifweb.web.security.AuthFailureHandler;
 import image.exifweb.web.security.AuthSuccessHandler;
 import image.exifweb.web.security.LogoutSuccessHandler;
 import image.exifweb.web.security.RestAuthenticationEntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,12 +15,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import javax.inject.Inject;
-import javax.sql.DataSource;
+import static exifweb.util.PropertiesUtils.propertiesOf;
 
 /**
  * Created by adr on 2/17/18.
@@ -25,8 +27,10 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	@Inject
-	private DataSource dataSource;
+	@Autowired
+	private ApplicationContext ac;
+	@Value("${users.file}")
+	private String usersFile;
 
 	@Bean
 	RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
@@ -51,11 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
-		http.requiresChannel()
-				.antMatchers("/app/https/*").requiresSecure();
-		http.authorizeRequests()
-				.antMatchers("/app/https/*").authenticated()
-				.antMatchers("/app/secure/*").authenticated();
 		http.httpBasic()
 				.authenticationEntryPoint(this.restAuthenticationEntryPoint());
 		http.formLogin()
@@ -65,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.rememberMe()
 				.userDetailsService(userDetailsService())
 				.tokenValiditySeconds(1296000)
-				.key("kOQoW357t8HwbeRh7oxSXoXSGmVERKMcGENOxm2qrLZFOF8bxJB4GaIqSoTu9yy");
+				.key("rememberMeKeyForExifWeb");
 		http.logout()
 				.logoutUrl("/app/logout").logoutSuccessHandler(this.logoutSuccessHandler())
 				.deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE");
@@ -96,13 +95,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
-		JdbcDaoImpl jdbcDao = new JdbcDaoImpl();
-		jdbcDao.setUsersByUsernameQuery("select username,password,enabled from user where username = ?");
-		jdbcDao.setGroupAuthoritiesByUsernameQuery("select g.id, g.group_name, ga.authority from groups g JOIN group_members gm ON gm.group_id = g.id JOIN group_authorities ga ON ga.group_id = g.id JOIN user u ON u.id = gm.user_id WHERE u.username = ?");
-		jdbcDao.setEnableGroups(true);
-		jdbcDao.setEnableAuthorities(false);
-		jdbcDao.setDataSource(this.dataSource);
-		return jdbcDao;
+		return new InMemoryUserDetailsManager(propertiesOf(this.ac.getResource(this.usersFile)));
 	}
 
 	@Bean

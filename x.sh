@@ -33,6 +33,7 @@ deploy() {
     echo "exifweb deployed"
 }
 
+# ./x.sh startWith "tomcat"
 # ./x.sh startWith "9.0.12"
 startWith() {
 	if [ "$1" == "startWith" ]; then
