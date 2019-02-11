@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,9 +28,9 @@ public class LogoutSuccessHandler implements
 
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-			Authentication authentication) throws IOException, ServletException {
+			Authentication authentication) throws IOException {
 		logger.debug("Log off user: {}", authentication);
-		Map<String, Object> success = new HashMap<String, Object>();
+		Map<String, Object> success = new HashMap<>();
 		success.put("success", "true");
 		success.put("error", "false");
 		response.setContentType("application/json");
