@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,11 +28,9 @@ public class LogoutSuccessHandler implements
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException {
-		logger.debug("Log off user: {}", authentication);
-		Map<String, Object> success = new HashMap<>();
-		success.put("success", "true");
-		success.put("error", "false");
+		logger.debug("Log off user:\n{}", authentication);
 		response.setContentType("application/json");
-		this.objectMapper.writeValue(response.getOutputStream(), success);
+		this.objectMapper.writeValue(response.getOutputStream(),
+				Map.of("success", "true", "error", "false"));
 	}
 }
