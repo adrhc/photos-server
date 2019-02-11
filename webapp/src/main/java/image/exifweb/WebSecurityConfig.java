@@ -9,14 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import static exifweb.util.PropertiesUtils.propertiesOf;
@@ -62,7 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.passwordParameter("password").usernameParameter("userName")
 				.successHandler(this.authSuccessHandler()).failureHandler(this.authFailureHandler());
 		http.rememberMe()
-				.userDetailsService(userDetailsService())
 				.tokenValiditySeconds(1296000)
 				.key("rememberMeKeyForExifWeb");
 		http.logout()
@@ -71,35 +66,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/**
-	 * "@Bean" usage: see javadoc for this override
-	 * <p>
-	 * exposing as @Bean the return of super.authenticationManagerBean()
-	 */
-	@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
-
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService());
-	}
-
-	/**
-	 * according to javadoc I should use "@Bean @Override userDetailsServiceBean()"
+	 * according to javadoc I should use:
+	 * "@Bean @Override userDetailsServiceBean()"
 	 * but that would allow for this method to be called 2x
-	 *
-	 * @return
 	 */
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
 		return new InMemoryUserDetailsManager(propertiesOf(this.ac.getResource(this.usersFile)));
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
 	}
 }
