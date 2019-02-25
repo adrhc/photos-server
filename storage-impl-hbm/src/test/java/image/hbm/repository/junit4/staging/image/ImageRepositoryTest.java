@@ -19,6 +19,9 @@ import java.util.Date;
  * Created by adr on 2/25/18.
  *
  * @NotThreadSafe: because it has multiple @Test and also @Before (in AlbumRepoWriteTestBase)
+ * <p>
+ * see also jsr-305:
+ * https://aalmiray.github.io/jsr-305/apidocs/javax/annotation/concurrent/NotThreadSafe.html
  */
 @NotThreadSafe
 @HbmStagingJdbcDbConfig
