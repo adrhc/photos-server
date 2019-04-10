@@ -24,7 +24,7 @@ public class CopyPropertiesConverter<S, T> implements Converter<S, T> {
 		try {
 			T target = this.convertionClasses.get(source.getClass()).newInstance();
 			BeanUtils.copyProperties(target, source);
-			return (T) target;
+			return target;
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
 			logger.error(e.getMessage(), e);
 			throw new UnsupportedOperationException("Can't convert " + source.getClass().getSimpleName());

@@ -19,8 +19,7 @@ public class CdmToEntityConverterFactory implements
 		ConverterFactory<ICdmEntity, IStorageEntity>, ConditionalConverter {
 	static final Map<Class<? extends ICdmEntity>,
 			Class<? extends IStorageEntity>> cdmToEntityClasses =
-			new HashMap<Class<? extends ICdmEntity>,
-					Class<? extends IStorageEntity>>() {{
+			new HashMap<>() {{
 				put(AppConfig.class, image.persistence.entity.AppConfig.class);
 				put(ExifInfo.class, ExifData.class);
 			}};
