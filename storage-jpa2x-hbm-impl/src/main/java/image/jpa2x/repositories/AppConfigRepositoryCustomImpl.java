@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Transactional
 public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom {
@@ -25,7 +26,7 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 	@Override
 	public Integer getPhotosPerPage() {
 		String photosPerPage = findValueByEnumeratedName(AppConfigEnum.photos_per_page);
-		return new Integer(photosPerPage);
+		return Integer.valueOf(photosPerPage);
 	}
 
 	@Override
@@ -46,5 +47,14 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 		q.setParameter("name", appConfigEnum.getValue());
 		q.setHint(QueryHints.HINT_CACHEABLE, true);
 		return q.getSingleResult();
+	}
+
+	/**
+	 * Need to work with entities instead of sql directly updating the
+	 * DB rows - otherwise 2nd level cache won't remain synchronized!
+	 */
+	@Override
+	public void updateAll(List<AppConfig> appConfigs) {
+		appConfigs.forEach(c -> updateValue(c.getValue(), c.getId()));
 	}
 }

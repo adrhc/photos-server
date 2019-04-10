@@ -48,7 +48,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	 */
 	private final Map<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>>
 			REIMPORT_CHOICES =
-			new HashMap<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>>() {{
+			new HashMap<>() {{
 				put(TRUE, (albumName, deferredResult) -> {
 					AlbumImporterCtrlImpl.this.albumImporterService.importAlbumByName(albumName);
 					deferredResult.setResult("message",

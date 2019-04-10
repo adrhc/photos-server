@@ -1,6 +1,9 @@
 package image.jpa2x.repositories;
 
+import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
+
+import java.util.List;
 
 public interface AppConfigRepositoryCustom {
 	void deleteByEnumeratedName(AppConfigEnum ace);
@@ -12,4 +15,6 @@ public interface AppConfigRepositoryCustom {
 	void updateValue(String value, Integer appConfigId);
 
 	String findValueByEnumeratedName(AppConfigEnum appConfigEnum);
+
+	void updateAll(List<AppConfig> appConfigs);
 }

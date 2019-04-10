@@ -176,12 +176,13 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	@RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void update(@RequestBody List<AppConfig> appConfigs, Model model) throws IOException {
-		this.appConfigRepository.saveAll(this.photosConversionSupport.entityAppConfigsOf(appConfigs));
+	public void update(@RequestBody List<AppConfig> cdmAppConfigs, Model model) throws IOException {
+		List<image.persistence.entity.AppConfig> appConfigs =
+				this.photosConversionSupport.entityAppConfigsOf(cdmAppConfigs);
+		this.appConfigRepository.updateAll(appConfigs);
 		this.appConfigService.writeJsonForAppConfigs();
 		model.addAttribute("message", "App configs updated!");
 	}
-
 
 	@RequestMapping(value = "/canUseJsonFiles", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -195,7 +196,6 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 				this.appConfigService.getConfig("use json files for config"));
 		return map;
 	}
-
 
 	@RequestMapping(value = "getAppConfigs", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
