@@ -20,18 +20,6 @@
         <!--<scope>provided</scope>-->
         <!--</dependency>-->
 
-        <!--
-            required by java 11
-
-            https://stackoverflow.com/questions/52913597/springboot-org-hibernate-mappingexception-could-not-get-constructor-for-org-hi
-            https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9
-        -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.23.1-GA</version>
-        </dependency>
-
         <dependency>
             <groupId>exifweb</groupId>
             <artifactId>photos</artifactId>
@@ -214,6 +202,30 @@
         -->
 
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>java11</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <dependencyManagement>
+                <dependencies>
+                    <!--
+                        required by java 11
+
+                        https://stackoverflow.com/questions/52913597/springboot-org-hibernate-mappingexception-could-not-get-constructor-for-org-hi
+                        https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9
+                    -->
+                    <dependency>
+                        <groupId>org.javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                        <version>3.23.1-GA</version>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement>
+        </profile>
+    </profiles>
 
     <build>
         <defaultGoal>install</defaultGoal>
