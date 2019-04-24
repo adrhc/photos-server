@@ -1,2 +1,3 @@
 #!/bin/bash
-./mvnw -e dependency:tree
+source env.sh
+$MVN -e dependency:tree

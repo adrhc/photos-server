@@ -13,7 +13,7 @@
         <!--
             see https://mincong-h.github.io/2018/08/29/maven-compiler-plugin-understanding/
         -->
-        <maven.compiler.source>10</maven.compiler.source>
+        <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <!--
             see javac - - help
@@ -752,6 +752,14 @@
                 <version>2.3.0</version>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.23.1-GA</version>
+                <scope>runtime</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

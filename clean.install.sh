@@ -1,4 +1,5 @@
 #!/bin/bash
+source env.sh
 
 # disable all tests:
 # ./mvnw -e -Dmaven.javadoc.skip=true -Dmaven.test.skip=true clean install
@@ -10,4 +11,4 @@
 # these does not require <forkCount> usage:
 # ./clean.install.sh -P staging-only
 # ./clean.install.sh -P production-only
-./mvnw -e -Dmaven.javadoc.skip=true clean install "$@"
+$MVN -e -Dmaven.javadoc.skip=true clean install "$@"

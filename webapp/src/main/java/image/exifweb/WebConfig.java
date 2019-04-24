@@ -13,6 +13,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  */
 @Configuration
 @ComponentScan(useDefaultFilters = false,
-		includeFilters = @ComponentScan.Filter({Controller.class, ControllerAdvice.class}))
+		includeFilters = @ComponentScan.Filter({Controller.class, ControllerAdvice.class, RestControllerAdvice.class}))
 @EnableWebMvc
 // use proxyTargetClass = true when not having interfaces for @Controller classes
 @EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
