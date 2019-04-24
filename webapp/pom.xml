@@ -21,6 +21,8 @@
         <!--</dependency>-->
 
         <!--
+            required by java 11
+
             https://stackoverflow.com/questions/52913597/springboot-org-hibernate-mappingexception-could-not-get-constructor-for-org-hi
             https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9
         -->
