@@ -8,6 +8,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subtitles.SubtitlesConfig;
 
 /**
@@ -17,7 +18,7 @@ import subtitles.SubtitlesConfig;
  */
 @Configuration
 @ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class,
-		Controller.class, ControllerAdvice.class, WebSecurityComponent.class}))
+		Controller.class, ControllerAdvice.class, RestControllerAdvice.class, WebSecurityComponent.class}))
 @PropertySource("classpath:/exifweb.properties")
 @Import({SubtitlesConfig.class, PhotosConfig.class})
 public class RootConfig {
