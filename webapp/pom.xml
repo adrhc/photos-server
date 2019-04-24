@@ -26,11 +26,11 @@
             https://stackoverflow.com/questions/52913597/springboot-org-hibernate-mappingexception-could-not-get-constructor-for-org-hi
             https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9
         -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.23.1-GA</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.javassist</groupId>-->
+            <!--<artifactId>javassist</artifactId>-->
+            <!--<version>3.23.1-GA</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>exifweb</groupId>
