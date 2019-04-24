@@ -37,7 +37,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Map<String, String> handleRuntimeWithMsgExc(RuntimeWithMsgExc rwme) {
+	public Map<String, String> runtimeWithMsgExc(RuntimeWithMsgExc rwme) {
 		Map<String, String> errInfo = initErrResp();
 		errInfo.put("message", this.messageSource.getMessage(rwme.getMessageKey(), rwme.getArgs(), null));
 		if (rwme.getMessage() != null) {
