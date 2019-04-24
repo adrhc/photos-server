@@ -38,7 +38,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, String> runtimeWithMsgExc(RuntimeWithMsgExc rwme) {
-		Map<String, String> errInfo = initErrResp();
+		Map<String, String> errInfo = emptyErrResp();
 		errInfo.put("message", this.messageSource.getMessage(rwme.getMessageKey(), rwme.getArgs(), null));
 		if (rwme.getMessage() != null) {
 			errInfo.put("detailMessage", rwme.getMessage());
@@ -49,7 +49,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, String> accessDeniedException(AccessDeniedException e) {
-		Map<String, String> errInfo = initErrResp();
+		Map<String, String> errInfo = emptyErrResp();
 		errInfo.put("message", e.getMessage());
 		AuthData authData = this.authUtil.getAuthData();
 		if (authData == null) {
@@ -64,13 +64,13 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, String> handleException(Exception e) {
 		logger.error(e.getMessage(), e);
-		Map<String, String> errInfo = initErrResp();
+		Map<String, String> errInfo = emptyErrResp();
 		errInfo.put("message", e.getMessage());
 		errInfo.put("stack trace", ExceptionUtils.getStackTrace(e));
 		return errInfo;
 	}
 
-	private Map<String, String> initErrResp() {
+	private Map<String, String> emptyErrResp() {
 		Map<String, String> errInfo = new HashMap<>();
 		errInfo.put("success", "false");
 		errInfo.put("error", "true");
