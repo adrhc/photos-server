@@ -1,2 +1,3 @@
 #!/bin/bash
-./mvnw -e idea:idea
+source env.sh
+$MVN -e idea:idea

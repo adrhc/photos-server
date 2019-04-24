@@ -1,2 +1,3 @@
 #!/bin/bash
-./mvnw -e -Dmaven.javadoc.skip=true install "$@"
+source env.sh
+$MVN -e -Dmaven.javadoc.skip=true install "$@"

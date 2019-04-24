@@ -1,2 +1,3 @@
 #!/bin/bash
-./mvnw -e -Dmaven.javadoc.skip=true clean
+source env.sh
+$MVN -e -Dmaven.javadoc.skip=true clean

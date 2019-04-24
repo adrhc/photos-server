@@ -1,5 +1,5 @@
 #!/bin/bash
-
+source env.sh
 # export EXIFWEB_PORT=8080
 # export EXIFWEB_DIR=$HOME/Projects/git.exifweb/webapp/target/exifweb
 # echo "cp: $EXIFWEB_DIR/WEB-INF/classes:$EXIFWEB_DIR/WEB-INF/lib/*"
