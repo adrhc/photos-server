@@ -46,10 +46,11 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 		return errInfo;
 	}
 
-	@ExceptionHandler(AccessDeniedException.class)
+	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Map<String, String> accessDeniedException() {
+	public Map<String, String> accessDeniedException(AccessDeniedException e) {
 		Map<String, String> errInfo = initErrResp();
+		errInfo.put("message", e.getMessage());
 		AuthData authData = this.authUtil.getAuthData();
 		if (authData == null) {
 			errInfo.put("notLogged", "true");
