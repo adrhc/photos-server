@@ -76,7 +76,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 			NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		logger.error(ex.getMessage(), ex);
 		Map<String, String> error = emptyError();
-		error.put("pathNotFound", "true");
+		error.put("notFound", "true");
 		error.put("request", request.getDescription(false));
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
