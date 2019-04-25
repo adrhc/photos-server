@@ -6,6 +6,7 @@ import image.exifweb.web.security.AuthUtil;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -77,6 +78,16 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 		logger.error(ex.getMessage(), ex);
 		Map<String, String> error = emptyError();
 		error.put("notFound", "true");
+		error.put("request", request.getDescription(false));
+		return handleExceptionInternal(ex, error, headers, status, request);
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleTypeMismatch(
+			TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		logger.error(ex.getMessage(), ex);
+		Map<String, String> error = emptyError();
+		error.put("typeMismatch", "true");
 		error.put("request", request.getDescription(false));
 		return handleExceptionInternal(ex, error, headers, status, request);
 	}
