@@ -7,11 +7,15 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.inject.Inject;
@@ -35,7 +39,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, String> runtimeWithMsgExc(RuntimeWithMsgExc rwme) {
-		Map<String, String> errInfo = emptyErrResp();
+		Map<String, String> errInfo = emptyError();
 		errInfo.put("message", this.messageSource.getMessage(rwme.getMessageKey(), rwme.getArgs(), null));
 		if (rwme.getMessage() != null) {
 			errInfo.put("detailMessage", rwme.getMessage());
@@ -46,7 +50,7 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Map<String, String> accessDeniedException(AccessDeniedException e) {
-		Map<String, String> errInfo = emptyErrResp();
+		Map<String, String> errInfo = emptyError();
 		errInfo.put("message", e.getMessage());
 		AuthData authData = this.authUtil.getAuthData();
 		if (authData == null) {
@@ -59,15 +63,25 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Map<String, String> handleException(Exception e) {
+	public Map<String, String> handleAnyException(Exception e) {
 		logger.error(e.getMessage(), e);
-		Map<String, String> errInfo = emptyErrResp();
+		Map<String, String> errInfo = emptyError();
 		errInfo.put("message", e.getMessage());
 		errInfo.put("stack trace", ExceptionUtils.getStackTrace(e));
 		return errInfo;
 	}
 
-	private Map<String, String> emptyErrResp() {
+	@Override
+	protected ResponseEntity<Object> handleNoHandlerFoundException(
+			NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		logger.error(ex.getMessage(), ex);
+		Map<String, String> error = emptyError();
+		error.put("pathNotFound", "true");
+		error.put("request", request.getDescription(false));
+		return handleExceptionInternal(ex, error, headers, status, request);
+	}
+
+	private Map<String, String> emptyError() {
 		Map<String, String> errInfo = new HashMap<>();
 		errInfo.put("success", "false");
 		errInfo.put("error", "true");
