@@ -7,8 +7,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +25,6 @@ import java.util.Map;
  * Time: 8:14 PM
  * To change this template use File | Settings | File Templates.
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
 public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(RequestExceptionHandler.class);
