@@ -1,6 +1,7 @@
 package image.exifweb;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +11,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,9 @@ import java.util.Map;
 @EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 @Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
-	@Inject
+	@Autowired
+	private ThreadPoolTaskExecutor asyncExecutor;
+	@Autowired
 	private ObjectMapper objectMapper;
 	@Value("${async.timeout}")
 	private long asyncTimeout;
@@ -50,6 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
 		configurer.setDefaultTimeout(this.asyncTimeout);
+		configurer.setTaskExecutor(this.asyncExecutor);
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		registry.jsp("/app/", ".jsp").cache(false);
-		registry.enableContentNegotiation(jacksonConverter());
+		registry.enableContentNegotiation(mappingJackson2JsonView());
 	}
 
 	@Override
@@ -75,8 +79,12 @@ public class WebConfig implements WebMvcConfigurer {
 		configurer.mediaTypes(mediaTypes);
 	}
 
+	/**
+	 * MappingJackson2JsonView: Spring MVC View that renders JSON content by
+	 * serializing the model for the current request using Jackson 2's ObjectMapper.
+	 */
 	@Bean
-	public MappingJackson2JsonView jacksonConverter() {
+	public MappingJackson2JsonView mappingJackson2JsonView() {
 		return new MappingJackson2JsonView(this.objectMapper);
 	}
 }

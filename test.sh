@@ -1,5 +1,14 @@
 #!/bin/bash
-source env.sh
+if [ -e "env.sh" ]; then
+	source env.sh
+elif [ -e mvnw ]; then
+	echo "env.sh missing, using ./mvnw"
+	MVN="./mvnw"
+else
+	echo "env.sh missing, using mvn"
+	MVN="mvn"
+fi
+
 # ehcache static instance is overriden when using stage and production same time so we 
 # need forked tests when running stage and production tests in same mvn test command
 #

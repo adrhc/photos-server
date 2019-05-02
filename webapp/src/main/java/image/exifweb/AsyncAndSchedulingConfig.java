@@ -1,5 +1,6 @@
 package image.exifweb;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -20,6 +21,8 @@ import java.util.concurrent.Executors;
 @EnableAsync(proxyTargetClass = true)
 @EnableScheduling
 public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConfigurer {
+	@Autowired
+	private ThreadPoolTaskExecutor asyncExecutor;
 
 	/**
 	 * <task:annotation-driven executor="asyncExecutor"/>
@@ -27,19 +30,7 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	 */
 	@Override
 	public Executor getAsyncExecutor() {
-		return asyncExecutor();
-	}
-
-	@Bean
-	public ThreadPoolTaskExecutor asyncExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(1);
-		executor.setMaxPoolSize(4);
-		executor.setQueueCapacity(128);
-		executor.setThreadNamePrefix("async-");
-		executor.setKeepAliveSeconds(30);
-		executor.initialize();
-		return executor;
+		return this.asyncExecutor;
 	}
 
 	/**

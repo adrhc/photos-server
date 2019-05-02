@@ -1,5 +1,16 @@
 #!/bin/bash
-source env.sh
+if [ -e "env.sh" ]; then
+	source env.sh
+elif [ -e mvnw ]; then
+	echo "env.sh missing, using ./mvnw"
+	MVN="./mvnw"
+elif [ -e ../mvnw ]; then
+	echo "env.sh missing, using ../mvnw"
+	MVN="../mvnw"
+else
+	echo "env.sh missing, using mvn"
+	MVN="mvn"
+fi
 
 # disable all tests:
 # ./mvnw -e -Dmaven.javadoc.skip=true -Dmaven.test.skip=true clean install

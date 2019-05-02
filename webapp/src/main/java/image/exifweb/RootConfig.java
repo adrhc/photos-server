@@ -6,6 +6,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -43,5 +44,20 @@ public class RootConfig {
 		ms.setDefaultEncoding("UTF-8");
 		ms.setFallbackToSystemLocale(true);
 		return ms;
+	}
+
+	/**
+	 * corepoolsize vs maxpoolsize:
+	 * https://stackoverflow.com/questions/1878806/what-is-the-difference-between-corepoolsize-and-maxpoolsize-in-the-spring-thread
+	 */
+	@Bean(value = {"asyncExecutor", "threadPoolTaskExecutor"})
+	public ThreadPoolTaskExecutor asyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
+		executor.setQueueCapacity(executor.getMaxPoolSize() / 2);
+		executor.setThreadNamePrefix("async-");
+		executor.setKeepAliveSeconds(30);
+		executor.initialize();
+		return executor;
 	}
 }
