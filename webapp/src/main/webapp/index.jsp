@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 
+<%--
+    http://127.0.0.1:8080/exifweb/index.jsp
+--%>
+
 <%--<c:catch>--%>
     <%--<sql:update var="rs" dataSource="exifweb">--%>
         <%--INSERT INTO Album (name) values (CONCAT('album ', NOW()))--%>
