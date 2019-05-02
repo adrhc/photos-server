@@ -66,10 +66,13 @@ public class WebConfig implements WebMvcConfigurer {
 		});
 	}
 
+	/**
+	 * see https://docs.spring.io/spring/docs/5.2.0.M1/spring-framework-reference/web.html#mvc-config-view-resolvers
+	 */
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		registry.jsp("/app/", ".jsp").cache(false);
 		registry.enableContentNegotiation(mappingJackson2JsonView());
+		registry.jsp("/app/", ".jsp").cache(false);
 	}
 
 	@Override
