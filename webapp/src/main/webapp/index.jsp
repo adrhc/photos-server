@@ -12,6 +12,9 @@
     <%--</sql:update>--%>
 <%--</c:catch>--%>
 
+<%--
+    I guess this will use directly the Tomcat's defined exifweb DataSource.
+--%>
 <sql:query var="rs" dataSource="exifweb">
     select CONVERT(i.id, CHAR(10)) as imageId,
             CONVERT(a.id, CHAR(10)) as albumId,
