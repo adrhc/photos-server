@@ -3,7 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/sql" prefix="sql" %>
 
 <%--
-    http://127.0.0.1:8080/exifweb/index.jsp
+    http://127.0.0.1:8080/exifweb/index.jsp         -> directly using Tomcat's JSP engine
+    http://127.0.0.1:8080/exifweb/app/index-jsp     -> IndexJspController
+    http://127.0.0.1:8080/exifweb/app/              -> WebConfig.addViewControllers(...)
 --%>
 
 <%--<c:catch>--%>

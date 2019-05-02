@@ -68,11 +68,21 @@ public class WebConfig implements WebMvcConfigurer {
 
 	/**
 	 * see https://docs.spring.io/spring/docs/5.2.0.M1/spring-framework-reference/web.html#mvc-config-view-resolvers
+	 * <p>
+	 * http://127.0.0.1:8080/exifweb/index.jsp
 	 */
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		registry.enableContentNegotiation(mappingJackson2JsonView());
-		registry.jsp("/app/", ".jsp").cache(false);
+		registry.jsp("/", ".jsp").cache(false);
+	}
+
+	/**
+	 * http://127.0.0.1:8080/exifweb/app/
+	 */
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		registry.addViewController("/").setViewName("index");
 	}
 
 	@Override
