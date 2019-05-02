@@ -2,6 +2,8 @@ package image.photos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +37,14 @@ public class JsonMapperConfig {
 		hm.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
 		hm.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 		mapper.registerModule(hm);
+
 		mapper.registerModule(new ParameterNamesModule());
+
+		// check default included objectMapper._registeredModuleTypes,
+		// e.g. Jdk8Module, JavaTimeModule when creating the ObjectMapper
+		// without using Jackson2ObjectMapperBuilder
+		mapper.registerModule(new Jdk8Module());
+		mapper.registerModule(new JavaTimeModule());
 
 		return mapper;
 	}
