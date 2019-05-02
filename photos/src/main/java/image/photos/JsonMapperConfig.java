@@ -2,6 +2,7 @@ package image.photos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,6 +35,7 @@ public class JsonMapperConfig {
 		hm.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
 		hm.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 		mapper.registerModule(hm);
+		mapper.registerModule(new ParameterNamesModule());
 
 		return mapper;
 	}

@@ -545,6 +545,27 @@
                 <version>${jackson-datatype-hibernate5.version}</version>
             </dependency>
 
+            <!--
+                https://github.com/FasterXML/jackson-modules-java8
+
+                Jackson 3.x changes things as it requires Java 8 to work and can thereby directly supported features. Because of this parameter-names and datatypes modules are merged into jackson-databind and need not be registered; datetime module (JavaTimeModule) remains separate module due to its size and configurability options.
+            -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-parameter-names</artifactId>
+                <version>${jackson-datatype-hibernate5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson-datatype-hibernate5.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson-datatype-hibernate5.version}</version>
+            </dependency>
+
             <!--<dependency>-->
             <!--<groupId>javax.servlet</groupId>-->
             <!--<artifactId>jstl</artifactId>-->
