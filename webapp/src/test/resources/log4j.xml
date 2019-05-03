@@ -19,24 +19,14 @@
         </layout>
     </appender>
 
-    <appender name="exifweb-file" class="org.apache.log4j.RollingFileAppender">
-        <param name="Threshold" value="debug"/>
-        <param name="file" value="exifweb-test.log"/>
-        <param name="MaxFileSize" value="10MB"/>
-        <!-- Keep one backup file -->
-        <param name="MaxBackupIndex" value="1"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>
-        </layout>
-    </appender>
-
-    <!--<appender name="subtitles-extractor-file" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<appender name="exifweb-file" class="org.apache.log4j.RollingFileAppender">-->
     <!--<param name="Threshold" value="debug"/>-->
-    <!--<param name="file" value="/home/adr/apps/log/subtitles-extractor.log"/>-->
+    <!--<param name="file" value="exifweb-test.log"/>-->
     <!--<param name="MaxFileSize" value="10MB"/>-->
-    <!--<param name="MaxBackupIndex" value="3"/>-->
+    <!--&lt;!&ndash; Keep one backup file &ndash;&gt;-->
+    <!--<param name="MaxBackupIndex" value="1"/>-->
     <!--<layout class="org.apache.log4j.PatternLayout">-->
-    <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
+    <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p %t] [%C{2}.%M] %m%n"/>-->
     <!--</layout>-->
     <!--</appender>-->
 
