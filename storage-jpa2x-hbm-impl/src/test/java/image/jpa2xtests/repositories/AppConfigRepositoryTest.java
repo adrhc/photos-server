@@ -15,13 +15,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
+import javax.persistence.Cache;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
@@ -65,6 +67,9 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 	@Junit5Jpa2xInMemoryDbConfig
 	@Nested
 	class DeleteByEnumeratedName {
+		@PersistenceContext
+		private EntityManager em;
+
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
@@ -78,17 +83,17 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 
 		@Test
 		void deleteByEnumeratedName() {
-			log.debug("*** appConfigRepository.findAll 2x (using cache) ***");
+			// testing the cache
+			Cache cache = this.em.getEntityManagerFactory().getCache();
+			assertFalse(cache.contains(AppConfig.class, 1), "AppConfig:1 already cached!");
 			List<AppConfig> all = AppConfigRepositoryTest.this.appConfigRepository.findAll();
-			// served from cache
-			AppConfigRepositoryTest.this.appConfigRepository.findAll();
-			assertThat("getAppConfigByName", all, hasSize(1));
-			log.debug("*** appConfigRepository.deleteByEnumeratedName ***");
+			assertThat("Too many AppConfig in DB!", all, hasSize(1));
+			assertTrue(cache.contains(AppConfig.class, 1), "AppConfig:1 not cached!");
+			// testing deleteByEnumeratedName
 			AppConfigRepositoryTest.this.appConfigRepository
 					.deleteByEnumeratedName(AppConfigEnum.albums_path);
-			log.debug("*** appConfigRepository.findAll (NOT using cache) ***");
 			all = AppConfigRepositoryTest.this.appConfigRepository.findAll();
-			assertThat("getAppConfigByName", all, empty());
+			assertThat("Some AppConfig still exist!", all, empty());
 		}
 	}
 
