@@ -1242,7 +1242,10 @@
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
-                <junit5.webapp.groups>root,webapp</junit5.webapp.groups>
+                <junit5.webapp.groups>
+                    root&amp;inmemorydb,
+                    webapp&amp;inmemorydb
+                </junit5.webapp.groups>
             </properties>
         </profile>
         <profile>

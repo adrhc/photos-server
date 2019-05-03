@@ -30,5 +30,5 @@ import java.lang.annotation.Target;
 @InMemoryDbProfile
 @Tag("junit5")
 @Tag("inmemorydb")
-@Tag("web")
+@Tag("webapp")
 public @interface WebInMemoryDbConfig {}
