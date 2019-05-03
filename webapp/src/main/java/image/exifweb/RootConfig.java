@@ -18,10 +18,11 @@ import subtitles.SubtitlesConfig;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
-@ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class,
-		Controller.class, ControllerAdvice.class, RestControllerAdvice.class, WebSecurityComponent.class}))
+@ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class, Controller.class,
+		ControllerAdvice.class, RestControllerAdvice.class, WebSecurityComponent.class}))
 @PropertySource("classpath:/exifweb.properties")
-@Import({SubtitlesConfig.class, PhotosConfig.class})
+@Import({SubtitlesConfig.class, PhotosConfig.class, WebSecurityConfig.class,
+		AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class RootConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer

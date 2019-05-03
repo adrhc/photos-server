@@ -21,12 +21,13 @@ public class PyLoadService extends AppManagerService {
 
 	@PostConstruct
 	public void postConstruct() {
-		appProcName = "pyLoad";
-		appStatus = new ProcessBuilder("pgrep", "-f", pyLoadCorePath);
-		appStart = new ProcessBuilder("python", pyLoadCorePath, "--no-remote", "--daemon");
+		this.appProcName = "pyLoad";
+		this.appStatus = new ProcessBuilder("pgrep", "-f", this.pyLoadCorePath);
+		this.appStart = new ProcessBuilder("python", this.pyLoadCorePath, "--no-remote", "--daemon");
 	}
 
+	@Override
 	protected String getPID() throws IOException, InterruptedException {
-		return processInfoService.pgrep(pyLoadCorePath, true);
+		return this.processInfoService.pgrep(this.pyLoadCorePath, true);
 	}
 }

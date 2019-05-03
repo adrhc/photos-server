@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -28,11 +27,11 @@ import java.util.Map;
  */
 @Configuration
 @ComponentScan(useDefaultFilters = false,
-		includeFilters = @ComponentScan.Filter({Controller.class, ControllerAdvice.class, RestControllerAdvice.class}))
+		includeFilters = @ComponentScan.Filter(
+				{Controller.class, ControllerAdvice.class, RestControllerAdvice.class}))
 @EnableWebMvc
 // use proxyTargetClass = true when not having interfaces for @Controller classes
 @EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
-@Import({AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
 public class WebConfig implements WebMvcConfigurer {
 	@Autowired
 	private ThreadPoolTaskExecutor asyncExecutor;
