@@ -87,6 +87,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 			Cache cache = this.em.getEntityManagerFactory().getCache();
 			assertFalse(cache.contains(AppConfig.class, 1), "AppConfig:1 already cached!");
 			List<AppConfig> all = AppConfigRepositoryTest.this.appConfigRepository.findAll();
+			log.debug("AppConfig: {}", all.get(0).toString());
 			assertThat("Too many AppConfig in DB!", all, hasSize(1));
 			assertTrue(cache.contains(AppConfig.class, 1), "AppConfig:1 not cached!");
 			// testing deleteByEnumeratedName
