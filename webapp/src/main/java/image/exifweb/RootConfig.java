@@ -1,6 +1,5 @@
 package image.exifweb;
 
-import image.exifweb.web.security.WebSecurityComponent;
 import image.photos.PhotosConfig;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.*;
@@ -18,8 +17,8 @@ import subtitles.SubtitlesConfig;
  * PropertySource: "classpath:" is mandatory!
  */
 @Configuration
-@ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class, Controller.class,
-		ControllerAdvice.class, RestControllerAdvice.class, WebSecurityComponent.class}))
+@ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class,
+		Controller.class, ControllerAdvice.class, RestControllerAdvice.class}))
 @PropertySource("classpath:/exifweb.properties")
 @Import({SubtitlesConfig.class, PhotosConfig.class, WebSecurityConfig.class,
 		AsyncAndSchedulingConfig.class, SpringCacheConfig.class})
