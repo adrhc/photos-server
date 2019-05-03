@@ -24,6 +24,8 @@ import java.util.Map;
 
 /**
  * Created by adr on 2/15/18.
+ * <p>
+ * Scanner is including only the listed classes.
  */
 @Configuration
 @ComponentScan(useDefaultFilters = false,

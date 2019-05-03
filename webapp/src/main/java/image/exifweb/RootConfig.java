@@ -15,6 +15,7 @@ import subtitles.SubtitlesConfig;
  * Created by adr on 2/16/18.
  * <p>
  * PropertySource: "classpath:" is mandatory!
+ * Scanner is including everything other than the listed classes.
  */
 @Configuration
 @ComponentScan(excludeFilters = @ComponentScan.Filter({Configuration.class,
