@@ -1030,6 +1030,10 @@
 	                        that value will be multiplied with the number of available CPU cores in your system.
                         -->
                         <forkCount>1C</forkCount>
+                        <!--
+                            2019.05.04: it's possible to work with reuseForks = true but the tests must be
+                                        prepared for this parallelism (especially those working with the DB)
+                        -->
                         <reuseForks>false</reuseForks>
                         <!--
                             maven-surefire-report-plugin needs false value
@@ -1316,8 +1320,10 @@
                                     VM crash or System.exit called?
                                 SOLUTION
                                     <reuseForks>false</reuseForks>
+
+                                2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
                             -->
-                            <reuseForks>false</reuseForks>
+                            <reuseForks>true</reuseForks>
                             <!-- all @NotThreadSafe classes are run with a single thread! -->
                             <!--<threadCount>4</threadCount>-->
                             <!--<parallel>methods</parallel>-->
@@ -1366,8 +1372,10 @@
                                     VM crash or System.exit called?
                                 SOLUTION
                                     <reuseForks>false</reuseForks>
+
+                                2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
                             -->
-                            <reuseForks>false</reuseForks>
+                            <reuseForks>true</reuseForks>
                             <!-- all @NotThreadSafe classes are run with a single thread! -->
                             <!--<threadCount>4</threadCount>-->
                             <!--<parallel>methods</parallel>-->
