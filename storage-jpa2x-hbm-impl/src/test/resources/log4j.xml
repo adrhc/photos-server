@@ -67,6 +67,9 @@
     <logger name="org.springframework.cache">
         <level value="warn"/>
     </logger>
+    <logger name="org.springframework.test.context.cache">
+        <level value="debug"/>
+    </logger>
 
     <!-- Hibernate -->
     <!--log just the SQL -->
