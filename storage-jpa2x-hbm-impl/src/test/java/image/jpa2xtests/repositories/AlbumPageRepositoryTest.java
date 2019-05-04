@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-public class AlbumPageRepositoryImplTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
+public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
 	public static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
 	@Autowired
