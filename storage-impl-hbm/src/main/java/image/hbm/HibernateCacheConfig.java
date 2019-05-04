@@ -9,7 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Replaced by hibernate-*.properties configuration (see tech.log).
+ * Replaced by hibernate-*.properties based ehcache configuration (see tech.log).
  * <p>
  * Created by adr on 2/25/18.
  */

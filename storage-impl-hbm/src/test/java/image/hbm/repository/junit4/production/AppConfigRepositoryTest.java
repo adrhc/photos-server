@@ -55,8 +55,7 @@ public class AppConfigRepositoryTest {
 	@Test
 	public void getAppConfigByName() {
 		AppConfig appConfig = this.appConfigRepository.findByName("albums_path");
-		Assert.assertEquals(appConfig.getValue(),
-				"/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums");
+		Assert.assertEquals("/fast-disk/FOTO Daniela & Adrian jpeg/albums", appConfig.getValue());
 		logger.debug(appConfig.toString());
 	}
 

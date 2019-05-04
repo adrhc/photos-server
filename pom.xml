@@ -1023,6 +1023,9 @@
                             In order to avoid JVM fork when testing I have to run separately in-memory, stage and production tests.
 	                        When at least two of them run together the spring configuration overlaps and random errors occur.
 
+                            ehcache static instance is overridden when using stage and production same time so we
+                            need forked tests when running stage and production tests in same mvn test command
+
 	                        It supports the same syntax as -T in maven-core: if you terminate the value with a 'C',
 	                        that value will be multiplied with the number of available CPU cores in your system.
                         -->
