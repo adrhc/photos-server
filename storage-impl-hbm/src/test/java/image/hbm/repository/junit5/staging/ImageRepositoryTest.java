@@ -14,6 +14,7 @@ import image.persistence.entitytests.assertion.IImageAssertions;
 import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import io.github.glytching.junit.extension.random.Random;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,12 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * this should be @NotThreadSafe because it has multiple @Test
+ */
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
+@Slf4j
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	@Inject
 	private AlbumRepository albumRepository;
@@ -109,6 +114,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		this.album.addImage(image);
 		this.imageRepository.persist(image);
 		Image dbImage = this.imageRepository.getById(image.getId());
+		log.debug("image:\n{}", image.toString());
 		assertImageEquals(image, dbImage);
 	}
 

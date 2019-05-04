@@ -140,7 +140,7 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 				", flags=" + this.flags.toString() +
 				", rating=" + this.rating +
 				", album=" + this.album +
-				", lastUpdate=" + this.lastUpdate +
+				", lastUpdate=" + this.lastUpdate.getTime() +
 				'}';
 	}
 }
