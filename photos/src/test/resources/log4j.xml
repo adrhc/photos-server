@@ -30,7 +30,7 @@
     <!--</appender>-->
 
     <logger name="image" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="console"/>
     </logger>
 
@@ -55,7 +55,7 @@
     </logger>
 
     <logger name="subtitles" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="console"/>
         <!--<appender-ref ref="subtitles-extractor-file"/>-->
     </logger>
@@ -66,6 +66,9 @@
     </logger>
     <logger name="org.springframework.cache">
         <level value="warn"/>
+    </logger>
+    <logger name="org.springframework.test.context.cache">
+        <level value="debug"/>
     </logger>
 
     <!-- Hibernate -->

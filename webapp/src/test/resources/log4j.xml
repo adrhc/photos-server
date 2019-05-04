@@ -31,11 +31,6 @@
     <!--</appender>-->
 
     <logger name="image" additivity="false">
-        <level value="debug"/>
-        <appender-ref ref="console"/>
-    </logger>
-
-    <logger name="image.exifweb.system.persistence" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
     </logger>
@@ -46,14 +41,14 @@
     </logger>
 
     <logger name="subtitles" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="console"/>
         <!--<appender-ref ref="subtitles-extractor-file"/>-->
     </logger>
 
     <!-- 3rdparty Loggers -->
     <logger name="org.springframework">
-        <level value="info"/>
+        <level value="warn"/>
     </logger>
     <logger name="org.springframework.cache">
         <level value="warn"/>
