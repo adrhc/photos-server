@@ -1322,6 +1322,8 @@
                                     <reuseForks>false</reuseForks>
 
                                 2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
+                                2019.05.04: it's possible to work with reuseForks = true but the tests must be
+                                            prepared for this parallelism (especially those working with the DB)
                             -->
                             <reuseForks>true</reuseForks>
                             <!-- all @NotThreadSafe classes are run with a single thread! -->
@@ -1374,6 +1376,8 @@
                                     <reuseForks>false</reuseForks>
 
                                 2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
+                                2019.05.04: it's possible to work with reuseForks = true but the tests must be
+                                            prepared for this parallelism (especially those working with the DB)
                             -->
                             <reuseForks>true</reuseForks>
                             <!-- all @NotThreadSafe classes are run with a single thread! -->
