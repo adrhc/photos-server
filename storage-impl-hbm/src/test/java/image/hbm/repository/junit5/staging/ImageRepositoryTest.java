@@ -15,6 +15,7 @@ import image.persistence.repository.AlbumRepository;
 import image.persistence.repository.ImageRepository;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,10 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * this should be @NotThreadSafe because it has multiple @Test
+ * this should be @NotThreadSafe because it has multiple @Test while
+ * also has shared state at test-instance level (e.g. Album album)
  */
+@NotThreadSafe
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStagingJdbcDbConfig
 @Slf4j
