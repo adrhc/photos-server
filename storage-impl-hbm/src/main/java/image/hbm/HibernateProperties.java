@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Properties;
 
 @Configuration
-public class HibernatePropertiesConfig {
+public class HibernateProperties {
 	@Inject
 	private Environment ev;
 

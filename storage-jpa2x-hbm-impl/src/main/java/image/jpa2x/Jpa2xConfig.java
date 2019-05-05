@@ -1,7 +1,7 @@
 package image.jpa2x;
 
 import image.hbm.DataSourceConfig;
-import image.hbm.HibernatePropertiesConfig;
+import image.hbm.HibernateProperties;
 import image.jpa2x.jpacustomizations.CustomJpaRepositoryImpl;
 import image.persistence.entity.Image;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,7 +25,7 @@ import java.util.Properties;
 		excludeFilters = @ComponentScan.Filter(Configuration.class))
 @EnableJpaRepositories(repositoryBaseClass = CustomJpaRepositoryImpl.class)
 @EnableTransactionManagement
-@Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
+@Import({HibernateProperties.class, DataSourceConfig.class})
 public class Jpa2xConfig {
 	/**
 	 * LocalContainerEntityManagerFactoryBean implements PersistenceExceptionTranslator

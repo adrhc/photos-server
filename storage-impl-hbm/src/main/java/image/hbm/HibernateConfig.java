@@ -28,7 +28,7 @@ import java.util.Properties;
 @Configuration
 @ComponentScan(excludeFilters = @ComponentScan.Filter(Configuration.class))
 @EnableTransactionManagement
-@Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
+@Import({HibernateProperties.class, DataSourceConfig.class})
 public class HibernateConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer
