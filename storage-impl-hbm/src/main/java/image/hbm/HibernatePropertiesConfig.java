@@ -43,14 +43,11 @@ public class HibernatePropertiesConfig {
 						.map(s -> "hibernate/" + s + ".properties")
 						.map(ClassPathResource::new)
 						.toArray(ClassPathResource[]::new);
-		/*
-		 * allows for @TestPropertySource overrides
-		 */
-		properties.setLocalOverride(true);
 		properties.setLocations(locations);
 		try {
 			// force to load the properties
 			properties.afterPropertiesSet();
+			// allow for @TestPropertySource to overwrite hibernate-*.properties
 			keepEnvProps(properties.getObject());
 		} catch (IOException e) {
 			throw new RuntimeException(e);

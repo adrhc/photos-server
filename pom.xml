@@ -1010,9 +1010,19 @@
 
                             @NotThreadSafe:
                             Since of maven-surefire-plugin:2.18, you can apply the JCIP annotation @net.jcip.annotations.NotThreadSafe on the Java class of JUnit test (pure test class, Suite, Parameterized, etc.) in order to execute it in single Thread instance. The Thread has name maven-surefire-plugin@NotThreadSafe and it is executed at the end of the test run.
+
+                            methods – runs test methods in separate threads
+                            classes – runs test classes in separate threads
+                            classesAndMethods – runs classes and methods in separate threads
+                            suites – runs suites in parallel
+                            suitesAndClasses – runs suites and classes in separate threads
+                            suitesAndMethods – creates separate threads for classes and for methods
+                            all – runs suites, classes as well as methods in separate threads
+
+                            <parallel/> makes no sense when also using <forkCount>1C</forkCount>
                         -->
-                        <parallel>methods</parallel>
-                        <threadCount>4</threadCount>
+                        <!--parallel>methods</parallel>
+                        <threadCount>4</threadCount-->
 
                         <!--
                             see tech.log: multiple similar but different ApplicationContext in same JVM
