@@ -1232,6 +1232,34 @@
                 Requires <forkCount> usage!
             -->
             <id>db-off</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
+                            <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
+                            <forkCount>1C</forkCount>
+                            <!--
+                                ERROR
+                                    ExecutionException The forked VM terminated without properly saying goodbye.
+                                    VM crash or System.exit called?
+                                SOLUTION
+                                    <reuseForks>false</reuseForks>
+
+                                2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
+                                2019.05.04: it's possible to work with reuseForks = true but the tests must be
+                                            prepared for this parallelism (especially those working with the DB)
+                            -->
+                            <reuseForks>false</reuseForks>
+                            <!-- all @NotThreadSafe classes are run with a single thread! -->
+                            <!--<threadCount>4</threadCount>-->
+                            <!--<parallel>methods</parallel>-->
+                            <disableXmlReport>false</disableXmlReport>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
             <properties>
                 <!--
                     org.junit.Test.class means "no category"

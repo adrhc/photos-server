@@ -5,6 +5,7 @@ import image.exifwebtests.config.RootInMemoryDbConfig;
 import image.persistence.entitytests.IAppConfigSupplier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -21,20 +22,25 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RootInMemoryDbConfig
 @Slf4j
-class ApacheServiceTest implements IAppConfigSupplier {
+@Disabled
+class ApacheService2Test implements IAppConfigSupplier {
 	@Inject
 	private ApacheService apacheService;
 
+	/**
+	 * should conflict with ApacheService1Test
+	 */
 	@BeforeAll
 	void setup(@Autowired DataSource dataSource,
 			@Autowired PlatformTransactionManager transactionManager) {
+		ApacheService2Test.log.debug("");
 		new TransactionTemplate(transactionManager).execute((ts) -> {
 			try (Connection conn = dataSource.getConnection()) {
 				ScriptUtils.executeSqlScript(conn, new ClassPathResource("appconfig.sql"));
 				ScriptUtils.executeSqlScript(conn, new ClassPathResource("album.sql"));
 				conn.commit();
 			} catch (SQLException e) {
-				ApacheServiceTest.log.error(e.getMessage(), e);
+				ApacheService2Test.log.error(e.getMessage(), e);
 			}
 			return null;
 		});
