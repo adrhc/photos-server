@@ -5,6 +5,7 @@ import image.exifwebtests.config.RootInMemoryDbConfig;
 import image.persistence.entitytests.IAppConfigSupplier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RootInMemoryDbConfig
 @Slf4j
+@Disabled
 class ApacheService1Test implements IAppConfigSupplier {
 	@Inject
 	private ApacheService apacheService;
