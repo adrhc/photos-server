@@ -3,7 +3,6 @@ package image.exifwebtests.apache;
 import image.exifweb.apache.ApacheService;
 import image.exifwebtests.config.RootInMemoryDbConfig;
 import image.persistence.entitytests.IAppConfigSupplier;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RootInMemoryDbConfig
-@Slf4j
 class ApacheServiceTest implements IAppConfigSupplier {
 	@Inject
 	private ApacheService apacheService;
