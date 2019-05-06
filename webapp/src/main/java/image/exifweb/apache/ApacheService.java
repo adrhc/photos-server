@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 
 /**
@@ -32,12 +31,7 @@ public class ApacheService {
 
 	private File getLogFile(final String fileNamePrefix) {
 		File dir = new File(this.appConfigService.getConfig("apache-log-dir"));
-		File[] files = dir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.startsWith(fileNamePrefix);
-			}
-		});
+		File[] files = dir.listFiles((dir1, name) -> name.startsWith(fileNamePrefix));
 		if (files == null) {
 			return null;
 		}
