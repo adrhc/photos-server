@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexJspController {
 	@RequestMapping("/index-jsp")
-	public String index() {
+	public String indexJsp() {
 		return "index";
 	}
 }
