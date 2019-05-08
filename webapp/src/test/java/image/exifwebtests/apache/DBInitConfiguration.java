@@ -21,7 +21,9 @@ public class DBInitConfiguration {
 				.transactionManager(transactionManager)
 				.databasePopulator(new ResourceDatabasePopulator(
 						new ClassPathResource("appconfig.sql"),
-						new ClassPathResource("album.sql")
+						new ClassPathResource("album.sql"),
+						new ClassPathResource("image.sql"),
+						new ClassPathResource("cover.sql")
 				));
 	}
 }

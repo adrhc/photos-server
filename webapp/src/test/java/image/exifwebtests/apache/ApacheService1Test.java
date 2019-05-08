@@ -28,7 +28,7 @@ class ApacheService1Test implements IAppConfigSupplier {
 	private ApacheService apacheService;
 
 	/**
-	 * should conflict with ApacheService2Test
+	 * test conflict with ApacheService2Test
 	 */
 	@BeforeAll
 	void setup(@Autowired DataSource dataSource,

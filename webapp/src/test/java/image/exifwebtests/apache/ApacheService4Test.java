@@ -1,13 +1,16 @@
 package image.exifwebtests.apache;
 
 import image.exifweb.apache.ApacheService;
-import image.exifwebtests.config.RootInMemoryDbConfig;
+import image.exifwebtests.config.RootInMemoryDbFilledConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RootInMemoryDbConfig
+/**
+ * see @ContextConfiguration(classes = {..., DBInitConfiguration.class})
+ */
+@RootInMemoryDbFilledConfig
 class ApacheService4Test {
 	@Autowired
 	private ApacheService apacheService;

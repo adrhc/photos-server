@@ -1,6 +1,7 @@
 package image.exifwebtests.config;
 
 import image.exifweb.RootConfig;
+import image.exifwebtests.apache.DBInitConfiguration;
 import image.jpa2xtests.config.profiles.InMemoryDbProfile;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
@@ -18,11 +19,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = {RootConfig.class})
+@ContextConfiguration(classes = {RootConfig.class, DBInitConfiguration.class})
 @TestPropertySource(properties = "hibernate.show_sql=true")
 @InMemoryDbProfile
 @Tag("junit5")
 @Tag("inmemorydb")
 @Tag("root")
-public @interface RootInMemoryDbConfig {
+public @interface RootInMemoryDbFilledConfig {
 }
