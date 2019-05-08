@@ -5,13 +5,11 @@ import image.exifweb.util.procinfo.ProcessInfoService;
 import image.exifweb.web.json.JsonStringValue;
 import image.photos.config.AppConfigService;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.inject.Inject;
@@ -37,7 +35,7 @@ public class SubtitleCtrl {
 	@Inject
 	private ProcessInfoService processInfoService;
 
-	@RequestMapping(value = "/checkSubtitlesExtractor", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@PostMapping(value = "/checkSubtitlesExtractor", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void checkSubtitlesExtractor(Model model) throws Exception {
 		String runningMessage;
@@ -58,7 +56,7 @@ public class SubtitleCtrl {
 		model.addAttribute("subLogLines", endingLinesFileReader.getLines());
 	}
 
-	@RequestMapping(value = "/extractSubtitles", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@PostMapping(value = "/extractSubtitles", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public synchronized void extractSubtitles(@RequestBody JsonStringValue jsonStringValue, Model model) throws IOException, InterruptedException {
 		boolean mkvExtractStarted = this.subtitleService.extractSubtitles(jsonStringValue.getValue(), true);
