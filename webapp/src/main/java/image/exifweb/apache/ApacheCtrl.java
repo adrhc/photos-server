@@ -30,7 +30,7 @@ public class ApacheCtrl {
 	public JsonStringValue getApacheLog(@RequestParam String type,
 			WebRequest webRequest) throws IOException {
 		File file;
-		if (type.equalsIgnoreCase(this.LOG_TYPE_ACCESS)) {
+		if (type.equalsIgnoreCase(LOG_TYPE_ACCESS)) {
 			file = this.apacheService.getAccessLogFile();
 		} else {
 			file = this.apacheService.getErrorLogFile();
