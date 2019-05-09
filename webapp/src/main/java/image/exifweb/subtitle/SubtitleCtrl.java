@@ -14,7 +14,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,12 +87,7 @@ public class SubtitleCtrl {
 	@RequestMapping(value = "/videoFolders", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public List<JsonStringValue> videoFolders(WebRequest webRequest) throws IOException {
 		File videoRoot = new File(this.appConfigService.getConfig("video root folder"));
-		File[] videoRootFolders = videoRoot.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isDirectory();
-			}
-		});
+		File[] videoRootFolders = videoRoot.listFiles(File::isDirectory);
 		List<JsonStringValue> directDirKids = new ArrayList<>(videoRootFolders.length);
 		long lastModified = 0;
 		for (File path : videoRootFolders) {
