@@ -4,8 +4,8 @@ import image.exifweb.web.json.JsonStringValue;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
@@ -20,18 +20,17 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/json/apache")
 public class ApacheCtrl {
-	private static final String LOG_TYPE_ACCESS = "access";
+	public static final String LOG_TYPE_ACCESS = "access";
 
 	@Inject
 	private ApacheService apacheService;
 
-	@RequestMapping(value = "/getApacheLog", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@GetMapping(value = "/getApacheLog", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public JsonStringValue getApacheLog(@RequestParam String type,
 			WebRequest webRequest) throws IOException {
 		File file;
-		if (type.equalsIgnoreCase(LOG_TYPE_ACCESS)) {
+		if (type.equalsIgnoreCase(this.LOG_TYPE_ACCESS)) {
 			file = this.apacheService.getAccessLogFile();
 		} else {
 			file = this.apacheService.getErrorLogFile();
