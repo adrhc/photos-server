@@ -1035,8 +1035,9 @@
 
                             <parallel/> makes no sense when also using <forkCount>1C</forkCount>
                         -->
-                        <!--parallel>methods</parallel>
-                        <threadCount>4</threadCount-->
+                        <!--<parallel>methods</parallel>-->
+                        <!--<threadCount>1</threadCount>-->
+                        <!--<perCoreThreadCount>true</perCoreThreadCount>-->
 
                         <!--
                             see tech.log: multiple similar but different ApplicationContext in same JVM
