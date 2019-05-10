@@ -970,6 +970,7 @@
                         see https://issues.apache.org/jira/browse/SUREFIRE-1534
                         for <artifactId>storage-jpa2x-hbm-impl</artifactId> usage
                     -->
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                     <dependencies>
