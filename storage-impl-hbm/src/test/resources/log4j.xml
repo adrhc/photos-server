@@ -68,7 +68,7 @@
         <level value="warn"/>
     </logger>
     <logger name="org.springframework.test.context.cache">
-        <level value="debug"/>
+        <level value="warn"/>
     </logger>
 
     <!-- Hibernate -->
