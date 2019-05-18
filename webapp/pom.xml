@@ -240,18 +240,10 @@
     <build>
         <defaultGoal>install</defaultGoal>
         <plugins>
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin-->
+            </plugin>
 
             <!--
                 http://tomcat.apache.org/maven-plugin-2.2/

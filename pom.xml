@@ -200,6 +200,11 @@
                 <version>1.0-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
+                        <!-- determined by net.sf.json-lib:json-lib -->
+                        <groupId>commons-lang</groupId>
+                        <artifactId>commons-lang</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-context</artifactId>
                     </exclusion>
@@ -943,6 +948,21 @@
                 </plugin>
 
                 <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.2.2</version>
+                    <configuration>
+                        <attachClasses>true</attachClasses>
+                        <useCache>true</useCache>
+                        <archive>
+                            <index>true</index>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.projectlombok</groupId>
                     <artifactId>lombok-maven-plugin</artifactId>
                     <version>${lombok-maven-plugin.version}</version>
@@ -1103,20 +1123,6 @@
                     <artifactId>maven-jxr-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
-
-                <!--plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.4</version>
-                    <configuration>
-                        <archive>
-                            <index>true</index>
-                            <manifest>
-                                <addClasspath>true</addClasspath>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin-->
 
                 <!--
                     http://tomcat.apache.org/maven-plugin-2.2/
