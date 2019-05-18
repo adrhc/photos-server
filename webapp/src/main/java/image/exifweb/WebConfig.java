@@ -59,9 +59,11 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
 		converters.stream().filter(c -> c instanceof MappingJackson2HttpMessageConverter).forEach(c -> {
-			// check default included objectMapper._registeredModuleTypes,
+			// Check default included objectMapper._registeredModuleTypes,
 			// e.g. Jdk8Module, JavaTimeModule when creating the ObjectMapper
-			// without using Jackson2ObjectMapperBuilder
+			// without using Jackson2ObjectMapperBuilder!
+			//
+			// see image.photos.JsonMapperConfig
 			((MappingJackson2HttpMessageConverter) c).setObjectMapper(this.objectMapper);
 		});
 	}
