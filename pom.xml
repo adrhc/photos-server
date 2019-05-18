@@ -57,7 +57,7 @@
 
         <commons.io>2.6</commons.io>
         <mysql.connector>8.0.16</mysql.connector>
-        <metadata.extractor.version>2.11.0</metadata.extractor.version>
+        <metadata-extractor.version>2.11.0</metadata-extractor.version>
         <net.sf.json>2.4</net.sf.json>
         <jstl.version>1.2</jstl.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
@@ -272,7 +272,7 @@
             <dependency>
                 <groupId>com.drewnoakes</groupId>
                 <artifactId>metadata-extractor</artifactId>
-                <version>${metadata.extractor.version}</version>
+                <version>${metadata-extractor.version}</version>
             </dependency>
 
             <!-- org.springframework -->
