@@ -8,18 +8,18 @@
         <artifactId>exifweb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>exifweb</groupId>
+    <groupId>image.exifweb</groupId>
     <artifactId>photos</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>photos</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>cdm</artifactId>
         </dependency>
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <!--
                 needs version because including test-jar also
@@ -112,7 +112,7 @@
         </dependency>
 
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>util</artifactId>
             <classifier>tests</classifier>
             <version>${project.version}</version>
@@ -123,7 +123,7 @@
             https://stackoverflow.com/questions/174560/sharing-test-code-in-maven
         -->
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>storage-entities</artifactId>
             <classifier>tests</classifier>
             <version>${project.version}</version>
@@ -136,7 +136,7 @@
                 ClassNotFoundException: org.apache.maven.plugin.surefire.StartupReportConfiguration
         -->
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>

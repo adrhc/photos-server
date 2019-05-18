@@ -8,7 +8,7 @@
         <artifactId>exifweb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <groupId>exifweb</groupId>
+    <groupId>image.exifweb</groupId>
     <artifactId>cdm</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>cdm</name>

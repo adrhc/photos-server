@@ -8,6 +8,7 @@
         <artifactId>exifweb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+    <groupId>image.exifweb</groupId>
     <artifactId>webapp</artifactId>
     <packaging>war</packaging>
     <name>webapp</name>
@@ -21,7 +22,7 @@
         <!--</dependency>-->
 
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>photos</artifactId>
         </dependency>
 
@@ -148,12 +149,12 @@
         </dependency-->
 
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>util</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>util</artifactId>
             <classifier>tests</classifier>
             <version>${project.version}</version>
@@ -161,7 +162,7 @@
         </dependency>
 
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>storage-entities</artifactId>
             <classifier>tests</classifier>
             <version>${project.version}</version>
@@ -174,7 +175,7 @@
                 ClassNotFoundException: org.apache.maven.plugin.surefire.StartupReportConfiguration
         -->
         <dependency>
-            <groupId>exifweb</groupId>
+            <groupId>image.exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
