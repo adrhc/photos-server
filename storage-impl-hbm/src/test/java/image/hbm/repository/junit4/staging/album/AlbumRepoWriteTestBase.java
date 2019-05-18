@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.inject.Inject;
-
 /**
  * Must be a public class otherwise occurs:
  * IllegalAccessException: Class org.junit.runners.model.FrameworkMethod$1 can not access a member of class AlbumRepoWriteTestBase with modifiers "public"
@@ -28,9 +26,9 @@ public abstract class AlbumRepoWriteTestBase extends SpringRunnerRulesBased
 		implements IImageSupplier, IAlbumSupplier {
 	protected static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 
-	@Inject
+	@Autowired
 	protected AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	protected ImageRepository imageRepository;
 	protected Album album;
 	protected Integer albumId;

@@ -13,7 +13,6 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @Disabled
 class ApacheService2Test implements IAppConfigSupplier {
-	@Inject
+	@Autowired
 	private ApacheService apacheService;
 
 	/**

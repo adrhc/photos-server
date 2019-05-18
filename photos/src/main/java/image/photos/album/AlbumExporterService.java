@@ -14,10 +14,10 @@ import image.photos.util.status.E3ResultTypes;
 import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,21 +35,21 @@ public class AlbumExporterService {
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
-	@Inject
+	@Autowired
 	private AlbumPageRepository albumPageRepository;
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private AlbumPageService albumPageService;
-	@Inject
+	@Autowired
 	private AlbumEventsEmitter albumEventsEmitter;
-	@Inject
+	@Autowired
 	private ObjectMapper jsonMapper;
-	@Inject
+	@Autowired
 	private AlbumCoverService albumCoverService;
 
 	public boolean writeJsonForAlbumSafe(String name) {

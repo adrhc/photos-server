@@ -1,5 +1,6 @@
 package image.exifweb.httpdcheck;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
@@ -9,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -22,9 +22,9 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/httpd/httpdCheck")
 public class HttpdCheckCtrl {
-	@Inject
+	@Autowired
 	private ApplicationContext ac;
-	@Inject
+	@Autowired
 	private HttpdCheck httpdCheck;
 
 	@RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET,

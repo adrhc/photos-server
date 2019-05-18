@@ -21,10 +21,10 @@ import image.photos.util.MutableValueHolder;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
@@ -43,19 +43,19 @@ import static image.photos.events.image.EImageEventType.MARKED_DELETED;
 @Service
 public class AlbumImporterService implements IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterService.class);
-	@Inject
+	@Autowired
 	private ImageUtils imageUtils;
-	@Inject
+	@Autowired
 	private ExifExtractorService exifExtractorService;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Inject
+	@Autowired
 	private ImageRepository imageRepository;
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private AlbumEventsEmitter albumEventsEmitter;
-	@Inject
+	@Autowired
 	private ImageEventsEmitter imageEventsEmitter;
 
 	private Predicate<File> IS_NEW_VALID_ALBUM = albumPath -> {
@@ -82,7 +82,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		return true;
 	};
 
-	@Inject
+	@Autowired
 	private ThumbUtils thumbUtils;
 
 	public void importAlbumByName(String albumName) {

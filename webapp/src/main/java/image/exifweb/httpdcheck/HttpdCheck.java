@@ -4,10 +4,10 @@ import image.exifweb.util.procinfo.ProcessInfoService;
 import image.photos.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.io.*;
 
 /**
@@ -22,9 +22,9 @@ public class HttpdCheck {
 	public static final String TRY_RESTART_MSG = "Try to restart httpd !";
 	public static final String TRY_RESTART_OK_MSG = "Httpd restarted !";
 	private static final Logger logger = LoggerFactory.getLogger(HttpdCheck.class);
-	@Inject
+	@Autowired
 	private ProcessInfoService processInfoService;
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
 	private ProcessBuilder xhttpd = new ProcessBuilder("/ffp/start/httpd.sh", "start");
 	private ProcessBuilder adminHttpd = new ProcessBuilder("/ffp/start/httpd-admin.sh", "start");
@@ -36,14 +36,14 @@ public class HttpdCheck {
 //	private long httpdAdminStartWait;
 
 	public void checkHttpd() throws IOException, InterruptedException {
-		if (appConfigService.getConfigBool("stop_httpd_checking")) {
+		if (this.appConfigService.getConfigBool("stop_httpd_checking")) {
 			return;
 		}
-		if (processInfoService.getPidByFile(httpdAdminPid) == null) {
+		if (this.processInfoService.getPidByFile(this.httpdAdminPid) == null) {
 			restartHttpd(true);
 //			Thread.sleep(httpdAdminStartWait);
 			restartHttpd(false);
-		} else if (processInfoService.getPidByFile(xhttpdPid) == null) {
+		} else if (this.processInfoService.getPidByFile(this.xhttpdPid) == null) {
 			restartHttpd(false);
 		}
 	}
@@ -54,9 +54,9 @@ public class HttpdCheck {
 		try {
 			Process p;
 			if (useAdminHttpd) {
-				p = adminHttpd.start();
+				p = this.adminHttpd.start();
 			} else {
-				p = xhttpd.start();
+				p = this.xhttpd.start();
 			}
 			p.waitFor();
 			logger.warn(TRY_RESTART_OK_MSG);
@@ -67,7 +67,7 @@ public class HttpdCheck {
 
 	public String getHttpdRestartLogs() throws IOException {
 		StringBuilder sb = new StringBuilder();
-		String httpd_restart_logs = appConfigService.getConfig("httpd_restart_logs");
+		String httpd_restart_logs = this.appConfigService.getConfig("httpd_restart_logs");
 		readHttpdRestartLogFile(httpd_restart_logs + "/exifweb.log.3", sb);
 		readHttpdRestartLogFile(httpd_restart_logs + "/exifweb.log.2", sb);
 		readHttpdRestartLogFile(httpd_restart_logs + "/exifweb.log.1", sb);
@@ -90,7 +90,9 @@ public class HttpdCheck {
 				}
 			}
 		} finally {
-			if (reader != null) reader.close();
+			if (reader != null) {
+				reader.close();
+			}
 		}
 	}
 }

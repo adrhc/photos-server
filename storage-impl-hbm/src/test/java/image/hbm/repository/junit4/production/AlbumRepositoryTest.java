@@ -9,9 +9,9 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.hasItem;
 public class AlbumRepositoryTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
 
 	@Test

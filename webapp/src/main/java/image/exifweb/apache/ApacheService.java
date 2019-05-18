@@ -2,10 +2,10 @@ package image.exifweb.apache;
 
 import image.photos.config.AppConfigService;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.util.Arrays;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
  */
 @Service
 public class ApacheService {
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
 	@Value("${apache.access.log.prefix}")
 	private String apacheAccessLogPrefix;

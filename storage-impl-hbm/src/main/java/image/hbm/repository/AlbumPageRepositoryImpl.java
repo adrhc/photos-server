@@ -7,11 +7,11 @@ import image.persistence.repository.ESortType;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -19,9 +19,9 @@ import java.util.List;
  */
 @Service
 public class AlbumPageRepositoryImpl implements AlbumPageRepository {
-	@Inject
+	@Autowired
 	private SessionFactory sessionFactory;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
 
 	@Override

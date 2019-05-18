@@ -5,9 +5,9 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.photos.image.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Component
 public class AlbumCoverService {
 	//	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverService.class);
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private ImageUtils imageUtils;
 
 	public List<AlbumCover> getCovers() {

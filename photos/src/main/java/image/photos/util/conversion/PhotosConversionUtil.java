@@ -1,11 +1,11 @@
 package image.photos.util.conversion;
 
 import image.cdm.AppConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.List;
 
 @Component
@@ -15,7 +15,7 @@ public class PhotosConversionUtil {
 	private TypeDescriptor listOfEntityAppConfig = TypeDescriptor.collection(
 			List.class, TypeDescriptor.valueOf(image.persistence.entity.AppConfig.class));
 
-	@Inject
+	@Autowired
 	private ConversionService cs;
 
 	public List<AppConfig> cdmAppConfigsOf(String json) {

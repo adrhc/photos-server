@@ -1,10 +1,10 @@
 package image.exifweb.web.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 @WebSecurityComponent
 public class AuthFailureHandler implements AuthenticationFailureHandler {
-	@Inject
+	@Autowired
 	private ObjectMapper objectMapper;
 
 	@Override

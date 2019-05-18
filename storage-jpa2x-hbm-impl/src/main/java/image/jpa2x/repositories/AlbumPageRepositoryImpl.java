@@ -4,10 +4,10 @@ import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import org.hibernate.jpa.QueryHints;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -17,7 +17,7 @@ import java.util.List;
 public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	@PersistenceContext
 	private EntityManager em;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
 
 	@Override

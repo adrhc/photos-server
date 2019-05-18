@@ -9,6 +9,7 @@ import image.persistence.repository.ESortType;
 import image.photos.album.AlbumPageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +30,11 @@ import java.util.stream.Stream;
 @RequestMapping("/json/page")
 public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageCtrlImpl.class);
-	@Inject
+	@Autowired
 	private AlbumPageRepository albumPageRepository;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Inject
+	@Autowired
 	private AlbumPageService albumPageService;
 
 	/**

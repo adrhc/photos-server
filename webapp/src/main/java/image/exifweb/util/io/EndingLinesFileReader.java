@@ -4,12 +4,12 @@ import image.photos.config.AppConfigService;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -27,7 +27,7 @@ public class EndingLinesFileReader {
 	private static final int CHUNK_SIZE = 256;
 	@Value("${movie.name.prefix}")
 	private String movieNamePrefix;
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
 	private String runningMessage;
 	private String videoFolder;

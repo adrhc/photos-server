@@ -6,6 +6,7 @@ import image.photos.album.AlbumExporterService;
 import image.photos.util.status.E3ResultTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,9 +49,9 @@ public class AlbumExporterCtrlImpl implements AlbumExporterCtrl {
 				put(TRUE, albumName -> ALBUM_JSON_UPDATE_MSG_PATTERN.format(new Object[]{"", albumName}));
 				put(FALSE, albumName -> ALBUM_JSON_UPDATE_MSG_PATTERN.format(new Object[]{"NOT ", albumName}));
 			}};
-	@Inject
+	@Autowired
 	private Executor asyncExecutor;
-	@Inject
+	@Autowired
 	private AlbumExporterService albumExporterService;
 
 	@Override

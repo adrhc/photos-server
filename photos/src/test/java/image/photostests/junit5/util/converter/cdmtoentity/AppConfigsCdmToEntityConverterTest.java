@@ -8,14 +8,14 @@ import image.photostests.junit5.util.assertion.IAppConfigAssertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import java.util.List;
 
 @Junit5PhotosInMemoryDbConfig
 @Tag("misc")
 public class AppConfigsCdmToEntityConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
-	@Inject
+	@Autowired
 	private PhotosConversionUtil pcu;
 
 	private List<AppConfig> appConfigs;

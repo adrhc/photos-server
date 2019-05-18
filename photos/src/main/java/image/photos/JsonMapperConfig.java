@@ -36,9 +36,9 @@ public class JsonMapperConfig {
 //			setTimeZone(TimeZone.getTimeZone("GMT"));
 //		}});
 
-		Hibernate5Module hm = new Hibernate5Module();
-		hm.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING);
-		hm.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
+		Hibernate5Module hm = new Hibernate5Module()
+				.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING)
+				.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 		mapper.registerModule(hm);
 
 		mapper.registerModule(new ParameterNamesModule());

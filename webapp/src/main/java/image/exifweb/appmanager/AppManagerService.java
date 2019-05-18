@@ -4,10 +4,10 @@ import image.exifweb.util.procinfo.ProcessInfoService;
 import image.photos.util.process.ProcessRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -27,9 +27,9 @@ public abstract class AppManagerService {
 	protected ProcessBuilder appStart;
 	protected ProcessBuilder appStop;
 	protected ProcessBuilder appStopForce;
-	@Inject
+	@Autowired
 	protected ProcessInfoService processInfoService;
-	@Inject
+	@Autowired
 	private ProcessRunner processRunner;
 	@Value("${wait.to.verify.kill}")
 	private int waitToVerifyKill;

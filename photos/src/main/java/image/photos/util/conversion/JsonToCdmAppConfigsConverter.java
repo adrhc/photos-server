@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class JsonToCdmAppConfigsConverter implements Converter<String, List<AppConfig>> {
 	private static final Logger logger = LoggerFactory.getLogger(JsonToCdmAppConfigsConverter.class);
 
-	@Inject
+	@Autowired
 	private ObjectMapper mapper;
 
 	@Override

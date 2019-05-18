@@ -1,12 +1,12 @@
 package image.exifweb.appmanager;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -17,7 +17,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public abstract class AppManagerCtrl<T extends AppManagerService> {
-	@Inject
+	@Autowired
 	protected T appManagerService;
 
 	@PreAuthorize("isAuthenticated()")

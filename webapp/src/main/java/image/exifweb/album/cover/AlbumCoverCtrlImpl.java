@@ -6,11 +6,11 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.photos.album.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -21,9 +21,9 @@ import java.util.List;
 public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverCtrlImpl.class);
 
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private AlbumCoverService albumCoverService;
 
 	@Override

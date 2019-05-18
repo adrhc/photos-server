@@ -8,6 +8,7 @@ import image.photos.events.album.AlbumEventsEmitter;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import javax.inject.Inject;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +39,9 @@ import static java.lang.Boolean.TRUE;
 public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterCtrlImpl.class);
 	private static final MessageFormat REIMPORT_MSG_PATTERN = new MessageFormat("Reimported {0}");
-	@Inject
+	@Autowired
 	private Executor asyncExecutor;
-	@Inject
+	@Autowired
 	private AlbumImporterService albumImporterService;
 	/**
 	 * Boolean = "albumName is empty?"
@@ -60,7 +60,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 							REIMPORT_MSG_PATTERN.format(new Object[]{"all albums"}));
 				});
 			}};
-	@Inject
+	@Autowired
 	private AlbumEventsEmitter albumEventsEmitter;
 
 	@Override

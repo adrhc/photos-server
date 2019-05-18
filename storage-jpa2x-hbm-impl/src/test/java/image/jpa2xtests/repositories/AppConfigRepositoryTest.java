@@ -13,8 +13,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import javax.persistence.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
 class AppConfigRepositoryTest implements IAppConfigSupplier {
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
 
 	@Test

@@ -4,6 +4,7 @@ import image.exifweb.util.procinfo.ProcessInfoService;
 import image.photos.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -11,7 +12,6 @@ import org.springframework.util.StringUtils;
 import subtitles.config.RuntimeStatus;
 import subtitles.movie.MovieFolder;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,11 +23,11 @@ public class SubtitleService {
 	public static final String[] SUBTITLE_EXTRACT_COMMANDS = {
 			"subtitles-extractor", "mkvinfo", "mkvmerge", "mkvextract"};
 	private static final Logger logger = LoggerFactory.getLogger(SubtitleService.class);
-	@Inject
+	@Autowired
 	private ProcessInfoService processInfoService;
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
-	@Inject
+	@Autowired
 	private ApplicationContext ac;
 	private ProcessBuilder mkvExtractor =
 			new ProcessBuilder("/home/adr/subtitles-extractor-1.0-SNAPSHOT.sh");
@@ -36,23 +36,23 @@ public class SubtitleService {
 	private RuntimeStatus runtimeStatus = null;
 
 	public synchronized boolean isSubtitlesExtractorRunning() {
-		return mkvExtractorProcess != null || runtimeStatus != null;
+		return this.mkvExtractorProcess != null || this.runtimeStatus != null;
 	}
 
 	public synchronized boolean stopExtractingSubtitles() throws IOException, InterruptedException {
-		if (runtimeStatus != null) {
-			runtimeStatus.askToStop();
-			runtimeStatus = null;// marchez finalizarea extragerii
+		if (this.runtimeStatus != null) {
+			this.runtimeStatus.askToStop();
+			this.runtimeStatus = null;// marchez finalizarea extragerii
 			return true;
-		} else if (mkvExtractorProcess != null) {
-			mkvExtractorProcess.destroy();// de fapt niciodata nu a functionat
-			mkvExtractorProcess = null;// marchez finalizarea extragerii
+		} else if (this.mkvExtractorProcess != null) {
+			this.mkvExtractorProcess.destroy();// de fapt niciodata nu a functionat
+			this.mkvExtractorProcess = null;// marchez finalizarea extragerii
 			wait(250);// asteptam ca proc sa fie distrus
-			processInfoService.killSubtitlesExtractor();
-			mkvExtractorProcessFolder = null;
+			this.processInfoService.killSubtitlesExtractor();
+			this.mkvExtractorProcessFolder = null;
 			return true;
 		} else {
-			processInfoService.killSubtitlesExtractor();
+			this.processInfoService.killSubtitlesExtractor();
 			return false;
 		}
 	}
@@ -67,36 +67,36 @@ public class SubtitleService {
 
 	private void doExtractSubtitles(String startVideoDir, boolean appendVideoRoot) {
 		if (!StringUtils.hasText(startVideoDir)) {
-			startVideoDir = appConfigService.getConfig("video root folder");
+			startVideoDir = this.appConfigService.getConfig("video root folder");
 		} else if (appendVideoRoot) {
-			startVideoDir = appConfigService.getConfig("video root folder") +
+			startVideoDir = this.appConfigService.getConfig("video root folder") +
 					File.separatorChar + startVideoDir;
 		}
-		runtimeStatus = ac.getBean(RuntimeStatus.class);
-		runtimeStatus.getRuntimeOptions().init(startVideoDir);
-		logger.debug("runtimeOptions: " + runtimeStatus.getRuntimeOptions());
-		MovieFolder movieFolder = ac.getBean(MovieFolder.class);
-		movieFolder.init(runtimeStatus);
+		this.runtimeStatus = this.ac.getBean(RuntimeStatus.class);
+		this.runtimeStatus.getRuntimeOptions().init(startVideoDir);
+		logger.debug("runtimeOptions: " + this.runtimeStatus.getRuntimeOptions());
+		MovieFolder movieFolder = this.ac.getBean(MovieFolder.class);
+		movieFolder.init(this.runtimeStatus);
 		StopWatch sw = new StopWatch();
 		sw.start();
 		movieFolder.process();
 		sw.stop();
-		runtimeStatus = null;// marchez finalizarea extragerii
+		this.runtimeStatus = null;// marchez finalizarea extragerii
 		logger.debug(sw.shortSummary());
-		logger.debug(ac.getBean(RuntimeStatus.class).toString());
+		logger.debug(this.ac.getBean(RuntimeStatus.class).toString());
 	}
 
 	private void startExtractSubtitles(String startVideoDir) {
 		ProcessBuilder mkvExtractor1;
 		if (startVideoDir == null) {
-			mkvExtractor1 = mkvExtractor;
+			mkvExtractor1 = this.mkvExtractor;
 		} else {
-			mkvExtractor1 = new ProcessBuilder(mkvExtractor.command().get(0), "-dir=" + startVideoDir);
+			mkvExtractor1 = new ProcessBuilder(this.mkvExtractor.command().get(0), "-dir=" + startVideoDir);
 		}
 		try {
-			mkvExtractorProcess = mkvExtractor1.start();
-			mkvExtractorProcessFolder = startVideoDir;
-			int ret = mkvExtractorProcess.waitFor();
+			this.mkvExtractorProcess = mkvExtractor1.start();
+			this.mkvExtractorProcessFolder = startVideoDir;
+			int ret = this.mkvExtractorProcess.waitFor();
 			if (startVideoDir != null) {
 				logger.debug("extractSubtitles done for {} with: {}", startVideoDir, ret);
 			} else {
@@ -108,15 +108,15 @@ public class SubtitleService {
 				logger.error("For folder: {}", startVideoDir);
 			}
 		}
-		mkvExtractorProcess = null;// marchez finalizarea extragerii
-		mkvExtractorProcessFolder = null;
+		this.mkvExtractorProcess = null;// marchez finalizarea extragerii
+		this.mkvExtractorProcessFolder = null;
 	}
 
 	public String getMkvExtractorProcessFolder() {
-		if (runtimeStatus != null) {
-			return runtimeStatus.getRuntimeOptions().getStartPath();
+		if (this.runtimeStatus != null) {
+			return this.runtimeStatus.getRuntimeOptions().getStartPath();
 		} else {
-			return mkvExtractorProcessFolder;
+			return this.mkvExtractorProcessFolder;
 		}
 	}
 }

@@ -8,10 +8,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Component
 public class AppConfigRepositoryImpl implements AppConfigRepository {
-	@Inject
+	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override

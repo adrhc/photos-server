@@ -17,20 +17,20 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import java.util.List;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfigSupplier {
-	@Inject
+	@Autowired
 	private CacheStatisticsRepository cacheStatisticsRepository;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private AlbumPageRepository albumPageRepository;
 
 	@Random(type = Album.class, size = 5, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})

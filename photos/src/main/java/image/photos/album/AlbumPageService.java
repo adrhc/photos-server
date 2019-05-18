@@ -4,9 +4,9 @@ import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.photos.image.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
@@ -14,9 +14,9 @@ import java.util.List;
  */
 @Service
 public class AlbumPageService {
-	@Inject
+	@Autowired
 	private ImageUtils imageUtils;
-	@Inject
+	@Autowired
 	private AlbumPageRepository albumPageRepository;
 
 	public List<AlbumPage> getPage(int pageNr, ESortType sort, String toSearch,

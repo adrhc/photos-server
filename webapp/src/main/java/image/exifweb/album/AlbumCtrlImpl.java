@@ -4,6 +4,7 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 
 /**
@@ -23,7 +23,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCtrlImpl.class);
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
 
 	@Override

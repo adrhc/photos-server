@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import javax.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @Disabled
 class ApacheService3Test implements IAppConfigSupplier {
-	@Inject
+	@Autowired
 	private ApacheService apacheService;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
 
 	@BeforeAll

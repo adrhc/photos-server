@@ -12,10 +12,10 @@ import image.persistence.entity.image.ImageMetadata;
 import image.photos.util.process.ProcessRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -40,9 +40,9 @@ public class ExifExtractorService implements MiscUtils {
 	private static final int HEIGHT = 1;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
-	@Inject
+	@Autowired
 	private ProcessRunner processRunner;
-	@Inject
+	@Autowired
 	private ThumbUtils thumbUtils;
 
 	public ImageMetadata extractMetadata(File imgFile) {

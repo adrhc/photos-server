@@ -2,6 +2,7 @@ package image.exifweb.apache;
 
 import image.exifweb.web.json.JsonStringValue;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
 public class ApacheCtrl {
 	public static final String LOG_TYPE_ACCESS = "access";
 
-	@Inject
+	@Autowired
 	private ApacheService apacheService;
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -2,9 +2,9 @@ package image.hbm.repository;
 
 import image.persistence.repository.CacheStatisticsRepository;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.Map;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Component
 public class CacheStatisticsRepositoryImpl implements CacheStatisticsRepository {
-	@Inject
+	@Autowired
 	private SessionFactory sessionFactory;
 
 	@Override

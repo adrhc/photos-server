@@ -10,9 +10,9 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +32,7 @@ public class AlbumPageRepositoryTest {
 	private static final String T2_TO_SEARCH = "DSC_1800";
 	private static final Integer T2_ALBUM_ID = 1;
 
-	@Inject
+	@Autowired
 	private AlbumPageRepository albumPageRepository;
 
 	@Test

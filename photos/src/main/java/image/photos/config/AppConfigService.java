@@ -5,10 +5,10 @@ import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.photos.util.conversion.PhotosConversionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -24,11 +24,11 @@ import java.util.List;
 @Service
 public class AppConfigService {
 	//	private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
-	@Inject
+	@Autowired
 	private ObjectMapper objectMapper;
-	@Inject
+	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Inject
+	@Autowired
 	private PhotosConversionUtil photosConversionSupport;
 	@Value("${app.configs.file}")
 	private String appConfigsFile;

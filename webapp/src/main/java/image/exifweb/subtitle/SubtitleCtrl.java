@@ -4,6 +4,7 @@ import image.exifweb.util.io.EndingLinesFileReader;
 import image.exifweb.util.procinfo.ProcessInfoService;
 import image.exifweb.web.json.JsonStringValue;
 import image.photos.config.AppConfigService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +13,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,13 +25,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/json/subtitle")
 public class SubtitleCtrl {
-	@Inject
+	@Autowired
 	private ApplicationContext ac;
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
-	@Inject
+	@Autowired
 	private SubtitleService subtitleService;
-	@Inject
+	@Autowired
 	private ProcessInfoService processInfoService;
 
 	@PostMapping(value = "/checkSubtitlesExtractor", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

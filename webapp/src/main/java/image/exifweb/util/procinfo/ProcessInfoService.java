@@ -5,13 +5,13 @@ import image.photos.config.AppConfigService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ProcessInfoService {
 	private String httpdAdminBase;
 	@Value("${memProcInfo.rss.mb}")
 	private boolean memProcInfoRssMb;
-	@Inject
+	@Autowired
 	private AppConfigService appConfigService;
 
 	/**
@@ -74,19 +74,19 @@ public class ProcessInfoService {
 	 * @throws InterruptedException
 	 */
 	public void syncCPUMemInfo() throws IOException, InterruptedException {
-		synchronized (asyncSubscribers) {
-			if (asyncSubscribers.isEmpty()) {
+		synchronized (this.asyncSubscribers) {
+			if (this.asyncSubscribers.isEmpty()) {
 				return;
 			}
 //            StopWatch sw = new StopWatch();
 //            sw.start("syncCPUMemInfo");
 			ExtendedModelMap model = new ExtendedModelMap();
-			if (appConfigService.getConfigBool("sync_cpu_mem_full")) {
+			if (this.appConfigService.getConfigBool("sync_cpu_mem_full")) {
 				prepareProcMemFullStats(model);
 			} else {
 				prepareCPUMemSummary(model, null);
 			}
-			for (CPUMemSummaryDeferredResult subscriber : asyncSubscribers) {
+			for (CPUMemSummaryDeferredResult subscriber : this.asyncSubscribers) {
 				subscriber.setResult(model);
 			}
 //            sw.stop();
@@ -101,7 +101,7 @@ public class ProcessInfoService {
 		prepareCPUMemSummary(model, procStatInfos);
 //        List<ProcStatPercent> procStatInfos = getCPUDetailUsingPsAx();
 		List<ProcStatPercent> memProcInfos = getMemDetailUsingPs();
-		int linesLimit = appConfigService.getConfigInteger("linux_process_status_lines_limit");
+		int linesLimit = this.appConfigService.getConfigInteger("linux_process_status_lines_limit");
 		if (linesLimit > 0 && procStatInfos.size() > linesLimit) {
 			model.addAttribute("procStat", procStatInfos.subList(0, linesLimit));
 		} else {
@@ -129,21 +129,21 @@ public class ProcessInfoService {
 	public void prepareCPUMemSummary(Model model, List<ProcStatPercent> procStatInfos) throws IOException, InterruptedException {
 //        StopWatch sw = new StopWatch();
 //        sw.start("prepareCPUMemSummary");
-		if (appConfigService.getConfigBool("cpu summary: use top (summary portion) command")) {
+		if (this.appConfigService.getConfigBool("cpu summary: use top (summary portion) command")) {
 			model.addAttribute(getTopCPUUsage());
-		} else if (appConfigService.getConfigBool("cpu summary: use nsa310 CGI")) {
+		} else if (this.appConfigService.getConfigBool("cpu summary: use nsa310 CGI")) {
 			model.addAttribute("nsa310CgiCpuUsage", getNsa310CgiCpuUsage());
-		} else if (appConfigService.getConfigBool("cpu summary: use sum on top command")) {
+		} else if (this.appConfigService.getConfigBool("cpu summary: use sum on top command")) {
 			if (procStatInfos == null) {
 				procStatInfos = getCPUDetailUsingTop();
 			}
 			model.addAttribute("nsa310CgiCpuUsage",
 					String.format("%.1f", sumProcStatPercent(procStatInfos)));
-		} else if (appConfigService.getConfigBool("cpu summary: use sum on ps x command")) {
+		} else if (this.appConfigService.getConfigBool("cpu summary: use sum on ps x command")) {
 			procStatInfos = getCPUDetailUsingPsX();
 			model.addAttribute("nsa310CgiCpuUsage",
 					String.format("%.1f", sumProcStatPercent(procStatInfos)));
-		} else if (appConfigService.getConfigBool("cpu summary: use sum on ps ax command")) {
+		} else if (this.appConfigService.getConfigBool("cpu summary: use sum on ps ax command")) {
 			procStatInfos = getCPUDetailUsingPsAx();
 			model.addAttribute("nsa310CgiCpuUsage",
 					String.format("%.1f", sumProcStatPercent(procStatInfos)));
@@ -180,7 +180,7 @@ public class ProcessInfoService {
 	 * @throws IOException
 	 */
 	public String getNsa310CgiCpuUsage() throws IOException {
-		InputStream is = cpuCGI.openConnection().getInputStream();
+		InputStream is = this.cpuCGI.openConnection().getInputStream();
 		String value = IOUtils.toString(is, "UTF-8");
 		is.close();
 		Matcher matcher = cgiCPUSummaryPattern.matcher(value);
@@ -330,7 +330,7 @@ public class ProcessInfoService {
 		Matcher matcher = psMemDetailPattern.matcher(psOutput);
 		while (matcher.find()) {
 			memProcInfos.add(new MemProcInfo(matcher.group(2),
-					matcher.group(4), matcher.group(6), memProcInfoRssMb));
+					matcher.group(4), matcher.group(6), this.memProcInfoRssMb));
 		}
 		return memProcInfos;
 	}
@@ -398,7 +398,7 @@ public class ProcessInfoService {
 	@PostConstruct
 	public void postConstruct() {
 		try {
-			cpuCGI = new URL(httpdAdminBase +
+			this.cpuCGI = new URL(this.httpdAdminBase +
 					"cgi/cpu/?write=0&c0=configure%20terminal%20show%20cpu%20status");
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -415,7 +415,7 @@ public class ProcessInfoService {
 		}
 
 		public String getPid() {
-			return pid;
+			return this.pid;
 		}
 
 		public void setPid(String pid) {
@@ -423,7 +423,7 @@ public class ProcessInfoService {
 		}
 
 		public String getCmd() {
-			return cmd;
+			return this.cmd;
 		}
 
 		public void setCmd(String cmd) {
@@ -433,8 +433,8 @@ public class ProcessInfoService {
 		@Override
 		public String toString() {
 			return "ProcessInfo{" +
-					"pid='" + pid + '\'' +
-					", cmd='" + cmd + '\'' +
+					"pid='" + this.pid + '\'' +
+					", cmd='" + this.cmd + '\'' +
 					'}';
 		}
 	}

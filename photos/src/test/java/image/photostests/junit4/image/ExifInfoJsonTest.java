@@ -9,10 +9,10 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 public class ExifInfoJsonTest {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageJsonTest.class);
 
-	@Inject
+	@Autowired
 	private ObjectMapper mapper;
 	private SimpleDateFormat sdf = new SimpleDateFormat(JsonMapperConfig.DATE_FORMAT);
 //	private SimpleDateFormat sdf = new SimpleDateFormat(JsonMapperConfig.DATE_FORMAT) {{

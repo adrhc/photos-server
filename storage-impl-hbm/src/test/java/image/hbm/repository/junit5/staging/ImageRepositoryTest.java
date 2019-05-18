@@ -20,8 +20,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,9 +37,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @Junit5HbmStagingJdbcDbConfig
 @Slf4j
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private ImageRepository imageRepository;
 
 	@Random(excludes = {"id", "lastUpdate", "cover", "images"})

@@ -9,10 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +38,7 @@ public class AlbumPageJsonTest {
 	 */
 	private final File jsonFile =
 			new File("/home/adr/apps/opt/apache-htdocs/photos/json/10/asc1.json");
-	@Inject
+	@Autowired
 	private ObjectMapper mapper;
 
 	@Before

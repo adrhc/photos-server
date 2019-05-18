@@ -4,15 +4,15 @@ import image.hbm.repository.junit5.springconfig.Junit5HbmInMemoryDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.repository.CacheStatisticsRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Junit5HbmInMemoryDbConfig
 class CacheStatisticsRepositoryTest {
-	@Inject
+	@Autowired
 	private CacheStatisticsRepository cacheStatisticsRepository;
 
 	@Test

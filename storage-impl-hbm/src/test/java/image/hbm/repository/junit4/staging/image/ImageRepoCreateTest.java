@@ -15,9 +15,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.inject.Inject;
 
 /**
  * Created by adr on 2/27/18.
@@ -28,9 +27,9 @@ import javax.inject.Inject;
 public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 	protected static final Logger logger = LoggerFactory.getLogger(ImageRepoCreateTest.class);
 
-	@Inject
+	@Autowired
 	protected AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	protected ImageRepository imageRepository;
 	protected Album album;
 

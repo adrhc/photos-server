@@ -7,12 +7,12 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import image.photos.image.ImageToExifInfoConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.inject.Inject;
 import java.io.IOException;
 
 /**
@@ -25,9 +25,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/json/image")
 public class ImageCtrl {
-	@Inject
+	@Autowired
 	private AlbumRepository albumRepository;
-	@Inject
+	@Autowired
 	private ImageRepository imageRepository;
 	private ImageToExifInfoConverter metadataEntityToDTOConverter =
 			new ImageToExifInfoConverter();
