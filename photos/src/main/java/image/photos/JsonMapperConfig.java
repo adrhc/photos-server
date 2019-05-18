@@ -1,5 +1,6 @@
 package image.photos;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -41,7 +42,8 @@ public class JsonMapperConfig {
 				.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 		mapper.registerModule(hm);
 
-		mapper.registerModule(new ParameterNamesModule());
+		// see spring boot: ParameterNamesModuleConfiguration
+		mapper.registerModule(new ParameterNamesModule(JsonCreator.Mode.DEFAULT));
 
 		// check default included objectMapper._registeredModuleTypes,
 		// e.g. Jdk8Module, JavaTimeModule when creating the ObjectMapper
