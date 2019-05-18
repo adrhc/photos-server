@@ -145,6 +145,19 @@
 
             <dependency>
                 <groupId>image.exifweb</groupId>
+                <artifactId>webapp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>image.exifweb</groupId>
+                <artifactId>webapp</artifactId>
+                <classifier>classes</classifier>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>image.exifweb</groupId>
                 <artifactId>util</artifactId>
                 <version>${project.version}</version>
                 <type>test-jar</type>
