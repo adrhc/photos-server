@@ -199,29 +199,12 @@
                 <version>1.0-SNAPSHOT</version>
                 <exclusions>
                     <exclusion>
-                        <!-- determined by net.sf.json-lib:json-lib -->
-                        <groupId>commons-lang</groupId>
-                        <artifactId>commons-lang</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-context</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>jcl-over-slf4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>commons-io</groupId>
@@ -941,15 +924,13 @@
                     <version>3.2.2</version>
                     <configuration>
                         <attachClasses>true</attachClasses>
-                        <!--
-                                                <useCache>true</useCache>
-                                                <archive>
-                                                    <index>true</index>
-                                                    <manifest>
-                                                        <addClasspath>true</addClasspath>
-                                                    </manifest>
-                                                </archive>
-                        -->
+                        <!--<useCache>true</useCache>-->
+                        <!--<archive>-->
+                        <!--<index>true</index>-->
+                        <!--<manifest>-->
+                        <!--<addClasspath>true</addClasspath>-->
+                        <!--</manifest>-->
+                        <!--</archive>-->
                     </configuration>
                 </plugin>
 
