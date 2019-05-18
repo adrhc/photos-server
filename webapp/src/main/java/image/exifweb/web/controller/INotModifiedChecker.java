@@ -25,7 +25,7 @@ public interface INotModifiedChecker {
 			logger.trace("browser cache valid since: {}", sdf.format(lastUpdate));
 			return null;
 		}
-		logger.debug("modified since: {}", sdf.format(lastUpdate));
+		logger.debug("modified since: {}", lastUpdate == null ? null : sdf.format(lastUpdate));
 		return valueSupplier.get();
 	}
 
@@ -38,7 +38,7 @@ public interface INotModifiedChecker {
 			logger.trace("browser cache valid since: {}", sdf.format(lastUpdate));
 			return null;
 		}
-		logger.debug("modified since: {}", sdf.format(lastUpdate));
+		logger.debug("modified since: {}", lastUpdate == null ? null : sdf.format(lastUpdate));
 		return value;
 	}
 }
