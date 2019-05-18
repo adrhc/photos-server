@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
  * Created by adr on 2/17/18.
  */
 @Configuration
-@EnableAsync(proxyTargetClass = true)
+@EnableAsync
 @EnableScheduling
 public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConfigurer {
 	@Autowired
