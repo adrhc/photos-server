@@ -20,6 +20,9 @@ public class JsonMapperConfig {
 	 */
 	public static final String DATE_FORMAT = "dd.MM.yyyy HH:mm:ss";
 
+	/**
+	 * see image.exifweb.WebConfig
+	 */
 	@Bean
 	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
