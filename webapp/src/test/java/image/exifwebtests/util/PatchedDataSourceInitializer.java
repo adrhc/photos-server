@@ -18,6 +18,10 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * see org.springframework.jdbc.datasource.init.DataSourceInitializer
+ * difference: databasePopulator, databaseCleaner run in a transactional context
+ */
 @Slf4j
 @Setter
 @Accessors(fluent = true)
