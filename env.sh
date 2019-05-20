@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# see in pom.xml: <build/><directory/>
+# https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
+export TARGET_WEBAPP=/tmp/target-image.exifweb-webapp
+
 # export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 # export JAVA_HOME="/home/adr/.sdkman/candidates/java/11.0.2-open"
 export MVN="mvn -e"

@@ -895,6 +895,11 @@
     </dependencies>
 
     <build>
+        <!--
+            https://maven.apache.org/guides/introduction/introduction-to-the-pom.html
+        -->
+        <directory>/tmp/target-${project.groupId}-${project.artifactId}</directory>
+
         <pluginManagement>
             <plugins>
                 <plugin>
