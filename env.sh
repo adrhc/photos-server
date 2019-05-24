@@ -6,7 +6,21 @@ export TARGET_WEBAPP=/tmp/target-image.exifweb-webapp
 
 # export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 # export JAVA_HOME="/home/adr/.sdkman/candidates/java/11.0.2-open"
-export MVN="mvn -e"
+
+if [ -e ./mvnw ]; then
+	echo "using ./mvnw"
+	MVN="./mvnw"
+elif [ -e ../mvnw ]; then
+	echo "using ../mvnw"
+	MVN="../mvnw"
+elif [ -e mvnw ]; then
+	echo "using mvnw"
+	MVN="mvnw"
+else
+	echo "using mvn"
+	MVN="mvn"
+fi
+export MVN="$MVN -e"
 
 # export JAVA_HOME=$TOOLS/jdk1.8.0_141
 # export M2_HOME=$TOOLS/maven-3.3.9

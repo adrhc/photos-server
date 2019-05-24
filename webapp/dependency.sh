@@ -1,4 +1,9 @@
 #!/bin/bash
-source ../env.sh
+
+if [ -e "env.sh" ]; then
+	source env.sh
+elif [ -e mvnw ]; then
+    source ../env.sh
+fi
 
 $MVN "$@" dependency:tree

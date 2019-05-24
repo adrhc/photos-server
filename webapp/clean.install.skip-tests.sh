@@ -1,5 +1,10 @@
 #!/bin/bash
-source ../env.sh
+
+if [ -e "env.sh" ]; then
+	source env.sh
+elif [ -e mvnw ]; then
+    source ../env.sh
+fi
 
 # disable all tests:
 # ./mvnw -e -Dmaven.javadoc.skip=true -Dmaven.test.skip=true clean install
