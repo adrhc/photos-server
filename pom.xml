@@ -61,7 +61,10 @@
         <net.sf.json>2.4</net.sf.json>
         <jstl.version>1.2</jstl.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.0.0-M3</maven-surefire-report-plugin.version>
+        <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
         <!--
             https://projectlombok.org/download-edge
         -->
@@ -988,7 +991,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>${maven-failsafe-plugin.version}</version>
                     <executions>
                         <execution>
                             <goals>
@@ -1112,7 +1115,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-report-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
+                    <version>${maven-surefire-report-plugin.version}</version>
                     <configuration>
                         <aggregate>true</aggregate>
                         <alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
@@ -1123,7 +1126,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jxr-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>${maven-jxr-plugin.version}</version>
                 </plugin>
 
                 <!--
