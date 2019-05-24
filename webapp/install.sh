@@ -2,7 +2,7 @@
 
 if [ -e "env.sh" ]; then
 	source env.sh
-elif [ -e mvnw ]; then
+elif [ -e "../env.sh" ]; then
     source ../env.sh
 fi
 

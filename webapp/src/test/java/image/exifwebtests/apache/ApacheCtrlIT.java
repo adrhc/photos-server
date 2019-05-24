@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebInMemoryDbFilledConfig
 @Tag("controller")
-class ApacheCtrlTest {
+class ApacheCtrlIT {
 	private MockMvc mockMvc;
 
 	@BeforeEach
