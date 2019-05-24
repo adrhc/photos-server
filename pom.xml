@@ -1000,14 +1000,17 @@
                             </goals>
                         </execution>
                     </executions>
-                    <reportSets>
-                        <reportSet>
-                            <id>integration-tests</id>
-                            <reports>
-                                <report>failsafe-report-only</report>
-                            </reports>
-                        </reportSet>
-                    </reportSets>
+                    <configuration>
+                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
+                        <forkCount>1C</forkCount>
+                        <reuseForks>false</reuseForks>
+                        <disableXmlReport>false</disableXmlReport>
+                        <environmentVariables>
+                            <!-- for catching tests without proper spring profile annotation -->
+                            <spring.profiles.active>fake-profile</spring.profiles.active>
+                        </environmentVariables>
+                        <groups>controller</groups>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -1119,7 +1122,7 @@
                     <configuration>
                         <aggregate>true</aggregate>
                         <alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
-                        <showSuccess>true</showSuccess>
+                        <showSuccess>false</showSuccess>
                     </configuration>
                 </plugin>
 
@@ -1234,6 +1237,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
             <!--<plugin>-->
             <!--<groupId>org.projectlombok</groupId>-->
             <!--<artifactId>lombok-maven-plugin</artifactId>-->
@@ -1260,6 +1267,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <id>integration-tests</id>
+                        <reports>
+                            <report>failsafe-report-only</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1280,10 +1295,6 @@
             <id>db-off</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                    </plugin>
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
@@ -1338,8 +1349,8 @@
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
                 <junit5.webapp.groups>
-                    root&amp;inmemorydb,
-                    webapp&amp;inmemorydb
+                    root&amp;inmemorydb&amp;!controller,
+                    webapp&amp;inmemorydb&amp;!controller
                 </junit5.webapp.groups>
             </properties>
         </profile>

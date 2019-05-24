@@ -3,6 +3,7 @@ package image.exifwebtests.apache;
 import image.exifweb.apache.ApacheCtrl;
 import image.exifwebtests.config.WebInMemoryDbFilledConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -14,7 +15,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebInMemoryDbFilledConfig
-public class ApacheCtrlTest {
+@Tag("controller")
+class ApacheCtrlTest {
 	private MockMvc mockMvc;
 
 	@BeforeEach
