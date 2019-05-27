@@ -17,3 +17,7 @@ fi
 # ./clean.install.sh -P staging-only
 # ./clean.install.sh -P production-only
 $MVN -e -Dmaven.javadoc.skip=true -Dmaven.test.skip=true clean install "$@"
+
+# power shell error:
+# 	Unknown lifecycle phase ".test.skip=true". You must specify a valid lifecycle phase 
+# .\mvnw.cmd clean install `-Dmaven`.javadoc`.skip=true `-Dmaven`.test`.skip=true
