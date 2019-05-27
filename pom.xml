@@ -69,7 +69,7 @@
             https://projectlombok.org/download-edge
         -->
         <lombok.version>edge-SNAPSHOT</lombok.version>
-        <!--<lombok.version>1.18.4</lombok.version>-->
+        <lombok.version>1.18.8</lombok.version>
         <lombok-maven-plugin.version>1.18.4.0</lombok-maven-plugin.version>
 
         <junit.version>4.12</junit.version>
@@ -81,10 +81,10 @@
     </properties>
 
     <repositories>
-        <repository>
-            <id>projectlombok.org</id>
-            <url>https://projectlombok.org/edge-releases</url>
-        </repository>
+        <!--<repository>-->
+            <!--<id>projectlombok.org</id>-->
+            <!--<url>https://projectlombok.org/edge-releases</url>-->
+        <!--</repository>-->
         <repository>
             <id>central.maven.org</id>
             <url>http://central.maven.org/maven2/</url>
