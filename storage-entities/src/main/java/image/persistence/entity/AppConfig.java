@@ -79,6 +79,7 @@ public class AppConfig implements IStorageEntity {
 	}
 
 	/**
+	 * https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
 	 * identifier checked only for non-transient entities
 	 */
@@ -93,10 +94,13 @@ public class AppConfig implements IStorageEntity {
 
 		AppConfig other = (AppConfig) o;
 
+		// no other properties checked!
+		// see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
 		return this.id != null && this.id.equals(other.getId());
 	}
 
 	/**
+	 * https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
 	 */
 	@Override
