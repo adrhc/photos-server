@@ -78,6 +78,32 @@ public class AppConfig implements IStorageEntity {
 				this.value == null ? other.getValue() == null : this.value.equals(other.getValue());
 	}
 
+	/**
+	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
+	 * identifier checked only for non-transient entities
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof AppConfig)) {
+			return false;
+		}
+
+		AppConfig other = (AppConfig) o;
+
+		return this.id != null && this.id.equals(other.getId());
+	}
+
+	/**
+	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
+	 */
+	@Override
+	public int hashCode() {
+		return 71;
+	}
+
 	@Override
 	public String toString() {
 		return "AppConfig{" +
