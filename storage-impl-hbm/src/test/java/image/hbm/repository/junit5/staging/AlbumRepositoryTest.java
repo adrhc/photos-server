@@ -1,8 +1,8 @@
 package image.hbm.repository.junit5.staging;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.hbm.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
-import image.hbm.repository.junit5.springconfig.Junit5HbmStagingJdbcDbNestedConfig;
+import image.hbm.repository.junit5.springconfig.Junit5HbmStageJdbcDbConfig;
+import image.hbm.repository.junit5.springconfig.Junit5HbmStageJdbcDbNestedConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.IAlbumSupplier;
@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@Junit5HbmStagingJdbcDbConfig
+@Junit5HbmStageJdbcDbConfig
 class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAssertions, IImageAssertions {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryTest.class);
 
@@ -102,7 +102,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@Junit5HbmStagingJdbcDbNestedConfig
+	@Junit5HbmStageJdbcDbNestedConfig
 	class CreateAlbumTest extends AlbumCreationTestBase {
 		@BeforeAll
 		void beforeAll(@Random(excludes = {"id", "images", "cover", "lastUpdate"}) Album album) {
@@ -117,7 +117,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@Junit5HbmStagingJdbcDbNestedConfig
+	@Junit5HbmStageJdbcDbNestedConfig
 	class CreateAlbumForNameTest extends AlbumCreationTestBase {
 		@Test
 		void createAlbumForName(@Random String albumName) {
@@ -151,7 +151,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@Junit5HbmStagingJdbcDbNestedConfig
+	@Junit5HbmStageJdbcDbNestedConfig
 	class PutAlbumCoverTest extends CoverTestBase {
 		@Test
 		void putAlbumCover() {
@@ -162,7 +162,7 @@ class AlbumRepositoryTest implements IAlbumSupplier, IImageSupplier, IAlbumAsser
 		}
 	}
 
-	@Junit5HbmStagingJdbcDbNestedConfig
+	@Junit5HbmStageJdbcDbNestedConfig
 	class RemoveAlbumCoverTest extends CoverTestBase {
 		@Override
 		@BeforeAll

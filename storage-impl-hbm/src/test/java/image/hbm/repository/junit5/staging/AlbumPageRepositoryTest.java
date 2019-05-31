@@ -4,7 +4,7 @@ import exifweb.util.MiscUtils;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
-import image.hbm.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
+import image.hbm.repository.junit5.springconfig.Junit5HbmStageJdbcDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
@@ -35,7 +35,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
-@Junit5HbmStagingJdbcDbConfig
+@Junit5HbmStageJdbcDbConfig
 public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";

@@ -1,6 +1,6 @@
 package image.hbm.repository.junit4.staging.album;
 
-import image.hbm.repository.springconfig.HbmStagingJdbcDbConfig;
+import image.hbm.repository.springconfig.HbmStageJdbcDbConfig;
 import image.persistence.entity.Album;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,8 +13,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 /**
  * Created by adr on 2/26/18.
  */
-@HbmStagingJdbcDbConfig
-@Category(HbmStagingJdbcDbConfig.class)
+@HbmStageJdbcDbConfig
+@Category(HbmStageJdbcDbConfig.class)
 public class ClearDirtyForAlbumTest extends AlbumRepoWriteTestBase {
 	@Autowired
 	private PlatformTransactionManager transactionManager;

@@ -1,6 +1,6 @@
-package image.hbm.repository.junit5.springconfig;
+package image.photostests.junit5.testconfig;
 
-import image.hbm.repository.springconfig.HbmStagingJdbcDbConfig;
+import image.photostests.junit4.testconfig.PhotosStageJdbcDbConfig;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,17 +11,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * @Junit5HbmStagingJdbcDbConfig is a junit5 variant of @HbmStagingJdbcDbConfig
- * Its purpose is to add junit5 tags (@Tag).
- */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@HbmStagingJdbcDbConfig
+@PhotosStageJdbcDbConfig
 @Tag("junit5")
-@Tag("hbm")
+@Tag("photos")
 @Tag("staging")
-public @interface Junit5HbmStagingJdbcDbConfig {
+public @interface Junit5PhotosStageDbConfig {
 }

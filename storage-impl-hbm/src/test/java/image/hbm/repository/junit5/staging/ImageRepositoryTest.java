@@ -5,7 +5,7 @@ import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
-import image.hbm.repository.junit5.springconfig.Junit5HbmStagingJdbcDbConfig;
+import image.hbm.repository.junit5.springconfig.Junit5HbmStageJdbcDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @NotThreadSafe
 @ExtendWith(RandomBeansExtensionEx.class)
-@Junit5HbmStagingJdbcDbConfig
+@Junit5HbmStageJdbcDbConfig
 @Slf4j
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	@Autowired

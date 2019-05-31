@@ -15,7 +15,7 @@ import image.persistence.entitytests.IAppConfigSupplier;
 import image.persistence.entitytests.IImageSupplier;
 import image.persistence.repository.ESortType;
 import image.photos.album.AlbumPageService;
-import image.photostests.junit5.testconfig.Junit5PhotosStagingDbConfig;
+import image.photostests.junit5.testconfig.Junit5PhotosStageDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +28,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-@Junit5PhotosStagingDbConfig
+@Junit5PhotosStageDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MiscUtils, IImageFlagsUtils {
 	private static final int PAGE_SIZE = 20;

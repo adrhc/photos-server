@@ -4,7 +4,7 @@ import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
 import image.hbm.repository.junit4.staging.album.AlbumRepoWriteTestBase;
-import image.hbm.repository.springconfig.HbmStagingJdbcDbConfig;
+import image.hbm.repository.springconfig.HbmStageJdbcDbConfig;
 import image.hbm.util.IDateNoMillisSupplier;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -24,8 +24,8 @@ import java.util.Date;
  * https://aalmiray.github.io/jsr-305/apidocs/javax/annotation/concurrent/NotThreadSafe.html
  */
 @NotThreadSafe
-@HbmStagingJdbcDbConfig
-@Category(HbmStagingJdbcDbConfig.class)
+@HbmStageJdbcDbConfig
+@Category(HbmStageJdbcDbConfig.class)
 public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 		implements IDateNoMillisSupplier, IImageFlagsUtils {
 	@Test

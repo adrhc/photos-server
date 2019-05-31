@@ -20,7 +20,7 @@ public class DBInitConfiguration {
 				.dataSource(dataSource)
 				.transactionManager(transactionManager)
 				.databasePopulator(new ResourceDatabasePopulator(
-						new ClassPathResource("clean.sql"),
+//						new ClassPathResource("clean.sql"),
 						new ClassPathResource("appconfig.sql"),
 						new ClassPathResource("album.sql"),
 						new ClassPathResource("image.sql"),

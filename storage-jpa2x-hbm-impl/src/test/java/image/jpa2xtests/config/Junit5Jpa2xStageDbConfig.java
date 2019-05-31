@@ -1,7 +1,7 @@
 package image.jpa2xtests.config;
 
 import image.jpa2x.Jpa2xConfig;
-import image.jpa2xtests.config.profiles.StagingJdbcDbProfile;
+import image.jpa2xtests.config.profiles.StageJdbcDbProfile;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ContextConfiguration(classes = {Jpa2xConfig.class})
 @TestPropertySource(properties = "hibernate.show_sql=true")
-@StagingJdbcDbProfile
+@StageJdbcDbProfile
 @Tag("junit5")
 @Tag("jpa2x")
 @Tag("staging")

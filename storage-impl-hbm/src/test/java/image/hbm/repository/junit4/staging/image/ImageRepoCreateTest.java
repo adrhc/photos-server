@@ -1,6 +1,6 @@
 package image.hbm.repository.junit4.staging.image;
 
-import image.hbm.repository.springconfig.HbmStagingJdbcDbConfig;
+import image.hbm.repository.springconfig.HbmStageJdbcDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.IAlbumSupplier;
@@ -22,8 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
  * Created by adr on 2/27/18.
  */
 @RunWith(SpringRunner.class)
-@HbmStagingJdbcDbConfig
-@Category(HbmStagingJdbcDbConfig.class)
+@HbmStageJdbcDbConfig
+@Category(HbmStageJdbcDbConfig.class)
 public class ImageRepoCreateTest implements IImageSupplier, IAlbumSupplier {
 	protected static final Logger logger = LoggerFactory.getLogger(ImageRepoCreateTest.class);
 
