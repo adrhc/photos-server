@@ -83,8 +83,8 @@
 
     <repositories>
         <!--<repository>-->
-            <!--<id>projectlombok.org</id>-->
-            <!--<url>https://projectlombok.org/edge-releases</url>-->
+        <!--<id>projectlombok.org</id>-->
+        <!--<url>https://projectlombok.org/edge-releases</url>-->
         <!--</repository>-->
         <repository>
             <id>central.maven.org</id>
@@ -979,7 +979,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.1.2</version>
                     <executions>
                         <execution>
                             <goals>
@@ -1288,7 +1288,9 @@
         <profile>
             <id>windows</id>
             <activation>
-                <os><family>windows</family></os>
+                <os>
+                    <family>windows</family>
+                </os>
             </activation>
             <properties>
                 <forkCount>1</forkCount>
