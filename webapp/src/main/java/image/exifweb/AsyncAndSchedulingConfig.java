@@ -1,6 +1,5 @@
 package image.exifweb;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -21,16 +20,13 @@ import java.util.concurrent.Executors;
 @EnableAsync
 @EnableScheduling
 public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConfigurer {
-	@Autowired
-	private ThreadPoolTaskExecutor asyncExecutor;
-
 	/**
 	 * <task:annotation-driven executor="asyncExecutor"/>
 	 * <task:executor id="asyncExecutor" pool-size="1-4" queue-capacity="128" keep-alive="30"/>
 	 */
 	@Override
 	public Executor getAsyncExecutor() {
-		return this.asyncExecutor;
+		return asyncExecutor();
 	}
 
 	/**
@@ -47,5 +43,20 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	@Bean(destroyMethod = "shutdown")
 	public ExecutorService scheduler() {
 		return Executors.newScheduledThreadPool(1);
+	}
+
+	/**
+	 * corepoolsize vs maxpoolsize:
+	 * https://stackoverflow.com/questions/1878806/what-is-the-difference-between-corepoolsize-and-maxpoolsize-in-the-spring-thread
+	 */
+	@Bean(value = {"asyncExecutor", "threadPoolTaskExecutor"})
+	public ThreadPoolTaskExecutor asyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
+		executor.setQueueCapacity(executor.getMaxPoolSize() / 2);
+		executor.setThreadNamePrefix("async-");
+		executor.setKeepAliveSeconds(30);
+		executor.initialize();
+		return executor;
 	}
 }
