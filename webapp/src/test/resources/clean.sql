@@ -1,4 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS `exifweb-tests`;
+-- to be used by stage/test connections only!
+-- 
 update `exifweb-tests`.Album set FK_IMAGE = null;
 delete from `exifweb-tests`.Image;
 delete from `exifweb-tests`.Album;
