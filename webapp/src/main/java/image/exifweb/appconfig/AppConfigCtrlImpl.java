@@ -60,22 +60,19 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	private String testRAMString = "eYAcmfLplzCjc8zBvuWXmcZ9MjyiQFwnr5ZTFmC9lhObiHR4txz00II8vFXgxpWtamROf3etqVjRvGvBreeAIe50hWjMqOURzx1V318hbOp4ixf4J8nlVVl4JfJrjqMLopTX2WiUmHajurtzfxiXbH367wY1DL43wCE78wR43LryHzEhHMscWBbHHI42pK0atakSx4XFTvoIWGsMJJn58p4HkDdvud8G0M5CxGPK4s0HQc6LDZwiVUW3BOOGuRFVPWfDj9mAiSiASxc30HfuWPOV5nkQfNDeFvWmOOd5FpGwPwVG2Ap3Xq3Yt8FSMUkd9rmWTuDV8fI1wxU6Sbo4srrzQDnpYgh4iLGv9QrG2r3Hn4qAb5EnuzRZfOMN1SuPA4MUKwdOBOfMRN5uy03EJUo631tyGT3RassGmv3Mk74EBpROhMKb93VYwYC28U26XPtATCJkq9qTuoemzXXF34ADfOVem0sal9g9NHrDonz7zbb08llPKErXqOd8gFsYbnSy7nTAAi7RJ3YYnVn2Hg1c9SNHvvy3IZZfoOFh7W1CNWuulccPQLWMYILpLxB0hekhB1x3B7TmTPcIDwKaK7manOH29MY58PIULmQZS5tfOhKyv2DpszhMtfAALYat6YV6VmvCHmafdUS2nvbmR51SIYBlH4JZSpLu83A9CxWVplqMGl1SkYMIDztIFM5FUo9iJnFokkAoFSTHctdUSOzoUzRUOttxaVS3KoTsROoG3eMN0VQLiwGuPXSKvKvObf8EhXXG1KoZw9bidjY32b2wSGa5vRajRHfKkxxAw5i3tQEf4jJjtgLKpjikLemmleQWVvcNI8QxfYmma3m7Q6lqIH071Zm8NXRNLzuhpfTBprb0JS971WApjMk6r9J7nA5qp1hjGhFbEPvoccVvvW0JzTCnpD1wNB7erHIB3gpDsGPbQR4cmd9T4ZwFrL1nMuI6Teaw8T496IYuJjMbShMLhOMq2htNVHDACYjO11xdpwNIFWjBIUMGaNgR2AEd";
 	private List<AppConfig> testRAMObjectToJson;
 
-
-	@RequestMapping("/subscribeToAsyncProcMemStats")
+	@RequestMapping("subscribeToAsyncProcMemStats")
 	public DeferredResult<Model> subscribeToAsyncProcMemStats() {
 		return new CPUMemSummaryDeferredResult(this.processInfoService.asyncSubscribers);
 	}
 
-
-	@RequestMapping(value = "/getProcMemStatSummary",
+	@RequestMapping(value = "getProcMemStatSummary",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public void getProcMemStatSummary(Model model)
 			throws IOException, InterruptedException {
 		this.processInfoService.prepareCPUMemSummary(model, null);
 	}
 
-
-	@RequestMapping(value = "/getProcMemFullStats", method = RequestMethod.GET,
+	@RequestMapping(value = "getProcMemFullStats", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<String> getProcMemFullStats() {
 		// valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
@@ -85,58 +82,50 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-
-	@RequestMapping(value = "/testRAMObjectToJson", method = RequestMethod.GET,
+	@RequestMapping(value = "testRAMObjectToJson", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AppConfig> testRAMObjectToJson() {
 		return this.testRAMObjectToJson;
 	}
 
-
-	@RequestMapping(value = "/testRAMObjectToJsonDeferred", method = RequestMethod.GET,
+	@RequestMapping(value = "testRAMObjectToJsonDeferred", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public DeferredResult<List<AppConfig>> testRAMObjectToJsonDeferred() {
 		return (new ConstantDeferredResult<List<AppConfig>>()).setResultThenRun(this.testRAMObjectToJson);
 	}
 
-
-	@RequestMapping(value = "/testRAMString", method = RequestMethod.GET,
+	@RequestMapping(value = "testRAMString", method = RequestMethod.GET,
 			produces = MediaType.TEXT_PLAIN_VALUE)
 	public String testRAMString() {
 		return this.testRAMString;
 	}
 
-
-	@RequestMapping(value = "/testRAMStringDeferred", method = RequestMethod.GET,
+	@RequestMapping(value = "testRAMStringDeferred", method = RequestMethod.GET,
 			produces = MediaType.TEXT_PLAIN_VALUE)
 	public DeferredResult<String> testRAMStringDeferred() {
 		return this.ac.getBean(StringConstDeferredResult.class).setString(this.testRAMString);
 	}
 
-
-	@RequestMapping(value = "/getMemStat", method = RequestMethod.GET,
+	@RequestMapping(value = "getMemStat", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<ProcStatPercent> getMemStat() throws IOException, InterruptedException {
 		return this.processInfoService.getMemDetailUsingPs();
 	}
 
-
-	@RequestMapping(value = "/getProcStat", method = RequestMethod.GET,
+	@RequestMapping(value = "getProcStat", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<ProcStatPercent> getProcStat() throws IOException, InterruptedException {
 		return this.processInfoService.getCPUDetailUsingTop();
 	}
 
-
-	@RequestMapping(value = "/gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void gc(Model model) {
 		System.gc();
 		model.addAttribute("message", "System.gc run!");
 	}
 
-
-	@RequestMapping(value = "/checkProcess", method = RequestMethod.GET,
+	@RequestMapping(value = "checkProcess", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public void checkProcess(@RequestParam String[] commands, Model model) throws Exception {
 		List<String> runningCmds = this.processInfoService.getProcessesRunning(commands);
@@ -150,8 +139,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 		}
 	}
 
-
-	@RequestMapping(value = "/checkMailService", method = RequestMethod.GET,
+	@RequestMapping(value = "checkMailService", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void checkMailService(Model model) throws Exception {
@@ -163,8 +151,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 		}
 	}
 
-
-	@RequestMapping(value = "/reloadParams", method = RequestMethod.POST,
+	@RequestMapping(value = "reloadParams", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void reloadParams(Model model) {
@@ -172,8 +159,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 		model.addAttribute("message", "App params reloaded!");
 	}
 
-
-	@RequestMapping(value = "/updateAppConfigs", method = RequestMethod.POST,
+	@RequestMapping(value = "updateAppConfigs", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void update(@RequestBody List<AppConfig> cdmAppConfigs, Model model) throws IOException {
@@ -184,7 +170,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 		model.addAttribute("message", "App configs updated!");
 	}
 
-	@RequestMapping(value = "/canUseJsonFiles", method = RequestMethod.GET,
+	@RequestMapping(value = "canUseJsonFiles", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public Map<String, String> canUseJsonFiles(WebRequest webRequest) {
 		if (webRequest.checkNotModified(this.appConfigService.canUseJsonFilesLastUpdate())) {
