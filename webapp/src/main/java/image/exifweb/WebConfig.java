@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -30,8 +30,8 @@ import java.util.Map;
 @ComponentScan(useDefaultFilters = false,
 		includeFilters = @ComponentScan.Filter(
 				{Controller.class, ControllerAdvice.class}))
+@Import(WebContextUtilities.class)
 @EnableWebMvc
-// use proxyTargetClass = true when not having interfaces for @Controller classes
 @EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class WebConfig implements WebMvcConfigurer {
 	@Autowired
@@ -40,15 +40,6 @@ public class WebConfig implements WebMvcConfigurer {
 	private ObjectMapper objectMapper;
 	@Value("${async.timeout}")
 	private long asyncTimeout;
-
-	/**
-	 * Using RootConfig:exifweb.properties.
-	 */
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer
-	propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
 
 	@Override
 	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
