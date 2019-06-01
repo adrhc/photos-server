@@ -12,6 +12,6 @@ public interface IAppConfigCache {
 
 	default void evictAppConfigCache() {
 		logger.debug("removing \"AppConfig\" cache");
-		CacheManager.ALL_CACHE_MANAGERS.get(0).getCache("AppConfig");
+		CacheManager.ALL_CACHE_MANAGERS.forEach(c -> c.getCache("AppConfig"));
 	}
 }
