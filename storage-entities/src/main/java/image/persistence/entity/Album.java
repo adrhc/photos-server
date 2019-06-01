@@ -17,6 +17,7 @@ import java.util.List;
  * Time: 1:03 PM
  * To change this template use File | Settings | File Templates.
  */
+@Table(name = "Album")
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Album implements Serializable {

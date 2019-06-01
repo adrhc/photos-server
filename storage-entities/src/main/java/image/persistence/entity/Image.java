@@ -20,6 +20,7 @@ import java.util.Date;
  * Time: 9:06 PM
  * To change this template use File | Settings | File Templates.
  */
+@Table(name = "Image")
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements IStorageEntity, IImageFlagsUtils {

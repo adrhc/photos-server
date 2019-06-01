@@ -13,6 +13,7 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 @NamedNativeQuery(name = "AppConfig.getDBNow", query = "SELECT now() FROM dual")
+@Table(name = "AppConfig")
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class AppConfig implements IStorageEntity {
