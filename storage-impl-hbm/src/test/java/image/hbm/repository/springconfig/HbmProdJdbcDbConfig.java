@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ContextConfiguration(classes = {HibernateConfig.class})
-@TestPropertySource(properties = "hibernate.show_sql=true")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @ProdJdbcDbProfile
 public @interface HbmProdJdbcDbConfig {
 }

@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ContextConfiguration(classes = Jpa2xConfig.class)
-@TestPropertySource(properties = "hibernate.show_sql=true")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @InMemoryDbProfile
 @Tag("junit5")
 @Tag("jpa2x")

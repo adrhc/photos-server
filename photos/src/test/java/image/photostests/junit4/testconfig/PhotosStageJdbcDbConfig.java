@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @ContextConfiguration(classes = {PhotosConfig.class})
-@TestPropertySource(properties = "hibernate.show_sql=true")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @StageJdbcDbProfile
 public @interface PhotosStageJdbcDbConfig {
 }
