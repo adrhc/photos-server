@@ -1,7 +1,9 @@
 package image.exifweb.album;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
+import image.persistence.entity.jsonview.AlbumViews;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 	@Override
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@JsonView(AlbumViews.Cover.class)
 	public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
 		Album album = this.albumRepository.getById(id);
@@ -42,6 +45,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 	@Override
 	@RequestMapping(value = "/byName/{name}", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@JsonView(AlbumViews.Cover.class)
 	public Album findAlbumByName(@PathVariable String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
 		Album album = this.albumRepository.findAlbumByName(name);

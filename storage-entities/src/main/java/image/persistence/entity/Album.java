@@ -1,5 +1,7 @@
 package image.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import image.persistence.entity.jsonview.AlbumViews;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 
@@ -31,7 +33,9 @@ public class Album implements Serializable {
 	 * Album dirty flag is used in GUI to highlight must-regenerate-json albums.
 	 */
 	private boolean dirty;
+	@JsonView(AlbumViews.Images.class)
 	private List<Image> images;
+	@JsonView(AlbumViews.Cover.class)
 	private Image cover;
 	private Date lastUpdate;
 	private boolean deleted;

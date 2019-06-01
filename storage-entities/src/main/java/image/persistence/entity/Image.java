@@ -1,10 +1,12 @@
 package image.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
+import image.persistence.entity.jsonview.ImageViews;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
@@ -43,6 +45,7 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "FK_ALBUM")
+	@JsonView(ImageViews.Album.class)
 	private Album album;
 	/**
 	 * used to compute albumPage Last-Modified (impact browser-cache)

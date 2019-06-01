@@ -1,11 +1,13 @@
 package image.exifweb.image;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import image.cdm.image.ExifInfo;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
+import image.persistence.entity.jsonview.ImageViews;
 import image.photos.image.ImageToExifInfoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,6 +35,7 @@ public class ImageCtrl {
 			new ImageToExifInfoConverter();
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@JsonView(ImageViews.Album.class)
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
 		Image image = this.imageRepository.getById(id);
 		if (webRequest.checkNotModified(

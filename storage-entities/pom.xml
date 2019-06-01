@@ -24,12 +24,6 @@
         <dependency>
             <groupId>image.exifweb</groupId>
             <artifactId>cdm</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>image.exifweb</groupId>
