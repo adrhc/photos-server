@@ -2,6 +2,7 @@ package image.jpa2x;
 
 import image.jpa2x.jpacustomizations.CustomJpaRepositoryImpl;
 import image.persistence.entity.Image;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,8 @@ import java.util.Properties;
 public class EntityManagerConfig {
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-			DataSource dataSource, @Qualifier("hibernateProperties") Properties jpaProperties) {
+			DataSource dataSource,
+			@Autowired @Qualifier("hibernateProperties") Properties jpaProperties) {
 		HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 		factory.setJpaVendorAdapter(vendorAdapter);

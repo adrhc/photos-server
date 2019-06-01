@@ -1107,6 +1107,9 @@
                         <!--
                             2019.05.04: it's possible to work with reuseForks = true but the tests must be
                                         prepared for this parallelism (especially those working with the DB)
+                            2019.06.01: ehcache won't work!
+                                        net.sf.ehcache.CacheException: Another CacheManager with
+                                        same name 'in-memory' already exists in the same VM.
                         -->
                         <reuseForks>false</reuseForks>
                         <!--

@@ -37,22 +37,30 @@ public class HibernateProperties {
 	}
 
 	private PropertiesFactoryBean propsFrom(String... paths) {
-		PropertiesFactoryBean properties = new PropertiesFactoryBean();
+		PropertiesFactoryBean factoryBean = new PropertiesFactoryBean();
 		Resource[] locations =
 				Arrays.stream(paths)
 						.map(s -> "hibernate/" + s + ".properties")
 						.map(ClassPathResource::new)
 						.toArray(ClassPathResource[]::new);
-		properties.setLocations(locations);
+		factoryBean.setLocations(locations);
 		try {
 			// force to load the properties
-			properties.afterPropertiesSet();
+			factoryBean.afterPropertiesSet();
 			// allow for @TestPropertySource to overwrite hibernate-*.properties
-			keepEnvProps(properties.getObject());
+			keepEnvProps(factoryBean.getObject());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-		return properties;
+		Properties properties;
+		try {
+			properties = factoryBean.getObject();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		factoryBean = new PropertiesFactoryBean();
+		factoryBean.setProperties(properties);
+		return factoryBean;
 	}
 
 	/**
