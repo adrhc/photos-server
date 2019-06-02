@@ -23,9 +23,10 @@ import java.util.Date;
  * Time: 9:06 PM
  * To change this template use File | Settings | File Templates.
  */
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "Image")
 @Entity
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements IStorageEntity, IImageFlagsUtils {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Id
