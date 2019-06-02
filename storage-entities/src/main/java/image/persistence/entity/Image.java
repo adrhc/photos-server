@@ -45,8 +45,11 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	 */
 	@Column(nullable = false, columnDefinition = "INTEGER(1) NOT NULL DEFAULT 1")
 	private byte rating = ImageRating.MIN_RATING;
+	/**
+	 * @ManyToOne: fetch() default EAGER
+	 */
 	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "FK_ALBUM")
 	@JsonView(ImageViews.Album.class)
 	private Album album;
@@ -67,7 +70,8 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	 * last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3)
 	 * <p>
 	 * Date represents a specific instant in time, with millisecond precision.
-	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by allowing the specification of fractional seconds to a precision of nanoseconds.
+	 * java.sql.Timestamp holds the SQL TIMESTAMP fractional seconds value, by
+	 * allowing the specification of fractional seconds to a precision of nanoseconds.
 	 */
 	@Version
 	@Column(name = "last_update")

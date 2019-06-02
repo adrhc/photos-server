@@ -70,7 +70,9 @@ public class Album implements Serializable {
 	/**
 	 * http://in.relation.to/2016/09/28/performance-tuning-and-best-practices/
 	 * <p>
-	 * The parent-side @OneToOne association requires bytecode enhancement so that the association can be loaded lazily. Otherwise, the parent-side is always fetched even if the association is marked with FetchType.LAZY.
+	 * The parent-side @OneToOne association requires bytecode enhancement so that the
+	 * association can be loaded lazily. Otherwise, the parent-side is always fetched
+	 * even if the association is marked with FetchType.LAZY.
 	 */
 	@OneToOne
 	@JoinColumn(name = "FK_IMAGE")
