@@ -145,7 +145,7 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 				", imageMetadata=" + (this.imageMetadata == null ? null : this.imageMetadata.toString()) +
 				", flags=" + (this.flags == null ? null : this.flags.toString()) +
 				", rating=" + this.rating +
-				", album=" + this.album +
+				", album=" + (this.album == null ? null : this.album.toString()) +
 				", lastUpdate=" + (this.lastUpdate == null ? null : sdf.format(this.lastUpdate)) +
 				'}';
 	}
