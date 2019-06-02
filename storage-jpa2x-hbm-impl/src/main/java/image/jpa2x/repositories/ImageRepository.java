@@ -18,6 +18,6 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	Image findByNameAndAlbumId(String name, Integer albumId);
 
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-	@Query("select i from Image i join fetch i.album")
+	@Query("select i from Image i join fetch i.album where i.id = :id")
 	Image takeById(Integer id);
 }
