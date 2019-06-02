@@ -10,6 +10,7 @@ import image.persistence.entity.jsonview.ImageViews;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -26,6 +27,7 @@ import java.util.Date;
 @Entity
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Image implements IStorageEntity, IImageFlagsUtils {
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -140,11 +142,11 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 				"id=" + this.id +
 				", name='" + this.name + '\'' +
 				", deleted=" + this.deleted +
-				", imageMetadata=" + this.imageMetadata.toString() +
-				", flags=" + this.flags.toString() +
+				", imageMetadata=" + (this.imageMetadata == null ? null : this.imageMetadata.toString()) +
+				", flags=" + (this.flags == null ? null : this.flags.toString()) +
 				", rating=" + this.rating +
 				", album=" + this.album +
-				", lastUpdate=" + this.lastUpdate.getTime() +
+				", lastUpdate=" + (this.lastUpdate == null ? null : sdf.format(this.lastUpdate)) +
 				'}';
 	}
 }
