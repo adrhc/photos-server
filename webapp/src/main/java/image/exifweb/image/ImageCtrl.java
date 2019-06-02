@@ -36,8 +36,8 @@ public class ImageCtrl {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	@JsonView(ImageViews.Album.class)
-	public Image takeById(@PathVariable Integer id, WebRequest webRequest) {
-		Image image = this.imageRepository.takeById(id);
+	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
+		Image image = this.imageRepository.getById(id);
 		if (webRequest.checkNotModified(
 				image.getImageMetadata().getDateTime().getTime())) {
 			return null;
