@@ -64,7 +64,7 @@ public class ImageMetadata implements Serializable {
 		return "ImageMetadata{" +
 				"dateTime=" + this.dateTime.getTime() +
 				", thumbLastModified=" + this.thumbLastModified.getTime() +
-				", exifData=" + this.exifData.toString() +
+				", exifData=" + (this.exifData == null ? null : this.exifData.toString()) +
 				'}';
 	}
 }
