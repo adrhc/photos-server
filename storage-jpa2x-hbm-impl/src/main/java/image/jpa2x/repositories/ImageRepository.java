@@ -18,7 +18,8 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	Image findByNameAndAlbumId(String name, Integer albumId);
 
 	/**
-	 * when cached the cache won't keep tha "album"!
+	 * When cached the cache won't keep Image.album property!
+	 * Image.album.cover (an Image) is by default (for @OneToOne) also loaded.
 	 */
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "false"))
 	@Query("select i from Image i join fetch i.album where i.id = :id")
