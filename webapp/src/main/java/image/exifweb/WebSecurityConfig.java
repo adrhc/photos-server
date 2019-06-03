@@ -29,9 +29,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private ApplicationContext ac;
 	@Value("${users.file}")
 	private String usersFile;
-	@Value("${servlet-mapping.app}")
+	@Value("${servlet-mapping.app:}")
 	private String appMapp;
-	@Value("${servlet-mapping.jsp}")
+	@Value("${servlet-mapping.jsp:}")
 	private String jspMapp;
 
 	@Bean
@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		log.debug("configuring security (appMapp={}, jspMapp={})", appMapp, jspMapp);
+		log.debug("configuring security (appMapp=\"{}\", jspMapp=\"{}\")", appMapp, jspMapp);
 		http.csrf().disable();
 		http.authorizeRequests()
 				.antMatchers(jspMapp + "/**").permitAll();
