@@ -1,6 +1,7 @@
 package image.persistence.entity;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,6 +20,12 @@ import java.util.Date;
 @Entity
 public class AppConfig implements IStorageEntity {
 	private Integer id;
+	/**
+	 * The Hibernate second-level cache can also load entities by their natural id.
+	 * http://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#caching-entity
+	 */
+	@NaturalId
+	@Column(unique = true)
 	private String name;
 	private String value;
 	private Date lastUpdate;
