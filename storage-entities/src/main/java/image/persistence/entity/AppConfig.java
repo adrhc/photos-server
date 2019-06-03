@@ -25,7 +25,7 @@ public class AppConfig implements IStorageEntity {
 	 * http://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#caching-entity
 	 */
 	@NaturalId
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	private String name;
 	private String value;
 	private Date lastUpdate;
