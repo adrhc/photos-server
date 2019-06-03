@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		System.out.println("configuring security (appMapp=\"" + appMapp + "\", jspMapp=\"{}\")" + jspMapp);
+		System.out.println("configuring security (appMapp=\"" + appMapp + "\", jspMapp=\"" + jspMapp + "\")");
 		http.csrf().disable();
 		http.authorizeRequests()
 				.antMatchers(jspMapp + "/**").permitAll();
