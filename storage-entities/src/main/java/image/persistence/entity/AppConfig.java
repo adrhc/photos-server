@@ -2,6 +2,7 @@ package image.persistence.entity;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Objects;
  */
 @NamedNativeQuery(name = "AppConfig.getDBNow", query = "SELECT now() FROM dual")
 @Cacheable
+@NaturalIdCache
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "AppConfig")
 @Entity
