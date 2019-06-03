@@ -42,7 +42,7 @@ public class AppConfig implements IStorageEntity {
 	 * http://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#caching-entity
 	 */
 	@NaturalId
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, updatable = false)
 	public String getName() {
 		return this.name;
 	}
