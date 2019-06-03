@@ -5,6 +5,7 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created with IntelliJ IDEA.
@@ -88,6 +89,7 @@ public class AppConfig implements IStorageEntity {
 	}
 
 	/**
+	 * https://vladmihalcea.com/the-best-way-to-map-a-naturalid-business-key-with-jpa-and-hibernate/
 	 * https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
 	 * identifier checked only for non-transient entities
@@ -105,16 +107,17 @@ public class AppConfig implements IStorageEntity {
 
 		// no other properties checked!
 		// see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-		return this.id != null && this.id.equals(other.getId());
+		return Objects.equals(this.name, other.getName());
 	}
 
 	/**
+	 * https://vladmihalcea.com/the-best-way-to-map-a-naturalid-business-key-with-jpa-and-hibernate/
 	 * https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
 	 * https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/
 	 */
 	@Override
 	public int hashCode() {
-		return 71;
+		return Objects.hash(this.name);
 	}
 
 	@Override
