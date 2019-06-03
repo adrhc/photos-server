@@ -54,21 +54,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		System.out.println("configuring security (appMapp=\"" + appMapp + "\", jspMapp=\"" + jspMapp + "\")");
+		System.out.println("configuring security (appMapp=\"" + this.appMapp + "\", jspMapp=\"" + this.jspMapp + "\")");
 		http.csrf().disable();
 		http.authorizeRequests()
-				.antMatchers(jspMapp + "/**").permitAll();
+				.antMatchers(this.jspMapp + "/**").permitAll();
 		http.httpBasic()
 				.authenticationEntryPoint(this.restAuthenticationEntryPoint());
 		http.formLogin()
-				.loginProcessingUrl(appMapp + "/login")
+				.loginProcessingUrl(this.appMapp + "/login")
 				.passwordParameter("password").usernameParameter("userName")
 				.successHandler(this.authSuccessHandler()).failureHandler(this.authFailureHandler());
 		http.rememberMe()
 				.tokenValiditySeconds(1296000)
 				.key("rememberMeKeyForExifWeb");
 		http.logout()
-				.logoutUrl(appMapp + "/logout").logoutSuccessHandler(this.logoutSuccessHandler())
+				.logoutUrl(this.appMapp + "/logout").logoutSuccessHandler(this.logoutSuccessHandler())
 				.deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE");
 	}
 
@@ -80,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
-		System.out.println("UserDetailsService using " + this.usersFile);
+		System.out.println("UserDetailsService using:\n\t" + this.usersFile);
 		return new InMemoryUserDetailsManager(propertiesOf(this.ac.getResource(this.usersFile)));
 	}
 }
