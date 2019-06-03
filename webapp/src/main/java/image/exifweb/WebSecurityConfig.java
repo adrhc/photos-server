@@ -4,7 +4,6 @@ import image.exifweb.web.security.AuthFailureHandler;
 import image.exifweb.web.security.AuthSuccessHandler;
 import image.exifweb.web.security.LogoutSuccessHandler;
 import image.exifweb.web.security.RestAuthenticationEntryPoint;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -21,7 +20,6 @@ import static exifweb.util.PropertiesUtils.propertiesOf;
 /**
  * Created by adr on 2/17/18.
  */
-@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -56,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		log.debug("configuring security (appMapp=\"{}\", jspMapp=\"{}\")", appMapp, jspMapp);
+		System.out.println("configuring security (appMapp=\"" + appMapp + "\", jspMapp=\"{}\")" + jspMapp);
 		http.csrf().disable();
 		http.authorizeRequests()
 				.antMatchers(jspMapp + "/**").permitAll();
@@ -82,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
-		log.debug("UserDetailsService using {}", this.usersFile);
+		System.out.println("UserDetailsService using " + this.usersFile);
 		return new InMemoryUserDetailsManager(propertiesOf(this.ac.getResource(this.usersFile)));
 	}
 }
