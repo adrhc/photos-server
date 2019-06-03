@@ -2,13 +2,12 @@ package image.jpa2x.repositories;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
-import org.hibernate.jpa.QueryHints;
+import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Transactional
@@ -40,13 +39,18 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 		appConfig.setValue(value);
 	}
 
+	/**
+	 * https://vladmihalcea.com/the-best-way-to-map-a-naturalid-business-key-with-jpa-and-hibernate/
+	 */
+	@Override
+	public AppConfig findByEnumeratedName(AppConfigEnum appConfigEnum) {
+		return this.em.unwrap(Session.class).byNaturalId(AppConfig.class)
+				.using("name", appConfigEnum.getValue()).load();
+	}
+
 	@Override
 	public String findValueByEnumeratedName(AppConfigEnum appConfigEnum) {
-		TypedQuery<String> q = this.em.createQuery(
-				"select a.value from AppConfig a where a.name = :name", String.class);
-		q.setParameter("name", appConfigEnum.getValue());
-		q.setHint(QueryHints.HINT_CACHEABLE, true);
-		return q.getSingleResult();
+		return findByEnumeratedName(appConfigEnum).getValue();
 	}
 
 	/**
