@@ -4,6 +4,7 @@ import image.exifweb.web.security.AuthFailureHandler;
 import image.exifweb.web.security.AuthSuccessHandler;
 import image.exifweb.web.security.LogoutSuccessHandler;
 import image.exifweb.web.security.RestAuthenticationEntryPoint;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +21,7 @@ import static exifweb.util.PropertiesUtils.propertiesOf;
 /**
  * Created by adr on 2/17/18.
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -27,6 +29,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private ApplicationContext ac;
 	@Value("${users.file}")
 	private String usersFile;
+	@Value("${servlet-mapping.app}")
+	private String appMapp;
+	@Value("${servlet-mapping.jsp}")
+	private String jspMapp;
 
 	@Bean
 	RestAuthenticationEntryPoint restAuthenticationEntryPoint() {
@@ -50,20 +56,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		log.debug("configuring security");
 		http.csrf().disable();
 		http.authorizeRequests()
-				.antMatchers("/jsp/**").permitAll();
+				.antMatchers(jspMapp + "/**").permitAll();
 		http.httpBasic()
 				.authenticationEntryPoint(this.restAuthenticationEntryPoint());
 		http.formLogin()
-				.loginProcessingUrl("/app/login")
+				.loginProcessingUrl(appMapp + "/login")
 				.passwordParameter("password").usernameParameter("userName")
 				.successHandler(this.authSuccessHandler()).failureHandler(this.authFailureHandler());
 		http.rememberMe()
 				.tokenValiditySeconds(1296000)
 				.key("rememberMeKeyForExifWeb");
 		http.logout()
-				.logoutUrl("/app/logout").logoutSuccessHandler(this.logoutSuccessHandler())
+				.logoutUrl(appMapp + "/logout").logoutSuccessHandler(this.logoutSuccessHandler())
 				.deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE");
 	}
 
