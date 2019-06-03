@@ -82,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
+		log.debug("UserDetailsService using {}", this.usersFile);
 		return new InMemoryUserDetailsManager(propertiesOf(this.ac.getResource(this.usersFile)));
 	}
 }
