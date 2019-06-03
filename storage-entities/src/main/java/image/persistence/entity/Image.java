@@ -47,6 +47,9 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	private byte rating = ImageRating.MIN_RATING;
 	/**
 	 * @ManyToOne: fetch() default EAGER
+	 * <p>
+	 * Projects/git.albums-webapp:
+	 * ImageCtrlTest.getAppConfigsTest fails when Image.album is fetch=LAZY
 	 */
 	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@ManyToOne(optional = false)
