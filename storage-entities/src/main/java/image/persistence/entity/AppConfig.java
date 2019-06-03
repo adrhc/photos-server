@@ -21,12 +21,6 @@ import java.util.Objects;
 @Entity
 public class AppConfig implements IStorageEntity {
 	private Integer id;
-	/**
-	 * The Hibernate second-level cache can also load entities by their natural id.
-	 * http://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#caching-entity
-	 */
-	@NaturalId
-	@Column(unique = true, nullable = false)
 	private String name;
 	private String value;
 	private Date lastUpdate;
@@ -41,7 +35,12 @@ public class AppConfig implements IStorageEntity {
 		this.id = id;
 	}
 
-	@Column
+	/**
+	 * The Hibernate second-level cache can also load entities by their natural id.
+	 * http://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#caching-entity
+	 */
+	@NaturalId
+	@Column(unique = true, nullable = false)
 	public String getName() {
 		return this.name;
 	}
@@ -50,7 +49,7 @@ public class AppConfig implements IStorageEntity {
 		this.name = name;
 	}
 
-	@Column
+	@Column(nullable = false)
 	public String getValue() {
 		return this.value;
 	}

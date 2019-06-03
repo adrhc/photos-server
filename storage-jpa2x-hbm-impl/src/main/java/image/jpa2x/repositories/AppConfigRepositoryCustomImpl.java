@@ -44,8 +44,9 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 	 */
 	@Override
 	public AppConfig findByEnumeratedName(AppConfigEnum appConfigEnum) {
-		return this.em.unwrap(Session.class).byNaturalId(AppConfig.class)
-				.using("name", appConfigEnum.getValue()).load();
+		return this.em.unwrap(Session.class)
+				.bySimpleNaturalId(AppConfig.class)
+				.load(appConfigEnum.getValue());
 	}
 
 	@Override
