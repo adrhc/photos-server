@@ -72,20 +72,23 @@
     </logger>
 
     <!-- Hibernate -->
+    <logger name="org.hibernate">
+        <level value="warn"/>
+    </logger>
     <!--log just the SQL -->
     <logger name="org.hibernate.SQL">
         <level value="warn"/>
     </logger>
     <!--log JDBC bind parameters -->
-    <logger name="org.hibernate.type">
-        <level value="error"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder">
+        <level value="warn"/>
     </logger>
 
     <logger name="org.hibernate.cache">
         <level value="warn"/>
     </logger>
     <logger name="org.hibernate.cache.ehcache">
-        <level value="error"/>
+        <level value="warn"/>
     </logger>
 
     <logger name="net.sf.ehcache">
