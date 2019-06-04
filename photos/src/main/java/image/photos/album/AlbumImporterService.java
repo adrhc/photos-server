@@ -55,6 +55,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	@Autowired
 	private ImageService imageService;
 	@Autowired
+	private AlbumService albumService;
+	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
 	private AlbumEventsEmitter albumEventsEmitter;
@@ -198,7 +200,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
 		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
-		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
+//		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
+		Image dbImage = this.imageService.findByNameAndAlbumId(imgFile.getName(), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
@@ -260,9 +263,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 *
 	 * @param foundImageNames
 	 */
-	public void deleteNotFoundImages(List<String> foundImageNames, Album album) {
+	private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		logger.debug("BEGIN {}", album.getName());
-		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
+//		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
+		List<Image> images = this.albumService.getImages(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
 			int fsNameIdx = foundImageNames.indexOf(dbName);
