@@ -15,10 +15,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
-import java.util.Optional;
 
+@TestPropertySource(properties = "hibernate.show_sql=true")
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j
@@ -46,12 +47,9 @@ class ImageServiceTest implements IImageAssertions {
 	@Test
 	void findByNameAndAlbumId() {
 		Image image = this.album.getImages().get(0);
-		Optional<Image> dbImageOpt =
-				this.imageService.findByNameAndAlbumId(image.getName(), this.album.getId());
-		Assertions.assertTrue(dbImageOpt.isPresent());
-		dbImageOpt.ifPresent(i -> {
-			assertImageEquals(image, i);
-		});
+		Image dbImage = this.imageService.findByNameAndAlbumId(image.getName(), this.album.getId());
+		Assertions.assertNotNull(dbImage);
+		assertImageEquals(image, dbImage);
 	}
 
 	@AfterAll

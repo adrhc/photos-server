@@ -198,12 +198,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
 		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
-		Optional<Image> dbImageOpt = this.imageService.findByNameAndAlbumId(imgFile.getName(), album.getId());
-		if (dbImageOpt.isEmpty()) {
+		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
+		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
 		}
-		Image dbImage = dbImageOpt.get();
 		if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
 			updateImageMetadataFromFile(imgFile, dbImage);

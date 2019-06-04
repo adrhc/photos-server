@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 public class ImageServiceImpl implements ImageService {
@@ -19,7 +17,8 @@ public class ImageServiceImpl implements ImageService {
 	 * 2nd level cache is present on Album.images collection!
 	 */
 	@Override
-	public Optional<Image> findByNameAndAlbumId(String name, Integer albumId) {
-		return this.albumRepository.getOne(albumId).getImages().stream().filter(i -> i.getName().equals(name)).findAny();
+	public Image findByNameAndAlbumId(String name, Integer albumId) {
+		return this.albumRepository.getById(albumId).getImages().stream()
+				.filter(i -> i.getName().equals(name)).findAny().orElse(null);
 	}
 }
