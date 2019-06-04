@@ -34,7 +34,7 @@ public class ImageUtils {
 		}
 	}
 
-	public void appendImagePaths(IImageBasicInfo basicInfo) {
+	private void appendImagePaths(IImageBasicInfo basicInfo) {
 		String albumName = basicInfo.getAlbumName();
 		String imgName = basicInfo.getImgName();
 
