@@ -15,6 +15,7 @@ import image.photos.events.image.EImageEventType;
 import image.photos.events.image.ImageEventBuilder;
 import image.photos.events.image.ImageEventsEmitter;
 import image.photos.image.ExifExtractorService;
+import image.photos.image.ImageService;
 import image.photos.image.ImageUtils;
 import image.photos.image.ThumbUtils;
 import image.photos.util.MutableValueHolder;
@@ -51,6 +52,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private ImageRepository imageRepository;
+	@Autowired
+	private ImageService imageService;
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
@@ -195,11 +198,13 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
 		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
-		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
-		if (dbImage == null) {
+		Optional<Image> dbImageOpt = this.imageService.findByNameAndAlbumId(imgFile.getName(), album.getId());
+		if (dbImageOpt.isEmpty()) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
-		} else if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
+		}
+		Image dbImage = dbImageOpt.get();
+		if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
 			updateImageMetadataFromFile(imgFile, dbImage);
 		} else {

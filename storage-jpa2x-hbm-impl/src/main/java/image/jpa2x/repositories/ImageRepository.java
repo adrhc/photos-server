@@ -12,7 +12,4 @@ import java.util.List;
 public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Image> findByAlbumId(Integer albumId);
-
-	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-	Image findByNameAndAlbumId(String name, Integer albumId);
 }

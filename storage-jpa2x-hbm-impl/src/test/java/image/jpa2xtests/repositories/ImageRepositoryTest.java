@@ -93,10 +93,6 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		log.debug("*** imageRepository.findByAlbumId ***");
 		this.imageRepository.findByAlbumId(this.album.getId());
 		this.imageRepository.findByAlbumId(this.album.getId());
-
-		log.debug("*** imageRepository.findByNameAndAlbumId ***");
-		this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
-		this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
 	}
 
 	@Test
