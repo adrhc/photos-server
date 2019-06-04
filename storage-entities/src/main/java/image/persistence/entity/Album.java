@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import image.persistence.entity.jsonview.AlbumViews;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,6 +22,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 @Cacheable
+@NaturalIdCache
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "Album")
 @Entity
@@ -57,7 +60,8 @@ public class Album implements Serializable {
 		this.id = id;
 	}
 
-	@Column(nullable = false, unique = true, length = 512)
+	@NaturalId
+	@Column(unique = true, nullable = false, updatable = false, length = 512)
 	public String getName() {
 		return this.name;
 	}
@@ -137,6 +141,10 @@ public class Album implements Serializable {
 		this.lastUpdate = lastUpdate;
 	}
 
+	/**
+	 * @Cache is needed by ImageServiceImpl.findByNameAndAlbumId
+	 */
+	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@OneToMany(mappedBy = "album", orphanRemoval = true)
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public List<Image> getImages() {

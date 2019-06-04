@@ -15,7 +15,8 @@ public class ImageServiceImpl implements ImageService {
 	private AlbumRepository albumRepository;
 
 	/**
-	 * this implementation approach make sense only when 2nd level cache is present
+	 * this implementation approach make sense only when
+	 * 2nd level cache is present on Album.images collection!
 	 */
 	@Override
 	public Optional<Image> findByNameAndAlbumId(String name, Integer albumId) {

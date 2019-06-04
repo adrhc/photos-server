@@ -45,17 +45,18 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	 */
 	@Column(nullable = false, columnDefinition = "INTEGER(1) NOT NULL DEFAULT 1")
 	private byte rating = ImageRating.MIN_RATING;
+
 	/**
 	 * @ManyToOne: fetch() default EAGER
 	 * <p>
 	 * Projects/git.albums-webapp:
 	 * ImageCtrlTest.getAppConfigsTest fails when Image.album is fetch=LAZY
 	 */
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "FK_ALBUM")
 	@JsonView(ImageViews.Album.class)
 	private Album album;
+
 	/**
 	 * used to compute albumPage Last-Modified (impact browser-cache)
 	 * <p>
