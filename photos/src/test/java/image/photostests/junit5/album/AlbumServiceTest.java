@@ -1,16 +1,15 @@
-package image.photostests.junit5.image;
+package image.photostests.junit5.album;
 
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.image.ImageService;
+import image.photos.album.AlbumService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +22,12 @@ import java.util.List;
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j
-class ImageServiceTest implements IImageAssertions {
+class AlbumServiceTest implements IImageAssertions {
 	private static final int IMAGE_COUNT = 5;
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private ImageService imageService;
+	private AlbumService albumService;
 
 	@Random(excludes = {"id", "lastUpdate", "cover", "images"})
 	private Album album;
@@ -45,11 +44,13 @@ class ImageServiceTest implements IImageAssertions {
 	}
 
 	@Test
-	void findByNameAndAlbumId() {
-		Image image = this.album.getImages().get(0);
-		Image dbImage = this.imageService.findByNameAndAlbumId(image.getName(), this.album.getId());
-		Assertions.assertNotNull(dbImage);
-		assertImageEquals(image, dbImage);
+	void getImages() {
+		List<Image> dbImages = this.albumService.getImages(this.album.getId());
+		this.album.getImages().forEach(i -> {
+			assertImageEquals(i, dbImages.stream()
+					.filter(dbi -> dbi.getId().equals(i.getId()))
+					.findAny().orElseThrow(AssertionError::new));
+		});
 	}
 
 	@AfterAll
