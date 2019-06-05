@@ -19,6 +19,8 @@ public class AlbumServiceImpl implements AlbumService {
 	 * 2nd level cache is present on Album.images collection!
 	 * <p>
 	 * competes with ImageRepository.findByAlbumId
+	 * <p>
+	 * it's very slow comparing with ImageRepository.findByAlbumId
 	 */
 	@Override
 	public List<Image> getImages(Integer albumId) {
