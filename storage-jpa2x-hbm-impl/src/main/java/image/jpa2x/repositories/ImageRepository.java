@@ -15,12 +15,13 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	 * all Image fields will be loaded too despite the fact that
 	 * every individually Image returned might be already cached
 	 * <p>
+	 * Memory waste:
 	 * when org.hibernate.cacheable=true the entire query result should be cached
 	 * despite the fact that every individually Image returned might be already cached
 	 * <p>
 	 * competes with AlbumServiceImpl.getImages(Integer albumId)
 	 */
-	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
+	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "false"))
 	List<Image> findByAlbumId(Integer albumId);
 
 	/**

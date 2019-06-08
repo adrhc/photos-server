@@ -142,13 +142,17 @@ public class Album implements Serializable {
 	}
 
 	/**
-	 * @Cache is needed by ImageServiceImpl.findByNameAndAlbumId
+	 * @Cache is benefited by ImageServiceImpl.findByNameAndAlbumId
 	 * <p>
 	 * The collection cache is not write-through so any modification will trigger
 	 * a collection cache entry invalidation. On a subsequent access, the collection
 	 * will be loaded from the database and re-cached.
+	 * <p>
+	 * normal but problematic @Cache operation rule:
+	 * when deleting individually an Image (e.g. em.remove(Image)) without
+	 * removing from Album.images too the cache won't be invalidated!
 	 */
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+//	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@OneToMany(mappedBy = "album", orphanRemoval = true)
 	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public List<Image> getImages() {

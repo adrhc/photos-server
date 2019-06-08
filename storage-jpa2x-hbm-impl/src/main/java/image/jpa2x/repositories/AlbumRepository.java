@@ -15,7 +15,10 @@ public interface AlbumRepository extends AlbumRepositoryCustom, ICustomJpaReposi
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Album> findByDeletedFalseOrderByNameDesc();
 
-	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
+	/**
+	 * when using @NaturalId on Album.name the query caching
+	 * (org.hibernate.cacheable=true) is no longer necessary
+	 */
 	Album findByName(String name);
 
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
