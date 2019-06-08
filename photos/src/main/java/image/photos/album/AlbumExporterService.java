@@ -53,7 +53,7 @@ public class AlbumExporterService {
 	private AlbumCoverService albumCoverService;
 
 	public boolean writeJsonForAlbumSafe(String name) {
-		Album album = this.albumRepository.findAlbumByName(name);
+		Album album = this.albumRepository.findByName(name);
 		if (album == null) {
 			logger.error("Missing album: {}", name);
 		}

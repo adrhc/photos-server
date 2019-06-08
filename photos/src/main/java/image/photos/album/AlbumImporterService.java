@@ -78,7 +78,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			logger.warn("{} este gol!", albumPath.getPath());
 			return false;
 		}
-		Album album = this.albumRepository.findAlbumByName(albumPath.getName());
+		Album album = this.albumRepository.findByName(albumPath.getName());
 		if (album != null) {
 			// albumPath este un album deja importat deci NU nou
 			return false;
@@ -143,7 +143,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		if (!noFiles) {
 			Arrays.sort(files);
 		}
-		Album album = this.albumRepository.findAlbumByName(path.getName());
+		Album album = this.albumRepository.findByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
 			// album inexistent in DB deci nou

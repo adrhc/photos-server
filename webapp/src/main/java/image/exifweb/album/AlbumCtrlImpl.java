@@ -48,7 +48,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 	@JsonView(AlbumViews.Cover.class)
 	public Album findAlbumByName(@PathVariable String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		Album album = this.albumRepository.findAlbumByName(name);
+		Album album = this.albumRepository.findByName(name);
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}

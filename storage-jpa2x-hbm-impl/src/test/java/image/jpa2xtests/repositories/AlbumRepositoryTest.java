@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.Cache;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +31,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-public class AlbumRepositoryTest implements IAlbumAssertions {
+class AlbumRepositoryTest implements IAlbumAssertions {
+	@PersistenceContext
+	private EntityManager em;
 	@Autowired
 	private AlbumRepository albumRepository;
 
@@ -57,8 +62,18 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 	@Test
 	void findAlbumByName() {
 		Album album = this.albums.get(0);
-		Album dbAlbum = this.albumRepository.findAlbumByName(album.getName());
+		Album dbAlbum = this.albumRepository.findByName(album.getName());
 		assertAlbumEquals(album, dbAlbum);
+	}
+
+	@Test
+	void albumByIdCacheTest() {
+		Album album = this.albums.get(0);
+		Cache cache = this.em.getEntityManagerFactory().getCache();
+		cache.evict(Album.class, album.getId());
+		assertFalse(cache.contains(Album.class, album.getId()), "Album:" + album.getId() + " already in cache!");
+		this.albumRepository.findById(album.getId());
+		assertTrue(cache.contains(Album.class, album.getId()), "Album:" + album.getId() + " not in cache!");
 	}
 
 	@Test
@@ -71,7 +86,7 @@ public class AlbumRepositoryTest implements IAlbumAssertions {
 
 	@Test
 	void getAlbumCoversLastUpdateDate() {
-		Date date = this.albumRepository.getAlbumCoversLastUpdateDate();
+		Date date = this.albumRepository.getMaxLastUpdateForAll();
 		assertThat(date, both(sameOrAfter(this.before))
 				.and(sameOrBefore(new Date())));
 	}

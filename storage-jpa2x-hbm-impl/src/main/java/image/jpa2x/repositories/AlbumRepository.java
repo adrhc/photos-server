@@ -16,9 +16,9 @@ public interface AlbumRepository extends AlbumRepositoryCustom, ICustomJpaReposi
 	List<Album> findByDeletedFalseOrderByNameDesc();
 
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-	Album findAlbumByName(String name);
+	Album findByName(String name);
 
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	@Query("select max(lastUpdate) from Album")
-	Date getAlbumCoversLastUpdateDate();
+	Date getMaxLastUpdateForAll();
 }

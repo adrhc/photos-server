@@ -31,7 +31,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
-		return checkNotModified(this.albumRepository::getAlbumCoversLastUpdateDate,
+		return checkNotModified(this.albumRepository::getMaxLastUpdateForAll,
 				this.albumCoverService::getCovers, webRequest);
 	}
 

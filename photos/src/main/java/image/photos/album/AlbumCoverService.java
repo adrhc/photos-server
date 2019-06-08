@@ -34,7 +34,7 @@ public class AlbumCoverService {
 	}
 
 	public AlbumCover getCoverByName(String albumName) {
-		Album album = this.albumRepository.findAlbumByName(albumName);
+		Album album = this.albumRepository.findByName(albumName);
 		return convertAlbumToCover(album);
 	}
 
