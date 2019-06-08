@@ -77,6 +77,16 @@ class AlbumRepositoryTest implements IAlbumAssertions {
 	}
 
 	@Test
+	void albumByNameCacheTest() {
+		Album album = this.albums.get(0);
+		Cache cache = this.em.getEntityManagerFactory().getCache();
+		cache.evict(Album.class, album.getId());
+		assertFalse(cache.contains(Album.class, album.getId()), "Album:" + album.getId() + " already in cache!");
+		this.albumRepository.findByName(album.getName());
+		assertTrue(cache.contains(Album.class, album.getId()), "Album:" + album.getId() + " not in cache!");
+	}
+
+	@Test
 	void clearDirtyForAlbum() {
 		Album album = this.albums.get(0);
 		this.albumRepository.clearDirtyForAlbum(album.getId());
