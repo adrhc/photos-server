@@ -28,6 +28,8 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	/**
 	 * make no sense to cache because would be a waste of it:
 	 * all Image.id would be cached in the end which is like a no-sql DB
+	 * <p>
+	 * competes with ImageServiceImpl.findByNameAndAlbumId
 	 */
 	Image findByNameAndAlbumId(String name, Integer albumId);
 
