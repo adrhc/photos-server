@@ -28,31 +28,33 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestPropertySource(properties = "hibernate.show_sql=true")
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
-	private static final int IMAGE_COUNT = 10;
 	@PersistenceContext
 	protected EntityManager em;
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
 	private ImageRepository imageRepository;
-
-	@Random(excludes = {"id", "lastUpdate", "cover", "images"})
 	private Album album;
 
 	/**
 	 * Notice that ImageMetadata is generated too and will be used in tests!
 	 */
 	@BeforeAll
-	void setUp(@Random(type = Image.class, size = IMAGE_COUNT,
-			excludes = {"id", "lastUpdate", "album"})
-			List<Image> images) {
+	void setUp(
+			@Random(excludes = {"id", "lastUpdate", "cover", "images"})
+					Album album,
+			@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
+					List<Image> images
+	) {
+		this.album = album;
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
 	}
@@ -108,11 +110,15 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	}
 
 	@Test
+	void findByNameAndAlbumId() {
+		Image image = this.album.getImages().get(0);
+		Image dbImage = this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
+		assertImageEquals(image, dbImage);
+	}
+
+	@Test
 	void findByAlbumId() {
-		List<Image> dbImages;
-		synchronized (this) {
-			dbImages = this.imageRepository.findByAlbumId(this.album.getId());
-		}
+		List<Image> dbImages = this.imageRepository.findByAlbumId(this.album.getId());
 		this.album.getImages().forEach(img -> {
 			Optional<Image> dbImgOpt = dbImages.stream()
 					.filter(i -> i.getId().equals(img.getId()))
@@ -172,25 +178,6 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 		assertTrue(dbImage.isDeleted());
 		image.setDeleted(true);
 		assertImageEquals(image, dbImage);
-	}
-
-	@Test
-	void safelyDeleteImage() {
-		Image image;
-		synchronized (this) {
-			// sync in memory album with subsequent image db deletion
-			image = this.album.getImages().remove(this.album.getImages().size() - 1);
-			log.debug("*** albumRepository.putAlbumCover ***");
-			this.albumRepository.putAlbumCover(image.getId());
-			log.debug("*** imageRepository.safelyDeleteImage ***");
-			this.imageRepository.safelyDeleteImage(image.getId());
-		}
-		log.debug("*** imageRepository.findById ***");
-		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
-		assertFalse(dbImage.isPresent());
-		log.debug("*** albumRepository.findById ***");
-		Album dbAlbum = this.albumRepository.findById(this.album.getId()).orElseThrow(AssertionError::new);
-		assertNull(dbAlbum.getCover());
 	}
 
 	@Test

@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public interface IAlbumAssertions {
-	default void assertAlbumEquals(Album album, Album dbAlbum) {
+	default void assertAlbumEquals(Album expected, Album actual) {
 		assertAll("equals albums",
-				() -> assertEquals(album.getId(), dbAlbum.getId()),
-				() -> assertEquals(album.getName(), dbAlbum.getName()),
-				() -> assertEquals(album.getLastUpdate(), dbAlbum.getLastUpdate()));
+				() -> assertEquals(expected.getId(), actual.getId()),
+				() -> assertEquals(expected.getName(), actual.getName()),
+				() -> assertEquals(expected.getLastUpdate(), actual.getLastUpdate()));
 	}
 }
