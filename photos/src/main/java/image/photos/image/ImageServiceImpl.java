@@ -1,6 +1,5 @@
 package image.photos.image;
 
-import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ImageServiceImpl implements ImageService {
 	@Autowired
-	private AlbumRepository albumRepository;
-	@Autowired
 	private ImageRepository imageRepository;
 
 	/**
@@ -20,6 +17,8 @@ public class ImageServiceImpl implements ImageService {
 	 * 2nd level cache is present on Album.images collection!
 	 * <p>
 	 * competes with ImageRepository.findByNameAndAlbumId
+	 * <p>
+	 * run very SLOW
 	 */
 /*
 	@Override

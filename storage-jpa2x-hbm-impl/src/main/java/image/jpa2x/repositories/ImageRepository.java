@@ -11,6 +11,15 @@ import java.util.List;
 
 @Repository
 public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
+	/**
+	 * all Image fields will be loaded too despite the fact that
+	 * every individually Image returned might be already cached
+	 * <p>
+	 * when org.hibernate.cacheable=true the entire query result should be cached
+	 * despite the fact that every individually Image returned might be already cached
+	 * <p>
+	 * competes with AlbumServiceImpl.getImages(Integer albumId)
+	 */
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Image> findByAlbumId(Integer albumId);
 

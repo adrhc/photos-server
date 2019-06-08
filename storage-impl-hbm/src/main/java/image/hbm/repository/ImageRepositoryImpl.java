@@ -8,17 +8,19 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.repository.ImageRepository;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -92,12 +94,20 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 //				.createAlias("album", "a")
 //				.add(Restrictions.eq("a.id", albumId));
 		// gets only the image
-		Criteria ic = session.createCriteria(Image.class).setCacheable(true)
-				.add(Restrictions.eq("album.id", albumId));
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Image> criteria = cb.createQuery(Image.class);
+		Root<Image> root = criteria.from(Image.class);
+		criteria.select(root);
+		TypedQuery<Image> q = session.createQuery(criteria).setCacheable(true);
+/*
+		Criteria ic = session.createCriteria(Image.class)
+				.add(Restrictions.eq("album.id", albumId))
+				.setCacheable(true);
+*/
 		// gets album and cover too
 //		Criteria ic = session.createCriteria(Image.class)
 //				.createCriteria("album").add(Restrictions.eq("id", albumId));
-		return ic.list();
+		return q.getResultList();
 		// gets only the image
 //		return session.createQuery("FROM Image WHERE album.id = :albumId")
 //				.setParameter("albumId", albumId).list();

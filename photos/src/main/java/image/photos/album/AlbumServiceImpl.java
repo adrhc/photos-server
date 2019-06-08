@@ -15,17 +15,16 @@ public class AlbumServiceImpl implements AlbumService {
 	private AlbumRepository albumRepository;
 
 	/**
-	 * this implementation approach make sense only when
-	 * 2nd level cache is present on Album.images collection!
+	 * this implementation approach make more sense when
+	 * 2nd level cache is set on Album.images collection!
 	 * <p>
 	 * competes with ImageRepository.findByAlbumId
-	 * <p>
-	 * it's very slow comparing with ImageRepository.findByAlbumId
 	 */
 	@Override
 	public List<Image> getImages(Integer albumId) {
 		List<Image> images = this.albumRepository.getById(albumId).getImages();
-		images.size();// just initialize the collection
+		// just initialize the collection
+		images.size();
 		return images;
 	}
 }

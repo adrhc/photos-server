@@ -5,7 +5,6 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.persistence.entitytests.assertion.IAlbumAssertions;
 import image.persistence.entitytests.assertion.IImageAssertions;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.Cache;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
@@ -31,27 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-class AlbumRepositoryTest implements IAlbumAssertions {
-	@PersistenceContext
-	private EntityManager em;
-	@Autowired
-	private AlbumRepository albumRepository;
-
-	@Random(type = Album.class, size = 25, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})
-	private List<Album> albums;
-	private Date before;
-
-	@BeforeAll
-	void givenAlbums() {
-		this.before = new Date();
-		this.albums.forEach(this.albumRepository::persist);
-	}
-
-	@AfterAll
-	void afterAll() {
-		this.albums.forEach(a -> this.albumRepository.deleteById(a.getId()));
-	}
-
+class AlbumRepositoryTest extends AlbumTestBase {
 	@Test
 	void getAlbumById() {
 		Album album = this.albums.get(0);

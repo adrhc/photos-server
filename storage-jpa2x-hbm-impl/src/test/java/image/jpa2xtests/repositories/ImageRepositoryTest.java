@@ -20,18 +20,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestPropertySource(properties = "hibernate.show_sql=true")
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
 class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	private static final int IMAGE_COUNT = 10;
+	@PersistenceContext
+	protected EntityManager em;
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
@@ -72,27 +78,45 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	}
 
 	/**
-	 * // https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
+	 * https://stackoverflow.com/questions/26242492/how-to-cache-results-of-a-spring-data-jpa-query-method-without-using-query-cache/
+	 * <p>
+	 * check sql logs
 	 */
 	@Test
 	void checkQueryCache() {
 		Image image = this.album.getImages().get(0);
 
 		log.debug("*** imageRepository.findById ***");
+		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findById(image.getId());
 		this.imageRepository.findById(image.getId());
 
 		log.debug("*** imageRepository.count ***");
+		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.count();
 		this.imageRepository.count();
 
 		log.debug("*** imageRepository.findAll ***");
+		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findAll();
 		this.imageRepository.findAll();
 
 		log.debug("*** imageRepository.findByAlbumId ***");
+		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findByAlbumId(this.album.getId());
 		this.imageRepository.findByAlbumId(this.album.getId());
+	}
+
+	@Test
+	void findByAlbumId() {
+		List<Image> dbImages = this.imageRepository.findByAlbumId(this.album.getId());
+		this.album.getImages().forEach(img -> {
+			Optional<Image> dbImgOpt = dbImages.stream()
+					.filter(i -> i.getId().equals(img.getId()))
+					.findAny();
+			assertTrue(dbImgOpt.isPresent());
+			assertImageEquals(img, dbImgOpt.get());
+		});
 	}
 
 	@Test
