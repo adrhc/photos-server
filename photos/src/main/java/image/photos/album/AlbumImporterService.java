@@ -265,8 +265,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		logger.debug("BEGIN {}", album.getName());
-//		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
-		List<Image> images = this.albumService.getImages(album.getId());
+		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
+//		List<Image> images = this.albumService.getImages(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
 			int fsNameIdx = foundImageNames.indexOf(dbName);
