@@ -37,7 +37,9 @@ public class ImageServiceImpl implements ImageService {
 	 */
 	@Override
 	public Image findByNameAndAlbumId(String name, Integer albumId) {
+		// not cached query
 		Integer imageId = this.imageRepository.findIdByNameAndAlbumId(name, albumId);
+		// Image is cached by id
 		return this.imageRepository.getById(imageId);
 	}
 }
