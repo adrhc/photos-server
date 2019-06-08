@@ -109,7 +109,10 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 
 	@Test
 	void findByAlbumId() {
-		List<Image> dbImages = this.imageRepository.findByAlbumId(this.album.getId());
+		List<Image> dbImages;
+		synchronized (this) {
+			dbImages = this.imageRepository.findByAlbumId(this.album.getId());
+		}
 		this.album.getImages().forEach(img -> {
 			Optional<Image> dbImgOpt = dbImages.stream()
 					.filter(i -> i.getId().equals(img.getId()))
@@ -173,12 +176,15 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 
 	@Test
 	void safelyDeleteImage() {
-		// sync in memory album with subsequent image db deletion
-		Image image = this.album.getImages().remove(this.album.getImages().size() - 1);
-		log.debug("*** albumRepository.putAlbumCover ***");
-		this.albumRepository.putAlbumCover(image.getId());
-		log.debug("*** imageRepository.safelyDeleteImage ***");
-		this.imageRepository.safelyDeleteImage(image.getId());
+		Image image;
+		synchronized (this) {
+			// sync in memory album with subsequent image db deletion
+			image = this.album.getImages().remove(this.album.getImages().size() - 1);
+			log.debug("*** albumRepository.putAlbumCover ***");
+			this.albumRepository.putAlbumCover(image.getId());
+			log.debug("*** imageRepository.safelyDeleteImage ***");
+			this.imageRepository.safelyDeleteImage(image.getId());
+		}
 		log.debug("*** imageRepository.findById ***");
 		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
 		assertFalse(dbImage.isPresent());
