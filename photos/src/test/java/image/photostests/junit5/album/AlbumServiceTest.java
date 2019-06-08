@@ -8,10 +8,12 @@ import image.persistence.entitytests.assertion.IImageAssertions;
 import image.photos.album.AlbumService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.engine.spi.CacheImplementor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +66,27 @@ class AlbumServiceTest implements IImageAssertions {
 	}
 
 	/**
+	 * valid only when not using @Cache on Album.images
+	 */
+	@Test
+	void albumImagesNoCacheTest() {
+		AlbumImagesCacheData data = preAlbumImagesCacheTest();
+		assertFalse(data.cache.containsCollection(data.albumImagesRegionName, this.album.getId()),
+				"Album[" + this.album.getId() + "].images found in cache!");
+	}
+
+	/**
 	 * valid only when using @Cache on Album.images
 	 */
 	@Test
+	@Disabled
 	void albumImagesCacheTest() {
+		AlbumImagesCacheData data = preAlbumImagesCacheTest();
+		assertTrue(data.cache.containsCollection(data.albumImagesRegionName, this.album.getId()),
+				"Album[" + this.album.getId() + "].images not in cache!");
+	}
+
+	private AlbumImagesCacheData preAlbumImagesCacheTest() {
 		String albumImagesRegionName = Album.class.getName().concat(".images");
 		org.hibernate.Cache cache = this.em.getEntityManagerFactory()
 				.getCache().unwrap(CacheImplementor.class);
@@ -75,12 +94,17 @@ class AlbumServiceTest implements IImageAssertions {
 		assertFalse(cache.containsCollection(albumImagesRegionName, this.album.getId()),
 				"Album[" + this.album.getId() + "].images already in cache!");
 		this.albumService.getImages(this.album.getId());
-		assertTrue(cache.containsCollection(albumImagesRegionName, this.album.getId()),
-				"Album[" + this.album.getId() + "].images not in cache!");
+		return new AlbumImagesCacheData(cache, albumImagesRegionName);
 	}
 
 	@AfterAll
 	void tearDown() {
 		this.albumRepository.deleteById(this.album.getId());
+	}
+
+	@AllArgsConstructor
+	private class AlbumImagesCacheData {
+		org.hibernate.Cache cache;
+		String albumImagesRegionName;
 	}
 }
