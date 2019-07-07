@@ -25,20 +25,17 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	@Override
 	public int countPages(String toSearch, boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
+		boolean hasSearch = StringUtils.hasText(toSearch);
 		TypedQuery<Long> q;
+		q = this.em.createQuery("SELECT count(i) FROM Image i " +
+				(emptyAlbumId ? "WHERE i.deleted = false " :
+						"JOIN i.album a WHERE a.id = :albumId AND i.deleted = false ") +
+				VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
+				(hasSearch ? "AND i.name LIKE :toSearch" : ""), Long.class);
 		if (StringUtils.hasText(toSearch)) {
-			q = this.em.createQuery("SELECT count(i) FROM Image i " +
-					(emptyAlbumId ? "WHERE i.deleted = false " :
-							"JOIN i.album a WHERE a.id = :albumId AND i.deleted = false ") +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"AND i.name LIKE :toSearch", Long.class);
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
 		} else {
-			q = this.em.createQuery("SELECT count(i) FROM Image i " +
-					(emptyAlbumId ? "WHERE i.deleted = false " :
-							"JOIN i.album a WHERE a.id = :albumId AND i.deleted = false ") +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL, Long.class);
 			q.setHint(QueryHints.HINT_CACHEABLE, !viewHidden && !viewOnlyPrintable);
 		}
 		if (!emptyAlbumId) {
@@ -69,7 +66,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 				VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 				(hasSearch ? "AND i.name LIKE :toSearch " : "") +
 				"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort, AlbumPage.class);
-		if (StringUtils.hasText(toSearch)) {
+		if (hasSearch) {
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
 		} else {
