@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
-	public static final String T1_TO_SEARCH = "DSC_1555";
+class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
+	private final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
 	@Autowired
 	private AlbumRepository albumRepository;
@@ -65,7 +65,7 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsU
 		// one deleted image
 		images.get(1).setDeleted(true);
 		images.get(2).setDeleted(false);
-		images.get(2).setName(T1_TO_SEARCH);
+		images.get(2).setName(this.T1_TO_SEARCH);
 		images.get(2).setFlags(of(EImageStatus.DEFAULT));
 		this.hiddenImage = images.get(3);
 		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
@@ -90,10 +90,10 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsU
 	@Test
 	void counting1Page() {
 		int pageCount = this.albumPageRepository.countPages(
-				T1_TO_SEARCH, false, false, this.albumId);
+				this.T1_TO_SEARCH, false, false, this.albumId);
 		log.debug("imageCount = {}, searching \"{}\", hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
-				pageCount, T1_TO_SEARCH, this.albumId);
+				pageCount, this.T1_TO_SEARCH, this.albumId);
 		Assert.assertEquals(1, pageCount);
 	}
 
@@ -121,10 +121,10 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsU
 	@Test
 	void finding1Image() {
 		List<AlbumPage> imagesForPage = this.albumPageRepository.getPageFromDb(1,
-				ESortType.ASC, T1_TO_SEARCH, true, false, this.albumId);
+				ESortType.ASC, this.T1_TO_SEARCH, true, false, this.albumId);
 		log.debug("imagesForPage.size = {}, sort ASC, searching \"{}\", hidden = true, " +
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
-				T1_TO_SEARCH, this.albumId);
+				this.T1_TO_SEARCH, this.albumId);
 		assertThat(imagesForPage, hasSize(1));
 	}
 

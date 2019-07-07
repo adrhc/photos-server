@@ -54,36 +54,25 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	public List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
 			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
+		boolean hasSearch = StringUtils.hasText(toSearch);
 		TypedQuery<AlbumPage> q;
+		q = this.em.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
+				"i.id, i.name, i.flags.hidden, i.flags.personal, i.flags.ugly, i.flags.duplicate, " +
+				"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
+				"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
+				"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
+				"i.lastUpdate, a.name, a.lastUpdate) " +
+//				"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
+//				"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
+				"FROM Image i JOIN i.album a WHERE i.deleted = false " +
+				(emptyAlbumId ? "" : "AND a.id = :albumId ") +
+				VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
+				(hasSearch ? "AND i.name LIKE :toSearch " : "") +
+				"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort, AlbumPage.class);
 		if (StringUtils.hasText(toSearch)) {
-			q = this.em.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
-					"i.id, i.name, i.flags.hidden, i.flags.personal, i.flags.ugly, i.flags.duplicate, " +
-					"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
-					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
-					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
-					"i.lastUpdate, a.name, a.lastUpdate) " +
-//					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
-//					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
-					"FROM Image i JOIN i.album a WHERE i.deleted = false " +
-					(emptyAlbumId ? "" : "AND a.id = :albumId ") +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"AND i.name LIKE :toSearch " +
-					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort, AlbumPage.class);
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
 		} else {
-			q = this.em.createQuery("SELECT new image.cdm.album.page.AlbumPage(" +
-					"i.id, i.name, i.flags.hidden, i.flags.personal, i.flags.ugly, i.flags.duplicate, " +
-					"i.flags.printable, i.imageMetadata.exifData.imageHeight, " +
-					"i.imageMetadata.exifData.imageWidth, i.rating, a.cover.id, " +
-					"i.imageMetadata.thumbLastModified, i.imageMetadata.dateTime, " +
-					"i.lastUpdate, a.name, a.lastUpdate) " +
-//					"thumbPath(a.name, i.imageMetadata.thumbLastModified, i.name), " +
-//					"imagePath(a.name, i.imageMetadata.thumbLastModified, i.name)) " +
-					"FROM Image i JOIN i.album a WHERE i.deleted = false " +
-					(emptyAlbumId ? "" : "AND a.id = :albumId ") +
-					VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-					"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort, AlbumPage.class);
 			q.setHint(QueryHints.HINT_CACHEABLE, !viewHidden && !viewOnlyPrintable);
 		}
 		if (!emptyAlbumId) {
@@ -110,7 +99,7 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 				"FROM Image i JOIN i.album a WHERE i.deleted = false " +
 				(emptyAlbumId ? "" : "AND a.id = :albumId ") +
 				VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
-				(hasSearch ? "AND i.name LIKE :toSearch" : ""), Date.class);
+				(hasSearch ? "AND i.name LIKE :toSearch " : ""), Date.class);
 		if (hasSearch) {
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
