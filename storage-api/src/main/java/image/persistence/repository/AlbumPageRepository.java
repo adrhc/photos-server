@@ -2,7 +2,9 @@ package image.persistence.repository;
 
 import image.cdm.album.page.AlbumPage;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by adr on 2/22/18.
@@ -26,6 +28,8 @@ public interface AlbumPageRepository {
 			boolean viewOnlyPrintable, Integer albumId);
 
 	List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
-			boolean viewHidden, boolean viewOnlyPrintable,
-			Integer albumId);
+			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId);
+
+	Optional<Date> getPageLastUpdate(int pageNr, String toSearch,
+			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId);
 }

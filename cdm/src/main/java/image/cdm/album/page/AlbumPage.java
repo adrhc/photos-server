@@ -78,7 +78,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 		this.imageHeight = imageHeight;
 		this.imageWidth = imageWidth;
 		this.rating = rating;
-		this.isCover = coverId != null && id.equals(coverId);
+		this.isCover = id.equals(coverId);
 		this.thumbLastModified = thumbLastModified;
 		this.dateTime = dateTime;
 		this.imageLastUpdate = imageLastUpdate;

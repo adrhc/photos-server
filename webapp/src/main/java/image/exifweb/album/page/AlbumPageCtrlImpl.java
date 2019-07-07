@@ -20,8 +20,6 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * Created by adr on 2/8/18.
@@ -72,24 +70,10 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 			WebRequest webRequest) {
 		INotModifiedChecker _this = this;
 		return _this.checkNotModified(
+				() -> this.albumPageRepository.getPageLastUpdate(pageNr, toSearch,
+						viewHidden, viewOnlyPrintable, albumId).orElseGet(Date::new),
 				() -> this.albumPageService.getPage(pageNr,
 						ESortType.valueOf(sort.toUpperCase()),
-						toSearch, viewHidden, viewOnlyPrintable, albumId),
-				albumPages -> {
-					/*
-					 * see also xhttp_zld.conf config (ngx.var.uri ~= /app/json/image/page) for:
-					 * location /photos/app/
-					 * location /photosj/app/
-					 *
-					 * ImageLastUpdate means the record in DB (@Version) instead of actual file!
-					 * ThumbLastModified is related to actual image file.
-					 */
-					Optional<Date> imageLastUpdate = albumPages.stream()
-							.flatMap(ap -> Stream.of(ap.getImageLastUpdate(), ap.getAlbumLastUpdate()))
-							.max(Date::compareTo);
-					// e.g. album's cover might change so the page
-					// might no longer contain the album's cover image
-					return imageLastUpdate.orElseGet(Date::new);
-				}, webRequest);
+						toSearch, viewHidden, viewOnlyPrintable, albumId), webRequest);
 	}
 }

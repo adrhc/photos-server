@@ -23,7 +23,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
@@ -182,5 +185,15 @@ public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsU
 						"viewOnlyPrintable = false, albumId = {}", imagesForPage.size(),
 				this.hiddenImage.getName(), this.albumId);
 		assertThat(imagesForPage, hasSize(0));
+	}
+
+	@Test
+	void getPageLastUpdate() {
+		Optional<Date> lastUpdate = this.albumPageRepository.getPageLastUpdate(1,
+				null, false, false, this.albumId);
+		log.debug("lastUpdate = {}, sort ASC, searching \"{}\", hidden = false, " +
+						"viewOnlyPrintable = false, albumId = {}", lastUpdate,
+				this.hiddenImage.getName(), this.albumId);
+		assertTrue(lastUpdate.isPresent());
 	}
 }

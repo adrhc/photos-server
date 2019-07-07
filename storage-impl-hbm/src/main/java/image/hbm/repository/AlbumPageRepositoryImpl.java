@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by adr on 2/8/18.
@@ -115,5 +117,11 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 		q.setFirstResult((pageNr - 1) * this.appConfigRepository.getPhotosPerPage());
 		q.setMaxResults(this.appConfigRepository.getPhotosPerPage());
 		return q.list();
+	}
+
+	@Override
+	public Optional<Date> getPageLastUpdate(int pageNr, String toSearch,
+			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
+		throw new UnsupportedOperationException();
 	}
 }
