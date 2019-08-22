@@ -246,6 +246,16 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			logger.info("{} no longer exists!", imgFile.getPath());
 			return false;
 		}
+		if (this.imageRepository
+				.findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(
+						imgFile.getName().replaceFirst("[.][^.]+$", ""),
+						imageMetadata.getExifData().getDateTimeOriginal(),
+						album.getId()
+				).isPresent()) {
+			logger.debug("Image {}\tto insert into album {} already exists in another album!",
+					imgFile.getName(), album.getName());
+			return false;
+		}
 		logger.debug("insert {}/{}", album.getName(), imgFile.getName());
 		Image newImg = new Image();
 		newImg.setImageMetadata(imageMetadata);
