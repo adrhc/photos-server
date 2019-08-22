@@ -117,13 +117,15 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	}
 
 	@Test
-	void findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginal() {
+	void findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot() {
 		Image image = this.album.getImages().get(0);
-		Image dbImage = this.imageRepository
-				.findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginal(
+		Optional<Image> dbImage = this.imageRepository
+				.findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(
 						image.getName().replaceFirst("[.][^.]+$", ""),
-						image.getImageMetadata().getExifData().getDateTimeOriginal());
-		assertImageEquals(image, dbImage);
+						image.getImageMetadata().getExifData().getDateTimeOriginal(),
+						image.getAlbum().getId() - 1);
+		assertTrue(dbImage.isPresent());
+		assertImageEquals(image, dbImage.get());
 	}
 
 	@Test

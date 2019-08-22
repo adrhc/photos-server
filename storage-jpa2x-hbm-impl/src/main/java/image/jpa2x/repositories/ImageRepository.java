@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.QueryHint;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
@@ -37,5 +38,5 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	@Query("SELECT id FROM Image WHERE name = :name AND album.id = :albumId")
 	Integer findIdByNameAndAlbumId(String name, Integer albumId);
 
-	Image findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginal(String nameNoExt, Date dateTimeOriginal);
+	Optional<Image> findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(String nameNoExt, Date dateTimeOriginal, Integer albumId);
 }
