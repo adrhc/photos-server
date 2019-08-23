@@ -109,7 +109,7 @@ public class ImageUtils {
 		if (idx < 0) {
 			return fileName;
 		}
-		sb.append(fileName.substring(0, idx));
+		sb.append(fileName, 0, idx);
 		String pointAndExtension = fileName.substring(idx);
 		if (pointAndExtension.equals(pointAndExtension.toLowerCase())) {
 			sb.append(pointAndExtension.toUpperCase());
