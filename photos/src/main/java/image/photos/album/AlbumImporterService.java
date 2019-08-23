@@ -203,7 +203,12 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
+		} else if (this.imageUtils.imageExistsInOtherAlbum(imgFile, album.getId())) {
+			logger.debug("Image {}\tto insert into album {} already exists in another album!",
+					imgFile.getName(), album.getName());
+			return false;
 		}
+
 		if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
 			updateImageMetadataFromFile(imgFile, dbImage);

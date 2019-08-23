@@ -71,9 +71,12 @@ public class ImageUtils {
 		return this.fullPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
 	}
 
+	private String relativePathFor(Long imageLastModif, String imgName, String albumName) {
+		return this.relativePathFormatter.format(new Object[]{albumName, imageLastModif, imgName});
+	}
+
 	private String imagePathFor(Long imageLastModif, String imgName, String albumName) {
-		String relativePath = this.relativePathFormatter.format(
-				new Object[]{albumName, imageLastModif, imgName});
+		String relativePath = relativePathFor(imageLastModif, imgName, albumName);
 		return this.fullPathFormatter.format(new Object[]{this.albumsDir, relativePath});
 	}
 
@@ -118,7 +121,7 @@ public class ImageUtils {
 	}
 
 	private long sizeOf(Image image) {
-		String relPath = imagePathFor(image.getImageMetadata().getDateTime().getTime(),
+		String relPath = relativePathFor(image.getImageMetadata().getDateTime().getTime(),
 				image.getName(), image.getAlbum().getName());
 		Path path = Path.of(this.appConfigRepository.getAlbumsPath(), relPath);
 		return path.toFile().length();
