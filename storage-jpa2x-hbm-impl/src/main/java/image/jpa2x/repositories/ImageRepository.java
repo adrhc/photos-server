@@ -38,5 +38,11 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	@Query("SELECT id FROM Image WHERE name = :name AND album.id = :albumId")
 	Integer findIdByNameAndAlbumId(String name, Integer albumId);
 
+	/*
+		@Query("SELECT i FROM Image i WHERE " +
+				"i.name LIKE :nameNoExt " +
+				"AND album.id <> :albumId " +
+				"AND i.imageMetadata.exifData.dateTimeOriginal = dateTimeOriginal")
+	*/
 	Optional<Image> findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(String nameNoExt, Date dateTimeOriginal, Integer albumId);
 }

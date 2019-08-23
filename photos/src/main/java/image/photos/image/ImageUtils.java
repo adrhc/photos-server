@@ -3,16 +3,27 @@ package image.photos.image;
 import image.cdm.album.cover.AlbumCover;
 import image.cdm.image.feature.IImageBasicInfo;
 import image.cdm.image.feature.IImageDimensions;
+import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.ImageRepository;
+import image.persistence.entity.Image;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by adr on 2/2/18.
  */
 @Component
+@Slf4j
 public class ImageUtils {
 	private MessageFormat fullPathFormatter = new MessageFormat("{0}/{1}");
 	private MessageFormat relativePathFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
@@ -24,6 +35,10 @@ public class ImageUtils {
 	private double maxThumbSize;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
+	@Autowired
+	private ImageRepository imageRepository;
+	@Autowired
+	private AppConfigRepository appConfigRepository;
 
 	public void appendImagePaths(List<? extends IImageBasicInfo> imageBasicInfos) {
 		for (IImageBasicInfo basicInfo : imageBasicInfos) {
@@ -96,5 +111,21 @@ public class ImageUtils {
 			sb.append(pointAndExtension.toLowerCase());
 		}
 		return sb.toString();
+	}
+
+	public boolean imageExistsInOtherAlbum(File imgFile, Date exifDateTimeOriginal, Integer albumId) {
+		Optional<Image> image = this.imageRepository
+				.findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(
+						FilenameUtils.getBaseName(imgFile.getName()),
+						exifDateTimeOriginal, albumId
+				);
+		return image.filter(value -> imgFile.length() == sizeOf(value)).isPresent();
+	}
+
+	private long sizeOf(Image image) {
+		String relPath = imagePathFor(image.getImageMetadata().getDateTime().getTime(),
+				image.getName(), image.getAlbum().getName());
+		Path path = Path.of(this.appConfigRepository.getAlbumsPath(), relPath);
+		return path.toFile().length();
 	}
 }

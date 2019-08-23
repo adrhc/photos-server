@@ -5,18 +5,14 @@ import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
-import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
-import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.entitytests.assertion.IImageAssertions;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,39 +31,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
+class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPositiveIntegerRandom, IImageFlagsUtils {
 	@PersistenceContext
 	protected EntityManager em;
 	@Autowired
-	private AlbumRepository albumRepository;
-	@Autowired
 	private ImageRepository imageRepository;
-	private Album album;
-
-	/**
-	 * Notice that ImageMetadata is generated too and will be used in tests!
-	 */
-	@BeforeAll
-	void setUp(
-			@Random(excludes = {"id", "lastUpdate", "cover", "images"})
-					Album album,
-			@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
-					List<Image> images
-	) {
-		this.album = album;
-		this.album.addImages(images);
-		this.albumRepository.save(this.album);
-	}
-
-	/**
-	 * this.updateThumbLastModifiedForImg() + this.albumRepository.delete(this.album) yield this:
-	 * <p>
-	 * ObjectOptimisticLockingFailureException: Object of class [image.persistence.entity.Image] with identifier [1]: optimistic locking failed; nested exception is org.hibernate.StaleObjectStateException: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect) : [image.persistence.entity.Image#1]
-	 */
-	@AfterAll
-	void tearDown() {
-		this.albumRepository.deleteById(this.album.getId());
-	}
 
 	@Test
 	void persistImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
