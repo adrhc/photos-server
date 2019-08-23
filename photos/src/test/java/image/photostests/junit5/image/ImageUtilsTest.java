@@ -33,9 +33,7 @@ class ImageUtilsTest extends ImageTestBase {
 		Mockito.when(imgFile.getName()).thenReturn(image.getName());
 		Mockito.when(imgFile.length()).thenReturn(0L);
 		// found in another album because its album is declared to be "album.id - 1" instead of the real one (album.id)
-		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
-				image.getImageMetadata().getExifData().getDateTimeOriginal(),
-				this.album.getId() - 1);
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertTrue(exists);
 	}
 
@@ -44,9 +42,7 @@ class ImageUtilsTest extends ImageTestBase {
 		Image image = this.album.getImages().get(0);
 		File imgFile = fileMock(0L, image.getName());
 		// image found only in its album; the declared album is the real one
-		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
-				image.getImageMetadata().getExifData().getDateTimeOriginal(),
-				this.album.getId());
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile, this.album.getId());
 		assertFalse(exists);
 	}
 
@@ -55,9 +51,7 @@ class ImageUtilsTest extends ImageTestBase {
 		Image image = this.album.getImages().get(0);
 		File imgFile = fileMock(1L, image.getName());
 		// not found because of the size difference
-		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
-				image.getImageMetadata().getExifData().getDateTimeOriginal(),
-				this.album.getId() - 1);
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertFalse(exists);
 	}
 
@@ -66,9 +60,7 @@ class ImageUtilsTest extends ImageTestBase {
 		Image image = this.album.getImages().get(0);
 		File imgFile = fileMock(0L, image.getName().substring(0, image.getName().length() - 2));
 		// shorter name
-		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
-				image.getImageMetadata().getExifData().getDateTimeOriginal(),
-				this.album.getId() - 1);
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertTrue(exists);
 	}
 
@@ -77,9 +69,7 @@ class ImageUtilsTest extends ImageTestBase {
 		Image image = this.album.getImages().get(0);
 		File imgFile = fileMock(0L, image.getName() + "x");
 		// longer name
-		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
-				image.getImageMetadata().getExifData().getDateTimeOriginal(),
-				this.album.getId() - 1);
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertTrue(exists);
 	}
 

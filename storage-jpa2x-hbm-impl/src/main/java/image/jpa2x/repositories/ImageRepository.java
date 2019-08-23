@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.QueryHint;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -47,7 +46,6 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 			"   ELSE SUBSTRING(i.name, 1, LOCATE('.', i.name) - 1) END" + // e.g. "xxx" for xxx.y.jpeg
 			"), '%')" +
 			") " +
-			"AND i.album.id <> :albumId " +
-			"AND i.imageMetadata.exifData.dateTimeOriginal = :dateTimeOriginal")
-	List<Image> findDuplicates(String nameNoExt, Date dateTimeOriginal, Integer albumId);
+			"AND i.album.id <> :albumId")
+	List<Image> findDuplicates(String nameNoExt, Integer albumId);
 }

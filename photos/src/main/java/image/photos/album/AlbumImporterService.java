@@ -244,8 +244,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			logger.info("{} no longer exists!", imgFile.getPath());
 			return false;
 		}
-		if (this.imageUtils.imageExistsInOtherAlbum(imgFile,
-				imageMetadata.getExifData().getDateTimeOriginal(), album.getId())) {
+		if (this.imageUtils.imageExistsInOtherAlbum(imgFile, album.getId())) {
 			logger.debug("Image {}\tto insert into album {} already exists in another album!",
 					imgFile.getName(), album.getName());
 			return false;

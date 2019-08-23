@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -112,12 +111,9 @@ public class ImageUtils {
 		return sb.toString();
 	}
 
-	public boolean imageExistsInOtherAlbum(File imgFile, Date exifDateTimeOriginal, Integer albumId) {
+	public boolean imageExistsInOtherAlbum(File imgFile, Integer albumId) {
 		List<Image> image = this.imageRepository
-				.findDuplicates(
-						FilenameUtils.getBaseName(imgFile.getName()),
-						exifDateTimeOriginal, albumId
-				);
+				.findDuplicates(FilenameUtils.getBaseName(imgFile.getName()), albumId);
 		return image.stream().anyMatch(i -> imgFile.length() == sizeOf(i));
 	}
 

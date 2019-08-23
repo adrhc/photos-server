@@ -89,7 +89,6 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 		List<Image> dbImages = this.imageRepository
 				.findDuplicates(
 						image.getName().replaceFirst("[.][^.]+$", ""),
-						image.getImageMetadata().getExifData().getDateTimeOriginal(),
 						image.getAlbum().getId() - 1);
 		assertFalse(dbImages.isEmpty());
 		assertImageEquals(image, dbImages.get(0));
