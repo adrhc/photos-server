@@ -38,8 +38,15 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	Integer findIdByNameAndAlbumId(String name, Integer albumId);
 
 	@Query("SELECT i FROM Image i WHERE " +
-			"(LOWER(i.name) LIKE CONCAT('%', LOWER(:nameNoExt), '%') OR  " +
-			"LOWER(:nameNoExt) LIKE CONCAT('%', LOWER(i.name), '%'))  " +
+			"(" +
+			"LOWER(i.name) LIKE CONCAT('%', LOWER(:nameNoExt), '%') OR  " +
+			"LOWER(:nameNoExt) LIKE " +
+			"CONCAT('%', LOWER(" +
+			"   CASE WHEN LOCATE('.', i.name) <= 1 " +
+			"   THEN i.name " + // e.g. ".jpeg"
+			"   ELSE SUBSTRING(i.name, 1, LOCATE('.', i.name) - 1) END" + // e.g. "xxx" for xxx.y.jpeg
+			"), '%')" +
+			") " +
 			"AND i.album.id <> :albumId " +
 			"AND i.imageMetadata.exifData.dateTimeOriginal = :dateTimeOriginal")
 	List<Image> findDuplicates(String nameNoExt, Date dateTimeOriginal, Integer albumId);
