@@ -23,8 +23,9 @@ import java.util.List;
 @Component
 @Slf4j
 public class ImageUtils {
-	private MessageFormat fullPathFormatter = new MessageFormat("{0}/{1}");
-	private MessageFormat relativePathFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
+	private MessageFormat fullUriPathFormatter = new MessageFormat("{0}/{1}");
+	private MessageFormat relativeFilePathFormatter = new MessageFormat("{0}/{1}");
+	private MessageFormat relativeUriPathFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -66,18 +67,22 @@ public class ImageUtils {
 	}
 
 	private String thumbPathFor(Long thumbLastModified, String imgName, String albumName) {
-		String relativePath = this.relativePathFormatter.format(
+		String relativePath = this.relativeUriPathFormatter.format(
 				new Object[]{albumName, thumbLastModified, imgName});
-		return this.fullPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
+		return this.fullUriPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
 	}
 
-	private String relativePathFor(Long imageLastModif, String imgName, String albumName) {
-		return this.relativePathFormatter.format(new Object[]{albumName, imageLastModif, imgName});
+	private String relativeFilePathFor(String imgName, String albumName) {
+		return this.relativeFilePathFormatter.format(new Object[]{albumName, imgName});
+	}
+
+	private String relativeUriPathFor(Long imageLastModif, String imgName, String albumName) {
+		return this.relativeUriPathFormatter.format(new Object[]{albumName, imageLastModif, imgName});
 	}
 
 	private String imagePathFor(Long imageLastModif, String imgName, String albumName) {
-		String relativePath = relativePathFor(imageLastModif, imgName, albumName);
-		return this.fullPathFormatter.format(new Object[]{this.albumsDir, relativePath});
+		String relativePath = relativeUriPathFor(imageLastModif, imgName, albumName);
+		return this.fullUriPathFormatter.format(new Object[]{this.albumsDir, relativePath});
 	}
 
 	public void appendImageDimensions(List<? extends IImageDimensions> imageDimensions) {
@@ -121,8 +126,7 @@ public class ImageUtils {
 	}
 
 	private long sizeOf(Image image) {
-		String relPath = relativePathFor(image.getImageMetadata().getDateTime().getTime(),
-				image.getName(), image.getAlbum().getName());
+		String relPath = relativeFilePathFor(image.getName(), image.getAlbum().getName());
 		Path path = Path.of(this.appConfigRepository.getAlbumsPath(), relPath);
 		return path.toFile().length();
 	}
