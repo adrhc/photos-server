@@ -14,8 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @TestPropertySource(properties = "hibernate.show_sql=true")
@@ -25,6 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ImageUtilsTest extends ImageTestBase {
 	@Autowired
 	private ImageUtils imageUtils;
+
+	@Test
+	void changeToOppositeExtensionCase() {
+		assertEquals("x.Y", this.imageUtils.changeToOppositeExtensionCase("x.y"));
+		assertEquals(".Y", this.imageUtils.changeToOppositeExtensionCase(".y"));
+		assertEquals("x", this.imageUtils.changeToOppositeExtensionCase("x"));
+	}
 
 	@Test
 	void imageExistsInOtherAlbum() {

@@ -104,9 +104,9 @@ public class ImageUtils {
 	}
 
 	public String changeToOppositeExtensionCase(String fileName) {
-		StringBuilder sb = new StringBuilder(fileName);
-		int idx = sb.lastIndexOf(".");
-		if (idx <= 0) {
+		StringBuilder sb = new StringBuilder();
+		int idx = fileName.lastIndexOf(".");
+		if (idx < 0) {
 			return fileName;
 		}
 		sb.append(fileName.substring(0, idx));
