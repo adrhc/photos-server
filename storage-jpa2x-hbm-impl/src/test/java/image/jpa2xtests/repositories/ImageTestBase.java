@@ -32,6 +32,8 @@ public abstract class ImageTestBase implements MiscUtils, IAppConfigSupplier {
 					List<Image> images
 	) {
 		this.album = album;
+		// % -> difficult character for LIKE sql operator
+		images.get(0).setName(images.get(0).getName().replace('%', '-'));
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
 		this.appConfigRepository.persist(entityAppConfigOf(AppConfigEnum.albums_path, "/dummy-path"));

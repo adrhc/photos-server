@@ -37,16 +37,56 @@ class ImageUtilsTest extends ImageTestBase {
 				image.getImageMetadata().getExifData().getDateTimeOriginal(),
 				this.album.getId() - 1);
 		assertTrue(exists);
-		// not found in another album; the declared album is the real one
-		exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
+	}
+
+	@Test
+	void noOtherAlbumHasIt() {
+		Image image = this.album.getImages().get(0);
+		File imgFile = fileMock(0L, image.getName());
+		// image found only in its album; the declared album is the real one
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
 				image.getImageMetadata().getExifData().getDateTimeOriginal(),
 				this.album.getId());
 		assertFalse(exists);
+	}
+
+	@Test
+	void sizeDifference() {
+		Image image = this.album.getImages().get(0);
+		File imgFile = fileMock(1L, image.getName());
 		// not found because of the size difference
-		Mockito.when(imgFile.length()).thenReturn(1L);
-		exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
 				image.getImageMetadata().getExifData().getDateTimeOriginal(),
 				this.album.getId() - 1);
 		assertFalse(exists);
+	}
+
+	@Test
+	void shortName() {
+		Image image = this.album.getImages().get(0);
+		File imgFile = fileMock(0L, image.getName().substring(0, image.getName().length() - 2));
+		// shorter name
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
+				image.getImageMetadata().getExifData().getDateTimeOriginal(),
+				this.album.getId() - 1);
+		assertTrue(exists);
+	}
+
+	@Test
+	void longName() {
+		Image image = this.album.getImages().get(0);
+		File imgFile = fileMock(0L, image.getName() + "x");
+		// longer name
+		boolean exists = this.imageUtils.imageExistsInOtherAlbum(imgFile,
+				image.getImageMetadata().getExifData().getDateTimeOriginal(),
+				this.album.getId() - 1);
+		assertTrue(exists);
+	}
+
+	private File fileMock(long length, String name) {
+		File imgFile = Mockito.mock(File.class);
+		Mockito.when(imgFile.getName()).thenReturn(name);
+		Mockito.when(imgFile.length()).thenReturn(length);
+		return imgFile;
 	}
 }

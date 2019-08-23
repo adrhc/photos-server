@@ -24,8 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestPropertySource(properties = "hibernate.show_sql=true")
 @ExtendWith(RandomBeansExtensionEx.class)
@@ -85,15 +84,15 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 	}
 
 	@Test
-	void findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot() {
+	void findDuplicates() {
 		Image image = this.album.getImages().get(0);
-		Optional<Image> dbImage = this.imageRepository
-				.findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(
+		List<Image> dbImages = this.imageRepository
+				.findDuplicates(
 						image.getName().replaceFirst("[.][^.]+$", ""),
 						image.getImageMetadata().getExifData().getDateTimeOriginal(),
 						image.getAlbum().getId() - 1);
-		assertTrue(dbImage.isPresent());
-		assertImageEquals(image, dbImage.get());
+		assertFalse(dbImages.isEmpty());
+		assertImageEquals(image, dbImages.get(0));
 	}
 
 	@Test

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.QueryHint;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
@@ -38,5 +37,10 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	@Query("SELECT id FROM Image WHERE name = :name AND album.id = :albumId")
 	Integer findIdByNameAndAlbumId(String name, Integer albumId);
 
-	Optional<Image> findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(String nameNoExt, Date dateTimeOriginal, Integer albumId);
+	@Query("SELECT i FROM Image i WHERE " +
+			"(LOWER(i.name) LIKE CONCAT('%', LOWER(:nameNoExt), '%') OR  " +
+			"LOWER(:nameNoExt) LIKE CONCAT('%', LOWER(i.name), '%'))  " +
+			"AND i.album.id <> :albumId " +
+			"AND i.imageMetadata.exifData.dateTimeOriginal = :dateTimeOriginal")
+	List<Image> findDuplicates(String nameNoExt, Date dateTimeOriginal, Integer albumId);
 }

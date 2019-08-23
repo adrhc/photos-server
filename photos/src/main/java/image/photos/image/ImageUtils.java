@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by adr on 2/2/18.
@@ -114,12 +113,12 @@ public class ImageUtils {
 	}
 
 	public boolean imageExistsInOtherAlbum(File imgFile, Date exifDateTimeOriginal, Integer albumId) {
-		Optional<Image> image = this.imageRepository
-				.findOneByNameStartsWithIgnoreCaseAndImageMetadataExifDataDateTimeOriginalAndAlbumIdNot(
+		List<Image> image = this.imageRepository
+				.findDuplicates(
 						FilenameUtils.getBaseName(imgFile.getName()),
 						exifDateTimeOriginal, albumId
 				);
-		return image.filter(value -> imgFile.length() == sizeOf(value)).isPresent();
+		return image.stream().anyMatch(i -> imgFile.length() == sizeOf(i));
 	}
 
 	private long sizeOf(Image image) {
