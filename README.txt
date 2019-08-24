@@ -1,5 +1,8 @@
 ATENTIE, depinde de subtitles-extractor compilat non-shade!
 
+continue compiltation after failing in e.g. webapp module:
+    ./mvnw -e -rf webapp -Dmaven.javadoc.skip=true install
+
 tomcat/lib (pt a functiona aspectj - @Async):
 spring-instrument-tomcat-4.2.9.RELEASE.jar
 
