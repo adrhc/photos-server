@@ -58,7 +58,7 @@ public class ImageCtrl {
 	@RequestMapping(value = "/changeStatus",
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void changeStatus(@RequestBody ImageStatus imageStatus) {
 		this.imageRepository.changeStatus(imageStatus);
 	}
@@ -66,12 +66,12 @@ public class ImageCtrl {
 	@RequestMapping(value = "/setRating",
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void changeRating(@RequestBody ImageRating imageRating) {
 		this.imageRepository.changeRating(imageRating);
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "/putAlbumCover/{imageId}",
 			method = {RequestMethod.POST, RequestMethod.OPTIONS},
 			consumes = MediaType.APPLICATION_JSON_VALUE)

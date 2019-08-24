@@ -13,16 +13,16 @@ import java.util.Map;
 public interface AlbumExporterCtrl {
 	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	DeferredResult<Map<String, String>> updateJsonForAlbumsPage();
 
 	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	DeferredResult<Map<String, String>> updateJsonForAllAlbums();
 
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonStringValue jsonStringValue);
 }

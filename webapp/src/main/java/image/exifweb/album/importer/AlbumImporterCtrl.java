@@ -13,11 +13,11 @@ import java.util.Map;
 public interface AlbumImporterCtrl {
 	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	DeferredResult<Map<String, String>> reImport(@RequestBody JsonStringValue json1Value);
 
 	@RequestMapping(value = "/importNewAlbumsOnly", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	DeferredResult<Map<String, String>> importNewAlbumsOnly();
 }

@@ -35,7 +35,7 @@ public class SubtitleCtrl {
 	private ProcessInfoService processInfoService;
 
 	@PostMapping(value = "/checkSubtitlesExtractor", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void checkSubtitlesExtractor(Model model) throws Exception {
 		String runningMessage;
 		if (this.subtitleService.isSubtitlesExtractorRunning()) {
@@ -56,7 +56,7 @@ public class SubtitleCtrl {
 	}
 
 	@PostMapping(value = "/extractSubtitles", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public synchronized void extractSubtitles(@RequestBody JsonStringValue jsonStringValue, Model model) throws IOException, InterruptedException {
 		boolean mkvExtractStarted = this.subtitleService.extractSubtitles(jsonStringValue.getValue(), true);
 		if (mkvExtractStarted) {
@@ -73,7 +73,7 @@ public class SubtitleCtrl {
 	}
 
 	@RequestMapping(value = "/stopExtractingSubtitles", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public synchronized void stopExtractingSubtitles(Model model) throws IOException, InterruptedException {
 		boolean mkvExtractStopped = this.subtitleService.stopExtractingSubtitles();
 		if (mkvExtractStopped) {

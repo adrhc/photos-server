@@ -66,7 +66,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	@Override
 	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonStringValue json1Value) {
 		logger.debug("BEGIN {}", json1Value.getValue());
 		return KeyValueDeferredResult.of((deferredResult) -> {
@@ -80,7 +80,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	@Override
 	@RequestMapping(value = "/importNewAlbumsOnly", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {

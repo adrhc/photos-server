@@ -29,7 +29,7 @@ public class HttpdCheckCtrl {
 
 	@RequestMapping(value = "/getHttpdRestartLogs", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void getHttpdRestartLogs(Model model) throws IOException {
 		String logs = this.httpdCheck.getHttpdRestartLogs();
 		model.addAttribute("message", logs);
@@ -37,7 +37,7 @@ public class HttpdCheckCtrl {
 
 	@RequestMapping(value = "/checkHttpd", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void checkHttpd(Model model) throws IOException, InterruptedException {
 		this.ac.getBean(HttpdCheckCtrl.class).checkHttpdAsync();
 		model.addAttribute("message", "Starting checkHttpd ...");

@@ -43,7 +43,7 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	 */
 	@RequestMapping(value = "/count", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
+	@PreAuthorize("hasRole('ADMIN') or !#viewHidden")
 	public PageCount pageCount(
 			@RequestParam(name = "albumId") Integer albumId,
 			@RequestParam(name = "toSearch", required = false) String toSearch,
@@ -57,7 +57,7 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 		return pageCount;
 	}
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or !#viewHidden")
+	@PreAuthorize("hasRole('ADMIN') or !#viewHidden")
 	@RequestMapping(method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public List<AlbumPage> page(

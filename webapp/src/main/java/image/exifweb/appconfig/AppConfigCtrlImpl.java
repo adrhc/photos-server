@@ -119,7 +119,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void gc(Model model) {
 		System.gc();
 		model.addAttribute("message", "System.gc run!");
@@ -141,7 +141,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 
 	@RequestMapping(value = "checkMailService", method = RequestMethod.GET,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void checkMailService(Model model) throws Exception {
 		if (this.mailService.checkMailService()) {
 			model.addAttribute("message", "Mail service is running!");
@@ -153,7 +153,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 
 	@RequestMapping(value = "reloadParams", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void reloadParams(Model model) {
 		evictAppConfigCache();
 		model.addAttribute("message", "App params reloaded!");
@@ -161,7 +161,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 
 	@RequestMapping(value = "updateAppConfigs", method = RequestMethod.POST,
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public void update(@RequestBody List<AppConfig> cdmAppConfigs, Model model) throws IOException {
 		List<image.persistence.entity.AppConfig> appConfigs =
 				this.photosConversionSupport.entityAppConfigsOf(cdmAppConfigs);

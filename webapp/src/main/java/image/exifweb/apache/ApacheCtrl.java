@@ -25,7 +25,7 @@ public class ApacheCtrl {
 	@Autowired
 	private ApacheService apacheService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value = "/getApacheLog", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public JsonStringValue getApacheLog(@RequestParam String type,
 			WebRequest webRequest) throws IOException {
