@@ -16,9 +16,12 @@ elif [ -e ../mvnw ]; then
 elif [ -e mvnw ]; then
 	echo "using mvnw"
 	MVN="mvnw"
+elif [ "`which mvn`" != "" ]; then
+	echo "using `which mvn`"
+	MVN="`which mvn`"
 else
-	echo "using mvn"
-	MVN="mvn"
+    echo "Can't find any of \"mvn\" or \"mvnw\"!"
+    exit 1
 fi
 export MVN="$MVN -e"
 
