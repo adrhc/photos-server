@@ -28,7 +28,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 
 	@Override
 	@RequestMapping(method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
 		return checkNotModified(this.albumRepository::getMaxLastUpdateForAll,
@@ -37,7 +37,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 
 	@Override
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AlbumCover getAlbumCoverById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
 		return checkNotModified(() -> this.albumCoverService.getCoverById(id),
@@ -46,7 +46,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 
 	@Override
 	@RequestMapping(value = "/search", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AlbumCover searchAlbumCover(@RequestParam String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
 		return checkNotModified(() -> this.albumCoverService.getCoverByName(name),

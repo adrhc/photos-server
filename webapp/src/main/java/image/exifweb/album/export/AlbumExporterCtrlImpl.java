@@ -56,7 +56,7 @@ public class AlbumExporterCtrlImpl implements AlbumExporterCtrl {
 
 	@Override
 	@RequestMapping(value = "/writeJsonForAlbumsPage", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
 		logger.debug("BEGIN");
@@ -69,7 +69,7 @@ public class AlbumExporterCtrlImpl implements AlbumExporterCtrl {
 
 	@Override
 	@RequestMapping(value = "/updateJsonForAllAlbums", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonForAllAlbums() {
 		logger.debug("BEGIN");
@@ -82,7 +82,7 @@ public class AlbumExporterCtrlImpl implements AlbumExporterCtrl {
 
 	@Override
 	@RequestMapping(value = "/updateJsonForAlbum", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> updateJsonFor1Album(@RequestBody JsonStringValue jsonStringValue) {
 		logger.debug("BEGIN {}", jsonStringValue.getValue());

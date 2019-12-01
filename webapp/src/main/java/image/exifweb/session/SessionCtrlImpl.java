@@ -27,7 +27,7 @@ public class SessionCtrlImpl implements SessionCtrl {
 	@Override
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AuthCheckResponse getSessionData(WebRequest webRequest, HttpSession httpSession) {
 		if (webRequest.checkNotModified(httpSession.getCreationTime())) {
 			return null;

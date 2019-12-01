@@ -66,30 +66,30 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "getProcMemStatSummary",
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public void getProcMemStatSummary(Model model)
 			throws IOException, InterruptedException {
 		this.processInfoService.prepareCPUMemSummary(model, null);
 	}
 
 	@RequestMapping(value = "getProcMemFullStats", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> getProcMemFullStats() {
 		// valid only on NSA310: processInfoService.prepareProcMemFullStats(model);
 		// HttpHeaders responseHeaders = new HttpHeaders();
-		// responseHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		// responseHeaders.setContentType(MediaType.APPLICATION_JSON);
 		// return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "testRAMObjectToJson", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AppConfig> testRAMObjectToJson() {
 		return this.testRAMObjectToJson;
 	}
 
 	@RequestMapping(value = "testRAMObjectToJsonDeferred", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public DeferredResult<List<AppConfig>> testRAMObjectToJsonDeferred() {
 		return (new ConstantDeferredResult<List<AppConfig>>()).setResultThenRun(this.testRAMObjectToJson);
 	}
@@ -107,18 +107,18 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "getMemStat", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ProcStatPercent> getMemStat() throws IOException, InterruptedException {
 		return this.processInfoService.getMemDetailUsingPs();
 	}
 
 	@RequestMapping(value = "getProcStat", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<ProcStatPercent> getProcStat() throws IOException, InterruptedException {
 		return this.processInfoService.getCPUDetailUsingTop();
 	}
 
-	@RequestMapping(value = "gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@RequestMapping(value = "gc", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void gc(Model model) {
 		System.gc();
@@ -126,7 +126,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "checkProcess", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public void checkProcess(@RequestParam String[] commands, Model model) throws Exception {
 		List<String> runningCmds = this.processInfoService.getProcessesRunning(commands);
 		if (runningCmds.isEmpty()) {
@@ -140,7 +140,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "checkMailService", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void checkMailService(Model model) throws Exception {
 		if (this.mailService.checkMailService()) {
@@ -152,7 +152,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "reloadParams", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void reloadParams(Model model) {
 		evictAppConfigCache();
@@ -160,7 +160,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "updateAppConfigs", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void update(@RequestBody List<AppConfig> cdmAppConfigs, Model model) throws IOException {
 		List<image.persistence.entity.AppConfig> appConfigs =
@@ -171,7 +171,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "canUseJsonFiles", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, String> canUseJsonFiles(WebRequest webRequest) {
 		if (webRequest.checkNotModified(this.appConfigService.canUseJsonFilesLastUpdate())) {
 			return null;
@@ -184,7 +184,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 	}
 
 	@RequestMapping(value = "getAppConfigs", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AppConfig> getAppConfigs(WebRequest webRequest) {
 //        logger.debug("lastUpdatedAppConfigs = {}", appConfigService.getLastUpdatedAppConfigs());
 //        logger.debug("If-Modified-Since = {}", request.getDateHeader("If-Modified-Since"));
@@ -204,7 +204,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 
 
 	@RequestMapping(value = "findAllOrderByNameAscNotCached",
-			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AppConfig> findAllOrderByNameAscNotCached() {
 		return this.photosConversionSupport.cdmAppConfigsOf(
 				this.appConfigRepository.findAllOrderByNameAscNotCached());
@@ -212,7 +212,7 @@ public class AppConfigCtrlImpl implements IAppConfigCache {
 
 
 	@RequestMapping(value = "findByNameNotCached",
-			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public AppConfig findByNameNotCached() {
 		return this.cs.convert(
 				this.appConfigRepository.findByNameNotCached("albums_path"),

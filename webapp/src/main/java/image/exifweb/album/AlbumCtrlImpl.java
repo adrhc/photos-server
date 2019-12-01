@@ -30,7 +30,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 
 	@Override
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(AlbumViews.Cover.class)
 	public Album getAlbumById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
@@ -44,7 +44,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 
 	@Override
 	@RequestMapping(value = "/byName/{name}", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(AlbumViews.Cover.class)
 	public Album findAlbumByName(@PathVariable String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);

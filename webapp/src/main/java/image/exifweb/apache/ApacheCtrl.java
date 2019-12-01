@@ -26,7 +26,7 @@ public class ApacheCtrl {
 	private ApacheService apacheService;
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@GetMapping(value = "/getApacheLog", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GetMapping(value = "/getApacheLog", produces = MediaType.APPLICATION_JSON_VALUE)
 	public JsonStringValue getApacheLog(@RequestParam String type,
 			WebRequest webRequest) throws IOException {
 		File file;

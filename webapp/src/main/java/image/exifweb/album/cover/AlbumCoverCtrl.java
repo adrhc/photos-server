@@ -12,14 +12,14 @@ import java.util.List;
 
 public interface AlbumCoverCtrl {
 	@RequestMapping(method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	List<AlbumCover> getAllCovers(WebRequest webRequest);
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	AlbumCover getAlbumCoverById(@PathVariable Integer id, WebRequest webRequest);
 
 	@RequestMapping(value = "/search", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	AlbumCover searchAlbumCover(@RequestParam String name, WebRequest webRequest);
 }

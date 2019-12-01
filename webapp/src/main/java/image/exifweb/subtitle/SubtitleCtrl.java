@@ -34,7 +34,7 @@ public class SubtitleCtrl {
 	@Autowired
 	private ProcessInfoService processInfoService;
 
-	@PostMapping(value = "/checkSubtitlesExtractor", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/checkSubtitlesExtractor", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void checkSubtitlesExtractor(Model model) throws Exception {
 		String runningMessage;
@@ -55,7 +55,7 @@ public class SubtitleCtrl {
 		model.addAttribute("subLogLines", endingLinesFileReader.getLines());
 	}
 
-	@PostMapping(value = "/extractSubtitles", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(value = "/extractSubtitles", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public synchronized void extractSubtitles(@RequestBody JsonStringValue jsonStringValue, Model model) throws IOException, InterruptedException {
 		boolean mkvExtractStarted = this.subtitleService.extractSubtitles(jsonStringValue.getValue(), true);

@@ -22,7 +22,7 @@ public abstract class AppManagerCtrl<T extends AppManagerService> {
 
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value = "/start", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public void start(Model model) throws IOException, InterruptedException {
 		if (this.appManagerService.isRunning()) {
 			model.addAttribute("message",
@@ -35,7 +35,7 @@ public abstract class AppManagerCtrl<T extends AppManagerService> {
 
 	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value = "/stop", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	public void stop(Model model) throws IOException, InterruptedException {
 		if (!this.appManagerService.isRunning()) {
 			model.addAttribute("message",
