@@ -72,7 +72,7 @@ public class SubtitleCtrl {
 		}
 	}
 
-	@RequestMapping(value = "/stopExtractingSubtitles", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/stopExtractingSubtitles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public synchronized void stopExtractingSubtitles(Model model) throws IOException, InterruptedException {
 		boolean mkvExtractStopped = this.subtitleService.stopExtractingSubtitles();
@@ -84,7 +84,7 @@ public class SubtitleCtrl {
 		}
 	}
 
-	@RequestMapping(value = "/videoFolders", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/videoFolders", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<JsonStringValue> videoFolders(WebRequest webRequest) throws IOException {
 		File videoRoot = new File(this.appConfigService.getConfig("video root folder"));
 		File[] videoRootFolders = videoRoot.listFiles(File::isDirectory);

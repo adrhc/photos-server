@@ -34,7 +34,7 @@ public class ImageCtrl {
 	private ImageToExifInfoConverter metadataEntityToDTOConverter =
 			new ImageToExifInfoConverter();
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(ImageViews.Album.class)
 	public Image getById(@PathVariable Integer id, WebRequest webRequest) {
 		Image image = this.imageRepository.getById(id);
@@ -45,7 +45,7 @@ public class ImageCtrl {
 		return image;
 	}
 
-	@RequestMapping(value = "/exif/{id}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "/exif/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ExifInfo getExifById(@PathVariable Integer id, WebRequest webRequest) {
 		Image image = this.imageRepository.getById(id);
 		if (webRequest.checkNotModified(
