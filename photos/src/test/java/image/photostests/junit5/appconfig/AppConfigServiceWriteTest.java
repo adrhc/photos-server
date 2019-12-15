@@ -18,11 +18,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.Cache;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -31,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConfigSupplier {
+	@PersistenceContext
+	protected EntityManager em;
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 	@Autowired
@@ -57,8 +64,19 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 		assertAppConfigsEquals(appConfigsOfJson, this.appConfigs);
 	}
 
+	@Test
+	void cacheTest() {
+		Integer id = this.appConfigs.get(0).getId();
+		this.appConfigRepository.getById(id);
+		Cache cache = this.em.getEntityManagerFactory().getCache();
+		// cache.entityAccessMap.entrySet().toArray()[3].getValue().storageAccess.cache.compoundStore.map
+		assertTrue(cache.contains(AppConfig.class, id), "AppConfig:" + id + " not in cache!");
+		this.appConfigService.evictAppConfigCache();
+		assertFalse(cache.contains(AppConfig.class, id), "AppConfig:" + id + " already in cache!");
+	}
+
 	private List<image.cdm.AppConfig> loadCdmAppConfigsFromFile(File file) throws IOException {
-		String json = FileUtils.readFileToString(file);
+		String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 		return this.photosConversionUtil.cdmAppConfigsOf(json);
 	}
 

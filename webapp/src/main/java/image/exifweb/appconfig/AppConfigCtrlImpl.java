@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static image.exifweb.appconfig.AppConfigHelper.evictAppConfigCache;
-
 /**
  * Created with IntelliJ IDEA.
  * User: adr
@@ -157,7 +155,7 @@ public class AppConfigCtrlImpl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void reloadParams(Model model) {
-		evictAppConfigCache();
+		this.appConfigService.evictAppConfigCache();
 		model.addAttribute("message", "App params reloaded!");
 	}
 
