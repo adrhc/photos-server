@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static image.exifweb.appconfig.AppConfigHelper.evictAppConfigCache;
+
 /**
  * Created with IntelliJ IDEA.
  * User: adr
@@ -39,7 +41,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/json/appconfig")
-public class AppConfigCtrlImpl implements IAppConfigCache {
+public class AppConfigCtrlImpl {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigCtrlImpl.class);
 	@Autowired
 	private ProcessInfoService processInfoService;

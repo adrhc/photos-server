@@ -87,6 +87,8 @@ class AlbumServiceTest implements IImageAssertions {
 	}
 
 	private AlbumImagesCacheData preAlbumImagesCacheTest() {
+		// it's about images collection from Album
+		// see @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE) on Album.getImages()
 		String albumImagesRegionName = Album.class.getName().concat(".images");
 		org.hibernate.Cache cache = this.em.getEntityManagerFactory()
 				.getCache().unwrap(CacheImplementor.class);
