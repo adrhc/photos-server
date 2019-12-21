@@ -118,12 +118,10 @@ public class AppConfigService {
 	/**
 	 * updates appConfigs into DB
 	 * evicts query cache regions
-	 * writes JSON for appConfigs
 	 */
-	public void updateAll(List<AppConfig> appConfigs) throws IOException {
+	public void updateAll(List<AppConfig> appConfigs) {
 		this.appConfigRepository.updateAll(appConfigs);
 		evictQueryRegions();
-		writeJsonForAppConfigs();
 	}
 
 	private void evictQueryRegions() {

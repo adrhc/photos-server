@@ -166,6 +166,7 @@ public class AppConfigCtrlImpl {
 		List<image.persistence.entity.AppConfig> appConfigs =
 				this.photosConversionSupport.entityAppConfigsOf(cdmAppConfigs);
 		this.appConfigService.updateAll(appConfigs);
+		this.appConfigService.writeJsonForAppConfigs();
 		model.addAttribute("message", "App configs updated!");
 	}
 
