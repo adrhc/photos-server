@@ -116,7 +116,7 @@ public class AppConfigService {
 	}
 
 	/**
-	 * updates the DB
+	 * updates appConfigs into DB
 	 * evicts query cache regions
 	 * writes JSON for appConfigs
 	 */
