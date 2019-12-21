@@ -165,8 +165,7 @@ public class AppConfigCtrlImpl {
 	public void update(@RequestBody List<AppConfig> cdmAppConfigs, Model model) throws IOException {
 		List<image.persistence.entity.AppConfig> appConfigs =
 				this.photosConversionSupport.entityAppConfigsOf(cdmAppConfigs);
-		this.appConfigRepository.updateAll(appConfigs);
-		this.appConfigService.writeJsonForAppConfigs();
+		this.appConfigService.updateAll(appConfigs);
 		model.addAttribute("message", "App configs updated!");
 	}
 
