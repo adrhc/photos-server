@@ -10,7 +10,7 @@ import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.engine.spi.CacheImplementor;
+import org.hibernate.cache.spi.CacheImplementor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -92,7 +92,7 @@ class AlbumServiceTest implements IImageAssertions {
 		String albumImagesRegionName = Album.class.getName().concat(".images");
 		org.hibernate.Cache cache = this.em.getEntityManagerFactory()
 				.getCache().unwrap(CacheImplementor.class);
-		cache.evictCollection(albumImagesRegionName, this.album.getId());
+		cache.evictCollectionData(albumImagesRegionName, this.album.getId());
 		assertFalse(cache.containsCollection(albumImagesRegionName, this.album.getId()),
 				"Album[" + this.album.getId() + "].images already in cache!");
 		this.albumService.getImages(this.album.getId());
