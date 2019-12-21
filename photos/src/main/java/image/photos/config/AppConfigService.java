@@ -121,7 +121,6 @@ public class AppConfigService {
 	 */
 	public void updateAll(List<AppConfig> appConfigs) {
 		this.appConfigRepository.updateAll(appConfigs);
-		evictQueryRegions();
 	}
 
 	private void evictQueryRegions() {
