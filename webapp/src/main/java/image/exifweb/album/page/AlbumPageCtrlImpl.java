@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.List;
 
@@ -65,10 +64,9 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 			@RequestParam(name = "sort", defaultValue = "asc") String sort,
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
-			@RequestParam(name = "toSearch", required = false) String toSearch,
-			WebRequest webRequest) {
+			@RequestParam(name = "toSearch", required = false) String toSearch) {
 		return this.albumPageService.getPage(pageNr,
 				ESortType.valueOf(sort.toUpperCase()),
-				toSearch, viewHidden, viewOnlyPrintable, albumId),webRequest);
+				toSearch, viewHidden, viewOnlyPrintable, albumId);
 	}
 }
