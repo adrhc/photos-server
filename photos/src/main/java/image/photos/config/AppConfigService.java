@@ -38,9 +38,17 @@ public class AppConfigService {
 	@Value("${app.configs.file}")
 	private String appConfigsFile;
 
+	public boolean getConfigBool(AppConfigEnum name) {
+		return getConfigBool(name.getValue());
+	}
+
 	public boolean getConfigBool(String name) {
 		String s = getConfig(name);
 		return Boolean.parseBoolean(s);
+	}
+
+	public Boolean getConfigBoolean(AppConfigEnum name) {
+		return getConfigBoolean(name.getValue());
 	}
 
 	public Boolean getConfigBoolean(String name) {
@@ -48,12 +56,20 @@ public class AppConfigService {
 		return Boolean.valueOf(s);
 	}
 
+	public Integer getConfigInteger(AppConfigEnum name) {
+		return getConfigInteger(name.getValue());
+	}
+
 	public Integer getConfigInteger(String name) {
 		String s = getConfig(name);
 		if (s == null) {
 			return 0;
 		}
-		return new Integer(s);
+		return Integer.valueOf(s);
+	}
+
+	public String getConfig(AppConfigEnum name) {
+		return getConfig(name.getValue());
 	}
 
 	public String getConfig(String name) {

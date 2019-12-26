@@ -17,6 +17,9 @@ public enum AppConfigEnum implements Serializable {
 	photos_per_page("photos_per_page"),
 	photos_json_FS_path("photos json FS path");
 
+	/**
+	 * corresponds to the DB value
+	 */
 	private String value;
 
 	AppConfigEnum(String value) {
