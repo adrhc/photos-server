@@ -117,7 +117,6 @@ public class AppConfigService {
 
 	/**
 	 * updates appConfigs into DB
-	 * evicts query cache regions
 	 */
 	public void updateAll(List<AppConfig> appConfigs) {
 		this.appConfigRepository.updateAll(appConfigs);
