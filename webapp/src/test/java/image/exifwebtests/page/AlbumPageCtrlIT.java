@@ -30,11 +30,11 @@ class AlbumPageCtrlIT {
 	@Test
 	void getApacheLog() throws Exception {
 		this.mockMvc.perform(get("/json/page")
-				.accept(MediaType.APPLICATION_JSON_UTF8)
+				.accept(MediaType.APPLICATION_JSON)
 				.param("albumId", "1")
 				.param("pageNr", "1"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$").isArray())
 				.andExpect(jsonPath("$[0]").isMap())
 				.andExpect(jsonPath("$[0].hidden").value(false));
