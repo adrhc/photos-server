@@ -27,10 +27,10 @@ class ApacheCtrlIT {
 	@Test
 	void notAuthorizedGetApacheLog() throws Exception {
 		this.mockMvc.perform(get("/json/apache/getApacheLog")
-				.accept(MediaType.APPLICATION_JSON_UTF8)
+				.accept(MediaType.APPLICATION_JSON)
 				.param("type", ApacheCtrl.LOG_TYPE_ACCESS))
 				.andExpect(status().is5xxServerError())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.success").value("false"))
 				.andExpect(jsonPath("$.error").value("true"))
 				.andExpect(jsonPath("$.message").isString())
@@ -41,10 +41,10 @@ class ApacheCtrlIT {
 	@Test
 	void getApacheLog() throws Exception {
 		this.mockMvc.perform(get("/json/apache/getApacheLog")
-				.accept(MediaType.APPLICATION_JSON_UTF8)
+				.accept(MediaType.APPLICATION_JSON)
 				.param("type", ApacheCtrl.LOG_TYPE_ACCESS))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.value").isString());
 	}
 }
