@@ -12,12 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
+import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by adr on 2/8/18.
@@ -39,10 +42,9 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	 * Test with authorization:
 	 * curl -H "Accept: application/json" "http://127.0.0.1:8080/exifweb/app/json/page/count?albumId=52&viewHidden=true"
 	 */
-	@RequestMapping(value = "/count", method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN') or !#viewHidden")
-	public PageCount pageCount(
+	@GetMapping(value = "/count", produces = MediaType.APPLICATION_JSON_VALUE)
+	public PageCount count(
 			@RequestParam(name = "albumId") Integer albumId,
 			@RequestParam(name = "toSearch", required = false) String toSearch,
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
@@ -56,17 +58,25 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	}
 
 	@PreAuthorize("hasRole('ADMIN') or !#viewHidden")
-	@RequestMapping(method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<AlbumPage> page(
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<AlbumPage> get(
 			@RequestParam(name = "albumId") Integer albumId,
 			@RequestParam(name = "pageNr") int pageNr,
 			@RequestParam(name = "sort", defaultValue = "asc") String sort,
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable,
-			@RequestParam(name = "toSearch", required = false) String toSearch) {
-		return this.albumPageService.getPage(pageNr,
-				ESortType.valueOf(sort.toUpperCase()),
-				toSearch, viewHidden, viewOnlyPrintable, albumId);
+			@RequestParam(name = "toSearch", required = false) String toSearch,
+			@RequestParam(name = "knownPageSize", required = false) Integer knownPageSize,
+			WebRequest webRequest) {
+		Supplier<List<AlbumPage>> valueSupplier = () -> this.albumPageService
+				.getPage(pageNr, ESortType.valueOf(sort.toUpperCase()),
+						toSearch, viewHidden, viewOnlyPrintable, albumId);
+		if (knownPageSize == null || !knownPageSize.equals(this.appConfigRepository.getPhotosPerPage())) {
+			return valueSupplier.get();
+		}
+		return this.checkNotModified(
+				() -> this.albumPageRepository.getPageLastUpdate(pageNr, toSearch,
+						viewHidden, viewOnlyPrintable, albumId).orElseGet(Date::new),
+				valueSupplier, webRequest);
 	}
 }
