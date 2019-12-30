@@ -28,7 +28,7 @@ class AlbumPageCtrlIT {
 
 	@WithMockUser(value = "ada", roles = {"ADMIN"})
 	@Test
-	void getApacheLog() throws Exception {
+	void getAlbumPage() throws Exception {
 		this.mockMvc.perform(get("/json/page")
 				.accept(MediaType.APPLICATION_JSON)
 				.param("albumId", "1")
