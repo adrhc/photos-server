@@ -48,4 +48,6 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 			") " +
 			"AND i.album.id <> :albumId")
 	List<Image> findDuplicates(String nameNoExt, Integer albumId);
+
+	int countByAlbum_Id(Integer albumId);
 }
