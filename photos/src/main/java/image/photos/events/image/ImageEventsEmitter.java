@@ -26,6 +26,10 @@ public class ImageEventsEmitter {
 		this.imageEvents.onNext(imageEvent);
 	}
 
+	public Observable<ImageEvent> imageEventsByType(EnumSet<EImageEventType> imageEventTypes) {
+		return imageEventsByType(true, imageEventTypes);
+	}
+
 	/**
 	 * @param filterByRequestId: "true" means to take only current thread's events
 	 * @param imageEventTypes:   event types to take

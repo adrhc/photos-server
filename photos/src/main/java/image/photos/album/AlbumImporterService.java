@@ -153,7 +153,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		// always be true because we are not importing empty albums
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
 		Disposable subscription = this.imageEventsEmitter
-				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
+				.imageEventsByType(EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
 						ie -> isAtLeast1ImageChanged.setValue(true),
 						t -> {
