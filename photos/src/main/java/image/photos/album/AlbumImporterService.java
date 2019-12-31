@@ -86,10 +86,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	@Autowired
 	private ThumbUtils thumbUtils;
 
-	public void importAlbumByName(String albumName) {
-		importAlbumByPath(new File(this.appConfigRepository.getAlbumsPath(), albumName));
-	}
-
 	public void importAllFromAlbumsRoot() {
 		logger.debug("BEGIN");
 		importFromAlbumsRoot(this.IS_VALID_ALBUM);
@@ -115,9 +111,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Stream.of(files).filter(albumsFilter).forEach(this::importAlbumByPath);
 	}
 
-	/**
-	 * @param path
-	 */
+	public void importAlbumByName(String albumName) {
+		importAlbumByPath(new File(this.appConfigRepository.getAlbumsPath(), albumName));
+	}
+
 	private void importAlbumByPath(File path) {
 		// cazul in care path este o poza
 		if (path.isFile()) {
