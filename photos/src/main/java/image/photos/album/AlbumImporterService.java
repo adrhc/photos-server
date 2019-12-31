@@ -155,9 +155,9 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Disposable subscription = this.imageEventsEmitter
 				.imageEventsByType(EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
-						ie -> isAtLeast1ImageChanged.setValue(true),
-						t -> {
-							logger.error(t.getMessage(), t);
+						event -> isAtLeast1ImageChanged.setValue(true),
+						err -> {
+							logger.error(err.getMessage(), err);
 							logger.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
 						});
 		// at this point: album != null
