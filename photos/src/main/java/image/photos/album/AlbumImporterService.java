@@ -18,7 +18,7 @@ import image.photos.image.ExifExtractorService;
 import image.photos.image.ImageService;
 import image.photos.image.ImageUtils;
 import image.photos.image.ThumbUtils;
-import image.photos.util.MutableValueHolder;
+import image.photos.util.ValueHolder;
 import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -151,7 +151,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
-		MutableValueHolder<Boolean> existsAtLeast1ImageChange = MutableValueHolder.of(false);
+		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
 		Disposable subscription = this.imageEventsEmitter
 				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
