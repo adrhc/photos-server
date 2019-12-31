@@ -8,7 +8,6 @@ import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.photos.config.AppConfigService;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.util.status.E3ResultTypes;
 import io.reactivex.schedulers.Schedulers;
@@ -37,8 +36,6 @@ public class AlbumExporterService {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
 	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Autowired
-	private AppConfigService appConfigService;
 	@Autowired
 	private AlbumPageRepository albumPageRepository;
 	@Autowired
