@@ -1,15 +1,15 @@
 package image.photostests.junit4.misc;
 
 import image.persistence.entity.Album;
-import image.photos.events.album.AlbumEventBuilder;
+import image.photos.events.album.AlbumEvent;
 import image.photos.events.album.AlbumEventsEmitter;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.Disposable;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,8 @@ public class AlbumEventsEmitterTest {
 
 		Disposable subscription = albumEventsEmitter
 				.albumEventsByTypes(true, ALBUM_IMPORTED)
-//				.subscribeOn(Schedulers.io())
-				.observeOn(Schedulers.io())
+				.subscribeOn(Schedulers.elastic())
 				.doOnNext(ae -> logger.debug("[subscription.doOnNext] {}", ae.getAlbum().getName()))
-				.observeOn(Schedulers.io())
 				.subscribe(
 						ae -> {
 							logger.debug("[subscribe] {}", ae.getAlbum().getName());
@@ -64,10 +62,10 @@ public class AlbumEventsEmitterTest {
 
 //		Executors.newSingleThreadExecutor().execute(() -> {
 		logger.debug("before emission");
-		IntStream.range(1, 1000).forEach(i -> albumEventsEmitter.emit(AlbumEventBuilder
-				.of(ALBUM_IMPORTED).album(new Album("gigi " + i)).build()));
-		albumEventsEmitter.emit(AlbumEventBuilder
-				.of(ALBUM_IMPORTED).album(new Album("kent")).build());
+		IntStream.range(1, 1000).forEach(i -> albumEventsEmitter.emit(AlbumEvent.builder()
+				.type(ALBUM_IMPORTED).album(new Album("gigi " + i)).build()));
+		albumEventsEmitter.emit(AlbumEvent.builder()
+				.type(ALBUM_IMPORTED).album(new Album("kent")).build());
 		logger.debug("after emission");
 //		});
 

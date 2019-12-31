@@ -1,54 +1,22 @@
 package image.photos.events.album;
 
 import image.persistence.entity.Album;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.HashMap;
+import java.io.Serializable;
 
 /**
  * Created by adr on 1/28/18.
  */
-public class AlbumEvent extends HashMap<EAlbumEventDetail, Object> {
-	private EAlbumEventType eventType;
-
-	public AlbumEvent() {
-	}
-
-	public AlbumEvent(EAlbumEventType eventType) {
-		this.eventType = eventType;
-	}
-
-	public Album getAlbum() {
-		return getValue(EAlbumEventDetail.ALBUM);
-	}
-
-	public void setAlbum(Album album) {
-		put(EAlbumEventDetail.ALBUM, album);
-	}
-
-	public String getRequestId() {
-		return getValue(EAlbumEventDetail.REQUEST_ID);
-	}
-
-	public void setRequestId(String requestId) {
-		put(EAlbumEventDetail.REQUEST_ID, requestId);
-	}
-
-	public EAlbumEventType getEventType() {
-		return eventType;
-	}
-
-	public void setEventType(EAlbumEventType eventType) {
-		this.eventType = eventType;
-	}
-
-	public <T> T getValue(EAlbumEventDetail key) {
-		return (T) get(key);
-	}
-
-	@Override
-	public String toString() {
-		return super.toString() + "\nAlbumEvent{" +
-				"eventType=" + eventType +
-				'}';
-	}
+@Getter
+@Setter
+@Builder
+@ToString(exclude = "album")
+public class AlbumEvent implements Serializable {
+	private String requestId;
+	private EAlbumEventType type;
+	private Album album;
 }

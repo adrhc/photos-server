@@ -1,11 +1,10 @@
 package image.photos.events.image;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 
 import javax.annotation.PreDestroy;
 import java.util.EnumSet;
@@ -19,14 +18,17 @@ import java.util.stream.Collectors;
 public class ImageEventsEmitter {
 	private static final Logger logger = LoggerFactory.getLogger(ImageEventsEmitter.class);
 	private ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
-	private Subject<ImageEvent> imageEvents = PublishSubject.<ImageEvent>create().toSerialized();
+	private FluxSink<ImageEvent> sink;
+	private Flux<ImageEvent> imageEvents = Flux.create(sink -> this.sink = sink);
 
 	public void emit(ImageEvent imageEvent) {
-		imageEvent.setRequestId(this.requestId.get());
-		this.imageEvents.onNext(imageEvent);
+		if (imageEvent.getRequestId() == null) {
+			imageEvent.setRequestId(this.requestId.get());
+		}
+		this.sink.next(imageEvent);
 	}
 
-	public Observable<ImageEvent> imageEventsByType(EnumSet<EImageEventType> imageEventTypes) {
+	public Flux<ImageEvent> imageEventsByType(EnumSet<EImageEventType> imageEventTypes) {
 		return imageEventsByType(true, imageEventTypes);
 	}
 
@@ -34,26 +36,26 @@ public class ImageEventsEmitter {
 	 * @param filterByRequestId: "true" means to take only current thread's events
 	 * @param imageEventTypes:   event types to take
 	 */
-	public Observable<ImageEvent> imageEventsByType(
+	public Flux<ImageEvent> imageEventsByType(
 			boolean filterByRequestId, EnumSet<EImageEventType> imageEventTypes) {
 		return this.imageEvents
 				.doOnNext(ie -> {
 					// logging events
 					logger.debug("image event received:\n\tid = {}, name: {}",
 							ie.getImage().getId(), ie.getImage().getName());
-					logger.debug("received: {}", ie.getEventType().name());
+					logger.debug("received: {}", ie.getType().name());
 					logger.debug("accept: {}, acceptable: {}\n\trequestId = {}",
 							imageEventTypes.stream().map(Enum::name)
 									.collect(Collectors.joining(", ")),
-							imageEventTypes.contains(ie.getEventType()),
+							imageEventTypes.contains(ie.getType()),
 							ie.getRequestId());
 				})
-				.filter(ae -> imageEventTypes.contains(ae.getEventType()))
+				.filter(ae -> imageEventTypes.contains(ae.getType()))
 				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(this.requestId.get()));
 	}
 
 	@PreDestroy
 	public void preDestroy() {
-		this.imageEvents.onComplete();
+		this.sink.complete();
 	}
 }

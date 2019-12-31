@@ -10,11 +10,11 @@ import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.util.status.E3ResultTypes;
-import io.reactivex.schedulers.Schedulers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.scheduler.Schedulers;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
 
@@ -46,6 +47,8 @@ public class AlbumExporterService {
 	private AlbumEventsEmitter albumEventsEmitter;
 	@Autowired
 	private ObjectMapper jsonMapper;
+	@Autowired
+	private ExecutorService executorService;
 	@Autowired
 	private AlbumCoverService albumCoverService;
 
@@ -128,8 +131,9 @@ public class AlbumExporterService {
 
 	@PostConstruct
 	public void postConstruct() {
-		this.albumEventsEmitter.albumEventsByTypes(false, ALBUM_IMPORTED)
-				.observeOn(Schedulers.io())
+		this.albumEventsEmitter
+				.albumEventsByTypes(false, ALBUM_IMPORTED)
+				.subscribeOn(Schedulers.fromExecutorService(this.executorService))
 				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),
 						t -> {
 							logger.error(t.getMessage(), t);

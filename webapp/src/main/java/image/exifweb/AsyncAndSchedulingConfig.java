@@ -59,4 +59,9 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 		executor.initialize();
 		return executor;
 	}
+
+	@Bean
+	public ExecutorService executorService() {
+		return asyncExecutor().getThreadPoolExecutor();
+	}
 }

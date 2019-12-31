@@ -49,13 +49,13 @@
         <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
         <!-- same as aspectjtools within aspectj-maven-plugin -->
         <aspectjrt.version>1.9.2</aspectjrt.version>
-        
+
         <!--
             java8 won't work with version (2.5.1, 3.7.0]
             I guess it determines also the spring-instrument-tomcat version.
         -->
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-        
+
         <run-tomcat-embedded>provided</run-tomcat-embedded>
         <run-jetty>provided</run-jetty>
         <tomcat.version>7.0.64</tomcat.version>
@@ -236,9 +236,11 @@
             </dependency>
 
             <dependency>
-                <groupId>io.reactivex.rxjava2</groupId>
-                <artifactId>rxjava</artifactId>
-                <version>2.2.3</version>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>Bismuth-RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>

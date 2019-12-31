@@ -8,23 +8,23 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
-import image.photos.events.album.AlbumEventBuilder;
+import image.photos.events.album.AlbumEvent;
 import image.photos.events.album.AlbumEventsEmitter;
 import image.photos.events.album.EAlbumEventType;
 import image.photos.events.image.EImageEventType;
-import image.photos.events.image.ImageEventBuilder;
+import image.photos.events.image.ImageEvent;
 import image.photos.events.image.ImageEventsEmitter;
 import image.photos.image.ExifExtractorService;
 import image.photos.image.ImageService;
 import image.photos.image.ImageUtils;
 import image.photos.image.ThumbUtils;
 import image.photos.util.ValueHolder;
-import io.reactivex.disposables.Disposable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
+import reactor.core.Disposable;
 
 import java.io.File;
 import java.util.*;
@@ -187,8 +187,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// see AlbumExporterService.postConstruct
 		if (isAtLeast1ImageChanged.getValue()) {
-			this.albumEventsEmitter.emit(AlbumEventBuilder
-					.of(EAlbumEventType.ALBUM_IMPORTED)
+			this.albumEventsEmitter.emit(AlbumEvent.builder()
+					.type(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
 		}
 
@@ -230,8 +230,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Image updatedDbImg = this.imageRepository
 				.updateThumbLastModifiedForImg(thumbLastModified, imageId);
 		logger.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
-		this.imageEventsEmitter.emit(ImageEventBuilder
-				.of(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
+		this.imageEventsEmitter.emit(ImageEvent.builder()
+				.type(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
 				.image(updatedDbImg).build());
 	}
 
@@ -241,8 +241,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
 		Image imgWithUpdatedMetadata = this.imageRepository
 				.updateImageMetadata(imageMetadata, dbImage.getId());
-		this.imageEventsEmitter.emit(ImageEventBuilder
-				.of(EImageEventType.EXIF_UPDATED)
+		this.imageEventsEmitter.emit(ImageEvent.builder()
+				.type(EImageEventType.EXIF_UPDATED)
 				.image(imgWithUpdatedMetadata).build());
 	}
 
@@ -263,8 +263,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		newImg.setName(imgFile.getName());
 		newImg.setAlbum(album);
 		this.imageRepository.persist(newImg);
-		this.imageEventsEmitter.emit(ImageEventBuilder
-				.of(EImageEventType.CREATED)
+		this.imageEventsEmitter.emit(ImageEvent.builder()
+				.type(EImageEventType.CREATED)
 				.image(newImg).build());
 		return true;
 	}
@@ -287,7 +287,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			}
 			String oppositeExtensionCase = this.imageUtils.changeToOppositeExtensionCase(dbName);
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
-			ImageEventBuilder imgEvBuilder = new ImageEventBuilder().album(album).image(image);
+			ImageEvent.ImageEventBuilder imgEvBuilder =
+					ImageEvent.builder().album(album).image(image);
 			if (fsNameIdx >= 0) {
 				logger.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
