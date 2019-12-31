@@ -127,11 +127,15 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private void importByAlbumPath(File path) {
 		StopWatch sw = new StopWatch();
 		sw.start(path.getAbsolutePath());
+
+		// check path for files
 		File[] files = path.listFiles();
 		boolean noFiles = files == null || files.length == 0;
 		if (!noFiles) {
 			Arrays.sort(files);
 		}
+
+		// determine or create album
 		Album album = this.albumRepository.findByName(path.getName());
 		boolean isNewAlbum = album == null;
 		if (isNewAlbum) {
@@ -141,9 +145,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				sw.stop();
 				return;
 			}
-			// creem un nou album (dir aferent are poze)
+			// creem un nou album (path aferent contine poze)
 			album = this.albumRepository.createByName(path.getName());
 		}
+
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
 		MutableValueHolder<Boolean> existsAtLeast1ImageChange = MutableValueHolder.of(false);
