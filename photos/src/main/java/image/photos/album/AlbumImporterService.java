@@ -149,8 +149,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			album = this.albumRepository.createByName(path.getName());
 		}
 
-		// when importing a new album existsAtLeast1ImageChange will
-		// always be true because we are not importing empty albums
+		// Preparing an imageEvents-listener used to
+		// determine whether exists any image changes.
+		// When importing a new album existsAtLeast1ImageChange will
+		// always be true because we are not importing empty albums.
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
 		Disposable subscription = this.imageEventsEmitter
 				.imageEventsByType(EnumSet.allOf(EImageEventType.class))
@@ -160,7 +162,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 							logger.error(err.getMessage(), err);
 							logger.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
 						});
-		// at this point: album != null
+
+		// iterate and process image files
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {
 			logger.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
@@ -173,23 +176,27 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				}
 			}
 		}
+
+		// remove db-images having no corresponding file
 		if (!isNewAlbum) {
 			deleteNotFoundImages(imageNames, album);
 		}
+
 		// todo: make sure to dispose even when an exception occurs
 		subscription.dispose();
+
+		// see AlbumExporterService.postConstruct
 		if (isAtLeast1ImageChanged.getValue()) {
 			this.albumEventsEmitter.emit(AlbumEventBuilder
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
 		}
+
 		sw.stop();
 		logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
 	}
 
 	/**
-	 * @param imgFile
-	 * @param album
 	 * @return true = file still exists, false = file no longer exists
 	 */
 	private boolean importImageFromFile(File imgFile, Album album) {
