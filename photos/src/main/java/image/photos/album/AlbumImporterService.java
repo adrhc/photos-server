@@ -67,21 +67,23 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			logger.error("Wrong albumPath (is a file):\n{}", path.getPath());
 			return false;
 		}
-		// cazul in care albumPath este un album
-		File[] albumFiles = path.listFiles();
-		boolean noFiles = albumFiles == null || albumFiles.length == 0;
-		if (noFiles) {
-			// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
-			// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
-			logger.warn("{} este gol!", path.getPath());
-			return false;
-		}
 		// valid album
 		return true;
 	};
 
 	private Predicate<File> VALID_NEW_ALBUM_PATH = this.VALID_ALBUM_PATH
-			.and(path -> this.albumRepository.findByName(path.getName()) == null);
+			.and(path -> {
+				// check for path to have files
+				File[] albumFiles = path.listFiles();
+				if (albumFiles == null || albumFiles.length == 0) {
+					// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
+					// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
+					logger.warn("{} este gol!", path.getPath());
+					return false;
+				}
+				// check path for not to already be an album
+				return this.albumRepository.findByName(path.getName()) == null;
+			});
 
 	@Autowired
 	private ThumbUtils thumbUtils;
@@ -119,10 +121,12 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		importByAlbumPath(path);
 	}
 
+	/**
+	 * By now we already checked that path is a valid album path.
+	 */
 	private void importByAlbumPath(File path) {
 		StopWatch sw = new StopWatch();
 		sw.start(path.getAbsolutePath());
-		// cazul in care path este un album
 		File[] files = path.listFiles();
 		boolean noFiles = files == null || files.length == 0;
 		if (!noFiles) {
