@@ -61,29 +61,27 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	@Autowired
 	private ImageEventsEmitter imageEventsEmitter;
 
-	private Predicate<File> IS_NEW_VALID_ALBUM = albumPath -> {
+	private Predicate<File> IS_VALID_ALBUM = path -> {
 		// cazul in care albumPath este o poza
-		if (albumPath.isFile()) {
-			logger.error("Wrong albumPath (is a file):\n{}", albumPath.getPath());
+		if (path.isFile()) {
+			logger.error("Wrong albumPath (is a file):\n{}", path.getPath());
 			return false;
 		}
 		// cazul in care albumPath este un album
-		File[] albumFiles = albumPath.listFiles();
+		File[] albumFiles = path.listFiles();
 		boolean noFiles = albumFiles == null || albumFiles.length == 0;
 		if (noFiles) {
 			// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
 			// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
-			logger.warn("{} este gol!", albumPath.getPath());
+			logger.warn("{} este gol!", path.getPath());
 			return false;
 		}
-		Album album = this.albumRepository.findByName(albumPath.getName());
-		if (album != null) {
-			// albumPath este un album deja importat deci NU nou
-			return false;
-		}
-		// album inexistent in DB deci nou
+		// valid album
 		return true;
 	};
+
+	private Predicate<File> IS_VALID_NEW_ALBUM = this.IS_VALID_ALBUM
+			.and(path -> this.albumRepository.findByName(path.getName()) == null);
 
 	@Autowired
 	private ThumbUtils thumbUtils;
@@ -94,12 +92,12 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 	public void importAllFromAlbumsRoot() {
 		logger.debug("BEGIN");
-		importFromAlbumsRoot(null);
+		importFromAlbumsRoot(this.IS_VALID_ALBUM);
 		logger.debug("END");
 	}
 
 	public void importNewAlbumsOnly() {
-		importFromAlbumsRoot(this.IS_NEW_VALID_ALBUM);
+		importFromAlbumsRoot(this.IS_VALID_NEW_ALBUM);
 	}
 
 	/**
@@ -114,14 +112,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			return;
 		}
 		Arrays.sort(files, Collections.reverseOrder());
-		if (albumsFilter == null) {
-			Stream.of(files)
-					.forEach(this::importAlbumByPath);
-		} else {
-			Stream.of(files)
-					.filter(albumsFilter)
-					.forEach(this::importAlbumByPath);
-		}
+		Stream.of(files).filter(albumsFilter).forEach(this::importAlbumByPath);
 	}
 
 	/**
