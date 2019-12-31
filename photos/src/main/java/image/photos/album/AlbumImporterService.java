@@ -151,11 +151,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// when importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums
-		ValueHolder<Boolean> existsAtLeast1ImageChange = ValueHolder.of(false);
+		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
 		Disposable subscription = this.imageEventsEmitter
 				.imageEventsByType(true, EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
-						ie -> existsAtLeast1ImageChange.setValue(true),
+						ie -> isAtLeast1ImageChanged.setValue(true),
 						t -> {
 							logger.error(t.getMessage(), t);
 							logger.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
@@ -178,7 +178,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 		// todo: make sure to dispose even when an exception occurs
 		subscription.dispose();
-		if (existsAtLeast1ImageChange.getValue()) {
+		if (isAtLeast1ImageChanged.getValue()) {
 			this.albumEventsEmitter.emit(AlbumEventBuilder
 					.of(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
