@@ -50,12 +50,12 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 			REIMPORT_CHOICES =
 			new HashMap<>() {{
 				put(TRUE, (albumName, deferredResult) -> {
-					AlbumImporterCtrlImpl.this.albumImporterService.importAlbumByName(albumName);
+					AlbumImporterCtrlImpl.this.albumImporterService.importByAlbumName(albumName);
 					deferredResult.setResult("message",
 							REIMPORT_MSG_PATTERN.format(new Object[]{albumName}));
 				});
 				put(FALSE, (albumName, deferredResult) -> {
-					AlbumImporterCtrlImpl.this.albumImporterService.importAllFromAlbumsRoot();
+					AlbumImporterCtrlImpl.this.albumImporterService.importAllFromRoot();
 					deferredResult.setResult("message",
 							REIMPORT_MSG_PATTERN.format(new Object[]{"all albums"}));
 				});

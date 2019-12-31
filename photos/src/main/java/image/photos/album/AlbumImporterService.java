@@ -61,7 +61,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	@Autowired
 	private ImageEventsEmitter imageEventsEmitter;
 
-	private Predicate<File> IS_VALID_ALBUM = path -> {
+	private Predicate<File> VALID_ALBUM_PATH = path -> {
 		// cazul in care albumPath este o poza
 		if (path.isFile()) {
 			logger.error("Wrong albumPath (is a file):\n{}", path.getPath());
@@ -80,20 +80,20 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		return true;
 	};
 
-	private Predicate<File> IS_VALID_NEW_ALBUM = this.IS_VALID_ALBUM
+	private Predicate<File> VALID_NEW_ALBUM_PATH = this.VALID_ALBUM_PATH
 			.and(path -> this.albumRepository.findByName(path.getName()) == null);
 
 	@Autowired
 	private ThumbUtils thumbUtils;
 
-	public void importAllFromAlbumsRoot() {
+	public void importAllFromRoot() {
 		logger.debug("BEGIN");
-		importFromAlbumsRoot(this.IS_VALID_ALBUM);
+		importFilteredFromRoot(this.VALID_ALBUM_PATH);
 		logger.debug("END");
 	}
 
 	public void importNewAlbumsOnly() {
-		importFromAlbumsRoot(this.IS_VALID_NEW_ALBUM);
+		importFilteredFromRoot(this.VALID_NEW_ALBUM_PATH);
 	}
 
 	/**
@@ -101,26 +101,25 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 *
 	 * @param albumsFilter
 	 */
-	private void importFromAlbumsRoot(Predicate<File> albumsFilter) {
+	private void importFilteredFromRoot(Predicate<File> albumsFilter) {
 		File albumsRoot = new File(this.appConfigRepository.getAlbumsPath());
 		File[] files = albumsRoot.listFiles();
 		if (files == null || files.length == 0) {
 			return;
 		}
 		Arrays.sort(files, Collections.reverseOrder());
-		Stream.of(files).filter(albumsFilter).forEach(this::importAlbumByPath);
+		Stream.of(files).filter(albumsFilter).forEach(this::importByAlbumPath);
 	}
 
-	public void importAlbumByName(String albumName) {
-		importAlbumByPath(new File(this.appConfigRepository.getAlbumsPath(), albumName));
-	}
-
-	private void importAlbumByPath(File path) {
-		// cazul in care path este o poza
-		if (path.isFile()) {
-			logger.error("Wrong path (is a file):\n{}", path.getPath());
-			throw new UnsupportedOperationException("Wrong path (is a file):\n" + path.getPath());
+	public void importByAlbumName(String albumName) {
+		File path = new File(this.appConfigRepository.getAlbumsPath(), albumName);
+		if (!this.VALID_ALBUM_PATH.test(path)) {
+			throw new UnsupportedOperationException("Wrong album path:\n" + path.getPath());
 		}
+		importByAlbumPath(path);
+	}
+
+	private void importByAlbumPath(File path) {
 		StopWatch sw = new StopWatch();
 		sw.start(path.getAbsolutePath());
 		// cazul in care path este un album
