@@ -55,7 +55,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 							REIMPORT_MSG_PATTERN.format(new Object[]{albumName}));
 				});
 				put(FALSE, (albumName, deferredResult) -> {
-					AlbumImporterCtrlImpl.this.albumImporterService.importAllFromRoot();
+					AlbumImporterCtrlImpl.this.albumImporterService.importAll();
 					deferredResult.setResult("message",
 							REIMPORT_MSG_PATTERN.format(new Object[]{"all albums"}));
 				});
@@ -94,7 +94,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 								logger.error(t.getMessage(), t);
 								logger.error("[ALBUM_IMPORTED] newAlbums");
 							});
-			this.albumImporterService.importNewAlbumsOnly();
+			this.albumImporterService.importNewAlbums();
 			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
 			if (newAlbums.isEmpty()) {
 				deferredResult.setResult("message", "No new album to import!");

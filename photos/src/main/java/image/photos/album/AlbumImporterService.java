@@ -88,13 +88,13 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	@Autowired
 	private ThumbUtils thumbUtils;
 
-	public void importAllFromRoot() {
+	public void importAll() {
 		logger.debug("BEGIN");
 		importFilteredFromRoot(this.VALID_ALBUM_PATH);
 		logger.debug("END");
 	}
 
-	public void importNewAlbumsOnly() {
+	public void importNewAlbums() {
 		importFilteredFromRoot(this.VALID_NEW_ALBUM_PATH);
 	}
 
