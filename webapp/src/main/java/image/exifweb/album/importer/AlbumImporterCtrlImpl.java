@@ -3,7 +3,7 @@ package image.exifweb.album.importer;
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
 import image.persistence.entity.Album;
-import image.photos.album.AlbumImporterService;
+import image.photos.album.importing.AlbumImporterService;
 import image.photos.events.album.AlbumEventsQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

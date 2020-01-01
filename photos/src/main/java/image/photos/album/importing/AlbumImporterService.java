@@ -1,13 +1,13 @@
-package image.photos.album;
+package image.photos.album.importing;
 
 import image.cdm.image.status.EImageStatus;
 import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.AppConfigRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
+import image.photos.album.AlbumHelper;
 import image.photos.events.album.AlbumEvent;
 import image.photos.events.album.AlbumEventsQueue;
 import image.photos.events.album.EAlbumEventType;
@@ -19,8 +19,7 @@ import image.photos.image.ImageService;
 import image.photos.image.ImageUtils;
 import image.photos.image.ThumbUtils;
 import image.photos.util.ValueHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -42,14 +41,12 @@ import static image.photos.events.image.EImageEventType.MARKED_DELETED;
  * To change this template use File | Settings | File Templates.
  */
 @Service
+@Slf4j
 public class AlbumImporterService implements IImageFlagsUtils {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterService.class);
 	@Autowired
 	private ImageUtils imageUtils;
 	@Autowired
 	private ExifExtractorService exifExtractorService;
-	@Autowired
-	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private ImageRepository imageRepository;
 	@Autowired
@@ -60,47 +57,24 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private AlbumEventsQueue albumEventsQueue;
 	@Autowired
 	private ImageEventsQueue imageEventsQueue;
-
-	private Predicate<File> VALID_ALBUM_PATH = path -> {
-		// cazul in care albumPath este o poza
-		if (path.isFile()) {
-			logger.error("Wrong albumPath (is a file):\n{}", path.getPath());
-			return false;
-		}
-		// valid album
-		return true;
-	};
-
-	private Predicate<File> VALID_NEW_ALBUM_PATH = this.VALID_ALBUM_PATH
-			.and(path -> {
-				// check for path to have files
-				File[] albumFiles = path.listFiles();
-				if (albumFiles == null || albumFiles.length == 0) {
-					// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
-					// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
-					logger.warn("{} este gol!", path.getPath());
-					return false;
-				}
-				// check path for not to already be an album
-				return this.albumRepository.findByName(path.getName()) == null;
-			});
-
 	@Autowired
 	private ThumbUtils thumbUtils;
+	@Autowired
+	private Predicates predicates;
+	@Autowired
+	private AlbumHelper albumHelper;
 
 	public void importAll() {
-		logger.debug("BEGIN");
-		importFilteredFromRoot(this.VALID_ALBUM_PATH);
-		logger.debug("END");
+		importFilteredFromRoot(this.predicates.VALID_ALBUM_PATH);
 	}
 
 	public void importNewAlbums() {
-		importFilteredFromRoot(this.VALID_NEW_ALBUM_PATH);
+		importFilteredFromRoot(this.predicates.VALID_NEW_ALBUM_PATH);
 	}
 
 	public void importByAlbumName(String albumName) {
-		File path = new File(this.appConfigRepository.getAlbumsPath(), albumName);
-		if (!this.VALID_ALBUM_PATH.test(path)) {
+		File path = this.albumHelper.fullPath(albumName);
+		if (!this.predicates.VALID_ALBUM_PATH.test(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path.getPath());
 		}
 		importByAlbumPath(path);
@@ -112,8 +86,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * @param albumsFilter
 	 */
 	private void importFilteredFromRoot(Predicate<File> albumsFilter) {
-		File albumsRoot = new File(this.appConfigRepository.getAlbumsPath());
-		File[] files = albumsRoot.listFiles();
+		File root = this.albumHelper.rootPath();
+		File[] files = root.listFiles();
 		if (files == null || files.length == 0) {
 			return;
 		}
@@ -159,17 +133,17 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				.take(1L).subscribe(
 						event -> isAtLeast1ImageChanged.setValue(true),
 						err -> {
-							logger.error(err.getMessage(), err);
-							logger.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
+							log.error(err.getMessage(), err);
+							log.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
 						});
 
 		// iterate and process image files
 		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
 		if (noFiles) {
-			logger.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
+			log.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
 		} else {
 			// 1 level only album supported
-			logger.debug("BEGIN album with {} poze:\n{}", files.length, path.getAbsolutePath());
+			log.debug("BEGIN album with {} poze:\n{}", files.length, path.getAbsolutePath());
 			for (File file : files) {
 				if (importImageFromFile(file, album)) {
 					imageNames.add(file.getName());
@@ -193,7 +167,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 
 		sw.stop();
-		logger.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
+		log.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
 	}
 
 	/**
@@ -207,7 +181,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
 		} else if (this.imageUtils.imageExistsInOtherAlbum(imgFile, album.getId())) {
-			logger.debug("Image {}\tto insert into album {} already exists in another album!",
+			log.debug("Image {}\tto insert into album {} already exists in another album!",
 					imgFile.getName(), album.getName());
 			return false;
 		}
@@ -229,14 +203,14 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private void updateThumbLastModifiedForImgFile(Date thumbLastModified, Integer imageId) {
 		Image updatedDbImg = this.imageRepository
 				.updateThumbLastModifiedForImg(thumbLastModified, imageId);
-		logger.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
+		log.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
 		this.imageEventsQueue.emit(ImageEvent.builder()
 				.type(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
 				.image(updatedDbImg).build());
 	}
 
 	private void updateImageMetadataFromFile(File imgFile, Image dbImage) {
-		logger.debug("update EXIF for {}/{}",
+		log.debug("update EXIF for {}/{}",
 				imgFile.getParentFile().getName(), dbImage.getName());
 		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
 		Image imgWithUpdatedMetadata = this.imageRepository
@@ -249,15 +223,15 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private boolean createImageFromFile(File imgFile, Album album) {
 		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
 		if (imageMetadata == null) {
-			logger.info("{} no longer exists!", imgFile.getPath());
+			log.info("{} no longer exists!", imgFile.getPath());
 			return false;
 		}
 		if (this.imageUtils.imageExistsInOtherAlbum(imgFile, album.getId())) {
-			logger.debug("Image {}\tto insert into album {} already exists in another album!",
+			log.debug("Image {}\tto insert into album {} already exists in another album!",
 					imgFile.getName(), album.getName());
 			return false;
 		}
-		logger.debug("insert {}/{}", album.getName(), imgFile.getName());
+		log.debug("insert {}/{}", album.getName(), imgFile.getName());
 		Image newImg = new Image();
 		newImg.setImageMetadata(imageMetadata);
 		newImg.setName(imgFile.getName());
@@ -275,7 +249,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * @param foundImageNames
 	 */
 	private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
-		logger.debug("BEGIN {}", album.getName());
+		log.debug("BEGIN {}", album.getName());
 		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
 //		List<Image> images = this.albumService.getImages(album.getId());
 		images.forEach(image -> {
@@ -290,7 +264,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			ImageEvent.ImageEventBuilder imgEvBuilder =
 					ImageEvent.builder().album(album).image(image);
 			if (fsNameIdx >= 0) {
-				logger.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
+				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				this.imageRepository.changeName(oppositeExtensionCase, image.getId());
 				this.imageEventsQueue.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
@@ -298,17 +272,17 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			}
 			if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
 				// status = 0
-				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
+				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				this.imageRepository.safelyDeleteImage(image.getId());
 				this.imageEventsQueue.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
-			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
+			log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 			if (this.imageRepository.markDeleted(image.getId())) {
 				this.imageEventsQueue.emit(imgEvBuilder.type(MARKED_DELETED).build());
 			}
 		});
-		logger.debug("END {}", album.getName());
+		log.debug("END {}", album.getName());
 	}
 }
