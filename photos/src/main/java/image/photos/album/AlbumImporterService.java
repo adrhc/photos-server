@@ -98,8 +98,16 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		importFilteredFromRoot(this.VALID_NEW_ALBUM_PATH);
 	}
 
+	public void importByAlbumName(String albumName) {
+		File path = new File(this.appConfigRepository.getAlbumsPath(), albumName);
+		if (!this.VALID_ALBUM_PATH.test(path)) {
+			throw new UnsupportedOperationException("Wrong album path:\n" + path.getPath());
+		}
+		importByAlbumPath(path);
+	}
+
 	/**
-	 * Filters albums to be imported with albumsFilter.
+	 * Filters album paths to be imported.
 	 *
 	 * @param albumsFilter
 	 */
@@ -111,14 +119,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 		Arrays.sort(files, Collections.reverseOrder());
 		Stream.of(files).filter(albumsFilter).forEach(this::importByAlbumPath);
-	}
-
-	public void importByAlbumName(String albumName) {
-		File path = new File(this.appConfigRepository.getAlbumsPath(), albumName);
-		if (!this.VALID_ALBUM_PATH.test(path)) {
-			throw new UnsupportedOperationException("Wrong album path:\n" + path.getPath());
-		}
-		importByAlbumPath(path);
 	}
 
 	/**
