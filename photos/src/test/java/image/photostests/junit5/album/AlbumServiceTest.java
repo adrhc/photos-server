@@ -5,7 +5,7 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.album.AlbumService;
+import image.photos.image.ImageService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ class AlbumServiceTest implements IImageAssertions {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private AlbumService albumService;
+	private ImageService imageService;
 
 	@Random(excludes = {"id", "lastUpdate", "cover", "images"})
 	private Album album;
@@ -53,16 +53,6 @@ class AlbumServiceTest implements IImageAssertions {
 	) {
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
-	}
-
-	@Test
-	void getImages() {
-		List<Image> dbImages = this.albumService.getImages(this.album.getId());
-		this.album.getImages().forEach(i -> {
-			assertImageEquals(i, dbImages.stream()
-					.filter(dbi -> dbi.getId().equals(i.getId()))
-					.findAny().orElseThrow(AssertionError::new));
-		});
 	}
 
 	/**
@@ -95,7 +85,7 @@ class AlbumServiceTest implements IImageAssertions {
 		cache.evictCollectionData(albumImagesRegionName, this.album.getId());
 		assertFalse(cache.containsCollection(albumImagesRegionName, this.album.getId()),
 				"Album[" + this.album.getId() + "].images already in cache!");
-		this.albumService.getImages(this.album.getId());
+		this.imageService.getImages(this.album.getId());
 		return new AlbumImagesCacheData(cache, albumImagesRegionName);
 	}
 

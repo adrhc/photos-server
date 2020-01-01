@@ -45,6 +45,16 @@ class ImageServiceTest implements IImageAssertions {
 	}
 
 	@Test
+	void getImages() {
+		List<Image> dbImages = this.imageService.getImages(this.album.getId());
+		this.album.getImages().forEach(i -> {
+			assertImageEquals(i, dbImages.stream()
+					.filter(dbi -> dbi.getId().equals(i.getId()))
+					.findAny().orElseThrow(AssertionError::new));
+		});
+	}
+
+	@Test
 	void findByNameAndAlbumId() {
 		Image image = this.album.getImages().get(0);
 		Image dbImage = this.imageService.findByNameAndAlbumId(image.getName(), this.album.getId());
