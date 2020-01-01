@@ -1,4 +1,4 @@
-package image.photos.events.image;
+package image.photos.infrastructure.events.image;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

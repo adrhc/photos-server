@@ -7,14 +7,14 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.photos.album.AlbumHelper;
-import image.photos.events.album.AlbumEvent;
-import image.photos.events.album.AlbumEventTypeEnum;
-import image.photos.events.album.AlbumTopic;
-import image.photos.events.image.ImageEvent;
-import image.photos.events.image.ImageEventTypeEnum;
-import image.photos.events.image.ImageTopic;
 import image.photos.image.ImageHelper;
 import image.photos.image.importing.ImageImporterService;
+import image.photos.infrastructure.events.album.AlbumEvent;
+import image.photos.infrastructure.events.album.AlbumEventTypeEnum;
+import image.photos.infrastructure.events.album.AlbumTopic;
+import image.photos.infrastructure.events.image.ImageEvent;
+import image.photos.infrastructure.events.image.ImageEventTypeEnum;
+import image.photos.infrastructure.events.image.ImageTopic;
 import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,8 @@ import java.util.function.Predicate;
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static image.photos.album.AlbumUtils.albumName;
 import static image.photos.album.AlbumUtils.emptyAlbum;
-import static image.photos.events.image.ImageEventTypeEnum.DELETED;
-import static image.photos.events.image.ImageEventTypeEnum.MARKED_DELETED;
+import static image.photos.infrastructure.events.image.ImageEventTypeEnum.DELETED;
+import static image.photos.infrastructure.events.image.ImageEventTypeEnum.MARKED_DELETED;
 
 /**
  * Created with IntelliJ IDEA.

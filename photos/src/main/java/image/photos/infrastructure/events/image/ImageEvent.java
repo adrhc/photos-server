@@ -1,4 +1,4 @@
-package image.photos.events.image;
+package image.photos.infrastructure.events.image;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;

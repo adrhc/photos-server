@@ -1,4 +1,4 @@
-package image.photos.events.album;
+package image.photos.infrastructure.events.album;
 
 import image.persistence.entity.Album;
 import lombok.Builder;

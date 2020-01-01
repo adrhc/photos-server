@@ -4,12 +4,12 @@ import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
-import image.photos.events.image.ImageEvent;
-import image.photos.events.image.ImageEventTypeEnum;
-import image.photos.events.image.ImageTopic;
 import image.photos.image.ExifExtractorService;
 import image.photos.image.ImageService;
 import image.photos.image.ThumbHelper;
+import image.photos.infrastructure.events.image.ImageEvent;
+import image.photos.infrastructure.events.image.ImageEventTypeEnum;
+import image.photos.infrastructure.events.image.ImageTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

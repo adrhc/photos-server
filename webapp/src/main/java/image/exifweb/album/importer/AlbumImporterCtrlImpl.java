@@ -3,7 +3,7 @@ package image.exifweb.album.importer;
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
 import image.photos.album.importing.AlbumImporterService;
-import image.photos.events.album.AlbumTopic;
+import image.photos.infrastructure.events.album.AlbumTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
-import static image.photos.events.album.AlbumEventTypeEnum.CREATED;
+import static image.photos.infrastructure.events.album.AlbumEventTypeEnum.CREATED;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
