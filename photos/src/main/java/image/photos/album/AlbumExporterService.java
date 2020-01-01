@@ -8,7 +8,7 @@ import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.photos.events.album.AlbumEventsEmitter;
+import image.photos.events.album.AlbumEventsQueue;
 import image.photos.util.status.E3ResultTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class AlbumExporterService {
 	@Autowired
 	private AlbumPageService albumPageService;
 	@Autowired
-	private AlbumEventsEmitter albumEventsEmitter;
+	private AlbumEventsQueue albumEventsQueue;
 	@Autowired
 	private ObjectMapper jsonMapper;
 	@Autowired
@@ -131,7 +131,7 @@ public class AlbumExporterService {
 
 	@PostConstruct
 	public void postConstruct() {
-		this.albumEventsEmitter
+		this.albumEventsQueue
 				.albumEventsByTypes(false, ALBUM_IMPORTED)
 				.subscribeOn(Schedulers.fromExecutorService(this.executorService))
 				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),

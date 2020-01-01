@@ -4,7 +4,7 @@ import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
 import image.persistence.entity.Album;
 import image.photos.album.AlbumImporterService;
-import image.photos.events.album.AlbumEventsEmitter;
+import image.photos.events.album.AlbumEventsQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 				});
 			}};
 	@Autowired
-	private AlbumEventsEmitter albumEventsEmitter;
+	private AlbumEventsQueue albumEventsQueue;
 
 	@Override
 	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
@@ -85,7 +85,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			List<Album> newAlbums = new ArrayList<>();
-			Disposable subscription = this.albumEventsEmitter
+			Disposable subscription = this.albumEventsQueue
 					.albumEventsByTypes(true, ALBUM_IMPORTED)
 					.take(1L)
 					.subscribe(

@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
  * Created by adr on 1/28/18.
  */
 @Component
-public class ImageEventsEmitter {
-	private static final Logger logger = LoggerFactory.getLogger(ImageEventsEmitter.class);
+public class ImageEventsQueue {
+	private static final Logger logger = LoggerFactory.getLogger(ImageEventsQueue.class);
 	private ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
 	private FluxSink<ImageEvent> sink;
 	private Flux<ImageEvent> imageEvents = Flux.create(sink -> this.sink = sink);

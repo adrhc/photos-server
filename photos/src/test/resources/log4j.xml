@@ -49,7 +49,7 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="image.photos.events.album.AlbumEventsEmitter" additivity="false">
+    <logger name="image.photos.events.album.AlbumEventsQueue" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
     </logger>

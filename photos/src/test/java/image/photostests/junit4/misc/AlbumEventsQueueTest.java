@@ -2,7 +2,7 @@ package image.photostests.junit4.misc;
 
 import image.persistence.entity.Album;
 import image.photos.events.album.AlbumEvent;
-import image.photos.events.album.AlbumEventsEmitter;
+import image.photos.events.album.AlbumEventsQueue;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,8 +22,8 @@ import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
  * Created by adr on 2/7/18.
  */
 @Category(MiscTestCategory.class)
-public class AlbumEventsEmitterTest {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumEventsEmitterTest.class);
+public class AlbumEventsQueueTest {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumEventsQueueTest.class);
 
 	@Ignore("rxjava observeOn learning test")
 	@Test
@@ -39,10 +39,10 @@ public class AlbumEventsEmitterTest {
 //			lock.unlock();
 //		}));
 
-		AlbumEventsEmitter albumEventsEmitter = new AlbumEventsEmitter();
+		AlbumEventsQueue albumEventsQueue = new AlbumEventsQueue();
 		List<Album> newAlbums = new ArrayList<>();
 
-		Disposable subscription = albumEventsEmitter
+		Disposable subscription = albumEventsQueue
 				.albumEventsByTypes(true, ALBUM_IMPORTED)
 				.subscribeOn(Schedulers.elastic())
 				.doOnNext(ae -> logger.debug("[subscription.doOnNext] {}", ae.getAlbum().getName()))
@@ -62,9 +62,9 @@ public class AlbumEventsEmitterTest {
 
 //		Executors.newSingleThreadExecutor().execute(() -> {
 		logger.debug("before emission");
-		IntStream.range(1, 1000).forEach(i -> albumEventsEmitter.emit(AlbumEvent.builder()
+		IntStream.range(1, 1000).forEach(i -> albumEventsQueue.emit(AlbumEvent.builder()
 				.type(ALBUM_IMPORTED).album(new Album("gigi " + i)).build()));
-		albumEventsEmitter.emit(AlbumEvent.builder()
+		albumEventsQueue.emit(AlbumEvent.builder()
 				.type(ALBUM_IMPORTED).album(new Album("kent")).build());
 		logger.debug("after emission");
 //		});

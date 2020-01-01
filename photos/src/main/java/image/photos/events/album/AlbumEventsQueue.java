@@ -13,8 +13,8 @@ import java.util.UUID;
  * Created by adr on 1/28/18.
  */
 @Component
-public class AlbumEventsEmitter {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumEventsEmitter.class);
+public class AlbumEventsQueue {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumEventsQueue.class);
 	private ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
 	private FluxSink<AlbumEvent> sink;
 	private Flux<AlbumEvent> albumEvents = Flux.create(sink -> this.sink = sink);

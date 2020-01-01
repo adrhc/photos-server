@@ -9,11 +9,11 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.events.album.AlbumEvent;
-import image.photos.events.album.AlbumEventsEmitter;
+import image.photos.events.album.AlbumEventsQueue;
 import image.photos.events.album.EAlbumEventType;
 import image.photos.events.image.EImageEventType;
 import image.photos.events.image.ImageEvent;
-import image.photos.events.image.ImageEventsEmitter;
+import image.photos.events.image.ImageEventsQueue;
 import image.photos.image.ExifExtractorService;
 import image.photos.image.ImageService;
 import image.photos.image.ImageUtils;
@@ -57,9 +57,9 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private AlbumEventsEmitter albumEventsEmitter;
+	private AlbumEventsQueue albumEventsQueue;
 	@Autowired
-	private ImageEventsEmitter imageEventsEmitter;
+	private ImageEventsQueue imageEventsQueue;
 
 	private Predicate<File> VALID_ALBUM_PATH = path -> {
 		// cazul in care albumPath este o poza
@@ -154,7 +154,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		// When importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums.
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
-		Disposable subscription = this.imageEventsEmitter
+		Disposable subscription = this.imageEventsQueue
 				.imageEventsByType(EnumSet.allOf(EImageEventType.class))
 				.take(1L).subscribe(
 						event -> isAtLeast1ImageChanged.setValue(true),
@@ -187,7 +187,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// see AlbumExporterService.postConstruct
 		if (isAtLeast1ImageChanged.getValue()) {
-			this.albumEventsEmitter.emit(AlbumEvent.builder()
+			this.albumEventsQueue.emit(AlbumEvent.builder()
 					.type(EAlbumEventType.ALBUM_IMPORTED)
 					.album(album).build());
 		}
@@ -230,7 +230,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Image updatedDbImg = this.imageRepository
 				.updateThumbLastModifiedForImg(thumbLastModified, imageId);
 		logger.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
-		this.imageEventsEmitter.emit(ImageEvent.builder()
+		this.imageEventsQueue.emit(ImageEvent.builder()
 				.type(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
 				.image(updatedDbImg).build());
 	}
@@ -241,7 +241,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
 		Image imgWithUpdatedMetadata = this.imageRepository
 				.updateImageMetadata(imageMetadata, dbImage.getId());
-		this.imageEventsEmitter.emit(ImageEvent.builder()
+		this.imageEventsQueue.emit(ImageEvent.builder()
 				.type(EImageEventType.EXIF_UPDATED)
 				.image(imgWithUpdatedMetadata).build());
 	}
@@ -263,7 +263,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		newImg.setName(imgFile.getName());
 		newImg.setAlbum(album);
 		this.imageRepository.persist(newImg);
-		this.imageEventsEmitter.emit(ImageEvent.builder()
+		this.imageEventsQueue.emit(ImageEvent.builder()
 				.type(EImageEventType.CREATED)
 				.image(newImg).build());
 		return true;
@@ -293,20 +293,20 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				logger.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				this.imageRepository.changeName(oppositeExtensionCase, image.getId());
-				this.imageEventsEmitter.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
+				this.imageEventsQueue.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
 				return;
 			}
 			if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
 				// status = 0
 				logger.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				this.imageRepository.safelyDeleteImage(image.getId());
-				this.imageEventsEmitter.emit(imgEvBuilder.type(DELETED).build());
+				this.imageEventsQueue.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			logger.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 			if (this.imageRepository.markDeleted(image.getId())) {
-				this.imageEventsEmitter.emit(imgEvBuilder.type(MARKED_DELETED).build());
+				this.imageEventsQueue.emit(imgEvBuilder.type(MARKED_DELETED).build());
 			}
 		});
 		logger.debug("END {}", album.getName());
