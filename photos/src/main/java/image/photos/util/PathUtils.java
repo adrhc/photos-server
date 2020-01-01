@@ -10,6 +10,10 @@ public class PathUtils {
 		return sneak(() -> Files.getLastModifiedTime(path)).toMillis();
 	}
 
+	public static long fileSize(Path path) {
+		return sneak(() -> Files.size(path));
+	}
+
 	public static String fileName(Path path) {
 		return path.getFileName().toString();
 	}

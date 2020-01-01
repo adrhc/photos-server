@@ -11,13 +11,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
 
-import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
+import static image.photos.util.PathUtils.fileName;
+import static image.photos.util.PathUtils.fileSize;
 
 /**
  * Created by adr on 2/2/18.
@@ -31,6 +30,8 @@ public class ImageHelper {
 			new MessageFormat("{0}/{1}");
 	private static MessageFormat relativeUriPathFormatter =
 			new MessageFormat("{0}/{1,number,#}/{2}");
+	private final ImageRepository imageRepository;
+	private final AlbumHelper albumHelper;
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -39,8 +40,6 @@ public class ImageHelper {
 	private double maxThumbSize;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
-	private final ImageRepository imageRepository;
-	private final AlbumHelper albumHelper;
 
 	public ImageHelper(ImageRepository imageRepository, AlbumHelper albumHelper) {
 		this.imageRepository = imageRepository;
@@ -157,10 +156,10 @@ public class ImageHelper {
 	/**
 	 * @return whether imgFile from albumId exists in other albums too
 	 */
-	public boolean imageExistsInOtherAlbum(File imgFile, Integer albumId) {
-		String nameNoExt = FilenameUtils.getBaseName(imgFile.getName());
+	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) {
+		String nameNoExt = FilenameUtils.getBaseName(fileName(imgFile));
 		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
-		return image.stream().anyMatch(i -> imgFile.length() == sizeOf(i));
+		return image.stream().anyMatch(i -> fileSize(imgFile) == sizeOf(i));
 	}
 
 	/**
@@ -169,6 +168,6 @@ public class ImageHelper {
 	private long sizeOf(Image image) {
 		String imgRelPath = relativeFilePathFor(image);
 		Path imgFullPath = this.albumHelper.rootPath().resolve(imgRelPath);
-		return sneak(() -> Files.size(imgFullPath));
+		return fileSize(imgFullPath);
 	}
 }
