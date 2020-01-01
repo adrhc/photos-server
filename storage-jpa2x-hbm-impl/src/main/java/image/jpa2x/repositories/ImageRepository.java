@@ -33,6 +33,11 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	 */
 	Image findByNameAndAlbumId(String name, Integer albumId);
 
+	/**
+	 * MySql searches case-insensitive!
+	 * see Paul Wheeler answer at:
+	 * https://stackoverflow.com/questions/5629111/how-can-i-make-sql-case-sensitive-string-comparison-on-mysql
+	 */
 	@Query("SELECT id FROM Image WHERE name = :name AND album.id = :albumId")
 	Integer findIdByNameAndAlbumId(String name, Integer albumId);
 

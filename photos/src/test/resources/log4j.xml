@@ -14,7 +14,7 @@
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <!--<param name="ConversionPattern" value="%d{dd MMM HH:mm:ss} [%-5p] [%C{2}.%M] %m%n"/>-->
-            <param name="ConversionPattern" value="[%-5p] [%C{2}.%M] %m%n"/>
+            <param name="ConversionPattern" value="[%-5p] [%t] [%C{2}.%M] %m%n"/>
             <!--<param name="ConversionPattern" value="[%-5p] [%t] %m%n"/>-->
         </layout>
     </appender>
@@ -34,8 +34,13 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="image.hbm.HibernateConfig" additivity="false">
+    <logger name="image.exifweb.system.persistence" additivity="false">
         <level value="info"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="image.hbm.HibernateConfig" additivity="false">
+        <level value="warn"/>
         <appender-ref ref="console"/>
     </logger>
 
@@ -44,13 +49,13 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="image.exifweb.system.persistence" additivity="false">
-        <level value="info"/>
+    <logger name="image.photos.events" additivity="false">
+        <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="image.photos.events.album.AlbumEventsQueue" additivity="false">
-        <level value="info"/>
+    <logger name="image.photostests" additivity="false">
+        <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>
 

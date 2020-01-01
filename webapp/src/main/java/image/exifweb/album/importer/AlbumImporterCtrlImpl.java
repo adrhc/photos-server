@@ -2,9 +2,8 @@ package image.exifweb.album.importer;
 
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
-import image.persistence.entity.Album;
 import image.photos.album.importing.AlbumImporterService;
-import image.photos.events.album.AlbumEventsQueue;
+import image.photos.events.album.AlbumTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +18,13 @@ import org.springframework.web.context.request.async.DeferredResult;
 import reactor.core.Disposable;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
 
-import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
+import static image.photos.events.album.AlbumEventTypeEnum.CREATED;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -61,7 +58,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 				});
 			}};
 	@Autowired
-	private AlbumEventsQueue albumEventsQueue;
+	private AlbumTopic albumTopic;
 
 	@Override
 	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
@@ -84,28 +81,24 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			List<Album> newAlbums = new ArrayList<>();
-			Disposable subscription = this.albumEventsQueue
-					.albumEventsByTypes(true, ALBUM_IMPORTED)
-					.take(1L)
+			Disposable subscription = this.albumTopic
+					.albumEventsByTypes(true, EnumSet.of(CREATED))
+					.take(1L)// todo: take all new albums imported
 					.subscribe(
-							ae -> newAlbums.add(ae.getAlbum()),
+							ae -> {
+								logger.debug("imported album: {}", ae.getAlbum().getName());
+								deferredResult.setResult("message",
+										"imported album: " + ae.getAlbum().getName());
+							},
 							t -> {
 								logger.error(t.getMessage(), t);
-								logger.error("[ALBUM_IMPORTED] newAlbums");
-							});
+								logger.error("Error while trying to import new albums!");
+							},
+							() -> deferredResult.setResult("message", "No new album to import!"));
+			// this must be blocking in order not to immediately dispose
 			this.albumImporterService.importNewAlbums();
-			logger.debug("BEGIN importedAlbums.size = {}", newAlbums.size());
-			if (newAlbums.isEmpty()) {
-				deferredResult.setResult("message", "No new album to import!");
-			} else {
-				deferredResult.setResult("message", "Albums imported for: " +
-						newAlbums.stream().map(Album::getName)
-								.collect(Collectors.joining(", ")));
-			}
 			// todo: make sure to dispose even when an exception occurs
 			subscription.dispose();
-			logger.debug("[importNewAlbumsOnly] END");
 		}, this.asyncExecutor);
 	}
 

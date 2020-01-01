@@ -18,7 +18,7 @@ import java.io.Serializable;
 @ToString(exclude = {"album", "image"})
 public class ImageEvent implements Serializable {
 	private String requestId;
-	private EImageEventType type;
+	private ImageEventTypeEnum type;
 	private String imageName;
 	private Image image;
 	private Album album;

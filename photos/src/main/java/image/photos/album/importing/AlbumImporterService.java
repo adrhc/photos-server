@@ -9,29 +9,34 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.album.AlbumHelper;
 import image.photos.events.album.AlbumEvent;
-import image.photos.events.album.AlbumEventsQueue;
-import image.photos.events.album.EAlbumEventType;
-import image.photos.events.image.EImageEventType;
+import image.photos.events.album.AlbumEventTypeEnum;
+import image.photos.events.album.AlbumTopic;
 import image.photos.events.image.ImageEvent;
-import image.photos.events.image.ImageEventsQueue;
+import image.photos.events.image.ImageEventTypeEnum;
+import image.photos.events.image.ImageTopic;
 import image.photos.image.ExifExtractorService;
 import image.photos.image.ImageService;
 import image.photos.image.ImageUtils;
 import image.photos.image.ThumbUtils;
 import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import reactor.core.Disposable;
 
-import java.io.File;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-import static image.photos.events.image.EImageEventType.DELETED;
-import static image.photos.events.image.EImageEventType.MARKED_DELETED;
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
+import static image.photos.album.AlbumUtils.albumName;
+import static image.photos.album.AlbumUtils.emptyAlbum;
+import static image.photos.events.image.ImageEventTypeEnum.DELETED;
+import static image.photos.events.image.ImageEventTypeEnum.MARKED_DELETED;
+import static image.photos.util.PathUtils.fileName;
+import static image.photos.util.PathUtils.lastModifiedTime;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,39 +48,51 @@ import static image.photos.events.image.EImageEventType.MARKED_DELETED;
 @Service
 @Slf4j
 public class AlbumImporterService implements IImageFlagsUtils {
-	@Autowired
-	private ImageUtils imageUtils;
-	@Autowired
-	private ExifExtractorService exifExtractorService;
-	@Autowired
-	private ImageRepository imageRepository;
-	@Autowired
-	private ImageService imageService;
-	@Autowired
-	private AlbumRepository albumRepository;
-	@Autowired
-	private AlbumEventsQueue albumEventsQueue;
-	@Autowired
-	private ImageEventsQueue imageEventsQueue;
-	@Autowired
-	private ThumbUtils thumbUtils;
-	@Autowired
-	private Predicates predicates;
-	@Autowired
-	private AlbumHelper albumHelper;
+	private final ImageUtils imageUtils;
+	private final ExifExtractorService exifExtractorService;
+	private final ImageRepository imageRepository;
+	private final ImageService imageService;
+	private final AlbumRepository albumRepository;
+	private final AlbumTopic albumTopic;
+	private final ImageTopic imageTopic;
+	private final ThumbUtils thumbUtils;
+	private final Predicates predicates;
+	private final AlbumHelper albumHelper;
 
+	public AlbumImporterService(ImageUtils imageUtils, ExifExtractorService exifExtractorService, ImageRepository imageRepository, ImageService imageService, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, ThumbUtils thumbUtils, Predicates predicates, AlbumHelper albumHelper) {
+		this.imageUtils = imageUtils;
+		this.exifExtractorService = exifExtractorService;
+		this.imageRepository = imageRepository;
+		this.imageService = imageService;
+		this.albumRepository = albumRepository;
+		this.albumTopic = albumTopic;
+		this.imageTopic = imageTopic;
+		this.thumbUtils = thumbUtils;
+		this.predicates = predicates;
+		this.albumHelper = albumHelper;
+	}
+
+	/**
+	 * import new albums and rescan existing
+	 */
 	public void importAll() {
 		importFilteredFromRoot(this.predicates.VALID_ALBUM_PATH);
 	}
 
+	/**
+	 * import new albums only
+	 */
 	public void importNewAlbums() {
 		importFilteredFromRoot(this.predicates.VALID_NEW_ALBUM_PATH);
 	}
 
+	/**
+	 * import new album or rescan existing
+	 */
 	public void importByAlbumName(String albumName) {
-		File path = this.albumHelper.fullPath(albumName);
+		Path path = this.albumHelper.fullPath(albumName);
 		if (!this.predicates.VALID_ALBUM_PATH.test(path)) {
-			throw new UnsupportedOperationException("Wrong album path:\n" + path.getPath());
+			throw new UnsupportedOperationException("Wrong album path:\n" + path);
 		}
 		importByAlbumPath(path);
 	}
@@ -85,110 +102,122 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 *
 	 * @param albumsFilter
 	 */
-	private void importFilteredFromRoot(Predicate<File> albumsFilter) {
-		File root = this.albumHelper.rootPath();
-		File[] files = root.listFiles();
-		if (files == null || files.length == 0) {
-			return;
+	private void importFilteredFromRoot(Predicate<Path> albumsFilter) {
+		Path root = this.albumHelper.rootPath();
+		sneaked(() ->
+				Files.walk(root, FileVisitOption.FOLLOW_LINKS)
+						.filter(albumsFilter)
+						.sorted(Collections.reverseOrder())
+						.forEach(this::importByAlbumPath))
+				.run();
+	}
+
+	private Optional<AlbumEvent> findOrCreate(String albumName) {
+		Album album = this.albumRepository.findByName(albumName);
+		if (album != null) {
+			// already existing album
+			return Optional.of(AlbumEvent.builder().album(album).build());
 		}
-		Arrays.sort(files, Collections.reverseOrder());
-		Stream.of(files).filter(albumsFilter).forEach(this::importByAlbumPath);
+		if (emptyAlbum(this.albumHelper.fullPath(albumName))) {
+			// new empty album
+			return Optional.empty();
+		}
+		// creem un nou album (path aferent contine poze)
+		album = this.albumRepository.createByName(albumName);
+		return Optional.of(AlbumEvent.builder()
+				.type(AlbumEventTypeEnum.CREATED).album(album).build());
 	}
 
 	/**
 	 * By now we already checked that path is a valid album path.
 	 */
-	private void importByAlbumPath(File path) {
+	private void importByAlbumPath(Path path) {
 		StopWatch sw = new StopWatch();
-		sw.start(path.getAbsolutePath());
-
-		// check path for files
-		File[] files = path.listFiles();
-		boolean noFiles = files == null || files.length == 0;
-		if (!noFiles) {
-			Arrays.sort(files);
-		}
+		sw.start(path.toString());
 
 		// determine or create album
-		Album album = this.albumRepository.findByName(path.getName());
-		boolean isNewAlbum = album == null;
-		if (isNewAlbum) {
-			// album inexistent in DB deci nou
-			if (noFiles) {
-				// path este album nou dar nu are poze
-				sw.stop();
-				return;
-			}
-			// creem un nou album (path aferent contine poze)
-			album = this.albumRepository.createByName(path.getName());
+		// path este album nou dar nu are poze
+		Optional<AlbumEvent> albumEvent = findOrCreate(albumName(path));
+		if (albumEvent.isEmpty()) {
+			// album nou dar gol
+			sw.stop();
+			return;
 		}
+
+		Album album = albumEvent.get().getAlbum();
+		boolean isNewAlbum = albumEvent.get().getType().equals(AlbumEventTypeEnum.CREATED);
 
 		// Preparing an imageEvents-listener used to
 		// determine whether exists any image changes.
 		// When importing a new album existsAtLeast1ImageChange will
 		// always be true because we are not importing empty albums.
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
-		Disposable subscription = this.imageEventsQueue
-				.imageEventsByType(EnumSet.allOf(EImageEventType.class))
-				.take(1L).subscribe(
-						event -> isAtLeast1ImageChanged.setValue(true),
-						err -> {
-							log.error(err.getMessage(), err);
-							log.error("[allOf(EImageEventType)] existsAtLeast1ImageChange");
-						});
+		Disposable subscription = this.imageTopic
+				.imageEventsByType(EnumSet.allOf(ImageEventTypeEnum.class))
+				.take(1L)
+				.subscribe(event -> isAtLeast1ImageChanged.setValue(true));
 
 		// iterate and process image files
-		List<String> imageNames = new ArrayList<>(noFiles ? 0 : files.length);
-		if (noFiles) {
-			log.debug("BEGIN album with 0 poze:\n{}", path.getAbsolutePath());
+		List<String> foundImages = new ArrayList<>();
+		if (emptyAlbum(path)) {
+			// existing empty album
+			log.debug("BEGIN album with no pictures:\n{}", path);
 		} else {
-			// 1 level only album supported
-			log.debug("BEGIN album with {} poze:\n{}", files.length, path.getAbsolutePath());
-			for (File file : files) {
-				if (importImageFromFile(file, album)) {
-					imageNames.add(file.getName());
-				}
-			}
+			// take only files existing in the album's directory but not sub-directories
+			log.debug("BEGIN album has pictures:\n{}", path);
+			sneaked(() ->
+					Files.walk(path, FileVisitOption.FOLLOW_LINKS)
+							.forEach(file -> {
+								if (importImageFromFile(file, album)) {
+									foundImages.add(file.getFileName().toString());
+								}
+							}))
+					.run();
 		}
 
 		// remove db-images having no corresponding file
 		if (!isNewAlbum) {
-			deleteNotFoundImages(imageNames, album);
+			deleteNotFoundImages(foundImages, album);
 		}
 
 		// todo: make sure to dispose even when an exception occurs
 		subscription.dispose();
 
 		// see AlbumExporterService.postConstruct
-		if (isAtLeast1ImageChanged.getValue()) {
-			this.albumEventsQueue.emit(AlbumEvent.builder()
-					.type(EAlbumEventType.ALBUM_IMPORTED)
+		if (isNewAlbum) {
+			this.albumTopic.emit(albumEvent.get());
+		} else if (isAtLeast1ImageChanged.getValue()) {
+			this.albumTopic.emit(AlbumEvent.builder()
+					.type(AlbumEventTypeEnum.UPDATED)
 					.album(album).build());
 		}
 
 		sw.stop();
-		log.debug("END album:\n{}\n{}", path.getAbsolutePath(), sw.shortSummary());
+		log.debug("END album:\n{}\n{}", path, sw.shortSummary());
 	}
 
 	/**
 	 * @return true = file still exists, false = file no longer exists
 	 */
-	private boolean importImageFromFile(File imgFile, Album album) {
-		assert !imgFile.isDirectory() : "Wrong image file (is a directory):\n{}" + imgFile.getPath();
+	private boolean importImageFromFile(Path imgFile, Album album) {
+		assert Files.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
 //		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
-		Image dbImage = this.imageService.findByNameAndAlbumId(imgFile.getName(), album.getId());
+		Image dbImage = this.imageService.findByNameAndAlbumId(fileName(imgFile), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
+/*
 		} else if (this.imageUtils.imageExistsInOtherAlbum(imgFile, album.getId())) {
 			log.debug("Image {}\tto insert into album {} already exists in another album!",
 					imgFile.getName(), album.getName());
 			return false;
+*/
 		}
 
-		if (imgFile.lastModified() > dbImage.getImageMetadata().getDateTime().getTime()) {
+		if (lastModifiedTime(imgFile) >
+				dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
-			updateImageMetadataFromFile(imgFile, dbImage);
+			return updateImageMetadataFromFile(imgFile, dbImage);
 		} else {
 			Date thumbLastModified = this.thumbUtils
 					.getThumbLastModified(imgFile, dbImage.getImageMetadata().getDateTime());
@@ -204,41 +233,48 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Image updatedDbImg = this.imageRepository
 				.updateThumbLastModifiedForImg(thumbLastModified, imageId);
 		log.debug("updated thumb's lastModified for {}", updatedDbImg.getName());
-		this.imageEventsQueue.emit(ImageEvent.builder()
-				.type(EImageEventType.THUMB_LAST_MODIF_DATE_UPDATED)
+		this.imageTopic.emit(ImageEvent.builder()
+				.type(ImageEventTypeEnum.THUMB_LAST_MODIF_DATE_UPDATED)
 				.image(updatedDbImg).build());
 	}
 
-	private void updateImageMetadataFromFile(File imgFile, Image dbImage) {
+	private boolean updateImageMetadataFromFile(Path imgFile, Image dbImage) {
 		log.debug("update EXIF for {}/{}",
-				imgFile.getParentFile().getName(), dbImage.getName());
-		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
-		Image imgWithUpdatedMetadata = this.imageRepository
-				.updateImageMetadata(imageMetadata, dbImage.getId());
-		this.imageEventsQueue.emit(ImageEvent.builder()
-				.type(EImageEventType.EXIF_UPDATED)
-				.image(imgWithUpdatedMetadata).build());
-	}
-
-	private boolean createImageFromFile(File imgFile, Album album) {
+				imgFile.getFileName().toString(), dbImage.getName());
 		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
 		if (imageMetadata == null) {
-			log.info("{} no longer exists!", imgFile.getPath());
+			log.info("{} no longer exists!", imgFile);
 			return false;
 		}
+		Image imgWithUpdatedMetadata = this.imageRepository
+				.updateImageMetadata(imageMetadata, dbImage.getId());
+		this.imageTopic.emit(ImageEvent.builder()
+				.type(ImageEventTypeEnum.EXIF_UPDATED)
+				.image(imgWithUpdatedMetadata).build());
+		return true;
+	}
+
+	private boolean createImageFromFile(Path imgFile, Album album) {
+		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
+		if (imageMetadata == null) {
+			log.info("{} no longer exists!", imgFile);
+			return false;
+		}
+/*
 		if (this.imageUtils.imageExistsInOtherAlbum(imgFile, album.getId())) {
 			log.debug("Image {}\tto insert into album {} already exists in another album!",
 					imgFile.getName(), album.getName());
 			return false;
 		}
-		log.debug("insert {}/{}", album.getName(), imgFile.getName());
+*/
+		log.debug("insert {}/{}", album.getName(), fileName(imgFile));
 		Image newImg = new Image();
 		newImg.setImageMetadata(imageMetadata);
-		newImg.setName(imgFile.getName());
+		newImg.setName(imgFile.getFileName().toString());
 		newImg.setAlbum(album);
 		this.imageRepository.persist(newImg);
-		this.imageEventsQueue.emit(ImageEvent.builder()
-				.type(EImageEventType.CREATED)
+		this.imageTopic.emit(ImageEvent.builder()
+				.type(ImageEventTypeEnum.CREATED)
 				.image(newImg).build());
 		return true;
 	}
@@ -267,20 +303,20 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				this.imageRepository.changeName(oppositeExtensionCase, image.getId());
-				this.imageEventsQueue.emit(imgEvBuilder.type(EImageEventType.UPDATED).build());
+				this.imageTopic.emit(imgEvBuilder.type(ImageEventTypeEnum.UPDATED).build());
 				return;
 			}
 			if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
 				// status = 0
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				this.imageRepository.safelyDeleteImage(image.getId());
-				this.imageEventsQueue.emit(imgEvBuilder.type(DELETED).build());
+				this.imageTopic.emit(imgEvBuilder.type(DELETED).build());
 				return;
 			}
 			// status != 0 (adica e o imagine "prelucrata")
 			log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 			if (this.imageRepository.markDeleted(image.getId())) {
-				this.imageEventsQueue.emit(imgEvBuilder.type(MARKED_DELETED).build());
+				this.imageTopic.emit(imgEvBuilder.type(MARKED_DELETED).build());
 			}
 		});
 		log.debug("END {}", album.getName());

@@ -10,17 +10,17 @@ import exifweb.util.MiscUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.util.process.ProcessRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
+
+import static image.photos.util.PathUtils.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,24 +30,29 @@ import java.util.function.Consumer;
  * To change this template use File | Settings | File Templates.
  */
 @Service
+@Slf4j
 public class ExifExtractorService implements MiscUtils {
-	private static final Logger logger = LoggerFactory.getLogger(ExifExtractorService.class);
 	/**
 	 * metadata extractor uses this yyyy:MM:dd format
 	 */
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final SimpleDateFormat sdf =
+			new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
-	@Value("${max.thumb.size}")
-	private int maxThumbSizeInt;
-	@Autowired
-	private ProcessRunner processRunner;
-	@Autowired
-	private ThumbUtils thumbUtils;
+	private final int maxThumbSizeInt;
+	private final ProcessRunner processRunner;
+	private final ThumbUtils thumbUtils;
 
-	public ImageMetadata extractMetadata(File imgFile) {
+	public ExifExtractorService(@Value("${max.thumb.size}") int maxThumbSizeInt,
+			ProcessRunner processRunner, ThumbUtils thumbUtils) {
+		this.maxThumbSizeInt = maxThumbSizeInt;
+		this.processRunner = processRunner;
+		this.thumbUtils = thumbUtils;
+	}
+
+	public ImageMetadata extractMetadata(Path imgFile) {
 		ImageMetadata imageMetadata =
-				new ImageMetadata(new Date(imgFile.lastModified()));
+				new ImageMetadata(new Date(lastModifiedTime(imgFile)));
 
 		try {
 			loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
@@ -55,8 +60,8 @@ public class ExifExtractorService implements MiscUtils {
 			// path no longer exists
 			return null;
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			logger.error("{}: {}", imgFile.getParentFile().getName(), imgFile.getName());
+			log.error(e.getMessage(), e);
+			log.error("{}: {}", parentDir(imgFile), fileName(imgFile));
 		}
 
 		if (imageMetadata.getExifData().getDateTimeOriginal() == null) {
@@ -64,7 +69,7 @@ public class ExifExtractorService implements MiscUtils {
 		}
 		if (imageMetadata.getExifData().getImageHeight() == 0 ||
 				imageMetadata.getExifData().getImageWidth() == 0) {
-			loadDimensions(imageMetadata.getExifData(), imgFile.getPath());
+			loadDimensions(imageMetadata.getExifData(), imgFile);
 		}
 
 		Date thumbLastModified = this.thumbUtils.getThumbLastModified(
@@ -76,13 +81,9 @@ public class ExifExtractorService implements MiscUtils {
 
 	/**
 	 * https://github.com/drewnoakes/metadata-extractor/wiki/SampleOutput
-	 *
-	 * @param exifData
-	 * @param imgFile
-	 * @throws Exception
 	 */
-	private void loadExifFromImgFile(ExifData exifData, File imgFile) throws Exception {
-		Metadata metadata = ImageMetadataReader.readMetadata(imgFile);
+	private void loadExifFromImgFile(ExifData exifData, Path imgFile) throws Exception {
+		Metadata metadata = ImageMetadataReader.readMetadata(imgFile.toFile());
 		Directory directory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
 
 		JpegDescriptor jpegDescriptor = new JpegDescriptor((JpegDirectory) directory);
@@ -91,7 +92,8 @@ public class ExifExtractorService implements MiscUtils {
 
 		directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-		Consumer<Runnable> ignoreExcWithLog = r -> ignoreExc(r, e -> logger.error("EXIF error: {}", imgFile.getPath()));
+		Consumer<Runnable> ignoreExcWithLog = r ->
+				ignoreExc(r, e -> log.error("EXIF error: {}", imgFile));
 		ignoreExcWithLog.accept(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
@@ -122,20 +124,20 @@ public class ExifExtractorService implements MiscUtils {
 		ignoreExcWithLog.accept(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifDirectoryBase.TAG_MODEL)));
 	}
 
-	private void loadDimensions(ExifData imageDimensions, String path) {
+	private void loadDimensions(ExifData imageDimensions, Path path) {
 		try {
 //			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 //					"/home/adr/x.sh", "image_dims", path);
 			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
-					"identify", "-format", "%[fx:w] %[fx:h]", path);
+					"identify", "-format", "%[fx:w] %[fx:h]", path.toString());
 			String sDimensions = this.processRunner.getProcessOutput(identifyImgDimensions);
-//            logger.debug("dimensions {} for:\n{}", dimensions, path);
+//            log.debug("dimensions {} for:\n{}", dimensions, path);
 			String[] dims = sDimensions.split("\\s");
 			imageDimensions.setImageWidth(Integer.parseInt(dims[WIDTH]));
 			imageDimensions.setImageHeight(Integer.parseInt(dims[HEIGHT]));
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			logger.error("Using default dimensions: {}x{}", this.maxThumbSizeInt, this.maxThumbSizeInt);
+			log.error(e.getMessage(), e);
+			log.error("Using default dimensions: {}x{}", this.maxThumbSizeInt, this.maxThumbSizeInt);
 			imageDimensions.setImageWidth(this.maxThumbSizeInt);
 			imageDimensions.setImageHeight(this.maxThumbSizeInt);
 		}

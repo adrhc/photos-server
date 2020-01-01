@@ -8,7 +8,7 @@ import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.photos.events.album.AlbumEventsQueue;
+import image.photos.events.album.AlbumTopic;
 import image.photos.util.status.E3ResultTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +19,14 @@ import reactor.core.scheduler.Schedulers;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
-import static image.photos.events.album.EAlbumEventType.ALBUM_IMPORTED;
+import static image.photos.events.album.AlbumEventTypeEnum.CREATED;
+import static image.photos.events.album.AlbumEventTypeEnum.UPDATED;
 
 /**
  * Created by adr on 1/28/18.
@@ -44,7 +46,7 @@ public class AlbumExporterService {
 	@Autowired
 	private AlbumPageService albumPageService;
 	@Autowired
-	private AlbumEventsQueue albumEventsQueue;
+	private AlbumTopic albumTopic;
 	@Autowired
 	private ObjectMapper jsonMapper;
 	@Autowired
@@ -131,13 +133,11 @@ public class AlbumExporterService {
 
 	@PostConstruct
 	public void postConstruct() {
-		this.albumEventsQueue
-				.albumEventsByTypes(false, ALBUM_IMPORTED)
-				.subscribeOn(Schedulers.fromExecutorService(this.executorService))
+		this.albumTopic
+				.albumEventsByTypes(false,
+						EnumSet.of(CREATED, UPDATED))
+				.publishOn(Schedulers.fromExecutor(this.executorService))
 				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),
-						t -> {
-							logger.error(t.getMessage(), t);
-							logger.error("[{}]", ALBUM_IMPORTED.name());
-						});
+						t -> logger.error(t.getMessage(), t));
 	}
 }

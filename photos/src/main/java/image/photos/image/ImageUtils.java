@@ -3,9 +3,9 @@ package image.photos.image;
 import image.cdm.album.cover.AlbumCover;
 import image.cdm.image.feature.IImageBasicInfo;
 import image.cdm.image.feature.IImageDimensions;
-import image.jpa2x.repositories.AppConfigRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
+import image.photos.album.AlbumHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
+
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 
 /**
  * Created by adr on 2/2/18.
@@ -23,9 +26,12 @@ import java.util.List;
 @Component
 @Slf4j
 public class ImageUtils {
-	private MessageFormat fullUriPathFormatter = new MessageFormat("{0}/{1}");
-	private MessageFormat relativeFilePathFormatter = new MessageFormat("{0}/{1}");
-	private MessageFormat relativeUriPathFormatter = new MessageFormat("{0}/{1,number,#}/{2}");
+	private static MessageFormat fullUriPathFormatter =
+			new MessageFormat("{0}/{1}");
+	private static MessageFormat relativeFilePathFormatter =
+			new MessageFormat("{0}/{1}");
+	private static MessageFormat relativeUriPathFormatter =
+			new MessageFormat("{0}/{1,number,#}/{2}");
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -37,8 +43,28 @@ public class ImageUtils {
 	@Autowired
 	private ImageRepository imageRepository;
 	@Autowired
-	private AppConfigRepository appConfigRepository;
+	private AlbumHelper albumHelper;
 
+	private static String relativeUriPathFor(Long lastModifTime, String imgName, String albumName) {
+		return relativeUriPathFormatter.format(new Object[]{albumName, lastModifTime, imgName});
+	}
+
+	private static String relativeFilePathFor(Image image) {
+		return relativeFilePathFormatter.format(
+				new Object[]{image.getAlbum().getName(), image.getName()});
+	}
+
+	private String fullUriPathForThumb(String relativePath) {
+		return fullUriPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
+	}
+
+	private String fullUriPathForImage(String relativePath) {
+		return fullUriPathFormatter.format(new Object[]{this.albumsDir, relativePath});
+	}
+
+	/**
+	 * sets thumbPath and imagePath for images
+	 */
 	public void appendImagePaths(List<? extends IImageBasicInfo> imageBasicInfos) {
 		for (IImageBasicInfo basicInfo : imageBasicInfos) {
 			if (basicInfo.getImgName() == null) {
@@ -48,6 +74,9 @@ public class ImageUtils {
 		}
 	}
 
+	/**
+	 * sets thumbPath and imagePath for an image
+	 */
 	private void appendImagePaths(IImageBasicInfo basicInfo) {
 		String albumName = basicInfo.getAlbumName();
 		String imgName = basicInfo.getImgName();
@@ -59,38 +88,38 @@ public class ImageUtils {
 		basicInfo.setImagePath(imagePathFor(imageLastModified, imgName, albumName));
 	}
 
-	public void appendImagePaths(AlbumCover albumCover, Long thumbLastModified) {
-		String albumName = albumCover.getAlbumName();
-		String imgName = albumCover.getImgName();
+	/**
+	 * sets thumbPath for a cover
+	 */
+	public void appendImagePaths(AlbumCover cover, Long thumbLastModified) {
+		String albumName = cover.getAlbumName();
+		String imgName = cover.getImgName();
 
-		albumCover.setThumbPath(thumbPathFor(thumbLastModified, imgName, albumName));
+		cover.setThumbPath(thumbPathFor(thumbLastModified, imgName, albumName));
 	}
 
-	private String thumbPathFor(Long thumbLastModified, String imgName, String albumName) {
-		String relativePath = this.relativeUriPathFormatter.format(
-				new Object[]{albumName, thumbLastModified, imgName});
-		return this.fullUriPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
-	}
-
-	private String relativeFilePathFor(String imgName, String albumName) {
-		return this.relativeFilePathFormatter.format(new Object[]{albumName, imgName});
-	}
-
-	private String relativeUriPathFor(Long imageLastModif, String imgName, String albumName) {
-		return this.relativeUriPathFormatter.format(new Object[]{albumName, imageLastModif, imgName});
+	private String thumbPathFor(Long thumbLastModif, String imgName, String albumName) {
+		String relativePath = relativeUriPathFor(thumbLastModif, imgName, albumName);
+		return fullUriPathForThumb(relativePath);
 	}
 
 	private String imagePathFor(Long imageLastModif, String imgName, String albumName) {
 		String relativePath = relativeUriPathFor(imageLastModif, imgName, albumName);
-		return this.fullUriPathFormatter.format(new Object[]{this.albumsDir, relativePath});
+		return fullUriPathForImage(relativePath);
 	}
 
+	/**
+	 * sets width and height for images
+	 */
 	public void appendImageDimensions(List<? extends IImageDimensions> imageDimensions) {
 		for (IImageDimensions entity : imageDimensions) {
 			appendImageDimensions(entity);
 		}
 	}
 
+	/**
+	 * sets width and height for an image
+	 */
 	public void appendImageDimensions(IImageDimensions entity) {
 		if (entity.getImageHeight() < entity.getImageWidth()) {
 			entity.setImageHeight((int)
@@ -103,6 +132,10 @@ public class ImageUtils {
 		}
 	}
 
+	/**
+	 * @return fileName having extension as lower or upper case
+	 * when lower it makes upper otherwise it makes lower
+	 */
 	public String changeToOppositeExtensionCase(String fileName) {
 		StringBuilder sb = new StringBuilder();
 		int idx = fileName.lastIndexOf(".");
@@ -119,15 +152,21 @@ public class ImageUtils {
 		return sb.toString();
 	}
 
+	/**
+	 * @return whether imgFile from albumId exists in other albums too
+	 */
 	public boolean imageExistsInOtherAlbum(File imgFile, Integer albumId) {
-		List<Image> image = this.imageRepository
-				.findDuplicates(FilenameUtils.getBaseName(imgFile.getName()), albumId);
+		String nameNoExt = FilenameUtils.getBaseName(imgFile.getName());
+		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
 		return image.stream().anyMatch(i -> imgFile.length() == sizeOf(i));
 	}
 
+	/**
+	 * @return size of the image's file
+	 */
 	private long sizeOf(Image image) {
-		String relPath = relativeFilePathFor(image.getName(), image.getAlbum().getName());
-		Path path = Path.of(this.appConfigRepository.getAlbumsPath(), relPath);
-		return path.toFile().length();
+		String imgRelPath = relativeFilePathFor(image);
+		Path imgFullPath = this.albumHelper.rootPath().resolve(imgRelPath);
+		return sneak(() -> Files.size(imgFullPath));
 	}
 }

@@ -1,8 +1,8 @@
 package image.photos.events.image;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.DirectProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
  * Created by adr on 1/28/18.
  */
 @Component
-public class ImageEventsQueue {
-	private static final Logger logger = LoggerFactory.getLogger(ImageEventsQueue.class);
-	private ThreadLocal<String> requestId = ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
-	private FluxSink<ImageEvent> sink;
-	private Flux<ImageEvent> imageEvents = Flux.create(sink -> this.sink = sink);
+@Slf4j
+public class ImageTopic {
+	private final ThreadLocal<String> requestId =
+			ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
+	private final DirectProcessor<ImageEvent> topic = DirectProcessor.create();
+	private final FluxSink<ImageEvent> sink = this.topic.sink();
 
 	public void emit(ImageEvent imageEvent) {
 		if (imageEvent.getRequestId() == null) {
@@ -28,7 +29,7 @@ public class ImageEventsQueue {
 		this.sink.next(imageEvent);
 	}
 
-	public Flux<ImageEvent> imageEventsByType(EnumSet<EImageEventType> imageEventTypes) {
+	public Flux<ImageEvent> imageEventsByType(EnumSet<ImageEventTypeEnum> imageEventTypes) {
 		return imageEventsByType(true, imageEventTypes);
 	}
 
@@ -37,14 +38,14 @@ public class ImageEventsQueue {
 	 * @param imageEventTypes:   event types to take
 	 */
 	public Flux<ImageEvent> imageEventsByType(
-			boolean filterByRequestId, EnumSet<EImageEventType> imageEventTypes) {
-		return this.imageEvents
+			boolean filterByRequestId, EnumSet<ImageEventTypeEnum> imageEventTypes) {
+		return this.topic
 				.doOnNext(ie -> {
 					// logging events
-					logger.debug("image event received:\n\tid = {}, name: {}",
+					log.debug("image event received:\n\tid = {}, name: {}",
 							ie.getImage().getId(), ie.getImage().getName());
-					logger.debug("received: {}", ie.getType().name());
-					logger.debug("accept: {}, acceptable: {}\n\trequestId = {}",
+					log.debug("received: {}", ie.getType().name());
+					log.debug("accept: {}, acceptable: {}\n\trequestId = {}",
 							imageEventTypes.stream().map(Enum::name)
 									.collect(Collectors.joining(", ")),
 							imageEventTypes.contains(ie.getType()),

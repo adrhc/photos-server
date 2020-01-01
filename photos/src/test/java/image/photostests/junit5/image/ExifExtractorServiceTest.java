@@ -9,9 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.ResourceUtils;
 
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @TestPropertySource(properties = "hibernate.show_sql=false")
@@ -19,14 +22,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j
 class ExifExtractorServiceTest {
-	private static final String IMAGE = "/home/adr/Pictures/" +
-			"FOTO Daniela & Adrian jpeg/albums/2017-10-14 Family/20171105_130105.jpg";
+	private static final String IMAGE = "classpath:20171105_130105.jpg";
 	@Autowired
 	private ExifExtractorService service;
 
 	@Test
-	void extractMetadata() {
-		ImageMetadata imageMetadata = this.service.extractMetadata(new File(IMAGE));
+	void extractMetadata() throws FileNotFoundException {
+		Path imagePath = Path.of(ResourceUtils.getFile(IMAGE).getAbsolutePath());
+		log.debug("path:\n{}", imagePath);
+		ImageMetadata imageMetadata = this.service.extractMetadata(imagePath);
 		assertNotNull(imageMetadata);
+		assertNotNull(imageMetadata);
+		assertNotNull(imageMetadata.getExifData());
+		assertNotNull(imageMetadata.getDateTime());
+		assertNotNull(imageMetadata.getThumbLastModified());
+		assertNotNull(imageMetadata.getExifData().getDateTimeOriginal());
+		assertNotNull(imageMetadata.getExifData().getShutterSpeedValue());
+		assertEquals(imageMetadata.getExifData().getShutterSpeedValue(), "1/17 sec");
 	}
 }

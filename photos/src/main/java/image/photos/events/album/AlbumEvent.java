@@ -14,9 +14,9 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-@ToString(exclude = "album")
+@ToString
 public class AlbumEvent implements Serializable {
 	private String requestId;
-	private EAlbumEventType type;
+	private AlbumEventTypeEnum type;
 	private Album album;
 }

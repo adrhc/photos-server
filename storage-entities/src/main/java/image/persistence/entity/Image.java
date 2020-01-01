@@ -58,7 +58,10 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	private Album album;
 
 	/**
-	 * used to compute albumPage Last-Modified (impact browser-cache)
+	 * used to compute album-page Last-Modified (impact browser-cache)
+	 * <p>
+	 * related to DB-record change: rating, status, deleted
+	 * see also ImageMetadata.dateTime
 	 * <p>
 	 * nullable version or timestamp property is good:
 	 * A version or timestamp property can never be null for a detached instance. Hibernate detects any instance with a null version or timestamp as transient, regardless of other unsaved-value strategies that you specify. Declaring a nullable version or timestamp property is an easy way to avoid problems with transitive reattachment in Hibernate, especially useful if you use assigned identifiers or composite keys.
@@ -67,8 +70,6 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	 * <p>
 	 * DEFAULT CURRENT_TIMESTAMP -> desired
 	 * ON UPDATE CURRENT_TIMESTAMP -> very bad; overwrites the value set by hibernate
-	 * <p>
-	 * related to db record -> rating, status, deleted change
 	 * <p>
 	 * TIMESTAMP(3) supports milliseconds
 	 * last_update` TIMESTAMP(3) NOT NULL DEFAULT now(3)

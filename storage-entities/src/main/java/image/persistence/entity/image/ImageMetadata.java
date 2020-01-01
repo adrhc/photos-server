@@ -13,7 +13,7 @@ public class ImageMetadata implements Serializable {
 	private ExifData exifData = new ExifData();
 	/**
 	 * related to image's file change
-	 * used for image's url (impact browser-cache)
+	 * used for image-file URI (impact browser-cache)
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)

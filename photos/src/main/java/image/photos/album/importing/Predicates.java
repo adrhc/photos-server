@@ -5,16 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Predicate;
+
+import static image.photos.album.AlbumUtils.albumName;
+import static image.photos.album.AlbumUtils.emptyAlbum;
 
 @Component
 @Slf4j
 public class Predicates {
-	public Predicate<File> VALID_ALBUM_PATH = path -> {
+	public Predicate<Path> VALID_ALBUM_PATH = path -> {
 		// cazul in care albumPath este o poza
-		if (path.isFile()) {
-			log.error("Wrong albumPath (is a file):\n{}", path.getPath());
+		if (!Files.isDirectory(path)) {
+			log.error("Wrong albumPath (is a file):\n{}", path);
 			return false;
 		}
 		// valid album
@@ -22,17 +26,16 @@ public class Predicates {
 	};
 	@Autowired
 	private AlbumRepository albumRepository;
-	public Predicate<File> VALID_NEW_ALBUM_PATH = this.VALID_ALBUM_PATH
+	public Predicate<Path> VALID_NEW_ALBUM_PATH = this.VALID_ALBUM_PATH
 			.and(path -> {
 				// check for path to have files
-				File[] albumFiles = path.listFiles();
-				if (albumFiles == null || albumFiles.length == 0) {
+				if (emptyAlbum(path)) {
 					// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
 					// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
-					log.warn("{} este gol!", path.getPath());
+					log.warn("{} este gol!", path);
 					return false;
 				}
 				// check path for not to already be an album
-				return this.albumRepository.findByName(path.getName()) == null;
+				return this.albumRepository.findByName(albumName(path)) == null;
 			});
 }
