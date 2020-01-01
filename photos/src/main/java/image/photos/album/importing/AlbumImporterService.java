@@ -14,7 +14,7 @@ import image.photos.events.image.ImageEvent;
 import image.photos.events.image.ImageEventTypeEnum;
 import image.photos.events.image.ImageTopic;
 import image.photos.events.image.importing.ImageImporterService;
-import image.photos.image.ImageUtils;
+import image.photos.image.ImageHelper;
 import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ import static image.photos.events.image.ImageEventTypeEnum.MARKED_DELETED;
 @Slf4j
 public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageImporterService imageImporterService;
-	private final ImageUtils imageUtils;
+	private final ImageHelper imageHelper;
 	private final ImageRepository imageRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
@@ -52,8 +52,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final Predicates predicates;
 	private final AlbumHelper albumHelper;
 
-	public AlbumImporterService(ImageUtils imageUtils, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, Predicates predicates, AlbumHelper albumHelper) {
-		this.imageUtils = imageUtils;
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, Predicates predicates, AlbumHelper albumHelper) {
+		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageRepository = imageRepository;
 		this.albumRepository = albumRepository;
@@ -203,7 +203,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				// imagine existenta in DB cu acelas nume ca in file system
 				return;
 			}
-			String oppositeExtensionCase = this.imageUtils.changeToOppositeExtensionCase(dbName);
+			String oppositeExtensionCase = this.imageHelper.changeToOppositeExtensionCase(dbName);
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
 			ImageEvent.ImageEventBuilder imgEvBuilder =
 					ImageEvent.builder().album(album).image(image);

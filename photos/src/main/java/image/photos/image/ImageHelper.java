@@ -8,7 +8,6 @@ import image.persistence.entity.Image;
 import image.photos.album.AlbumHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
  */
 @Component
 @Slf4j
-public class ImageUtils {
+public class ImageHelper {
 	private static MessageFormat fullUriPathFormatter =
 			new MessageFormat("{0}/{1}");
 	private static MessageFormat relativeFilePathFormatter =
@@ -40,10 +39,13 @@ public class ImageUtils {
 	private double maxThumbSize;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
-	@Autowired
-	private ImageRepository imageRepository;
-	@Autowired
-	private AlbumHelper albumHelper;
+	private final ImageRepository imageRepository;
+	private final AlbumHelper albumHelper;
+
+	public ImageHelper(ImageRepository imageRepository, AlbumHelper albumHelper) {
+		this.imageRepository = imageRepository;
+		this.albumHelper = albumHelper;
+	}
 
 	private static String relativeUriPathFor(Long lastModifTime, String imgName, String albumName) {
 		return relativeUriPathFormatter.format(new Object[]{albumName, lastModifTime, imgName});

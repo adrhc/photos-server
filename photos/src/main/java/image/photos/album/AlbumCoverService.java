@@ -4,7 +4,7 @@ import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.photos.image.ImageUtils;
+import image.photos.image.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class AlbumCoverService {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private ImageUtils imageUtils;
+	private ImageHelper imageHelper;
 
 	public List<AlbumCover> getCovers() {
 		return this.albumRepository.findByDeletedFalseOrderByNameDesc().stream()
@@ -49,8 +49,8 @@ public class AlbumCoverService {
 					cover.getImageMetadata().getExifData().getImageHeight(),
 					cover.getImageMetadata().getExifData().getImageWidth(),
 					album.isDirty(), album.getLastUpdate());
-			this.imageUtils.appendImageDimensions(ac);
-			this.imageUtils.appendImagePaths(ac, cover.getImageMetadata().getThumbLastModified().getTime());
+			this.imageHelper.appendImageDimensions(ac);
+			this.imageHelper.appendImagePaths(ac, cover.getImageMetadata().getThumbLastModified().getTime());
 		}
 		return ac;
 	}

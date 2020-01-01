@@ -3,7 +3,7 @@ package image.photos.album;
 import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.photos.image.ImageUtils;
+import image.photos.image.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class AlbumPageService {
 	@Autowired
-	private ImageUtils imageUtils;
+	private ImageHelper imageHelper;
 	@Autowired
 	private AlbumPageRepository albumPageRepository;
 
@@ -24,8 +24,8 @@ public class AlbumPageService {
 			Integer albumId) {
 		List<AlbumPage> thumbs = this.albumPageRepository.getPageFromDb(pageNr, sort,
 				toSearch, viewHidden, viewOnlyPrintable, albumId);
-		this.imageUtils.appendImageDimensions(thumbs);
-		this.imageUtils.appendImagePaths(thumbs);
+		this.imageHelper.appendImageDimensions(thumbs);
+		this.imageHelper.appendImagePaths(thumbs);
 		return thumbs;
 	}
 }
