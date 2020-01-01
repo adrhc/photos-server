@@ -41,13 +41,13 @@ public class ExifExtractorService implements MiscUtils {
 	private static final int HEIGHT = 1;
 	private final int maxThumbSizeInt;
 	private final ProcessRunner processRunner;
-	private final ThumbUtils thumbUtils;
+	private final ThumbHelper thumbHelper;
 
 	public ExifExtractorService(@Value("${max.thumb.size}") int maxThumbSizeInt,
-			ProcessRunner processRunner, ThumbUtils thumbUtils) {
+			ProcessRunner processRunner, ThumbHelper thumbHelper) {
 		this.maxThumbSizeInt = maxThumbSizeInt;
 		this.processRunner = processRunner;
-		this.thumbUtils = thumbUtils;
+		this.thumbHelper = thumbHelper;
 	}
 
 	public ImageMetadata extractMetadata(Path imgFile) {
@@ -72,7 +72,7 @@ public class ExifExtractorService implements MiscUtils {
 			loadDimensions(imageMetadata.getExifData(), imgFile);
 		}
 
-		Date thumbLastModified = this.thumbUtils.getThumbLastModified(
+		Date thumbLastModified = this.thumbHelper.getThumbLastModified(
 				imgFile, imageMetadata.getDateTime());
 		imageMetadata.setThumbLastModified(thumbLastModified);
 

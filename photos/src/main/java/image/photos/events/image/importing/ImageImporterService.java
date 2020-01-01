@@ -9,7 +9,7 @@ import image.photos.events.image.ImageEventTypeEnum;
 import image.photos.events.image.ImageTopic;
 import image.photos.image.ExifExtractorService;
 import image.photos.image.ImageService;
-import image.photos.image.ThumbUtils;
+import image.photos.image.ThumbHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -25,14 +25,14 @@ import static image.photos.util.PathUtils.lastModifiedTime;
 public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
 	private final ImageService imageService;
-	private final ThumbUtils thumbUtils;
+	private final ThumbHelper thumbHelper;
 	private final ImageRepository imageRepository;
 	private final ImageTopic imageTopic;
 
-	public ImageImporterService(ExifExtractorService exifExtractorService, ImageService imageService, ThumbUtils thumbUtils, ImageRepository imageRepository, ImageTopic imageTopic) {
+	public ImageImporterService(ExifExtractorService exifExtractorService, ImageService imageService, ThumbHelper thumbHelper, ImageRepository imageRepository, ImageTopic imageTopic) {
 		this.exifExtractorService = exifExtractorService;
 		this.imageService = imageService;
-		this.thumbUtils = thumbUtils;
+		this.thumbHelper = thumbHelper;
 		this.imageRepository = imageRepository;
 		this.imageTopic = imageTopic;
 	}
@@ -60,7 +60,7 @@ public class ImageImporterService {
 			// check lastModified for image then extract EXIF and update
 			return updateImageMetadataFromFile(imgFile, dbImage);
 		} else {
-			Date thumbLastModified = this.thumbUtils
+			Date thumbLastModified = this.thumbHelper
 					.getThumbLastModified(imgFile, dbImage.getImageMetadata().getDateTime());
 			if (thumbLastModified.after(dbImage.getImageMetadata().getThumbLastModified())) {
 				// check lastModified for thumb then update in DB lastModified date only

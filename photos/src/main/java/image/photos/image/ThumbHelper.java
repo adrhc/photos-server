@@ -13,7 +13,7 @@ import static image.photos.util.PathUtils.lastModifiedTime;
  * Created by adr on 2/10/18.
  */
 @Component
-public class ThumbUtils {
+public class ThumbHelper {
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
