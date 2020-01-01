@@ -1,4 +1,4 @@
-package image.photos.events.image.importing;
+package image.photos.image.importing;
 
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
