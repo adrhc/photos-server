@@ -26,8 +26,14 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	List<Image> findByAlbumId(Integer albumId);
 
 	/**
-	 * make no sense to cache because would be a waste of it:
-	 * all Image.id would be cached in the end which is like a no-sql DB
+	 * Make no sense to cache because only Image.id is cached!
+	 * <p>
+	 * 2020.01.02, 2nd level cache active:
+	 * 1th query:
+	 * 1. select * from Image where image0_.name=? and image0_.FK_ALBUM=?
+	 * 2. select *, ... from Album album0_ left outer join Image image1_ left outer join Album album2_ where album0_.id=?
+	 * 2nd (same) query:
+	 * 1. select * from Image where image0_.name=? and image0_.FK_ALBUM=?
 	 * <p>
 	 * competes with ImageServiceImpl.findByNameAndAlbumId
 	 */

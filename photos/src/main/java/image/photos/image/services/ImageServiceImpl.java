@@ -31,8 +31,8 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	/**
-	 * this implementation approach make more sense when
-	 * 2nd level cache is set on Album.images collection!
+	 * this implementation approach make sense when 2nd
+	 * level cache is set on Album.images collection!
 	 * <p>
 	 * competes with ImageRepository.findByAlbumId
 	 */
@@ -50,7 +50,7 @@ public class ImageServiceImpl implements ImageService {
 	 * <p>
 	 * competes with ImageRepository.findByNameAndAlbumId
 	 * <p>
-	 * run very SLOW
+	 * runs very SLOW
 	 */
 /*
 	@Override
@@ -61,8 +61,8 @@ public class ImageServiceImpl implements ImageService {
 */
 
 	/**
-	 * this is the best approach:
-	 * take the imageId then load the Image data (which could be from 2nd level cache)
+	 * this is the best approach when using 2nd level cache:
+	 * take the imageId then load the Image
 	 * <p>
 	 * competes with ImageRepository.findByNameAndAlbumId
 	 */

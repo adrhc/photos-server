@@ -23,7 +23,8 @@ public class AlbumCoverService {
 	private ImageHelper imageHelper;
 
 	public List<AlbumCover> getCovers() {
-		return this.albumRepository.findByDeletedFalseOrderByNameDesc().stream()
+		return this.albumRepository
+				.findByDeletedFalseOrderByNameDesc().stream()
 				.map(this::convertAlbumToCover)
 				.collect(Collectors.toList());
 	}
@@ -39,18 +40,18 @@ public class AlbumCoverService {
 	}
 
 	private AlbumCover convertAlbumToCover(Album album) {
-		Image cover = album.getCover();
+		Image coverImg = album.getCover();
 		AlbumCover ac;
-		if (cover == null) {
+		if (coverImg == null) {
 			ac = new AlbumCover(album.getId(), album.getName(),
 					album.isDirty(), album.getLastUpdate());
 		} else {
-			ac = new AlbumCover(album.getId(), album.getName(), cover.getName(),
-					cover.getImageMetadata().getExifData().getImageHeight(),
-					cover.getImageMetadata().getExifData().getImageWidth(),
+			ac = new AlbumCover(album.getId(), album.getName(), coverImg.getName(),
+					coverImg.getImageMetadata().getExifData().getImageHeight(),
+					coverImg.getImageMetadata().getExifData().getImageWidth(),
 					album.isDirty(), album.getLastUpdate());
 			this.imageHelper.appendImageDimensions(ac);
-			this.imageHelper.appendImagePaths(ac, cover.getImageMetadata().getThumbLastModified().getTime());
+			this.imageHelper.appendImagePaths(ac, coverImg.getImageMetadata().getThumbLastModified().getTime());
 		}
 		return ac;
 	}
