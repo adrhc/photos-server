@@ -23,8 +23,8 @@ public class ImageTopic {
 	private final FluxSink<ImageEvent> sink = this.topic.sink();
 
 	public void emit(ImageEvent imageEvent) {
-		if (imageEvent.getRequestId() == null) {
-			imageEvent.setRequestId(this.requestId.get());
+		if (imageEvent.getId() == null) {
+			imageEvent.setId(this.requestId.get());
 		}
 		this.sink.next(imageEvent);
 	}
@@ -49,10 +49,10 @@ public class ImageTopic {
 							imageEventTypes.stream().map(Enum::name)
 									.collect(Collectors.joining(", ")),
 							imageEventTypes.contains(ie.getType()),
-							ie.getRequestId());
+							ie.getId());
 				})
 				.filter(ae -> imageEventTypes.contains(ae.getType()))
-				.filter(ae -> !filterByRequestId || ae.getRequestId().equals(this.requestId.get()));
+				.filter(ae -> !filterByRequestId || ae.getId().equals(this.requestId.get()));
 	}
 
 	@PreDestroy

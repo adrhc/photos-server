@@ -1,12 +1,11 @@
 package image.photos.infrastructure.events.image;
 
 import image.persistence.entity.Image;
+import image.photos.infrastructure.events.Message;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * Created by adr on 1/28/18.
@@ -15,8 +14,8 @@ import java.io.Serializable;
 @Setter
 @Builder
 @ToString
-public class ImageEvent implements Serializable {
-	private String requestId;
+public class ImageEvent implements Message<String, ImageEventTypeEnum> {
+	private String id;
 	private ImageEventTypeEnum type;
 	private Image image;
 

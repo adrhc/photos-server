@@ -24,8 +24,8 @@ public class AlbumTopic {
 	private final FluxSink<AlbumEvent> sink = this.topic.sink();
 
 	public void emit(AlbumEvent albumEvent) {
-		if (albumEvent.getRequestId() == null) {
-			albumEvent.setRequestId(this.requestId.get());
+		if (albumEvent.getId() == null) {
+			albumEvent.setId(this.requestId.get());
 		}
 		this.sink.next(albumEvent);
 	}
@@ -36,7 +36,7 @@ public class AlbumTopic {
 		return this.topic
 				.filter(ae -> albumEventTypes.contains(ae.getType()))
 				.filter(ae -> !filterByRequestId ||
-						ae.getRequestId().equals(this.requestId.get()));
+						ae.getId().equals(this.requestId.get()));
 	}
 
 	@PreDestroy

@@ -1,12 +1,11 @@
 package image.photos.infrastructure.events.album;
 
 import image.persistence.entity.Album;
+import image.photos.infrastructure.events.Message;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.io.Serializable;
 
 /**
  * Created by adr on 1/28/18.
@@ -15,8 +14,8 @@ import java.io.Serializable;
 @Setter
 @Builder
 @ToString
-public class AlbumEvent implements Serializable {
-	private String requestId;
+public class AlbumEvent implements Message<String, AlbumEventTypeEnum> {
+	private String id;
 	private AlbumEventTypeEnum type;
 	private Album album;
 
