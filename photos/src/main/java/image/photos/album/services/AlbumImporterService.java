@@ -104,7 +104,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Album album = this.albumRepository.findByName(albumName);
 		if (album != null) {
 			// already existing album
-			return Optional.of(AlbumEvent.builder().album(album).build());
+			return Optional.of(AlbumEvent.builder().entity(album).build());
 		}
 		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePathOf(albumName))) {
 			// new empty album
@@ -113,7 +113,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		// creem un nou album (path aferent contine poze)
 		album = this.albumRepository.createByName(albumName);
 		return Optional.of(AlbumEvent.builder()
-				.type(AlbumEventTypeEnum.CREATED).album(album).build());
+				.type(AlbumEventTypeEnum.CREATED).entity(album).build());
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			return;
 		}
 
-		Album album = albumEvent.get().getAlbum();
+		Album album = albumEvent.get().getEntity();
 		boolean isNewAlbum = albumEvent.get().getType().equals(AlbumEventTypeEnum.CREATED);
 
 		// Preparing an imageEvents-listener used to
@@ -141,7 +141,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		// always be true because we are not importing empty albums.
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
 		Disposable subscription = this.imageTopic
-				.imageEventsByType(EnumSet.allOf(ImageEventTypeEnum.class))
+				.eventsByType(EnumSet.allOf(ImageEventTypeEnum.class))
 				.take(1L)
 				.subscribe(event -> isAtLeast1ImageChanged.setValue(true));
 
@@ -175,7 +175,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		} else if (isAtLeast1ImageChanged.getValue()) {
 			this.albumTopic.emit(AlbumEvent.builder()
 					.type(AlbumEventTypeEnum.UPDATED)
-					.album(album).build());
+					.entity(album).build());
 		}
 
 		sw.stop();

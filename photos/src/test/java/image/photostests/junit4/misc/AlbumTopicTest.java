@@ -35,7 +35,7 @@ public class AlbumTopicTest {
 		List<Album> newAlbums = new ArrayList<>();
 
 		albumTopic
-				.albumEventsByTypes(false, EnumSet.of(UPDATED))
+				.eventsByType(false, EnumSet.of(UPDATED))
 				.doOnNext(ae -> log.debug("doOnNext1: {}", ae))// after publishOn uses publishOn
 				.doOnSubscribe(s -> {
 					log.debug("[doOnSubscribe]:\n\t{}", s);
@@ -48,12 +48,12 @@ public class AlbumTopicTest {
 					assert !Thread.currentThread().getName().equals("main");
 				})// after publishOn uses publishOn
 				.subscribe(ae -> {
-							log.debug("[subscribe] received {}", ae.getAlbum().getName());
+							log.debug("[subscribe] received {}", ae.getEntity().getName());
 							assert !Thread.currentThread().getName().equals("main");
 							// simulating ong processing
 							sneaked(() -> Thread.sleep(1000)).run();
-							newAlbums.add(ae.getAlbum());
-							if (ae.getAlbum().getName().equals("STOP")) {
+							newAlbums.add(ae.getEntity());
+							if (ae.getEntity().getName().equals("STOP")) {
 								albumTopic.preDestroy();
 								mainThread.interrupt();
 							}
@@ -69,9 +69,9 @@ public class AlbumTopicTest {
 
 		log.debug("before emission");
 		IntStream.range(1, 3).forEach(i -> albumTopic.emit(AlbumEvent.builder()
-				.type(UPDATED).album(new Album("gigi " + i)).build()));
+				.type(UPDATED).entity(new Album("gigi " + i)).build()));
 		albumTopic.emit(AlbumEvent.builder()
-				.type(UPDATED).album(new Album("STOP")).build());
+				.type(UPDATED).entity(new Album("STOP")).build());
 		log.debug("after emission");
 
 		// just sleeping
@@ -108,13 +108,13 @@ public class AlbumTopicTest {
 			sneaked(() -> Thread.sleep(1000)).run();
 
 			albumTopic
-					.albumEventsByTypes(false, EnumSet.of(UPDATED))
+					.eventsByType(false, EnumSet.of(UPDATED))
 					.doOnNext(ae -> log.debug("doOnNext: {}", ae))// after publishOn uses publishOn
 					.doOnSubscribe(s -> log.debug("[doOnSubscribe]:\n\t{}", s))
 					.subscribe(ae -> {
-								log.debug("[subscribe] received {}", ae.getAlbum().getName());
-								newAlbums.add(ae.getAlbum());
-								if (ae.getAlbum().getName().equals("STOP")) {
+								log.debug("[subscribe] received {}", ae.getEntity().getName());
+								newAlbums.add(ae.getEntity());
+								if (ae.getEntity().getName().equals("STOP")) {
 									albumTopic.preDestroy();
 									mainThread.interrupt();
 								}
@@ -137,9 +137,9 @@ public class AlbumTopicTest {
 
 		log.debug("before emission");
 		IntStream.range(1, 3).forEach(i -> albumTopic.emit(AlbumEvent.builder()
-				.type(UPDATED).album(new Album("gigi " + i)).build()));
+				.type(UPDATED).entity(new Album("gigi " + i)).build()));
 		albumTopic.emit(AlbumEvent.builder()
-				.type(UPDATED).album(new Album("STOP")).build());
+				.type(UPDATED).entity(new Album("STOP")).build());
 		log.debug("after emission");
 
 		// just sleeping

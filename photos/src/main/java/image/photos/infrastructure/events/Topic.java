@@ -11,7 +11,7 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 @Slf4j
-public abstract class Topic<C, E extends Message<String, C>> {
+public abstract class Topic<C extends Enum<C>, E extends Message<String, C>> {
 	@Getter
 	private final ThreadLocal<String> id =
 			ThreadLocal.withInitial(() -> UUID.randomUUID().toString());
@@ -25,12 +25,14 @@ public abstract class Topic<C, E extends Message<String, C>> {
 		this.sink.next(albumEvent);
 	}
 
-	public Flux<E> albumEventsByTypes(
-			boolean filterByRequestId,
-			EnumSet eventTypes) {
+	public Flux<E> eventsByType(EnumSet<C> imageEventTypes) {
+		return eventsByType(true, imageEventTypes);
+	}
+
+	public Flux<E> eventsByType(boolean filterById, EnumSet<C> eventTypes) {
 		return this.topic
 				.filter(ae -> eventTypes.contains(ae.getType()))
-				.filter(ae -> !filterByRequestId ||
+				.filter(ae -> !filterById ||
 						ae.getId().equals(this.id.get()));
 	}
 

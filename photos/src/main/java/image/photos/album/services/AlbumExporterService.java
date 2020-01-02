@@ -137,10 +137,10 @@ public class AlbumExporterService {
 	@PostConstruct
 	public void postConstruct() {
 		this.albumTopicSubscr = this.albumTopic
-				.albumEventsByTypes(false,
+				.eventsByType(false,
 						EnumSet.of(CREATED, UPDATED))
 				.publishOn(Schedulers.fromExecutor(this.executorService))
-				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),
+				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getEntity()),
 						t -> logger.error(t.getMessage(), t));
 	}
 

@@ -82,13 +82,13 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			Disposable subscription = this.albumTopic
-					.albumEventsByTypes(true, EnumSet.of(CREATED))
+					.eventsByType(true, EnumSet.of(CREATED))
 					.take(1L)// todo: take all new albums imported
 					.subscribe(
 							ae -> {
-								logger.debug("imported album: {}", ae.getAlbum().getName());
+								logger.debug("imported album: {}", ae.getEntity().getName());
 								deferredResult.setResult("message",
-										"imported album: " + ae.getAlbum().getName());
+										"imported album: " + ae.getEntity().getName());
 							},
 							t -> {
 								logger.error(t.getMessage(), t);
