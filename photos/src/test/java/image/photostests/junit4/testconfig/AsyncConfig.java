@@ -1,4 +1,4 @@
-package image.photostests;
+package image.photostests.junit4.testconfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

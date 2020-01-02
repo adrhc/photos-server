@@ -1,28 +1,29 @@
 package image.photos.image;
 
+import image.photos.infrastructure.filestore.FileStoreService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
-
-import static image.photos.util.PathUtils.lastModifiedTime;
 
 /**
  * Created by adr on 2/10/18.
  */
 @Component
 public class ThumbHelper {
+	private final FileStoreService fileStoreService;
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
 	private String albumsDir;
 
+	public ThumbHelper(FileStoreService fileStoreService) {this.fileStoreService = fileStoreService;}
+
 	public Date getThumbLastModified(Path imageFile, Date defaultValue) {
 		Path thumbFile = getThumbFileForImgFile(imageFile);
-		if (Files.exists(thumbFile)) {
-			return new Date(lastModifiedTime(thumbFile));
+		if (this.fileStoreService.exists(thumbFile)) {
+			return new Date(this.fileStoreService.lastModifiedTime(thumbFile));
 		} else {
 			return defaultValue;
 		}

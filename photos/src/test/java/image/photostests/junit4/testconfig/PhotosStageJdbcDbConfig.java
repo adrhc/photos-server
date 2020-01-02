@@ -1,8 +1,6 @@
 package image.photostests.junit4.testconfig;
 
 import image.jpa2xtests.config.profiles.StageJdbcDbProfile;
-import image.photos.PhotosConfig;
-import image.photostests.AsyncConfig;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
@@ -13,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ContextConfiguration(classes = {AsyncConfig.class, PhotosConfig.class})
+@ContextConfiguration(classes = PhotosTestConfig.class)
 @TestPropertySource(properties = "hibernate.show_sql=false")
 @StageJdbcDbProfile
 public @interface PhotosStageJdbcDbConfig {

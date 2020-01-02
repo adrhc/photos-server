@@ -9,6 +9,7 @@ import com.drew.metadata.jpeg.JpegDirectory;
 import exifweb.util.MiscUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
+import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.process.ProcessRunner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
 
-import static image.photos.util.PathUtils.*;
+import static image.photos.infrastructure.filestore.PathUtils.parentDir;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,17 +43,20 @@ public class ExifExtractorService implements MiscUtils {
 	private final int maxThumbSizeInt;
 	private final ProcessRunner processRunner;
 	private final ThumbHelper thumbHelper;
+	private final FileStoreService fileStoreService;
 
 	public ExifExtractorService(@Value("${max.thumb.size}") int maxThumbSizeInt,
-			ProcessRunner processRunner, ThumbHelper thumbHelper) {
+			ProcessRunner processRunner, ThumbHelper thumbHelper,
+			FileStoreService fileStoreService) {
 		this.maxThumbSizeInt = maxThumbSizeInt;
 		this.processRunner = processRunner;
 		this.thumbHelper = thumbHelper;
+		this.fileStoreService = fileStoreService;
 	}
 
 	public ImageMetadata extractMetadata(Path imgFile) {
 		ImageMetadata imageMetadata =
-				new ImageMetadata(new Date(lastModifiedTime(imgFile)));
+				new ImageMetadata(new Date(this.fileStoreService.lastModifiedTime(imgFile)));
 
 		try {
 			loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
@@ -61,7 +65,7 @@ public class ExifExtractorService implements MiscUtils {
 			return null;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			log.error("{}: {}", parentDir(imgFile), fileName(imgFile));
+			log.error("{}: {}", parentDir(imgFile), this.fileStoreService.fileName(imgFile));
 		}
 
 		if (imageMetadata.getExifData().getDateTimeOriginal() == null) {

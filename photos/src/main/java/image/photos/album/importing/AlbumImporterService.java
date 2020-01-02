@@ -15,6 +15,7 @@ import image.photos.infrastructure.events.album.AlbumTopic;
 import image.photos.infrastructure.events.image.ImageEvent;
 import image.photos.infrastructure.events.image.ImageEventTypeEnum;
 import image.photos.infrastructure.events.image.ImageTopic;
+import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,11 @@ import org.springframework.util.StopWatch;
 import reactor.core.Disposable;
 
 import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static image.photos.album.AlbumUtils.albumName;
-import static image.photos.album.AlbumUtils.emptyAlbum;
 import static image.photos.infrastructure.events.image.ImageEventTypeEnum.DELETED;
 import static image.photos.infrastructure.events.image.ImageEventTypeEnum.MARKED_DELETED;
 
@@ -49,32 +47,34 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
 	private final ImageTopic imageTopic;
-	private final Predicates predicates;
+	private final AlbumPathChecks albumPathChecks;
 	private final AlbumHelper albumHelper;
+	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, Predicates predicates, AlbumHelper albumHelper) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageRepository = imageRepository;
 		this.albumRepository = albumRepository;
 		this.albumTopic = albumTopic;
 		this.imageTopic = imageTopic;
-		this.predicates = predicates;
+		this.albumPathChecks = albumPathChecks;
 		this.albumHelper = albumHelper;
+		this.fileStoreService = fileStoreService;
 	}
 
 	/**
 	 * import new albums and rescan existing
 	 */
 	public void importAll() {
-		importFilteredFromRoot(this.predicates.VALID_ALBUM_PATH);
+		importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
 	}
 
 	/**
 	 * import new albums only
 	 */
 	public void importNewAlbums() {
-		importFilteredFromRoot(this.predicates.VALID_NEW_ALBUM_PATH);
+		importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	public void importByAlbumName(String albumName) {
 		Path path = this.albumHelper.fullPath(albumName);
-		if (!this.predicates.VALID_ALBUM_PATH.test(path)) {
+		if (!this.albumPathChecks.isValidAlbumPath(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path);
 		}
 		importByAlbumPath(path);
@@ -90,17 +90,13 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 	/**
 	 * Filters album paths to be imported.
-	 *
-	 * @param albumsFilter
 	 */
 	private void importFilteredFromRoot(Predicate<Path> albumsFilter) {
 		Path root = this.albumHelper.rootPath();
-		sneaked(() ->
-				Files.walk(root, FileVisitOption.FOLLOW_LINKS)
-						.filter(albumsFilter)
-						.sorted(Collections.reverseOrder())
-						.forEach(this::importByAlbumPath))
-				.run();
+		this.fileStoreService.walk(root, FileVisitOption.FOLLOW_LINKS)
+				.filter(albumsFilter)
+				.sorted(Collections.reverseOrder())
+				.forEach(this::importByAlbumPath);
 	}
 
 	private Optional<AlbumEvent> findOrCreate(String albumName) {
@@ -109,7 +105,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// already existing album
 			return Optional.of(AlbumEvent.builder().album(album).build());
 		}
-		if (emptyAlbum(this.albumHelper.fullPath(albumName))) {
+		if (this.albumHelper.emptyAlbum(this.albumHelper.fullPath(albumName))) {
 			// new empty album
 			return Optional.empty();
 		}
@@ -150,20 +146,18 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// iterate and process image files
 		List<String> foundImages = new ArrayList<>();
-		if (emptyAlbum(path)) {
+		if (this.albumHelper.emptyAlbum(path)) {
 			// existing empty album
 			log.debug("BEGIN album with no pictures:\n{}", path);
 		} else {
 			// take only files existing in the album's directory but not sub-directories
 			log.debug("BEGIN album has pictures:\n{}", path);
-			sneaked(() ->
-					Files.walk(path, FileVisitOption.FOLLOW_LINKS)
-							.forEach(file -> {
-								if (this.imageImporterService.importImageFromFile(file, album)) {
-									foundImages.add(file.getFileName().toString());
-								}
-							}))
-					.run();
+			this.fileStoreService.walk(path, FileVisitOption.FOLLOW_LINKS)
+					.forEach(file -> {
+						if (this.imageImporterService.importImageFromFile(file, album)) {
+							foundImages.add(file.getFileName().toString());
+						}
+					});
 		}
 
 		// remove db-images having no corresponding file
@@ -189,8 +183,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 	/**
 	 * Cached Album is detached so can't be used as persistent as required in this method.
-	 *
-	 * @param foundImageNames
 	 */
 	private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		log.debug("BEGIN {}", album.getName());

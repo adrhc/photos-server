@@ -6,6 +6,7 @@ import image.cdm.image.feature.IImageDimensions;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import image.photos.album.AlbumHelper;
+import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +15,6 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
-
-import static image.photos.util.PathUtils.fileName;
-import static image.photos.util.PathUtils.fileSize;
 
 /**
  * Created by adr on 2/2/18.
@@ -32,6 +30,7 @@ public class ImageHelper {
 			new MessageFormat("{0}/{1,number,#}/{2}");
 	private final ImageRepository imageRepository;
 	private final AlbumHelper albumHelper;
+	private final FileStoreService fileStoreService;
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -41,9 +40,11 @@ public class ImageHelper {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 
-	public ImageHelper(ImageRepository imageRepository, AlbumHelper albumHelper) {
+	public ImageHelper(ImageRepository imageRepository, AlbumHelper albumHelper,
+			FileStoreService fileStoreService) {
 		this.imageRepository = imageRepository;
 		this.albumHelper = albumHelper;
+		this.fileStoreService = fileStoreService;
 	}
 
 	private static String relativeUriPathFor(Long lastModifTime, String imgName, String albumName) {
@@ -157,9 +158,9 @@ public class ImageHelper {
 	 * @return whether imgFile from albumId exists in other albums too
 	 */
 	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) {
-		String nameNoExt = FilenameUtils.getBaseName(fileName(imgFile));
+		String nameNoExt = FilenameUtils.getBaseName(this.fileStoreService.fileName(imgFile));
 		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
-		return image.stream().anyMatch(i -> fileSize(imgFile) == sizeOf(i));
+		return image.stream().anyMatch(i -> this.fileStoreService.fileSize(imgFile) == sizeOf(i));
 	}
 
 	/**
@@ -168,6 +169,6 @@ public class ImageHelper {
 	private long sizeOf(Image image) {
 		String imgRelPath = relativeFilePathFor(image);
 		Path imgFullPath = this.albumHelper.rootPath().resolve(imgRelPath);
-		return fileSize(imgFullPath);
+		return this.fileStoreService.fileSize(imgFullPath);
 	}
 }

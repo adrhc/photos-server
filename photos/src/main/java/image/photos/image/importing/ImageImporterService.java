@@ -10,15 +10,12 @@ import image.photos.image.ThumbHelper;
 import image.photos.infrastructure.events.image.ImageEvent;
 import image.photos.infrastructure.events.image.ImageEventTypeEnum;
 import image.photos.infrastructure.events.image.ImageTopic;
+import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
-
-import static image.photos.util.PathUtils.fileName;
-import static image.photos.util.PathUtils.lastModifiedTime;
 
 @Component
 @Slf4j
@@ -28,22 +25,25 @@ public class ImageImporterService {
 	private final ThumbHelper thumbHelper;
 	private final ImageRepository imageRepository;
 	private final ImageTopic imageTopic;
+	private final FileStoreService fileStoreService;
 
-	public ImageImporterService(ExifExtractorService exifExtractorService, ImageService imageService, ThumbHelper thumbHelper, ImageRepository imageRepository, ImageTopic imageTopic) {
+	public ImageImporterService(ExifExtractorService exifExtractorService, ImageService imageService, ThumbHelper thumbHelper, ImageRepository imageRepository, ImageTopic imageTopic, FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
 		this.imageService = imageService;
 		this.thumbHelper = thumbHelper;
 		this.imageRepository = imageRepository;
 		this.imageTopic = imageTopic;
+		this.fileStoreService = fileStoreService;
 	}
 
 	/**
 	 * @return true = file still exists, false = file no longer exists
 	 */
 	public boolean importImageFromFile(Path imgFile, Album album) {
-		assert Files.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
+		assert this.fileStoreService.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
 //		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
-		Image dbImage = this.imageService.findByNameAndAlbumId(fileName(imgFile), album.getId());
+		Image dbImage = this.imageService.findByNameAndAlbumId(
+				this.fileStoreService.fileName(imgFile), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it
 			return createImageFromFile(imgFile, album);
@@ -55,7 +55,7 @@ public class ImageImporterService {
 */
 		}
 
-		if (lastModifiedTime(imgFile) >
+		if (this.fileStoreService.lastModifiedTime(imgFile) >
 				dbImage.getImageMetadata().getDateTime().getTime()) {
 			// check lastModified for image then extract EXIF and update
 			return updateImageMetadataFromFile(imgFile, dbImage);
@@ -108,7 +108,7 @@ public class ImageImporterService {
 			return false;
 		}
 */
-		log.debug("insert {}/{}", album.getName(), fileName(imgFile));
+		log.debug("insert {}/{}", album.getName(), this.fileStoreService.fileName(imgFile));
 		Image newImg = new Image();
 		newImg.setImageMetadata(imageMetadata);
 		newImg.setName(imgFile.getFileName().toString());
