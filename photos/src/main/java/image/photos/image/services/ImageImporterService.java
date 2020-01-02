@@ -19,15 +19,15 @@ import java.util.Date;
 @Slf4j
 public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
-	private final ImageService imageService;
+	private final ImageQueryService imageQueryService;
 	private final ThumbHelper thumbHelper;
 	private final ImageRepository imageRepository;
 	private final ImageTopic imageTopic;
 	private final FileStoreService fileStoreService;
 
-	public ImageImporterService(ExifExtractorService exifExtractorService, ImageService imageService, ThumbHelper thumbHelper, ImageRepository imageRepository, ImageTopic imageTopic, FileStoreService fileStoreService) {
+	public ImageImporterService(ExifExtractorService exifExtractorService, ImageQueryService imageQueryService, ThumbHelper thumbHelper, ImageRepository imageRepository, ImageTopic imageTopic, FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
-		this.imageService = imageService;
+		this.imageQueryService = imageQueryService;
 		this.thumbHelper = thumbHelper;
 		this.imageRepository = imageRepository;
 		this.imageTopic = imageTopic;
@@ -40,7 +40,7 @@ public class ImageImporterService {
 	public boolean importImageFromFile(Path imgFile, Album album) {
 		assert this.fileStoreService.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
 //		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
-		Image dbImage = this.imageService.findByNameAndAlbumId(
+		Image dbImage = this.imageQueryService.findByNameAndAlbumId(
 				this.fileStoreService.fileName(imgFile), album.getId());
 		if (dbImage == null) {
 			// not found in DB? then add it

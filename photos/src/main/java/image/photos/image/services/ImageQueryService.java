@@ -5,7 +5,7 @@ import image.persistence.entity.Image;
 import java.nio.file.Path;
 import java.util.List;
 
-public interface ImageService {
+public interface ImageQueryService {
 	List<Image> getImages(Integer albumId);
 
 	Image findByNameAndAlbumId(String name, Integer albumId);

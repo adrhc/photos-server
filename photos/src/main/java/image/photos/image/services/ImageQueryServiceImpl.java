@@ -16,14 +16,14 @@ import static image.photos.image.helpers.ImageHelper.relativeFilePathFor;
 
 @Service
 @Transactional
-public class ImageServiceImpl implements ImageService {
+public class ImageQueryServiceImpl implements ImageQueryService {
 	private final ImageRepository imageRepository;
 	private final AlbumRepository albumRepository;
 	private final FileStoreService fileStoreService;
 	private final AlbumHelper albumHelper;
 
 
-	public ImageServiceImpl(ImageRepository imageRepository, AlbumRepository albumRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
+	public ImageQueryServiceImpl(ImageRepository imageRepository, AlbumRepository albumRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
 		this.imageRepository = imageRepository;
 		this.albumRepository = albumRepository;
 		this.fileStoreService = fileStoreService;

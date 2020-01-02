@@ -4,7 +4,7 @@ import exifweb.util.random.RandomBeansExtensionEx;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.image.services.ImageService;
+import image.photos.image.services.ImageQueryService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photostests.overrides.infrastructure.filestore.FileStoreServiceTest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,15 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j
-class ImageServiceTest extends ImageTestBase implements IImageAssertions {
+class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	@Autowired
-	private ImageService imageService;
+	private ImageQueryService imageQueryService;
 	@Autowired
 	private FileStoreServiceTest fileStoreService;
 
 	@Test
 	void getImages() {
-		List<Image> dbImages = this.imageService.getImages(this.album.getId());
+		List<Image> dbImages = this.imageQueryService.getImages(this.album.getId());
 		this.album.getImages().forEach(i -> {
 			assertImageEquals(i, dbImages.stream()
 					.filter(dbi -> dbi.getId().equals(i.getId()))
@@ -43,7 +43,7 @@ class ImageServiceTest extends ImageTestBase implements IImageAssertions {
 	@Test
 	void findByNameAndAlbumId() {
 		Image image = this.album.getImages().get(0);
-		Image dbImage = this.imageService.findByNameAndAlbumId(image.getName(), this.album.getId());
+		Image dbImage = this.imageQueryService.findByNameAndAlbumId(image.getName(), this.album.getId());
 		Assertions.assertNotNull(dbImage);
 		assertImageEquals(image, dbImage);
 	}
@@ -54,7 +54,7 @@ class ImageServiceTest extends ImageTestBase implements IImageAssertions {
 		Path imgFile = Path.of(image.getName());
 		// found in another album because its album is declared
 		// to be "album.id - 1" instead of the real one (album.id)
-		boolean exists = this.imageService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
+		boolean exists = this.imageQueryService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertTrue(exists);
 	}
 
@@ -63,7 +63,7 @@ class ImageServiceTest extends ImageTestBase implements IImageAssertions {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName());
 		// image found only in its album; the declared album is the real one
-		boolean exists = this.imageService.imageExistsInOtherAlbum(imgFile, this.album.getId());
+		boolean exists = this.imageQueryService.imageExistsInOtherAlbum(imgFile, this.album.getId());
 		assertFalse(exists);
 	}
 
@@ -73,7 +73,7 @@ class ImageServiceTest extends ImageTestBase implements IImageAssertions {
 		Path imgFile = Path.of(image.getName());
 		this.fileStoreService.addSize1Path(imgFile);
 		// not found because of the size difference
-		boolean exists = this.imageService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
+		boolean exists = this.imageQueryService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertFalse(exists);
 	}
 
@@ -82,7 +82,7 @@ class ImageServiceTest extends ImageTestBase implements IImageAssertions {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName().substring(0, image.getName().length() - 2));
 		// shorter name
-		boolean exists = this.imageService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
+		boolean exists = this.imageQueryService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertTrue(exists);
 	}
 
@@ -91,7 +91,7 @@ class ImageServiceTest extends ImageTestBase implements IImageAssertions {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName());
 		// longer name
-		boolean exists = this.imageService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
+		boolean exists = this.imageQueryService.imageExistsInOtherAlbum(imgFile, this.album.getId() - 1);
 		assertTrue(exists);
 	}
 }
