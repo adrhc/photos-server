@@ -6,7 +6,6 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.*;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import exifweb.util.MutedExceptionUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
@@ -22,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
 
+import static exifweb.util.MutedExceptionUtils.ignoreExc;
+import static exifweb.util.MutedExceptionUtils.safeDateParse;
 import static image.photos.infrastructure.filestore.PathUtils.parentDir;
 
 /**
@@ -33,7 +34,7 @@ import static image.photos.infrastructure.filestore.PathUtils.parentDir;
  */
 @Service
 @Slf4j
-public class ExifExtractorService implements MutedExceptionUtils {
+public class ExifExtractorService {
 	/**
 	 * metadata extractor uses this yyyy:MM:dd format
 	 */
@@ -104,8 +105,9 @@ public class ExifExtractorService implements MutedExceptionUtils {
 		ignoreExcWithLog.accept(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setIsoSpeedRatings(
 				Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription())));
-		ignoreExcWithLog.accept(() -> exifData.setDateTimeOriginal(safeDateParse(exifSubIFDDescriptor
-				.getDescription(ExifDirectoryBase.TAG_DATETIME_ORIGINAL), sdf)));
+		ignoreExcWithLog.accept(() -> exifData.setDateTimeOriginal(
+				safeDateParse(exifSubIFDDescriptor
+						.getDescription(ExifDirectoryBase.TAG_DATETIME_ORIGINAL), sdf)));
 		ignoreExcWithLog.accept(() -> exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setExposureBiasValue(exifSubIFDDescriptor.getExposureBiasDescription()));

@@ -1,6 +1,5 @@
 package image.hbm.repository.junit5.staging;
 
-import exifweb.util.MutedExceptionUtils;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static exifweb.util.MutedExceptionUtils.ignoreExc;
 import static image.hbm.repository.AlbumPageRepositoryImpl.NULL_ALBUM_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStageJdbcDbConfig
-public class AlbumPageRepositoryTest implements IAppConfigSupplier, MutedExceptionUtils, IImageFlagsUtils {
+public class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;

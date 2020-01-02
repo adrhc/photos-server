@@ -1,6 +1,5 @@
 package image.jpa2xtests.repositories;
 
-import exifweb.util.MutedExceptionUtils;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
@@ -29,6 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static exifweb.util.MutedExceptionUtils.ignoreExc;
 import static image.persistence.repository.AlbumPageRepository.NULL_ALBUM_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -39,9 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils, MutedExceptionUtils {
-	private final String T1_TO_SEARCH = "DSC_1555";
+class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils {
 	private static final int PAGE_SIZE = 20;
+	private final String T1_TO_SEARCH = "DSC_1555";
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired

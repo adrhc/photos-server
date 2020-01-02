@@ -1,27 +1,25 @@
 package exifweb.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Consumer;
 
-public interface MutedExceptionUtils {
-	Logger logger = LoggerFactory.getLogger(MutedExceptionUtils.class);
-
-	default void ignoreExc(Runnable... runnables) {
+@Slf4j
+public class MutedExceptionUtils {
+	public static void ignoreExc(Runnable... runnables) {
 		Arrays.stream(runnables).forEach(r -> {
 			try {
 				r.run();
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				log.error(e.getMessage(), e);
 			}
 		});
 	}
 
-	default void ignoreExc(Runnable r, Consumer<Exception> exceptionConsumer) {
+	public static void ignoreExc(Runnable r, Consumer<Exception> exceptionConsumer) {
 		try {
 			r.run();
 		} catch (Exception e) {
@@ -29,11 +27,12 @@ public interface MutedExceptionUtils {
 		}
 	}
 
-	default Date safeDateParse(String s, SimpleDateFormat sdf) {
+	public static Date safeDateParse(String s, SimpleDateFormat sdf) {
 		try {
 			return sdf.parse(s);
 		} catch (Exception e) {
-			return null;
+			log.error(e.getMessage(), e);
 		}
+		return null;
 	}
 }

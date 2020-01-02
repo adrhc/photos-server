@@ -1,6 +1,5 @@
 package image.photostests.junit5.album;
 
-import exifweb.util.MutedExceptionUtils;
 import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
@@ -25,12 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static exifweb.util.MutedExceptionUtils.ignoreExc;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
 @Junit5PhotosStageDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
-class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MutedExceptionUtils, IImageFlagsUtils {
+class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, IImageFlagsUtils {
 	private static final int PAGE_SIZE = 20;
 	private static final int MAX_IMAGES_FOR_ALBUM = 30;
 
@@ -82,9 +82,9 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@AfterAll
 	void afterAll() {
-		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteById(a.getId())));
-		ignoreExc(() -> this.albumRepository.deleteById(this.specialAlbum.getId()));
-		ignoreExc(() -> this.appConfigRepository.deleteByEnumeratedName(AppConfigEnum.photos_per_page));
+		ignoreExc(() -> this.albums.forEach(a -> this.albumRepository.deleteById(a.getId())),
+				() -> this.albumRepository.deleteById(this.specialAlbum.getId()),
+				() -> this.appConfigRepository.deleteByEnumeratedName(AppConfigEnum.photos_per_page));
 	}
 
 	@Test

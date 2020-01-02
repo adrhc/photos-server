@@ -1,6 +1,5 @@
 package image.jpa2xtests.repositories;
 
-import exifweb.util.MutedExceptionUtils;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.Album;
@@ -14,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public abstract class ImageTestBase implements MutedExceptionUtils, IAppConfigSupplier {
+import static exifweb.util.MutedExceptionUtils.ignoreExc;
+
+public abstract class ImageTestBase implements IAppConfigSupplier {
 	protected Album album;
 	@Autowired
 	protected AlbumRepository albumRepository;
