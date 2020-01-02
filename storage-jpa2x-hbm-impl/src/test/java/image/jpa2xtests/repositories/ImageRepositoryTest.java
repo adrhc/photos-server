@@ -6,6 +6,7 @@ import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.cdm.image.status.ImageStatus;
 import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -34,6 +35,8 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 	@PersistenceContext
 	protected EntityManager em;
 	@Autowired
+	private Jpa2ndLevelCacheUtils cacheUtils;
+	@Autowired
 	private ImageRepository imageRepository;
 
 	@Test
@@ -58,21 +61,25 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 		log.debug("*** imageRepository.findById ***");
 		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findById(image.getId());
+		// no query to evict here
 		this.imageRepository.findById(image.getId());
 
 		log.debug("*** imageRepository.count ***");
 		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.count();
+		this.cacheUtils.evictQueryRegions();
 		this.imageRepository.count();
 
 		log.debug("*** imageRepository.findAll ***");
 		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findAll();
+		this.cacheUtils.evictQueryRegions();
 		this.imageRepository.findAll();
 
 		log.debug("*** imageRepository.findByAlbumId ***");
 		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findByAlbumId(this.album.getId());
+		this.cacheUtils.evictQueryRegions();
 		this.imageRepository.findByAlbumId(this.album.getId());
 	}
 

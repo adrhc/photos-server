@@ -5,7 +5,6 @@ import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.photos.util.conversion.PhotosConversionUtil;
-import org.hibernate.cache.spi.CacheImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -137,11 +136,6 @@ public class AppConfigService {
 	 */
 	public void updateAll(List<AppConfig> appConfigs) {
 		this.appConfigRepository.updateAll(appConfigs);
-	}
-
-	private void evictQueryRegions() {
-		CacheImplementor cache = this.em.getEntityManagerFactory().getCache().unwrap(CacheImplementor.class);
-		cache.evictQueryRegions();
 	}
 
 	public void evictAppConfigCache() {
