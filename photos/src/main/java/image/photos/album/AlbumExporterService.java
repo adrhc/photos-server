@@ -14,9 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.Disposable;
 import reactor.core.scheduler.Schedulers;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
@@ -37,6 +39,7 @@ public class AlbumExporterService {
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
+	private Disposable albumTopicSubscr;
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 	@Autowired
@@ -133,11 +136,16 @@ public class AlbumExporterService {
 
 	@PostConstruct
 	public void postConstruct() {
-		this.albumTopic
+		this.albumTopicSubscr = this.albumTopic
 				.albumEventsByTypes(false,
 						EnumSet.of(CREATED, UPDATED))
 				.publishOn(Schedulers.fromExecutor(this.executorService))
 				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getAlbum()),
 						t -> logger.error(t.getMessage(), t));
+	}
+
+	@PreDestroy
+	public void preDestroy() {
+		this.albumTopicSubscr.dispose();
 	}
 }
