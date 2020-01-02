@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Consumer;
 
-public interface MiscUtils {
-	Logger logger = LoggerFactory.getLogger(MiscUtils.class);
+public interface MutedExceptionUtils {
+	Logger logger = LoggerFactory.getLogger(MutedExceptionUtils.class);
 
 	default void ignoreExc(Runnable... runnables) {
 		Arrays.stream(runnables).forEach(r -> {

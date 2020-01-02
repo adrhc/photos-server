@@ -6,7 +6,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.*;
 import com.drew.metadata.jpeg.JpegDescriptor;
 import com.drew.metadata.jpeg.JpegDirectory;
-import exifweb.util.MiscUtils;
+import exifweb.util.MutedExceptionUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
@@ -33,7 +33,7 @@ import static image.photos.infrastructure.filestore.PathUtils.parentDir;
  */
 @Service
 @Slf4j
-public class ExifExtractorService implements MiscUtils {
+public class ExifExtractorService implements MutedExceptionUtils {
 	/**
 	 * metadata extractor uses this yyyy:MM:dd format
 	 */

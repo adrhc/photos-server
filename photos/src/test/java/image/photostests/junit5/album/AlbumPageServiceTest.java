@@ -1,6 +1,6 @@
 package image.photostests.junit5.album;
 
-import exifweb.util.MiscUtils;
+import exifweb.util.MutedExceptionUtils;
 import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
@@ -30,7 +30,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @Junit5PhotosStageDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
-class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MiscUtils, IImageFlagsUtils {
+class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier, IImageSupplier, MutedExceptionUtils, IImageFlagsUtils {
 	private static final int PAGE_SIZE = 20;
 	private static final int MAX_IMAGES_FOR_ALBUM = 30;
 

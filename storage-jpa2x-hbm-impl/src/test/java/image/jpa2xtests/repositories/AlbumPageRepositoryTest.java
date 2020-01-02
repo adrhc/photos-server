@@ -1,6 +1,6 @@
 package image.jpa2xtests.repositories;
 
-import exifweb.util.MiscUtils;
+import exifweb.util.MutedExceptionUtils;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 @Slf4j
-class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils, MiscUtils {
+class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils, MutedExceptionUtils {
 	private final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
 	@Autowired

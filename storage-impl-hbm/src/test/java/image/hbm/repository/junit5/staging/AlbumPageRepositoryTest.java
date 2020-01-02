@@ -1,6 +1,6 @@
 package image.hbm.repository.junit5.staging;
 
-import exifweb.util.MiscUtils;
+import exifweb.util.MutedExceptionUtils;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.EImageStatus;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5HbmStageJdbcDbConfig
-public class AlbumPageRepositoryTest implements IAppConfigSupplier, MiscUtils, IImageFlagsUtils {
+public class AlbumPageRepositoryTest implements IAppConfigSupplier, MutedExceptionUtils, IImageFlagsUtils {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageRepositoryTest.class);
 	private static final String T1_TO_SEARCH = "DSC_1555";
 	private static final int PAGE_SIZE = 20;
