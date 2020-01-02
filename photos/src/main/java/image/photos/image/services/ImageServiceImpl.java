@@ -31,7 +31,7 @@ public class ImageServiceImpl implements ImageService {
 	}
 
 	/**
-	 * this implementation approach make sense when 2nd
+	 * This implementation approach make sense when 2nd
 	 * level cache is set on Album.images collection!
 	 * <p>
 	 * competes with ImageRepository.findByAlbumId

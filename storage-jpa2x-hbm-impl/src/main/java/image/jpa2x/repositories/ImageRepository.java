@@ -12,15 +12,15 @@ import java.util.List;
 @Repository
 public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
 	/**
-	 * all Image fields will be loaded too despite the fact that
-	 * every individually Image returned might be already cached
+	 * All Image fields will be loaded too despite the fact that
+	 * every individually Image returned might be already cached.
 	 * <p>
-	 * No really a memory waste but might be a burden when there are many Album:
+	 * Might be slow when there are many Image(s):
 	 * https://vladmihalcea.com/hibernate-query-cache-n-plus-1-issue/
 	 * when caching is enabled than only IDENTIFIER(s) would
 	 * be cached which would be List<Image.id> per Album
 	 * <p>
-	 * competes with AlbumServiceImpl.getImages(Integer albumId)
+	 * competes with ImageServiceImpl.getImages(Integer albumId)
 	 */
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Image> findByAlbumId(Integer albumId);
@@ -40,7 +40,7 @@ public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaReposi
 	Image findByNameAndAlbumId(String name, Integer albumId);
 
 	/**
-	 * MySql searches case-insensitive!
+	 * MySql searches are case-insensitive!
 	 * see Paul Wheeler answer at:
 	 * https://stackoverflow.com/questions/5629111/how-can-i-make-sql-case-sensitive-string-comparison-on-mysql
 	 */
