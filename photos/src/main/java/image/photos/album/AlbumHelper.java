@@ -20,11 +20,15 @@ public class AlbumHelper {
 		return Path.of(this.appConfigRepository.getAlbumsPath());
 	}
 
-	public Path fullPath(String albumName) {
+	public Path absolutePath(String albumName) {
 		return rootPath().resolve(albumName);
 	}
 
-	public boolean emptyAlbum(Path albumPath) {
+	public boolean isAlbumWithNoFiles(Path albumPath) {
 		return this.fileStoreService.isEmptyDir(albumPath);
+	}
+
+	public static String albumName(Path path) {
+		return path.getFileName().toString();
 	}
 }

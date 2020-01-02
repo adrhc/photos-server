@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
-import static image.photos.album.AlbumUtils.albumName;
+import static image.photos.album.AlbumHelper.albumName;
 
 @Component
 @Slf4j
@@ -38,7 +38,7 @@ public class AlbumPathChecks {
 			return false;
 		}
 		// check for path to have files
-		if (this.albumHelper.emptyAlbum(path)) {
+		if (this.albumHelper.isAlbumWithNoFiles(path)) {
 			// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
 			// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
 			log.warn("{} este gol!", path);

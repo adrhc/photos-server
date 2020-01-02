@@ -27,7 +27,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static image.photos.album.AlbumUtils.albumName;
+import static image.photos.album.AlbumHelper.albumName;
 import static image.photos.infrastructure.events.image.ImageEventTypeEnum.DELETED;
 import static image.photos.infrastructure.events.image.ImageEventTypeEnum.MARKED_DELETED;
 
@@ -81,7 +81,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * import new album or rescan existing
 	 */
 	public void importByAlbumName(String albumName) {
-		Path path = this.albumHelper.fullPath(albumName);
+		Path path = this.albumHelper.absolutePath(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path);
 		}
@@ -105,7 +105,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// already existing album
 			return Optional.of(AlbumEvent.builder().album(album).build());
 		}
-		if (this.albumHelper.emptyAlbum(this.albumHelper.fullPath(albumName))) {
+		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePath(albumName))) {
 			// new empty album
 			return Optional.empty();
 		}
@@ -146,7 +146,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// iterate and process image files
 		List<String> foundImages = new ArrayList<>();
-		if (this.albumHelper.emptyAlbum(path)) {
+		if (this.albumHelper.isAlbumWithNoFiles(path)) {
 			// existing empty album
 			log.debug("BEGIN album with no pictures:\n{}", path);
 		} else {
