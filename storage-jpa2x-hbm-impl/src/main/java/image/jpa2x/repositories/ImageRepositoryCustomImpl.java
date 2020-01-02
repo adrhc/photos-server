@@ -76,9 +76,10 @@ public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageF
 	}
 
 	@Override
-	public void changeName(String name, Integer imageId) {
+	public Image changeName(String name, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.setName(name);
+		return image;
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public interface ImageRepositoryCustom {
 
 	void safelyDeleteImage(Integer imageId);
 
-	void changeName(String name, Integer imageId);
+	Image changeName(String name, Integer imageId);
 
 	Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId);
 }

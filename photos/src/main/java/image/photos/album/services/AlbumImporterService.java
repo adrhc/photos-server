@@ -200,13 +200,17 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
 			ImageEvent.ImageEventBuilder imgEvBuilder =
 					ImageEvent.builder().album(album).image(image);
+			// changeName
 			if (fsNameIdx >= 0) {
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				this.imageRepository.changeName(oppositeExtensionCase, image.getId());
-				this.imageTopic.emit(imgEvBuilder.type(ImageEventTypeEnum.UPDATED).build());
+				Image updatedImage = this.imageRepository
+						.changeName(oppositeExtensionCase, image.getId());
+				this.imageTopic.emit(imgEvBuilder.image(updatedImage)
+						.type(ImageEventTypeEnum.UPDATED).build());
 				return;
 			}
+			// safelyDeleteImage
 			if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
 				// status = 0
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
