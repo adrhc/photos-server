@@ -35,14 +35,14 @@ class ThumbHelperTest {
 	void getThumbLastModified() {
 		Path thumbFile = Path.of(this.thumbsDir, "image.jpeg");
 		this.fileStoreService.setSpecialLastModifiedTimeForPath(thumbFile);
-		Date date = this.thumbHelper.getThumbLastModified(
+		Date date = this.thumbHelper.thumbLastModified(
 				Path.of(this.albumsDir, "image.jpeg"), new Date());
 		assertThat(date, is(new Date(FileStoreServiceTest.specialLastModifiedTime)));
 	}
 
 	@Test
 	void getThumbFileForImgFile() {
-		Path path = this.thumbHelper.getThumbFileForImgFile(
+		Path path = this.thumbHelper.thumbFileForImgFile(
 				Path.of(this.albumsDir, "image.jpeg"));
 		assertThat(path.getParent().toString(), is(this.thumbsDir));
 	}

@@ -20,8 +20,8 @@ public class ThumbHelper {
 
 	public ThumbHelper(FileStoreService fileStoreService) {this.fileStoreService = fileStoreService;}
 
-	public Date getThumbLastModified(Path imageFile, Date defaultValue) {
-		Path thumbFile = getThumbFileForImgFile(imageFile);
+	public Date thumbLastModified(Path imageFile, Date defaultValue) {
+		Path thumbFile = thumbFileForImgFile(imageFile);
 		if (this.fileStoreService.exists(thumbFile)) {
 			return new Date(this.fileStoreService.lastModifiedTime(thumbFile));
 		} else {
@@ -29,7 +29,7 @@ public class ThumbHelper {
 		}
 	}
 
-	public Path getThumbFileForImgFile(Path imageFile) {
+	public Path thumbFileForImgFile(Path imageFile) {
 		return Path.of(imageFile.toString().replaceFirst(this.albumsDir, this.thumbsDir));
 	}
 }

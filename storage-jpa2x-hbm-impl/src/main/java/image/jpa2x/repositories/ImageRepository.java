@@ -3,28 +3,13 @@ package image.jpa2x.repositories;
 import image.jpa2x.jpacustomizations.ICustomJpaRepository;
 import image.persistence.entity.Image;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.QueryHint;
 import java.util.List;
 
 @Repository
-public interface ImageRepository extends ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
-	/**
-	 * All Image fields will be loaded too despite the fact that
-	 * every individually Image returned might be already in cache.
-	 * <p>
-	 * Even when cached it still might be slow when there are many Image(s):
-	 * https://vladmihalcea.com/hibernate-query-cache-n-plus-1-issue/
-	 * when caching is enabled than only IDENTIFIER(s) would
-	 * be cached which would be List<Image.id> per Album
-	 * <p>
-	 * competes with ImageServiceImpl.getImages(Integer albumId)
-	 */
-	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
-	List<Image> findByAlbumId(Integer albumId);
-
+public interface ImageRepository extends ImageQueryRepository,
+		ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
 	/**
 	 * Make no sense to cache because only Image.id is cached!
 	 * <p>

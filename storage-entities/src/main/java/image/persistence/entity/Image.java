@@ -147,6 +147,23 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof Image)) {
+			return false;
+		}
+		Image other = (Image) o;
+		return this.id != null && this.id.equals(other.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return 31;
+	}
+
+	@Override
 	public String toString() {
 		return "Image{" +
 				"id=" + this.id +

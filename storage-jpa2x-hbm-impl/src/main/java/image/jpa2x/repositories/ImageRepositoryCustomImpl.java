@@ -2,16 +2,13 @@ package image.jpa2x.repositories;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
-import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
-import image.persistence.entity.image.ImageMetadata;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 
 /**
  * 4.6.1. Customizing Individual Repositories
@@ -22,13 +19,6 @@ import java.util.Date;
 public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageFlagsUtils {
 	@PersistenceContext
 	private EntityManager em;
-
-	@Override
-	public Image updateThumbLastModifiedForImg(Date thumbLastModified, Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		image.getImageMetadata().setThumbLastModified(thumbLastModified);
-		return image;
-	}
 
 	@Override
 	public boolean changeRating(ImageRating imageRating) {
@@ -56,58 +46,5 @@ public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageF
 		image.setFlags(imageFlags);
 		image.getAlbum().setDirty(true);
 		return true;
-	}
-
-	@Override
-	public boolean markDeleted(Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		if (image.isDeleted()) {
-			return false;
-		}
-		checkAndRemoveAlbumCoverAndFromAlbumImages(image, true);
-		image.setDeleted(true);
-		return true;
-	}
-
-	@Override
-	public void safelyDeleteImage(Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		checkAndRemoveAlbumCoverAndFromAlbumImages(image, false);
-	}
-
-	@Override
-	public Image changeName(String name, Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		image.setName(name);
-		return image;
-	}
-
-	@Override
-	public Image updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		image.setImageMetadata(imageMetadata);
-		return image;
-	}
-
-	/**
-	 * Remove album's cover (set it to null) when image is its album's cover.
-	 *
-	 * @return whether change occurred or not in DB
-	 */
-	private void checkAndRemoveAlbumCoverAndFromAlbumImages(Image image, boolean onlyMarkAsDeleted) {
-		Album album = image.getAlbum();
-		if (!onlyMarkAsDeleted) {
-			album.getImages().removeIf(i -> i.getId().equals(image.getId()));
-		}
-		if (album.getCover() == null) {
-			// cover is already missing
-			return;
-		}
-		if (!album.getCover().getId().equals(image.getId())) {
-			// image is not cover for its album
-			return;
-		}
-		// removing cover
-		album.setCover(null);
 	}
 }

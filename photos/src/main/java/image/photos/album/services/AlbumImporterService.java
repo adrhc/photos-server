@@ -2,7 +2,7 @@ package image.photos.album.services;
 
 import image.cdm.image.status.EImageStatus;
 import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.repositories.ImageQueryRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -10,10 +10,10 @@ import image.photos.album.helpers.AlbumHelper;
 import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
+import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.events.album.AlbumEvent;
 import image.photos.infrastructure.events.album.AlbumEventTypeEnum;
 import image.photos.infrastructure.events.album.AlbumTopic;
-import image.photos.infrastructure.events.image.ImageEvent;
 import image.photos.infrastructure.events.image.ImageEventTypeEnum;
 import image.photos.infrastructure.events.image.ImageTopic;
 import image.photos.infrastructure.filestore.FileStoreService;
@@ -29,8 +29,6 @@ import java.util.*;
 import java.util.function.Predicate;
 
 import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
-import static image.photos.infrastructure.events.image.ImageEventTypeEnum.DELETED;
-import static image.photos.infrastructure.events.image.ImageEventTypeEnum.MARKED_DELETED;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,7 +42,8 @@ import static image.photos.infrastructure.events.image.ImageEventTypeEnum.MARKED
 public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageImporterService imageImporterService;
 	private final ImageHelper imageHelper;
-	private final ImageRepository imageRepository;
+	private final ImageQueryRepository imageQueryRepository;
+	private final ImageCUDService imageCUDService;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
 	private final ImageTopic imageTopic;
@@ -52,10 +51,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
-		this.imageRepository = imageRepository;
+		this.imageQueryRepository = imageQueryRepository;
+		this.imageCUDService = imageCUDService;
 		this.albumRepository = albumRepository;
 		this.albumTopic = albumTopic;
 		this.imageTopic = imageTopic;
@@ -187,7 +187,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 */
 	private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
 		log.debug("BEGIN {}", album.getName());
-		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
+		List<Image> images = this.imageQueryRepository.findByAlbumId(album.getId());
 //		List<Image> images = this.imageService.getImages(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
@@ -198,30 +198,19 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			}
 			String oppositeExtensionCase = this.imageHelper.changeToOppositeExtensionCase(dbName);
 			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
-			ImageEvent.ImageEventBuilder imgEvBuilder =
-					ImageEvent.builder().album(album).image(image);
-			// changeName
 			if (fsNameIdx >= 0) {
+				// changeName
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				Image updatedImage = this.imageRepository
-						.changeName(oppositeExtensionCase, image.getId());
-				this.imageTopic.emit(imgEvBuilder.image(updatedImage)
-						.type(ImageEventTypeEnum.UPDATED).build());
-				return;
-			}
-			// safelyDeleteImage
-			if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
+				this.imageCUDService.changeName(oppositeExtensionCase, image.getId());
+			} else if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
 				// status = 0
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				this.imageRepository.safelyDeleteImage(image.getId());
-				this.imageTopic.emit(imgEvBuilder.type(DELETED).build());
-				return;
-			}
-			// status != 0 (adica e o imagine "prelucrata")
-			log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-			if (this.imageRepository.markDeleted(image.getId())) {
-				this.imageTopic.emit(imgEvBuilder.type(MARKED_DELETED).build());
+				this.imageCUDService.safelyDeleteImage(image.getId());
+			} else {
+				// status != 0 (adica e o imagine "prelucrata")
+				log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
+				this.imageCUDService.markDeleted(image.getId());
 			}
 		});
 		log.debug("END {}", album.getName());

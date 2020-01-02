@@ -193,19 +193,19 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	/**
 	 * Remove album's cover (set it to null) when image is its album's cover.
 	 *
-	 * @param image
+	 * @param persistentImage
 	 * @return whether change occurred or not in DB
 	 */
-	private void checkAndRemoveAlbumCoverAndFromAlbumImages(Image image, boolean onlyMarkAsDeleted) {
-		Album album = image.getAlbum();
+	private void checkAndRemoveAlbumCoverAndFromAlbumImages(Image persistentImage, boolean onlyMarkAsDeleted) {
+		Album album = persistentImage.getAlbum();
 		if (!onlyMarkAsDeleted) {
-			album.getImages().removeIf(i -> i.getId().equals(image.getId()));
+			album.getImages().remove(persistentImage);
 		}
 		if (album.getCover() == null) {
 			// cover is already missing
 			return;
 		}
-		if (!album.getCover().getId().equals(image.getId())) {
+		if (!album.getCover().getId().equals(persistentImage.getId())) {
 			// image is not cover for its album
 			return;
 		}

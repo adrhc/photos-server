@@ -33,7 +33,7 @@ public abstract class ImageTestBase implements IAppConfigSupplier {
 					List<Image> images
 	) {
 		// % -> difficult character for LIKE sql operator
-		images.get(0).setName(images.get(0).getName().replace('%', '-'));
+		images.forEach(i -> i.setName(images.get(0).getName().replace('%', '-')));
 		this.album = album;
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);

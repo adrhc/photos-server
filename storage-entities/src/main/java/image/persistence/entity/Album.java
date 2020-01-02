@@ -182,6 +182,23 @@ public class Album implements Serializable {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof Album)) {
+			return false;
+		}
+		Album other = (Album) o;
+		return this.id != null && this.id.equals(other.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return 71;
+	}
+
+	@Override
 	public String toString() {
 		return "Album{" +
 				"id=" + this.id +

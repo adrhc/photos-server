@@ -10,7 +10,6 @@ import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
-import image.persistence.entity.image.ImageMetadata;
 import image.persistence.entitytests.assertion.IImageAssertions;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,19 +112,6 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 	}
 
 	@Test
-	void updateThumbLastModifiedForImg() {
-		Image image = this.album.getImages().get(0);
-		Date date = new Date();
-		log.debug("*** imageRepository.updateThumbLastModifiedForImg ***");
-		this.imageRepository.updateThumbLastModifiedForImg(date, image.getId());
-		log.debug("*** imageRepository.findById ***");
-		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		assertEquals(date, dbImage.getImageMetadata().getThumbLastModified());
-		image.getImageMetadata().setThumbLastModified(date);
-		assertImageEquals(image, dbImage);
-	}
-
-	@Test
 	void changeRating() {
 		Image image = this.album.getImages().get(0);
 		ImageRating imageRating = new ImageRating(image.getId(),
@@ -150,38 +135,6 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertEquals(of(imageStatus.getStatus()), dbImage.getFlags());
 		image.setFlags(of(imageStatus.getStatus()));
-		assertImageEquals(image, dbImage);
-	}
-
-	@Test
-	void markDeleted() {
-		Image image = this.album.getImages().get(0);
-		log.debug("*** imageRepository.markDeleted ***");
-		this.imageRepository.markDeleted(image.getId());
-		log.debug("*** imageRepository.findById ***");
-		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		assertTrue(dbImage.isDeleted());
-		image.setDeleted(true);
-		assertImageEquals(image, dbImage);
-	}
-
-	@Test
-	void changeName(@Random String newName) {
-		Image image = this.album.getImages().get(0);
-		this.imageRepository.changeName(newName, image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		assertEquals(newName, dbImage.getName());
-		image.setName(newName);
-		assertImageEquals(image, dbImage);
-	}
-
-	@Test
-	void updateImageMetadata(@Random ImageMetadata imageMetadata) {
-		Image image = this.album.getImages().get(0);
-		this.imageRepository.updateImageMetadata(imageMetadata, image.getId());
-		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		assertImageMetadataEquals(imageMetadata, dbImage.getImageMetadata());
-		image.setImageMetadata(imageMetadata);
 		assertImageEquals(image, dbImage);
 	}
 }

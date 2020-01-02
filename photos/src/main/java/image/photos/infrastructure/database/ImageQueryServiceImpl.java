@@ -1,4 +1,4 @@
-package image.photos.image.services;
+package image.photos.infrastructure.database;
 
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
@@ -21,7 +21,6 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	private final AlbumRepository albumRepository;
 	private final FileStoreService fileStoreService;
 	private final AlbumHelper albumHelper;
-
 
 	public ImageQueryServiceImpl(ImageRepository imageRepository, AlbumRepository albumRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
 		this.imageRepository = imageRepository;

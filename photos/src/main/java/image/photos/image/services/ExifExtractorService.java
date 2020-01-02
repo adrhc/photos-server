@@ -78,7 +78,7 @@ public class ExifExtractorService {
 			loadDimensions(imageMetadata.getExifData(), imgFile);
 		}
 
-		Date thumbLastModified = this.thumbHelper.getThumbLastModified(
+		Date thumbLastModified = this.thumbHelper.thumbLastModified(
 				imgFile, imageMetadata.getDateTime());
 		imageMetadata.setThumbLastModified(thumbLastModified);
 

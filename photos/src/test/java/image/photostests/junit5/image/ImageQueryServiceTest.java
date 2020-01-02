@@ -4,7 +4,7 @@ import exifweb.util.random.RandomBeansExtensionEx;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.image.services.ImageQueryService;
+import image.photos.infrastructure.database.ImageQueryService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photostests.overrides.infrastructure.filestore.FileStoreServiceTest;
 import lombok.extern.slf4j.Slf4j;
