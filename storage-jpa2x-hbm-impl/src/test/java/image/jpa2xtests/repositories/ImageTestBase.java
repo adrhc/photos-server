@@ -31,9 +31,9 @@ public abstract class ImageTestBase implements MiscUtils, IAppConfigSupplier {
 			@Random(type = Image.class, excludes = {"id", "lastUpdate", "album"})
 					List<Image> images
 	) {
-		this.album = album;
 		// % -> difficult character for LIKE sql operator
 		images.get(0).setName(images.get(0).getName().replace('%', '-'));
+		this.album = album;
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
 		this.appConfigRepository.persist(entityAppConfigOf(AppConfigEnum.albums_path, "/dummy-path"));

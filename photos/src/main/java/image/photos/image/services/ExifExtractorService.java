@@ -9,7 +9,7 @@ import com.drew.metadata.jpeg.JpegDirectory;
 import exifweb.util.MiscUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
-import image.photos.image.ThumbHelper;
+import image.photos.image.helpers.ThumbHelper;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.process.ProcessRunner;
 import lombok.extern.slf4j.Slf4j;

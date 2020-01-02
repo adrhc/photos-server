@@ -3,7 +3,7 @@ package image.photos.album.services;
 import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.photos.image.ImageHelper;
+import image.photos.image.helpers.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

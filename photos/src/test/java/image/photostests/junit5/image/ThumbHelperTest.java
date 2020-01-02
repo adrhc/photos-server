@@ -1,7 +1,7 @@
 package image.photostests.junit5.image;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.photos.image.ThumbHelper;
+import image.photos.image.helpers.ThumbHelper;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photostests.overrides.infrastructure.filestore.FileStoreServiceTest;
 import lombok.extern.slf4j.Slf4j;

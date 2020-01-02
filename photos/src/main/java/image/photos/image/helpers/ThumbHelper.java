@@ -1,4 +1,4 @@
-package image.photos.image;
+package image.photos.image.helpers;
 
 import image.photos.infrastructure.filestore.FileStoreService;
 import org.springframework.beans.factory.annotation.Value;

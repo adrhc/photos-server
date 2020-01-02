@@ -1,18 +1,13 @@
-package image.photos.image;
+package image.photos.image.helpers;
 
 import image.cdm.album.cover.AlbumCover;
 import image.cdm.image.feature.IImageBasicInfo;
 import image.cdm.image.feature.IImageDimensions;
-import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
-import image.photos.album.AlbumHelper;
-import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -28,9 +23,6 @@ public class ImageHelper {
 			new MessageFormat("{0}/{1}");
 	private static MessageFormat relativeUriPathFormatter =
 			new MessageFormat("{0}/{1,number,#}/{2}");
-	private final ImageRepository imageRepository;
-	private final AlbumHelper albumHelper;
-	private final FileStoreService fileStoreService;
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -40,18 +32,11 @@ public class ImageHelper {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 
-	public ImageHelper(ImageRepository imageRepository, AlbumHelper albumHelper,
-			FileStoreService fileStoreService) {
-		this.imageRepository = imageRepository;
-		this.albumHelper = albumHelper;
-		this.fileStoreService = fileStoreService;
-	}
-
 	private static String relativeUriPathFor(Long lastModifTime, String imgName, String albumName) {
 		return relativeUriPathFormatter.format(new Object[]{albumName, lastModifTime, imgName});
 	}
 
-	private static String relativeFilePathFor(Image image) {
+	public static String relativeFilePathFor(Image image) {
 		return relativeFilePathFormatter.format(
 				new Object[]{image.getAlbum().getName(), image.getName()});
 	}
@@ -152,23 +137,5 @@ public class ImageHelper {
 			sb.append(pointAndExtension.toLowerCase());
 		}
 		return sb.toString();
-	}
-
-	/**
-	 * @return whether imgFile from albumId exists in other albums too
-	 */
-	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) {
-		String nameNoExt = FilenameUtils.getBaseName(this.fileStoreService.fileName(imgFile));
-		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
-		return image.stream().anyMatch(i -> this.fileStoreService.fileSize(imgFile) == sizeOf(i));
-	}
-
-	/**
-	 * @return size of the image's file
-	 */
-	private long sizeOf(Image image) {
-		String imgRelPath = relativeFilePathFor(image);
-		Path imgFullPath = this.albumHelper.rootPath().resolve(imgRelPath);
-		return this.fileStoreService.fileSize(imgFullPath);
 	}
 }

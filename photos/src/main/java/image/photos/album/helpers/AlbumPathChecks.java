@@ -1,14 +1,13 @@
-package image.photos.album.importing;
+package image.photos.album.helpers;
 
 import image.jpa2x.repositories.AlbumRepository;
-import image.photos.album.AlbumHelper;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
-import static image.photos.album.AlbumHelper.albumName;
+import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
 
 @Component
 @Slf4j
@@ -45,6 +44,6 @@ public class AlbumPathChecks {
 			return false;
 		}
 		// check path for not to already be an album
-		return this.albumRepository.findByName(albumName(path)) == null;
+		return this.albumRepository.findByName(albumNameFrom(path)) == null;
 	}
 }

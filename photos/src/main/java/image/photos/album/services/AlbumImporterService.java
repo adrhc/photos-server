@@ -1,4 +1,4 @@
-package image.photos.album.importing;
+package image.photos.album.services;
 
 import image.cdm.image.status.EImageStatus;
 import image.jpa2x.repositories.AlbumRepository;
@@ -6,9 +6,10 @@ import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
-import image.photos.album.AlbumHelper;
-import image.photos.image.ImageHelper;
-import image.photos.image.importing.ImageImporterService;
+import image.photos.album.helpers.AlbumHelper;
+import image.photos.album.helpers.AlbumPathChecks;
+import image.photos.image.helpers.ImageHelper;
+import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.events.album.AlbumEvent;
 import image.photos.infrastructure.events.album.AlbumEventTypeEnum;
 import image.photos.infrastructure.events.album.AlbumTopic;
@@ -27,7 +28,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
-import static image.photos.album.AlbumHelper.albumName;
+import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
 import static image.photos.infrastructure.events.image.ImageEventTypeEnum.DELETED;
 import static image.photos.infrastructure.events.image.ImageEventTypeEnum.MARKED_DELETED;
 
@@ -81,7 +82,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * import new album or rescan existing
 	 */
 	public void importByAlbumName(String albumName) {
-		Path path = this.albumHelper.absolutePath(albumName);
+		Path path = this.albumHelper.absolutePathOf(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path);
 		}
@@ -92,7 +93,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * Filters album paths to be imported.
 	 */
 	private void importFilteredFromRoot(Predicate<Path> albumsFilter) {
-		Path root = this.albumHelper.rootPath();
+		Path root = this.albumHelper.albumsRoot();
 		this.fileStoreService.walk(root, FileVisitOption.FOLLOW_LINKS)
 				.filter(albumsFilter)
 				.sorted(Collections.reverseOrder())
@@ -105,7 +106,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// already existing album
 			return Optional.of(AlbumEvent.builder().album(album).build());
 		}
-		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePath(albumName))) {
+		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePathOf(albumName))) {
 			// new empty album
 			return Optional.empty();
 		}
@@ -124,7 +125,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// determine or create album
 		// path este album nou dar nu are poze
-		Optional<AlbumEvent> albumEvent = findOrCreate(albumName(path));
+		Optional<AlbumEvent> albumEvent = findOrCreate(albumNameFrom(path));
 		if (albumEvent.isEmpty()) {
 			// album nou dar gol
 			sw.stop();

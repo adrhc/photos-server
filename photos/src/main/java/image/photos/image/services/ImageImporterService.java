@@ -1,12 +1,10 @@
-package image.photos.image.importing;
+package image.photos.image.services;
 
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
-import image.photos.image.ThumbHelper;
-import image.photos.image.services.ExifExtractorService;
-import image.photos.image.services.ImageService;
+import image.photos.image.helpers.ThumbHelper;
 import image.photos.infrastructure.events.image.ImageEvent;
 import image.photos.infrastructure.events.image.ImageEventTypeEnum;
 import image.photos.infrastructure.events.image.ImageTopic;

@@ -2,7 +2,7 @@ package image.exifweb.album.importer;
 
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
-import image.photos.album.importing.AlbumImporterService;
+import image.photos.album.services.AlbumImporterService;
 import image.photos.infrastructure.events.album.AlbumTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

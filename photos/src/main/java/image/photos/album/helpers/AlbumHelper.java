@@ -1,4 +1,4 @@
-package image.photos.album;
+package image.photos.album.helpers;
 
 import image.jpa2x.repositories.AppConfigRepository;
 import image.photos.infrastructure.filestore.FileStoreService;
@@ -16,19 +16,19 @@ public class AlbumHelper {
 		this.fileStoreService = fileStoreService;
 	}
 
-	public Path rootPath() {
+	public Path albumsRoot() {
 		return Path.of(this.appConfigRepository.getAlbumsPath());
 	}
 
-	public Path absolutePath(String albumName) {
-		return rootPath().resolve(albumName);
+	public Path absolutePathOf(String albumName) {
+		return albumsRoot().resolve(albumName);
 	}
 
 	public boolean isAlbumWithNoFiles(Path albumPath) {
 		return this.fileStoreService.isEmptyDir(albumPath);
 	}
 
-	public static String albumName(Path path) {
+	public static String albumNameFrom(Path path) {
 		return path.getFileName().toString();
 	}
 }

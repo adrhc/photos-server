@@ -4,7 +4,7 @@ import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.repositories.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.photos.image.ImageHelper;
+import image.photos.image.helpers.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
