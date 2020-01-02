@@ -8,7 +8,7 @@ import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import image.persistence.entity.jsonview.ImageViews;
-import image.photos.image.ImageToExifInfoConverter;
+import image.photos.image.converter.ImageToExifInfoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;

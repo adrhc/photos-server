@@ -6,7 +6,7 @@ import image.exifweb.web.controller.INotModifiedChecker;
 import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.photos.album.AlbumPageService;
+import image.photos.album.services.AlbumPageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

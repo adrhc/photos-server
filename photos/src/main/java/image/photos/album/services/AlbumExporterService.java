@@ -1,4 +1,4 @@
-package image.photos.album;
+package image.photos.album.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;

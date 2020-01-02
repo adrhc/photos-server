@@ -1,4 +1,4 @@
-package image.photos.image;
+package image.photos.image.converter;
 
 import image.cdm.image.ExifInfo;
 import image.persistence.entity.Image;

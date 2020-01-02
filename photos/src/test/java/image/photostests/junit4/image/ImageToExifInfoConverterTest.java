@@ -3,7 +3,7 @@ package image.photostests.junit4.image;
 import image.cdm.image.ExifInfo;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.IImageSupplier;
-import image.photos.image.ImageToExifInfoConverter;
+import image.photos.image.converter.ImageToExifInfoConverter;
 import image.photostests.junit4.misc.MiscTestCategory;
 import org.junit.Assert;
 import org.junit.Before;

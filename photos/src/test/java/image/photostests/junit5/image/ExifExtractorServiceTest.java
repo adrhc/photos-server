@@ -2,7 +2,7 @@ package image.photostests.junit5.image;
 
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.persistence.entity.image.ImageMetadata;
-import image.photos.image.ExifExtractorService;
+import image.photos.image.services.ExifExtractorService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

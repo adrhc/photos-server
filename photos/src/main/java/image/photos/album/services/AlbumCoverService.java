@@ -1,4 +1,4 @@
-package image.photos.album;
+package image.photos.album.services;
 
 import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.repositories.AlbumRepository;

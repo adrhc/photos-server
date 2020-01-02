@@ -3,7 +3,7 @@ package image.exifweb.album.cover;
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.web.controller.INotModifiedChecker;
 import image.jpa2x.repositories.AlbumRepository;
-import image.photos.album.AlbumCoverService;
+import image.photos.album.services.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

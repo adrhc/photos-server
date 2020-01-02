@@ -14,7 +14,7 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entitytests.IAppConfigSupplier;
 import image.persistence.entitytests.IImageSupplier;
 import image.persistence.repository.ESortType;
-import image.photos.album.AlbumPageService;
+import image.photos.album.services.AlbumPageService;
 import image.photostests.junit5.testconfig.Junit5PhotosStageDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;

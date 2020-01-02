@@ -1,4 +1,4 @@
-package image.photos.image;
+package image.photos.image.services;
 
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
@@ -9,6 +9,7 @@ import com.drew.metadata.jpeg.JpegDirectory;
 import exifweb.util.MiscUtils;
 import image.persistence.entity.image.ExifData;
 import image.persistence.entity.image.ImageMetadata;
+import image.photos.image.ThumbHelper;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.process.ProcessRunner;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package image.photostests.junit4.album;
 
 import image.cdm.album.cover.AlbumCover;
-import image.photos.album.AlbumCoverService;
+import image.photos.album.services.AlbumCoverService;
 import image.photostests.junit4.testconfig.PhotosProdJdbcDbConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;

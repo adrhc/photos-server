@@ -1,4 +1,4 @@
-package image.photos.image;
+package image.photos.image.services;
 
 import image.persistence.entity.Image;
 

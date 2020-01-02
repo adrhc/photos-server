@@ -1,4 +1,4 @@
-package image.photos.album;
+package image.photos.album.services;
 
 import image.cdm.album.page.AlbumPage;
 import image.persistence.repository.AlbumPageRepository;
