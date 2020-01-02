@@ -19,4 +19,8 @@ public class AlbumEvent implements Serializable {
 	private String requestId;
 	private AlbumEventTypeEnum type;
 	private Album album;
+
+	public static AlbumEvent of(Album album, AlbumEventTypeEnum eventType) {
+		return AlbumEvent.builder().album(album).type(eventType).build();
+	}
 }
