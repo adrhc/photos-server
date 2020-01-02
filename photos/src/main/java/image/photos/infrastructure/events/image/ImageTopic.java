@@ -57,6 +57,7 @@ public class ImageTopic {
 
 	@PreDestroy
 	public void preDestroy() {
+		log.debug("sink.complete");
 		this.sink.complete();
 	}
 }
