@@ -1,4 +1,4 @@
-package image.infrastructure.messaging.message;
+package image.infrastructure.messaging.core.message;
 
 public interface Classifiable<T> {
 	T getType();

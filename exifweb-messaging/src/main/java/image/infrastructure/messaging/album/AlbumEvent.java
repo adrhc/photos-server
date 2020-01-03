@@ -1,6 +1,6 @@
-package image.photos.infrastructure.messaging.album;
+package image.infrastructure.messaging.album;
 
-import image.infrastructure.messaging.message.BaseMessage;
+import image.infrastructure.messaging.core.message.BaseMessage;
 import image.persistence.entity.Album;
 import lombok.experimental.SuperBuilder;
 
