@@ -77,6 +77,7 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 		log.debug("*** imageRepository.findByAlbumId ***");
 		this.em.getEntityManagerFactory().getCache().evictAll();
 		this.imageRepository.findByAlbumId(this.album.getId());
+		this.imageRepository.findByAlbumId(this.album.getId());
 		this.cacheUtils.evictQueryRegions();
 		this.imageRepository.findByAlbumId(this.album.getId());
 	}

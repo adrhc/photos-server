@@ -33,14 +33,15 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 
 	/**
 	 * competes with ImageQueryRepository.findByAlbumId
+	 * <p>
+	 * album.getImages() ignores 2nd level cache:
+	 * select * from Image where FK_ALBUM=?
 	 */
 	@Override
 	public List<Image> getImages(Integer albumId) {
 		Album album = this.albumRepository.getById(albumId);
-		// getImages(): select * from Image where FK_ALBUM=?
 		List<Image> images = album.getImages();
-		// just initialize the collection
-		images.size();
+		images.size();// initialize the lazy collection
 		return images;
 	}
 
