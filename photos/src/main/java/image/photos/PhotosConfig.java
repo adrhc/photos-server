@@ -1,5 +1,6 @@
 package image.photos;
 
+import image.infrastructure.messaging.MessagingConfig;
 import image.jpa2x.Jpa2xConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,6 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @ComponentScan
-@Import({Jpa2xConfig.class})
+@Import({MessagingConfig.class, Jpa2xConfig.class})
 @PropertySource("classpath:/photos.properties")
 public class PhotosConfig {}

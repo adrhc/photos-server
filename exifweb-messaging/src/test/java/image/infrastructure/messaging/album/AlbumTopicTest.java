@@ -1,11 +1,8 @@
-package image.photostests.junit4.misc;
+package image.infrastructure.messaging.album;
 
 import image.persistence.entity.Album;
-import image.infrastructure.messaging.album.AlbumEvent;
-import image.infrastructure.messaging.album.AlbumTopic;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
@@ -19,14 +16,11 @@ import java.util.stream.IntStream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
-import static image.photos.util.ThreadUtils.safeSleep;
+import static image.infrastructure.messaging.util.ThreadUtils.safeSleep;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-/**
- * Created by adr on 2/7/18.
- */
-@Category(MiscTestCategory.class)
 @Slf4j
-public class AlbumTopicTest {
+class AlbumTopicTest {
 	@Test
 	public void albumEventsByTypesTest() {
 		Thread mainThread = Thread.currentThread();
@@ -39,17 +33,17 @@ public class AlbumTopicTest {
 				.doOnNext(ae -> log.debug("doOnNext1: {}", ae))// after publishOn uses publishOn
 				.doOnSubscribe(s -> {
 					log.debug("[doOnSubscribe]:\n\t{}", s);
-					assert !Thread.currentThread().getName().equals("main");
+					assertNotEquals("main", Thread.currentThread().getName());
 				})
 				.subscribeOn(Schedulers.parallel())// must be after doOnSubscribe!!!
 				.publishOn(Schedulers.elastic())// put between doOnNext1 and doOnNext2
 				.doOnNext(ae -> {
 					log.debug("doOnNext2: {}", ae);
-					assert !Thread.currentThread().getName().equals("main");
+					assertNotEquals("main", Thread.currentThread().getName());
 				})// after publishOn uses publishOn
 				.subscribe(ae -> {
 							log.debug("[subscribe] received {}", ae.getEntity().getName());
-							assert !Thread.currentThread().getName().equals("main");
+							assertNotEquals("main", Thread.currentThread().getName());
 							// simulating ong processing
 							sneaked(() -> Thread.sleep(1000)).run();
 							newAlbums.add(ae.getEntity());

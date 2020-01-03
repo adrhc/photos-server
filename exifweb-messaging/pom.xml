@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>exifweb</artifactId>
         <groupId>image</groupId>
+        <artifactId>exifweb</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -35,6 +35,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.rainerhahnekamp</groupId>
+            <artifactId>sneakythrow</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
@@ -52,5 +57,20 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration combine.self="append">
+                    <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
+                    <environmentVariables>
+                        <!-- for catching tests without proper spring profile annotation -->
+                        <spring.profiles.active>fake-profile</spring.profiles.active>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -33,11 +33,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.rainerhahnekamp</groupId>
-            <artifactId>sneakythrow</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
