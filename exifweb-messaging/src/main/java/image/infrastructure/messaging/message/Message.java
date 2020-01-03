@@ -1,4 +1,4 @@
-package image.messaging.message;
+package image.infrastructure.messaging.message;
 
 import java.io.Serializable;
 

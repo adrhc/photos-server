@@ -1,6 +1,6 @@
 package image.photos.infrastructure.messaging.image;
 
-import image.messaging.message.BaseMessage;
+import image.infrastructure.messaging.message.BaseMessage;
 import image.persistence.entity.Image;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;

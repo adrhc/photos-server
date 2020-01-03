@@ -1,4 +1,4 @@
-package image.messaging.message;
+package image.infrastructure.messaging.message;
 
 import lombok.Getter;
 import lombok.Setter;

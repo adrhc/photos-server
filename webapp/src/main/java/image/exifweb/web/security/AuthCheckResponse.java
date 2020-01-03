@@ -1,8 +1,8 @@
 package image.exifweb.web.security;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class AuthCheckResponse extends AuthData {
 	public static final AuthCheckResponse FAILED_AUTHENTICATION = new AuthCheckResponse();
 	private final boolean success;
