@@ -8,27 +8,16 @@ import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
-import image.infrastructure.messaging.album.AlbumTopic;
 import image.photos.util.status.E3ResultTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.Disposable;
-import reactor.core.scheduler.Schedulers;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 
 /**
  * Created by adr on 1/28/18.
@@ -39,23 +28,21 @@ public class AlbumExporterService {
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
-	private Disposable albumTopicSubscr;
-	@Autowired
-	private AppConfigRepository appConfigRepository;
-	@Autowired
-	private AlbumPageRepository albumPageRepository;
-	@Autowired
-	private AlbumRepository albumRepository;
-	@Autowired
-	private AlbumPageService albumPageService;
-	@Autowired
-	private AlbumTopic albumTopic;
-	@Autowired
-	private ObjectMapper jsonMapper;
-	@Autowired
-	private ExecutorService executorService;
-	@Autowired
-	private AlbumCoverService albumCoverService;
+	private final AppConfigRepository appConfigRepository;
+	private final AlbumPageRepository albumPageRepository;
+	private final AlbumRepository albumRepository;
+	private final AlbumPageService albumPageService;
+	private final ObjectMapper jsonMapper;
+	private final AlbumCoverService albumCoverService;
+
+	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumPageRepository albumPageRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, ObjectMapper jsonMapper, AlbumCoverService albumCoverService) {
+		this.appConfigRepository = appConfigRepository;
+		this.albumPageRepository = albumPageRepository;
+		this.albumRepository = albumRepository;
+		this.albumPageService = albumPageService;
+		this.jsonMapper = jsonMapper;
+		this.albumCoverService = albumCoverService;
+	}
 
 	public boolean writeJsonForAlbumSafe(String name) {
 		Album album = this.albumRepository.findByName(name);
@@ -132,20 +119,5 @@ public class AlbumExporterService {
 		}
 		this.albumRepository.clearDirtyForAlbum(album.getId());
 		logger.debug("END {}", album.getName());
-	}
-
-	@PostConstruct
-	public void postConstruct() {
-		this.albumTopicSubscr = this.albumTopic
-				.eventsByType(false,
-						EnumSet.of(CREATED, UPDATED))
-				.publishOn(Schedulers.fromExecutor(this.executorService))
-				.subscribe((ae) -> writeJsonForAlbumSafe(ae.getEntity()),
-						t -> logger.error(t.getMessage(), t));
-	}
-
-	@PreDestroy
-	public void preDestroy() {
-		this.albumTopicSubscr.dispose();
 	}
 }

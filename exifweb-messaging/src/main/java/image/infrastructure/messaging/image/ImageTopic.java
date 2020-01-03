@@ -1,6 +1,6 @@
 package image.infrastructure.messaging.image;
 
-import image.infrastructure.messaging.core.destination.Topic;
+import image.infrastructure.messaging.core.destination.ReactorTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -9,4 +9,4 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class ImageTopic extends Topic<ImageEventTypeEnum, ImageEvent> {}
+public class ImageTopic extends ReactorTopic<String, ImageEventTypeEnum, ImageEvent> {}

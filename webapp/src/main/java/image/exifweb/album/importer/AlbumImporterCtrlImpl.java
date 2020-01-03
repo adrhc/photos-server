@@ -2,8 +2,9 @@ package image.exifweb.album.importer;
 
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
-import image.photos.album.services.AlbumImporterService;
 import image.infrastructure.messaging.album.AlbumTopic;
+import image.infrastructure.messaging.album.registration.FilteredTypesAlbumSubscription;
+import image.photos.album.services.AlbumImporterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,24 +82,30 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			Disposable subscription = this.albumTopic
-					.eventsByType(true, EnumSet.of(CREATED))
-					.take(1L)// todo: take all new albums imported
-					.subscribe(
-							ae -> {
-								logger.debug("imported album: {}", ae.getEntity().getName());
-								deferredResult.setResult("message",
-										"imported album: " + ae.getEntity().getName());
-							},
-							t -> {
-								logger.error(t.getMessage(), t);
-								logger.error("Error while trying to import new albums!");
-							},
-							() -> deferredResult.setResult("message", "No new album to import!"));
+			
+			Disposable disposable = this.albumTopic.register(
+					new FilteredTypesAlbumSubscription(EnumSet.of(CREATED),
+							flux -> flux
+									.take(1L)// todo: take all new imported albums
+									.subscribe(
+											ae -> {
+												logger.debug("imported album: {}", ae.getEntity().getName());
+												deferredResult.setResult("message",
+														"imported album: " + ae.getEntity().getName());
+											},
+											t -> {
+												logger.error(t.getMessage(), t);
+												logger.error("Error while trying to import new albums!");
+											},
+											() -> deferredResult.setResult("message", "No new album to import!"))
+					));
+
 			// this must be blocking in order not to immediately dispose
 			this.albumImporterService.importNewAlbums();
+
 			// todo: make sure to dispose even when an exception occurs
-			subscription.dispose();
+			disposable.dispose();
+
 		}, this.asyncExecutor);
 	}
 

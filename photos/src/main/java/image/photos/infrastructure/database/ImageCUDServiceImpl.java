@@ -1,11 +1,12 @@
 package image.photos.infrastructure.database;
 
+import image.infrastructure.messaging.image.ImageEventTypeEnum;
+import image.infrastructure.messaging.image.ImageTopic;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
-import image.infrastructure.messaging.image.ImageEventTypeEnum;
-import image.infrastructure.messaging.image.ImageTopic;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,21 @@ import java.util.Date;
 import static image.infrastructure.messaging.image.ImageEvent.of;
 import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
 
-@Transactional
+/**
+ * Using TransactionalOperation assures us that the database operations
+ * complete before emitting an event (e.g. imageTopic.emit).
+ * <p>
+ * Alternatively we could use 4.6.1. Customizing Individual Repositories:
+ * * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.single-repository-behavior
+ * with the risk of someone using the method from the
+ * Repository instead of the one emitting the event.
+ */
 @Service
 @Slf4j
 public class ImageCUDServiceImpl implements ImageCUDService {
 	private final ImageTopic imageTopic;
+	@Autowired
+	private TransactionalOperation transact;
 	@PersistenceContext
 	private EntityManager em;
 
@@ -50,47 +61,80 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 
 	@Override
 	public void changeName(String newName, Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		image.setName(newName);
-		this.imageTopic.emit(of(image, ImageEventTypeEnum.UPDATED));
+		// transaction
+		Image eventData = transact.readWrite(() -> {
+			Image image = this.em.find(Image.class, imageId);
+			image.setName(newName);
+			return image;
+		});
+		// emission
+		this.imageTopic.emit(of(eventData, ImageEventTypeEnum.UPDATED));
 	}
 
 	@Override
 	public void safelyDeleteImage(Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		removeAsCoverAndFromAlbumImages(image);
-		this.imageTopic.emit(of(image, DELETED));
+		// transaction
+		Image eventData = transact.readWrite(() -> {
+			Image image = this.em.find(Image.class, imageId);
+			removeAsCoverAndFromAlbumImages(image);
+			return image;
+		});
+		// emission
+		this.imageTopic.emit(of(eventData, DELETED));
 	}
 
 	@Override
 	public void markDeleted(Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		if (image.isDeleted()) {
-			return;
+		// transaction
+		Image eventData = transact.readWrite(() -> {
+			Image image = this.em.find(Image.class, imageId);
+			if (image.isDeleted()) {
+				return null;
+			}
+			image.setDeleted(true);
+			removeAsCoverAndFromAlbumImages(image);
+			return image;
+		});
+		// emission
+		if (eventData != null) {
+			this.imageTopic.emit(of(eventData, MARKED_AS_DELETED));
 		}
-		image.setDeleted(true);
-		removeAsCoverAndFromAlbumImages(image);
-		this.imageTopic.emit(of(image, MARKED_DELETED));
 	}
 
 	@Override
+	@Transactional
 	public void updateThumbLastModified(Date thumbLastModified, Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		image.getImageMetadata().setThumbLastModified(thumbLastModified);
-		log.debug("updated thumb's lastModified for {}", image.getName());
-		this.imageTopic.emit(of(image, THUMB_LAST_MODIF_DATE_UPDATED));
+		// transaction
+		Image eventData = transact.readWrite(() -> {
+			Image image = this.em.find(Image.class, imageId);
+			image.getImageMetadata().setThumbLastModified(thumbLastModified);
+			return image;
+		});
+		// emission
+		log.debug("updated thumb's lastModified for {}", eventData.getName());
+		this.imageTopic.emit(of(eventData, THUMB_LAST_MODIF_DATE_UPDATED));
 	}
 
 	@Override
 	public void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
-		Image image = this.em.find(Image.class, imageId);
-		image.setImageMetadata(imageMetadata);
-		this.imageTopic.emit(of(image, EXIF_UPDATED));
+		// transaction
+		Image eventData = transact.readWrite(() -> {
+			Image image = this.em.find(Image.class, imageId);
+			image.setImageMetadata(imageMetadata);
+			return image;
+		});
+		// emission
+		this.imageTopic.emit(of(eventData, EXIF_UPDATED));
 	}
 
+	/**
+	 * todo: what if an Album with Image(s) is persisted; the related events won't be emitted
+	 */
 	@Override
 	public void persist(Image image) {
+		// transaction
 		this.em.persist(image);
+		// emission
 		this.imageTopic.emit(of(image, CREATED));
 	}
 }

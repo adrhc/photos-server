@@ -2,5 +2,9 @@ package image.infrastructure.messaging.core.message;
 
 import java.io.Serializable;
 
-public interface Message<I, C> extends Identifiable<I>, Classifiable<C>, Serializable {
+/**
+ * @param <S> means message stamp
+ * @param <C> means message category/type
+ */
+public interface Message<S, C> extends Stampable<S>, Classifiable<C>, Serializable {
 }

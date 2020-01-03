@@ -13,8 +13,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>exifweb-messaging</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+    <url>https://adrhc.go.ro</url>
 
     <dependencies>
         <dependency>

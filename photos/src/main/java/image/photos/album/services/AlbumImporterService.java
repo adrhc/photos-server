@@ -1,6 +1,12 @@
 package image.photos.album.services;
 
 import image.cdm.image.status.EImageStatus;
+import image.infrastructure.messaging.album.AlbumEvent;
+import image.infrastructure.messaging.album.AlbumEventTypeEnum;
+import image.infrastructure.messaging.album.AlbumTopic;
+import image.infrastructure.messaging.image.ImageEventTypeEnum;
+import image.infrastructure.messaging.image.ImageTopic;
+import image.infrastructure.messaging.image.registration.FilteredTypesImageSubscription;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageQueryRepository;
 import image.persistence.entity.Album;
@@ -11,11 +17,6 @@ import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.database.ImageCUDService;
-import image.infrastructure.messaging.album.AlbumEvent;
-import image.infrastructure.messaging.album.AlbumEventTypeEnum;
-import image.infrastructure.messaging.album.AlbumTopic;
-import image.infrastructure.messaging.image.ImageEventTypeEnum;
-import image.infrastructure.messaging.image.ImageTopic;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
 import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
 
 /**
@@ -100,22 +102,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				.forEach(this::importByAlbumPath);
 	}
 
-	private Optional<AlbumEvent> findOrCreate(String albumName) {
-		Album album = this.albumRepository.findByName(albumName);
-		if (album != null) {
-			// already existing album
-			return Optional.of(AlbumEvent.builder().entity(album).build());
-		}
-		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePathOf(albumName))) {
-			// new empty album
-			return Optional.empty();
-		}
-		// creem un nou album (path aferent contine poze)
-		album = this.albumRepository.createByName(albumName);
-		return Optional.of(AlbumEvent.builder()
-				.type(AlbumEventTypeEnum.CREATED).entity(album).build());
-	}
-
 	/**
 	 * By now we already checked that path is a valid album path.
 	 */
@@ -133,17 +119,22 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 
 		Album album = albumEvent.get().getEntity();
-		boolean isNewAlbum = albumEvent.get().getType().equals(AlbumEventTypeEnum.CREATED);
+		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
 		// Preparing an imageEvents-listener used to
 		// determine whether exists any image changes.
 		// When importing a new album existsAtLeast1ImageChange will
-		// always be true because we are not importing empty albums.
+		// always be true because we are skipping (new) empty albums.
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
-		Disposable subscription = this.imageTopic
-				.eventsByType(EnumSet.allOf(ImageEventTypeEnum.class))
-				.take(1L)
-				.subscribe(event -> isAtLeast1ImageChanged.setValue(true));
+		// TODO: propagate stamp to importImageFromFile and deleteNotFoundImages
+		String stamp = UUID.randomUUID().toString();
+		Disposable disposable = this.imageTopic.register(
+				new FilteredTypesImageSubscription(
+						stamp, EnumSet.allOf(ImageEventTypeEnum.class),
+						flux -> flux
+								.take(1L)
+								.subscribe(event -> isAtLeast1ImageChanged.setValue(true))
+				));
 
 		// iterate and process image files
 		List<String> foundImages = new ArrayList<>();
@@ -167,7 +158,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 
 		// todo: make sure to dispose even when an exception occurs
-		subscription.dispose();
+		disposable.dispose();
 
 		// see AlbumExporterService.postConstruct
 		if (isNewAlbum) {
@@ -180,6 +171,21 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		sw.stop();
 		log.debug("END album:\n{}\n{}", path, sw.shortSummary());
+	}
+
+	private Optional<AlbumEvent> findOrCreate(String albumName) {
+		Album album = this.albumRepository.findByName(albumName);
+		if (album != null) {
+			// already existing album
+			return Optional.of(AlbumEvent.builder().entity(album).build());
+		}
+		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePathOf(albumName))) {
+			// new empty album
+			return Optional.empty();
+		}
+		// creem un nou album (path aferent contine poze)
+		album = this.albumRepository.createByName(albumName);
+		return Optional.of(AlbumEvent.of(album, CREATED));
 	}
 
 	/**

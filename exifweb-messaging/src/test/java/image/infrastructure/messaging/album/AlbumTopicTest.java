@@ -1,5 +1,6 @@
 package image.infrastructure.messaging.album;
 
+import image.infrastructure.messaging.album.registration.FilteredTypesAlbumSubscription;
 import image.persistence.entity.Album;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import reactor.core.scheduler.Schedulers;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,39 +29,42 @@ class AlbumTopicTest {
 
 		AlbumTopic albumTopic = new AlbumTopic();
 		List<Album> newAlbums = new ArrayList<>();
+		String stamp = UUID.randomUUID().toString();
 
-		albumTopic
-				.eventsByType(false, EnumSet.of(UPDATED))
-				.doOnNext(ae -> log.debug("doOnNext1: {}", ae))// after publishOn uses publishOn
-				.doOnSubscribe(s -> {
-					log.debug("[doOnSubscribe]:\n\t{}", s);
-					assertNotEquals("main", Thread.currentThread().getName());
-				})
-				.subscribeOn(Schedulers.parallel())// must be after doOnSubscribe!!!
-				.publishOn(Schedulers.elastic())// put between doOnNext1 and doOnNext2
-				.doOnNext(ae -> {
-					log.debug("doOnNext2: {}", ae);
-					assertNotEquals("main", Thread.currentThread().getName());
-				})// after publishOn uses publishOn
-				.subscribe(ae -> {
-							log.debug("[subscribe] received {}", ae.getEntity().getName());
+		albumTopic.register(new FilteredTypesAlbumSubscription(
+				stamp, EnumSet.of(UPDATED),
+				flux -> flux
+						.doOnNext(ae -> log.debug("doOnNext1: {}", ae))
+						.doOnSubscribe(s -> {
+							log.debug("[doOnSubscribe]:\n\t{}", s);
 							assertNotEquals("main", Thread.currentThread().getName());
-							// simulating ong processing
-							sneaked(() -> Thread.sleep(1000)).run();
-							newAlbums.add(ae.getEntity());
-							if (ae.getEntity().getName().equals("STOP")) {
-								albumTopic.preDestroy();
-								mainThread.interrupt();
-							}
-						},
-						t -> log.error(t.getMessage(), t),
-						() -> log.debug("completed"),
-						s -> {
-							log.debug("subscribed:\n\t{}", s);
-							// request required otherwise no event will be received!
-							s.request(Long.MAX_VALUE);
-						}
-				);
+						})
+						.subscribeOn(Schedulers.parallel())// must be after doOnSubscribe!!!
+						.publishOn(Schedulers.elastic())// check doOnNext1 and doOnNext2 threads
+						.doOnNext(ae -> {
+							log.debug("doOnNext2: {}", ae);
+							assertNotEquals("main", Thread.currentThread().getName());
+						})
+						.subscribe(ae -> {
+									log.debug("[subscribe] received {}", ae.getEntity().getName());
+									assertNotEquals("main", Thread.currentThread().getName());
+									// simulating ong processing
+									sneaked(() -> Thread.sleep(1000)).run();
+									newAlbums.add(ae.getEntity());
+									if (ae.getEntity().getName().equals("STOP")) {
+										albumTopic.preDestroy();
+										mainThread.interrupt();
+									}
+								},
+								t -> log.error(t.getMessage(), t),
+								() -> log.debug("completed"),
+								s -> {
+									log.debug("subscribed:\n\t{}", s);
+									// request required otherwise no event will be received!
+									s.request(Long.MAX_VALUE);
+								}
+						)
+		));
 
 		log.debug("before emission");
 		IntStream.range(1, 3).forEach(i -> albumTopic.emit(AlbumEvent.builder()
@@ -83,6 +88,7 @@ class AlbumTopicTest {
 
 		AlbumTopic albumTopic = new AlbumTopic();
 		List<Album> newAlbums = new ArrayList<>();
+		String stamp = UUID.randomUUID().toString();
 
 		Executors.newSingleThreadExecutor().submit(() -> {
 			log.debug("\n\t[newSingleThreadExecutor] begin");
@@ -101,25 +107,27 @@ class AlbumTopicTest {
 			// delays subscription in order to miss emissions
 			sneaked(() -> Thread.sleep(1000)).run();
 
-			albumTopic
-					.eventsByType(false, EnumSet.of(UPDATED))
-					.doOnNext(ae -> log.debug("doOnNext: {}", ae))// after publishOn uses publishOn
-					.doOnSubscribe(s -> log.debug("[doOnSubscribe]:\n\t{}", s))
-					.subscribe(ae -> {
-								log.debug("[subscribe] received {}", ae.getEntity().getName());
-								newAlbums.add(ae.getEntity());
-								if (ae.getEntity().getName().equals("STOP")) {
-									albumTopic.preDestroy();
-									mainThread.interrupt();
-								}
-							},
-							t -> log.error(t.getMessage(), t),
-							() -> log.debug("completed"),
-							s -> {
-								log.debug("subscribed:\n\t{}", s);
-								s.request(Long.MAX_VALUE);
-							}
-					);
+			albumTopic.register(new FilteredTypesAlbumSubscription(
+					stamp, EnumSet.of(UPDATED),
+					flux -> flux
+							.doOnNext(ae -> log.debug("doOnNext: {}", ae))
+							.doOnSubscribe(s -> log.debug("[doOnSubscribe]:\n\t{}", s))
+							.subscribe(ae -> {
+										log.debug("[subscribe] received {}", ae.getEntity().getName());
+										newAlbums.add(ae.getEntity());
+										if (ae.getEntity().getName().equals("STOP")) {
+											albumTopic.preDestroy();
+											mainThread.interrupt();
+										}
+									},
+									t -> log.error(t.getMessage(), t),
+									() -> log.debug("completed"),
+									s -> {
+										log.debug("subscribed:\n\t{}", s);
+										s.request(Long.MAX_VALUE);
+									}
+							)
+			));
 
 			log.debug("\n\t[newSingleThreadExecutor] end");
 		});

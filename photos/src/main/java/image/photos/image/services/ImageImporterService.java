@@ -35,18 +35,17 @@ public class ImageImporterService {
 	 */
 	public boolean importImageFromFile(Path imgFile, Album album) {
 		assert this.fileStoreService.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
-//		Image dbImage = this.imageRepository.findByNameAndAlbumId(imgFile.getName(), album.getId());
 		Image dbImage = this.imageQueryService.findByNameAndAlbumId(
 				this.fileStoreService.fileName(imgFile), album.getId());
 		if (dbImage == null) {
-			// not found in DB? then add it
+			// not found in DB? than add it
 			return createImageFromFile(imgFile, album);
 		}
 
 		var dbImageLastModified = dbImage.getImageMetadata().getDateTime();
 		var imageLastModifiedFromFile = this.fileStoreService.lastModifiedTime(imgFile);
 
-		// check whether image-file is updated
+		// check whether image-file is newer
 		if (imageLastModifiedFromFile > dbImageLastModified.getTime()) {
 			// extractMetadata updates thumb lastModified date too!
 			ImageMetadata updatedImageMetadata =
@@ -59,7 +58,7 @@ public class ImageImporterService {
 			return true;
 		}
 
-		// check whether thumb-file is updated
+		// check whether thumb-file is newer
 		var dbThumbLastModified = dbImage.getImageMetadata().getThumbLastModified();
 		Date thumbLastModifiedFromFile = this.thumbHelper
 				.thumbLastModified(imgFile, dbThumbLastModified);

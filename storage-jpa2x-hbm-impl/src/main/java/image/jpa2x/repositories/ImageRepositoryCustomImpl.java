@@ -13,7 +13,8 @@ import javax.persistence.PersistenceContext;
 /**
  * 4.6.1. Customizing Individual Repositories
  * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.single-repository-behavior
- * The most important part of the class name that corresponds to the fragment interface is the Impl postfix.
+ * The most important part of the class name that
+ * corresponds to the fragment interface is the Impl postfix.
  */
 @Transactional
 public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageFlagsUtils {

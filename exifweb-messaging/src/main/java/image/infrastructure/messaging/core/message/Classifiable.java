@@ -1,7 +1,10 @@
 package image.infrastructure.messaging.core.message;
 
-public interface Classifiable<T> {
-	T getType();
+/**
+ * @param <C> means message category/type
+ */
+public interface Classifiable<C> {
+	C getType();
 
-	void setType(T t);
+	void setType(C messageType);
 }

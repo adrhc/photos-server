@@ -9,8 +9,8 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @ToString
-public abstract class BaseMessage<T, I, C> implements Message<I, C> {
-	private I id;
+public abstract class BaseMessage<T, S, C> implements Message<S, C> {
+	private S stamp;
 	private C type;
 	private T entity;
 }

@@ -73,8 +73,8 @@
             https://projectlombok.org/download-edge
         -->
         <!--<lombok.version>edge-SNAPSHOT</lombok.version>-->
-        <lombok.version>1.18.8</lombok.version>
-        <lombok-maven-plugin.version>1.18.4.0</lombok-maven-plugin.version>
+        <lombok.version>1.18.10</lombok.version>
+        <lombok-maven-plugin.version>1.18.10.0</lombok-maven-plugin.version>
 
         <junit.version>4.12</junit.version>
         <junit.jupiter.version>5.3.1</junit.jupiter.version>

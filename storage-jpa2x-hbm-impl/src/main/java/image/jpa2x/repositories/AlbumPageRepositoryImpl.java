@@ -84,7 +84,6 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 
 	/**
 	 * NOW: computing lastUpdate based an all images and all related albums
-	 * todo: compute lastUpdate based only on pageNr images and related albums
 	 */
 	@Override
 	public Optional<Date> getPageLastUpdate(int pageNr, String toSearch,
