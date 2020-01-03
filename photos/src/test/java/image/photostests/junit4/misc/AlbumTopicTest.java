@@ -1,8 +1,8 @@
 package image.photostests.junit4.misc;
 
 import image.persistence.entity.Album;
-import image.photos.infrastructure.events.album.AlbumEvent;
-import image.photos.infrastructure.events.album.AlbumTopic;
+import image.photos.infrastructure.messaging.album.AlbumEvent;
+import image.photos.infrastructure.messaging.album.AlbumTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
-import static image.photos.infrastructure.events.album.AlbumEventTypeEnum.UPDATED;
+import static image.photos.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 import static image.photos.util.ThreadUtils.safeSleep;
 
 /**

@@ -58,7 +58,7 @@
         <appender-ref ref="exifweb-file"/>
     </logger>
 
-    <logger name="image.photos.infrastructure.events" additivity="false">
+    <logger name="image.photos.infrastructure.messaging" additivity="false">
         <level value="info"/>
         <appender-ref ref="console"/>
         <appender-ref ref="exifweb-file"/>

@@ -1,5 +1,6 @@
-package image.photos.infrastructure.events;
+package image.messaging.destination;
 
+import image.messaging.message.Message;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.DirectProcessor;

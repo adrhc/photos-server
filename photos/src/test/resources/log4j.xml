@@ -49,7 +49,7 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="image.photos.infrastructure.events" additivity="false">
+    <logger name="image.photos.infrastructure.messaging" additivity="false">
         <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>

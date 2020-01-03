@@ -1,4 +1,4 @@
-package image.photos.infrastructure.events.image;
+package image.photos.infrastructure.messaging.image;
 
 /**
  * Created by adr on 1/28/18.

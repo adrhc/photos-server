@@ -1,6 +1,6 @@
-package image.photos.infrastructure.events.image;
+package image.photos.infrastructure.messaging.image;
 
-import image.photos.infrastructure.events.Topic;
+import image.messaging.destination.Topic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

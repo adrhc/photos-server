@@ -3,8 +3,8 @@ package image.photos.infrastructure.database;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
-import image.photos.infrastructure.events.image.ImageEventTypeEnum;
-import image.photos.infrastructure.events.image.ImageTopic;
+import image.photos.infrastructure.messaging.image.ImageEventTypeEnum;
+import image.photos.infrastructure.messaging.image.ImageTopic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,8 +13,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 
-import static image.photos.infrastructure.events.image.ImageEvent.of;
-import static image.photos.infrastructure.events.image.ImageEventTypeEnum.*;
+import static image.photos.infrastructure.messaging.image.ImageEvent.of;
+import static image.photos.infrastructure.messaging.image.ImageEventTypeEnum.*;
 
 @Transactional
 @Service

@@ -1,7 +1,7 @@
-package image.photos.infrastructure.events.image;
+package image.photos.infrastructure.messaging.image;
 
+import image.messaging.message.BaseMessage;
 import image.persistence.entity.Image;
-import image.photos.infrastructure.events.BaseMessage;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 

@@ -1,4 +1,4 @@
-package image.photos.infrastructure.events;
+package image.messaging.message;
 
 public interface Identifiable<T> {
 	T getId();
