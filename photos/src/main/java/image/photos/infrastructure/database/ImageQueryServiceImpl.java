@@ -35,7 +35,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 * This implementation approach make sense when 2nd
 	 * level cache is set on Album.images collection!
 	 * <p>
-	 * competes with ImageRepository::findByAlbumId
+	 * competes with ImageQueryRepository.findByAlbumId
 	 */
 	@Override
 	public List<Image> getImages(Integer albumId) {
@@ -47,7 +47,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 		return images;
 	}
 
-	/**
+	/*
 	 * this implementation approach make sense only when
 	 * 2nd level cache is present on Album.images collection!
 	 * <p>

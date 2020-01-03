@@ -24,6 +24,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.EnumSet;
 
+import static image.photos.infrastructure.filestore.PathUtils.fileName;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -68,9 +69,9 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 
 	@After
 	public void afterEach() throws IOException {
-		assertTrue(this.tempDir.getFileName().toString().startsWith(this.TEMP_DIR_PREFIX));
+		assertTrue(fileName(this.tempDir).startsWith(this.TEMP_DIR_PREFIX));
 		Files.walkFileTree(this.tempDir,
-				new SimpleFileVisitor<Path>() {
+				new SimpleFileVisitor<>() {
 					@Override
 					public FileVisitResult postVisitDirectory(
 							Path dir, IOException exc) throws IOException {

@@ -16,7 +16,7 @@ public interface ImageQueryRepository {
 	 * when caching is enabled than only IDENTIFIER(s) would
 	 * be cached which would be List<Image.id> per Album
 	 * <p>
-	 * competes with ImageServiceImpl.getImages(Integer albumId)
+	 * competes with ImageQueryServiceImpl.getImages(Integer albumId)
 	 */
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Image> findByAlbumId(Integer albumId);

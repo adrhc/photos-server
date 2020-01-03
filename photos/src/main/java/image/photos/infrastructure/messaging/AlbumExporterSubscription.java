@@ -33,7 +33,7 @@ public class AlbumExporterSubscription implements AlbumSubscription {
 		disposable = flux
 				.publishOn(Schedulers.fromExecutor(this.executorService))
 				.subscribe(
-						(ae) -> exporterService.writeJsonForAlbumSafe(ae.getEntity()),
+						e -> exporterService.writeJsonForAlbumSafe(e.getEntity()),
 						t -> log.error(t.getMessage(), t));
 		return disposable;
 	}

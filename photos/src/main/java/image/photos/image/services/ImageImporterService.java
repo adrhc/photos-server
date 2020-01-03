@@ -10,6 +10,7 @@ import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -33,34 +34,33 @@ public class ImageImporterService {
 	}
 
 	/**
-	 * @return false = file no longer exists or is simply the same so no change is required
+	 * @return true = DB synced with the imgFile, false = nothing changed
 	 */
-	public boolean importImageFromFile(Path imgFile, Album album) {
+	public boolean importFromFile(Path imgFile, Album album) throws FileNotFoundException {
 		assert this.fileStoreService.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
-		Image dbImage = this.imageQueryService.findByNameAndAlbumId(
-				fileName(imgFile), album.getId());
+		Image dbImage = this.imageQueryService
+				.findByNameAndAlbumId(fileName(imgFile), album.getId());
+
+		// create the db Image-record if doesn't already exists
 		if (dbImage == null) {
-			// not found in DB? than add it
-			return createImageFromFile(imgFile, album);
+			log.debug("insert {}/{}", album.getName(), fileName(imgFile));
+			this.imageCUDService.persist(createFromFile(imgFile, album));
+			return true;
 		}
 
 		var dbImageLastModified = dbImage.getImageMetadata().getDateTime();
 		var imageLastModifiedFromFile = this.fileStoreService.lastModifiedTime(imgFile);
 
-		// check whether image-file is newer
+		// update ImageMetadata if image-file is newer
 		if (imageLastModifiedFromFile > dbImageLastModified.getTime()) {
 			// extractMetadata updates thumb lastModified date too!
 			ImageMetadata updatedImageMetadata =
 					this.exifExtractorService.extractMetadata(imgFile);
-			if (updatedImageMetadata == null) {
-				log.info("{} no longer exists!", imgFile);
-				return false;
-			}
 			this.imageCUDService.updateImageMetadata(updatedImageMetadata, dbImage.getId());
 			return true;
 		}
 
-		// check whether thumb-file is newer
+		// update thumbLastModified if thumb-file is newer
 		var dbThumbLastModified = dbImage.getImageMetadata().getThumbLastModified();
 		Date thumbLastModifiedFromFile = this.thumbHelper
 				.thumbLastModified(imgFile, dbThumbLastModified);
@@ -68,23 +68,14 @@ public class ImageImporterService {
 			this.imageCUDService.updateThumbLastModified(thumbLastModifiedFromFile, dbImage.getId());
 			return true;
 		}
-
 		return false;
 	}
 
-	private boolean createImageFromFile(Path imgFile, Album album) {
-		ImageMetadata imageMetadata = this.exifExtractorService.extractMetadata(imgFile);
-		if (imageMetadata == null) {
-			log.info("{} no longer exists!", imgFile);
-			return false;
-		}
-		String fileName = fileName(imgFile);
-		log.debug("insert {}/{}", album.getName(), fileName);
-		Image newImg = new Image();
-		newImg.setImageMetadata(imageMetadata);
-		newImg.setName(fileName);
-		newImg.setAlbum(album);
-		this.imageCUDService.persist(newImg);
-		return true;
+	private Image createFromFile(Path imgFile, Album album) throws FileNotFoundException {
+		Image image = new Image();
+		image.setImageMetadata(this.exifExtractorService.extractMetadata(imgFile));
+		image.setName(fileName(imgFile));
+		image.setAlbum(album);
+		return image;
 	}
 }

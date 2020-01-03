@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
+import static image.photos.infrastructure.filestore.PathUtils.fileName;
+
 @Component
 public class AlbumHelper {
 	private final AppConfigRepository appConfigRepository;
@@ -14,6 +16,10 @@ public class AlbumHelper {
 	public AlbumHelper(AppConfigRepository appConfigRepository, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
 		this.fileStoreService = fileStoreService;
+	}
+
+	public static String albumNameFrom(Path path) {
+		return fileName(path);
 	}
 
 	public Path albumsRoot() {
@@ -26,9 +32,5 @@ public class AlbumHelper {
 
 	public boolean isAlbumWithNoFiles(Path albumPath) {
 		return this.fileStoreService.isEmptyDir(albumPath);
-	}
-
-	public static String albumNameFrom(Path path) {
-		return path.getFileName().toString();
 	}
 }

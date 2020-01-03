@@ -1,6 +1,7 @@
 package image.photos.image.services;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.*;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -57,7 +59,7 @@ public class ExifExtractorService {
 		this.fileStoreService = fileStoreService;
 	}
 
-	public ImageMetadata extractMetadata(Path imgFile) {
+	public ImageMetadata extractMetadata(Path imgFile) throws FileNotFoundException {
 		ImageMetadata imageMetadata =
 				new ImageMetadata(new Date(this.fileStoreService.lastModifiedTime(imgFile)));
 
@@ -65,7 +67,7 @@ public class ExifExtractorService {
 			loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
 		} catch (FileNotFoundException e) {
 			// path no longer exists
-			return null;
+			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			log.error("{}: {}", parentDir(imgFile), fileName(imgFile));
@@ -89,7 +91,7 @@ public class ExifExtractorService {
 	/**
 	 * https://github.com/drewnoakes/metadata-extractor/wiki/SampleOutput
 	 */
-	private void loadExifFromImgFile(ExifData exifData, Path imgFile) throws Exception {
+	private void loadExifFromImgFile(ExifData exifData, Path imgFile) throws ImageProcessingException, IOException {
 		Metadata metadata = ImageMetadataReader.readMetadata(imgFile.toFile());
 		Directory directory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
 
@@ -134,12 +136,9 @@ public class ExifExtractorService {
 
 	private void loadDimensions(ExifData imageDimensions, Path path) {
 		try {
-//			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
-//					"/home/adr/x.sh", "image_dims", path);
 			ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 					"identify", "-format", "%[fx:w] %[fx:h]", path.toString());
 			String sDimensions = this.processRunner.getProcessOutput(identifyImgDimensions);
-//            log.debug("dimensions {} for:\n{}", dimensions, path);
 			String[] dims = sDimensions.split("\\s");
 			imageDimensions.setImageWidth(Integer.parseInt(dims[WIDTH]));
 			imageDimensions.setImageHeight(Integer.parseInt(dims[HEIGHT]));

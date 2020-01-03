@@ -1,12 +1,9 @@
 package image.photos.album.services;
 
+import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.infrastructure.messaging.album.AlbumEvent;
-import image.infrastructure.messaging.album.AlbumEventTypeEnum;
 import image.infrastructure.messaging.album.AlbumTopic;
-import image.infrastructure.messaging.image.ImageEventTypeEnum;
-import image.infrastructure.messaging.image.ImageTopic;
-import image.infrastructure.messaging.image.registration.FilteredTypesImageSubscription;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageQueryRepository;
 import image.persistence.entity.Album;
@@ -22,15 +19,20 @@ import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-import reactor.core.Disposable;
 
+import java.io.FileNotFoundException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
+import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
+import static image.photos.infrastructure.filestore.PathUtils.fileName;
 
 /**
  * Created with IntelliJ IDEA.
@@ -48,19 +50,17 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageCUDService imageCUDService;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
-	private final ImageTopic imageTopic;
 	private final AlbumPathChecks albumPathChecks;
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, ImageTopic imageTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageQueryRepository = imageQueryRepository;
 		this.imageCUDService = imageCUDService;
 		this.albumRepository = albumRepository;
 		this.albumTopic = albumTopic;
-		this.imageTopic = imageTopic;
 		this.albumPathChecks = albumPathChecks;
 		this.albumHelper = albumHelper;
 		this.fileStoreService = fileStoreService;
@@ -119,25 +119,13 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 
 		Album album = albumEvent.get().getEntity();
-		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
-		// Preparing an imageEvents-listener used to
-		// determine whether exists any image changes.
 		// When importing a new album existsAtLeast1ImageChange will
 		// always be true because we are skipping (new) empty albums.
 		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
-		// TODO: propagate stamp to importImageFromFile and deleteNotFoundImages
-		String stamp = UUID.randomUUID().toString();
-		Disposable disposable = this.imageTopic.register(
-				new FilteredTypesImageSubscription(
-						stamp, EnumSet.allOf(ImageEventTypeEnum.class),
-						flux -> flux
-								.take(1L)
-								.subscribe(event -> isAtLeast1ImageChanged.setValue(true))
-				));
 
 		// iterate and process image files
-		List<String> foundImages = new ArrayList<>();
+		List<String> foundImageFileNames = new ArrayList<>();
 		if (this.albumHelper.isAlbumWithNoFiles(path)) {
 			// existing empty album
 			log.debug("BEGIN album with no pictures:\n{}", path);
@@ -145,28 +133,28 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// take only files existing in the album's directory but not sub-directories
 			log.debug("BEGIN album has pictures:\n{}", path);
 			this.fileStoreService.walk(path, FileVisitOption.FOLLOW_LINKS)
-					.forEach(file -> {
-						if (this.imageImporterService.importImageFromFile(file, album)) {
-							foundImages.add(file.getFileName().toString());
+					.forEach(imgFile -> {
+						try {
+							isAtLeast1ImageChanged.setValue(
+									this.imageImporterService.importFromFile(imgFile, album));
+							foundImageFileNames.add(fileName(imgFile));
+						} catch (FileNotFoundException e) {
+							log.error("{} no longer exists!", imgFile);
 						}
 					});
 		}
 
-		// remove db-images having no corresponding file
+		boolean isNewAlbum = albumEvent.get().getType().equals(UPDATED);
+
 		if (!isNewAlbum) {
-			deleteNotFoundImages(foundImages, album);
+			// remove db-images having no corresponding file
+			removeImagesHavingNoFile(album, foundImageFileNames,
+					() -> isAtLeast1ImageChanged.setValue(true));
 		}
 
-		// todo: make sure to dispose even when an exception occurs
-		disposable.dispose();
-
-		// see AlbumExporterService.postConstruct
-		if (isNewAlbum) {
+		if (isNewAlbum || isAtLeast1ImageChanged.getValue()) {
+			// album event emission (see AlbumExporterSubscription)
 			this.albumTopic.emit(albumEvent.get());
-		} else if (isAtLeast1ImageChanged.getValue()) {
-			this.albumTopic.emit(AlbumEvent.builder()
-					.type(AlbumEventTypeEnum.UPDATED)
-					.entity(album).build());
 		}
 
 		sw.stop();
@@ -177,7 +165,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		Album album = this.albumRepository.findByName(albumName);
 		if (album != null) {
 			// already existing album
-			return Optional.of(AlbumEvent.builder().entity(album).build());
+			return Optional.of(AlbumEvent.of(album, UPDATED));
 		}
 		if (this.albumHelper.isAlbumWithNoFiles(this.albumHelper.absolutePathOf(albumName))) {
 			// new empty album
@@ -189,35 +177,37 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	}
 
 	/**
-	 * Cached Album is detached so can't be used as persistent as required in this method.
+	 * Album is detached so can't be used as persistent (as needed by this method).
 	 */
-	private void deleteNotFoundImages(List<String> foundImageNames, Album album) {
+	private void removeImagesHavingNoFile(Album album,
+			List<String> foundImageFileNames, Runnable dbChangedCallBack) {
 		log.debug("BEGIN {}", album.getName());
 		List<Image> images = this.imageQueryRepository.findByAlbumId(album.getId());
-//		List<Image> images = this.imageService.getImages(album.getId());
 		images.forEach(image -> {
 			String dbName = image.getName();
-			int fsNameIdx = foundImageNames.indexOf(dbName);
+			int fsNameIdx = foundImageFileNames.indexOf(dbName);
 			if (fsNameIdx >= 0) {
 				// db-image having same name as file-image
 				return;
 			}
 			String oppositeExtensionCase = this.imageHelper.changeToOppositeExtensionCase(dbName);
-			fsNameIdx = foundImageNames.indexOf(oppositeExtensionCase);
+			fsNameIdx = foundImageFileNames.indexOf(oppositeExtensionCase);
 			if (fsNameIdx >= 0) {
-				// changeName
+				// change image's name
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				this.imageCUDService.changeName(oppositeExtensionCase, image.getId());
-			} else if (areEquals(image.getFlags(), EImageStatus.DEFAULT)) {
-				// status = 0
+			} else if (areEquals(image.getFlags(), EImageStatus.DEFAULT) ||
+					image.getRating() != ImageRating.MIN_RATING) {
+				// purge image from DB
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				this.imageCUDService.safelyDeleteImage(image.getId());
 			} else {
-				// status != 0 (adica e o imagine "prelucrata")
+				// logically delete image (status != 0 means a "reviewed" image)
 				log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 				this.imageCUDService.markDeleted(image.getId());
 			}
+			dbChangedCallBack.run();
 		});
 		log.debug("END {}", album.getName());
 	}
