@@ -32,9 +32,6 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	}
 
 	/**
-	 * This implementation approach make sense when 2nd
-	 * level cache is set on Album.images collection!
-	 * <p>
 	 * competes with ImageQueryRepository.findByAlbumId
 	 */
 	@Override
@@ -48,7 +45,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	}
 
 	/*
-	 * this implementation approach make sense only when
+	 * This implementation approach makes (some) sense only when
 	 * 2nd level cache is present on Album.images collection!
 	 * <p>
 	 * competes with ImageRepository.findByNameAndAlbumId
