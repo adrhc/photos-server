@@ -2,6 +2,7 @@ package image.photos.infrastructure.database;
 
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
+import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.infrastructure.filestore.FileStoreService;
@@ -38,8 +39,9 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 */
 	@Override
 	public List<Image> getImages(Integer albumId) {
+		Album album = this.albumRepository.getById(albumId);
 		// getImages(): select * from Image where FK_ALBUM=?
-		List<Image> images = this.albumRepository.getById(albumId).getImages();
+		List<Image> images = album.getImages();
 		// just initialize the collection
 		images.size();
 		return images;
