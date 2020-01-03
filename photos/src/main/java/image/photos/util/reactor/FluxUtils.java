@@ -1,6 +1,6 @@
 package image.photos.util.reactor;
 
-import image.photos.util.concurrent.CountDownCoordinatorImpl;
+import image.photos.util.concurrent.CountDownCoordinator;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
@@ -20,7 +20,7 @@ public class FluxUtils {
 		return Flux.create(sink -> {
 			log.debug("create");
 
-			CountDownCoordinatorImpl coordinator = new CountDownCoordinatorImpl(callables.size());
+			CountDownCoordinator coordinator = new CountDownCoordinator(callables.size());
 
 			callables.forEach(c -> executorService.submit(() -> {
 				sink.next(sneak(c::call));

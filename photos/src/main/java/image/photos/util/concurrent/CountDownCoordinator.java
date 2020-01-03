@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class CountDownCoordinatorImpl {
-	protected final int COUNT;
+public class CountDownCoordinator {
 	private AtomicInteger atomicInteger;
 
-	public CountDownCoordinatorImpl(int count) {
-		this.COUNT = count;
+	public CountDownCoordinator(int count) {
 		this.atomicInteger = new AtomicInteger(count);
 	}
 
