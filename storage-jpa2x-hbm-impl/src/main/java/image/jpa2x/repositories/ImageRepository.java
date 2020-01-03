@@ -20,7 +20,7 @@ public interface ImageRepository extends ImageQueryRepository,
 	 * 2nd (same) query:
 	 * 1. select * from Image where image0_.name=? and image0_.FK_ALBUM=?
 	 * <p>
-	 * competes with ImageServiceImpl.findByNameAndAlbumId
+	 * competes with ImageQueryServiceImpl.findByNameAndAlbumId
 	 */
 	Image findByNameAndAlbumId(String name, Integer albumId);
 

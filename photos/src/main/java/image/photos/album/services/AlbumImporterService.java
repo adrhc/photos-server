@@ -199,7 +199,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			String dbName = image.getName();
 			int fsNameIdx = foundImageNames.indexOf(dbName);
 			if (fsNameIdx >= 0) {
-				// imagine existenta in DB cu acelas nume ca in file system
+				// db-image having same name as file-image
 				return;
 			}
 			String oppositeExtensionCase = this.imageHelper.changeToOppositeExtensionCase(dbName);

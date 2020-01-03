@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Path;
 import java.util.Date;
 
+import static image.photos.infrastructure.filestore.PathUtils.fileName;
+
 @Component
 @Slf4j
 public class ImageImporterService {
@@ -31,12 +33,12 @@ public class ImageImporterService {
 	}
 
 	/**
-	 * @return true = file still exists, false = file no longer exists
+	 * @return false = file no longer exists or is simply the same so no change is required
 	 */
 	public boolean importImageFromFile(Path imgFile, Album album) {
 		assert this.fileStoreService.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
 		Image dbImage = this.imageQueryService.findByNameAndAlbumId(
-				this.fileStoreService.fileName(imgFile), album.getId());
+				fileName(imgFile), album.getId());
 		if (dbImage == null) {
 			// not found in DB? than add it
 			return createImageFromFile(imgFile, album);
@@ -64,9 +66,10 @@ public class ImageImporterService {
 				.thumbLastModified(imgFile, dbThumbLastModified);
 		if (thumbLastModifiedFromFile.after(dbThumbLastModified)) {
 			this.imageCUDService.updateThumbLastModified(thumbLastModifiedFromFile, dbImage.getId());
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	private boolean createImageFromFile(Path imgFile, Album album) {
@@ -75,10 +78,11 @@ public class ImageImporterService {
 			log.info("{} no longer exists!", imgFile);
 			return false;
 		}
-		log.debug("insert {}/{}", album.getName(), this.fileStoreService.fileName(imgFile));
+		String fileName = fileName(imgFile);
+		log.debug("insert {}/{}", album.getName(), fileName);
 		Image newImg = new Image();
 		newImg.setImageMetadata(imageMetadata);
-		newImg.setName(imgFile.getFileName().toString());
+		newImg.setName(fileName);
 		newImg.setAlbum(album);
 		this.imageCUDService.persist(newImg);
 		return true;

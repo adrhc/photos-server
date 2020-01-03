@@ -22,11 +22,6 @@ public class FileStoreServiceImpl implements FileStoreService {
 	}
 
 	@Override
-	public String fileName(Path path) {
-		return PathUtils.fileName(path);
-	}
-
-	@Override
 	public boolean exists(Path path) {
 		return Files.exists(path);
 	}

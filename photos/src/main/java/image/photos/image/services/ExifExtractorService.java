@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 import static exifweb.util.MutedExceptionUtils.ignoreExc;
 import static exifweb.util.MutedExceptionUtils.safeDateParse;
+import static image.photos.infrastructure.filestore.PathUtils.fileName;
 import static image.photos.infrastructure.filestore.PathUtils.parentDir;
 
 /**
@@ -67,7 +68,7 @@ public class ExifExtractorService {
 			return null;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			log.error("{}: {}", parentDir(imgFile), this.fileStoreService.fileName(imgFile));
+			log.error("{}: {}", parentDir(imgFile), fileName(imgFile));
 		}
 
 		if (imageMetadata.getExifData().getDateTimeOriginal() == null) {

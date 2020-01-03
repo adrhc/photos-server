@@ -9,8 +9,6 @@ public interface FileStoreService {
 
 	long fileSize(Path path);
 
-	String fileName(Path path);
-
 	boolean exists(Path path);
 
 	boolean isDirectory(Path path);

@@ -14,7 +14,7 @@ public class PathUtils {
 		return sneak(() -> Files.size(path));
 	}
 
-	static String fileName(Path path) {
+	public static String fileName(Path path) {
 		return path.getFileName().toString();
 	}
 

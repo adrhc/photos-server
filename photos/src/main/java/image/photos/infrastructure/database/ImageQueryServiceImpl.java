@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static image.photos.image.helpers.ImageHelper.relativeFilePathFor;
+import static image.photos.infrastructure.filestore.PathUtils.fileName;
 
 @Service
 @Transactional
@@ -33,10 +34,11 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 * This implementation approach make sense when 2nd
 	 * level cache is set on Album.images collection!
 	 * <p>
-	 * competes with ImageRepository.findByAlbumId
+	 * competes with ImageRepository::findByAlbumId
 	 */
 	@Override
 	public List<Image> getImages(Integer albumId) {
+		// getImages(): select * from Image where FK_ALBUM=?
 		List<Image> images = this.albumRepository.getById(albumId).getImages();
 		// just initialize the collection
 		images.size();
@@ -81,7 +83,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 */
 	@Override
 	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) {
-		String nameNoExt = FilenameUtils.getBaseName(this.fileStoreService.fileName(imgFile));
+		String nameNoExt = FilenameUtils.getBaseName(fileName(imgFile));
 		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
 		long imgFileSize = this.fileStoreService.fileSize(imgFile);
 		return image.stream().anyMatch(i -> imgFileSize == fileSizeOf(i));
