@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
@@ -68,21 +70,21 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	/**
 	 * import new albums and rescan existing
 	 */
-	public List<Optional<AlbumEvent>> importAll() {
+	public List<Optional<AlbumEvent>> importAll() throws IOException {
 		return importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
 	}
 
 	/**
 	 * import new albums only
 	 */
-	public List<Optional<AlbumEvent>> importNewAlbums() {
+	public List<Optional<AlbumEvent>> importNewAlbums() throws IOException {
 		return importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
 	}
 
 	/**
 	 * import new album or rescan existing
 	 */
-	public Optional<AlbumEvent> importByAlbumName(String albumName) {
+	public Optional<AlbumEvent> importByAlbumName(String albumName) throws IOException {
 		Path path = this.albumHelper.absolutePathOf(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path);
@@ -93,13 +95,14 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	/**
 	 * Filters album paths to be imported.
 	 */
-	private List<Optional<AlbumEvent>> importFilteredFromRoot(Predicate<Path> albumsFilter) {
+	private List<Optional<AlbumEvent>> importFilteredFromRoot(Predicate<Path> albumsFilter) throws IOException {
 		List<Optional<AlbumEvent>> albumEvents = new ArrayList<>();
 		Path root = this.albumHelper.albumsRoot();
 		this.fileStoreService.walk1thLevel(root)
 				.filter(albumsFilter)
 				.sorted(Collections.reverseOrder())
-				.forEach(path -> albumEvents.add(this.importByAlbumPath(path)));
+				// todo: replace sneak() with an album-import-fail event
+				.forEach(path -> albumEvents.add(sneak(() -> this.importByAlbumPath(path))));
 		return albumEvents;
 	}
 
@@ -108,7 +111,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 *
 	 * @return true means "path/album created"
 	 */
-	private Optional<AlbumEvent> importByAlbumPath(Path path) {
+	private Optional<AlbumEvent> importByAlbumPath(Path path) throws IOException {
 		StopWatch sw = new StopWatch();
 		sw.start(path.toString());
 

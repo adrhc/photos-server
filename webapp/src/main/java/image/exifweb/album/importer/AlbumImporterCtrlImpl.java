@@ -1,6 +1,7 @@
 package image.exifweb.album.importer;
 
 import image.exifweb.web.controller.KeyValueDeferredResult;
+import image.exifweb.web.deferred.DeferredResultUtils;
 import image.exifweb.web.json.JsonStringValue;
 import image.infrastructure.messaging.album.AlbumEvent;
 import image.photos.album.services.AlbumImporterService;
@@ -25,6 +26,7 @@ import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -77,7 +79,12 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
 			// this must be blocking in order not to immediately dispose
-			var albumEvents = this.albumImporterService.importNewAlbums();
+			var albumEvents = DeferredResultUtils.getOrFail(
+					sneaked(this.albumImporterService::importNewAlbums),
+					"New albums import failed!", deferredResult);
+			if (deferredResult.isSetOrExpired()) {
+				return;
+			}
 			String names = joinAlbumNames(albumEvents);
 			logger.debug("imported albums:\n{}", names);
 			deferredResult.setResult("message", "imported albums: " + names);
@@ -86,8 +93,12 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 
 	private void importByAlbumName(String albumName,
 			KeyValueDeferredResult<String, String> deferredResult) {
-		Optional<AlbumEvent> albumEvent = AlbumImporterCtrlImpl.this
-				.albumImporterService.importByAlbumName(albumName);
+		Optional<AlbumEvent> albumEvent = DeferredResultUtils.getOrFail(
+				sneaked(() -> this.albumImporterService.importByAlbumName(albumName)),
+				albumName + "import failed!", deferredResult);
+		if (deferredResult.isSetOrExpired()) {
+			return;
+		}
 		albumEvent.ifPresentOrElse(
 				ae -> {
 					logger.debug("reimported {}", albumName);
@@ -102,8 +113,12 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	}
 
 	private void importAll(KeyValueDeferredResult<String, String> deferredResult) {
-		var albumEvents = AlbumImporterCtrlImpl.this
-				.albumImporterService.importAll();
+		var albumEvents = DeferredResultUtils.getOrFail(
+				sneaked(this.albumImporterService::importAll),
+				"New albums import failed!", deferredResult);
+		if (deferredResult.isSetOrExpired()) {
+			return;
+		}
 		String names = joinAlbumNames(albumEvents);
 		logger.debug("albums re/imported:\n{}", names);
 		deferredResult.setResult("message", REIMPORT_MSG_PATTERN

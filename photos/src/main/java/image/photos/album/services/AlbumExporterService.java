@@ -8,19 +8,23 @@ import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
+import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.status.E3ResultTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Created by adr on 1/28/18.
+ * <p>
+ * todo: change the *Safe methods way of work; see writeJsonForAlbumsPage(Consumer<IOException> errorConsumer)
  */
 @Service
 public class AlbumExporterService {
@@ -34,14 +38,16 @@ public class AlbumExporterService {
 	private final AlbumPageService albumPageService;
 	private final ObjectMapper jsonMapper;
 	private final AlbumCoverService albumCoverService;
+	private final FileStoreService fileStoreService;
 
-	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumPageRepository albumPageRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, ObjectMapper jsonMapper, AlbumCoverService albumCoverService) {
+	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumPageRepository albumPageRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, ObjectMapper jsonMapper, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
 		this.albumPageRepository = albumPageRepository;
 		this.albumRepository = albumRepository;
 		this.albumPageService = albumPageService;
 		this.jsonMapper = jsonMapper;
 		this.albumCoverService = albumCoverService;
+		this.fileStoreService = fileStoreService;
 	}
 
 	public boolean writeJsonForAlbumSafe(String name) {
@@ -82,18 +88,25 @@ public class AlbumExporterService {
 	/**
 	 * Necesara doar la debug din js/grunt fara serverul java.
 	 */
-	public boolean writeJsonForAlbumsPageSafe() {
-		File file = new File(this.appConfigRepository.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
-		file.getParentFile().mkdirs();
+	public void writeJsonForAlbumsPage(Consumer<IOException> errorConsumer) {
+		Path file = Path.of(this.appConfigRepository
+				.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
+		try {
+			fileStoreService.createDirectories(file.getParent());
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			logger.debug("failed to create directories for: {}", file.getParent());
+			errorConsumer.accept(e);
+			return;
+		}
 		List<AlbumCover> albums = this.albumCoverService.getCovers();
 		try {
-			this.jsonMapper.writeValue(file, albums);
-			return true;
+			this.jsonMapper.writeValue(file.toFile(), albums);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 			logger.debug("failed to write json for: {}", ALBUMS_PAGE_JSON);
+			errorConsumer.accept(e);
 		}
-		return false;
 	}
 
 	private void writeJsonForAlbum(Album album) throws IOException {
@@ -103,18 +116,17 @@ public class AlbumExporterService {
 		Map<String, Object> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
-		File dir = new File(this.appConfigRepository.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path),
-				album.getId().toString());
-		dir.mkdirs();
-		File file = new File(dir, "pageCount.json");
+		Path dir = Path.of(this.appConfigRepository.findValueByEnumeratedName
+				(AppConfigEnum.photos_json_FS_path), album.getId().toString());
+		fileStoreService.createDirectories(dir);
 		// write pageCount info
-		this.jsonMapper.writeValue(file, map);
+		this.jsonMapper.writeValue(dir.resolve("pageCount.json").toFile(), map);
 		for (int i = 0; i < pageCount; i++) {
 			logger.debug("write page {} asc", (i + 1));
-			this.jsonMapper.writeValue(new File(dir, "asc" + String.valueOf(i + 1) + ".json"),
+			this.jsonMapper.writeValue(dir.resolve("asc" + String.valueOf(i + 1) + ".json").toFile(),
 					this.albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
 			logger.debug("write page {} desc", (i + 1));
-			this.jsonMapper.writeValue(new File(dir, "desc" + String.valueOf(i + 1) + ".json"),
+			this.jsonMapper.writeValue(dir.resolve("desc" + String.valueOf(i + 1) + ".json").toFile(),
 					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
 		this.albumRepository.clearDirtyForAlbum(album.getId());

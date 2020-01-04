@@ -61,7 +61,12 @@ public class AlbumExporterCtrlImpl implements AlbumExporterCtrl {
 	public DeferredResult<Map<String, String>> updateJsonForAlbumsPage() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			this.albumExporterService.writeJsonForAlbumsPageSafe();
+			this.albumExporterService.writeJsonForAlbumsPage(e -> {
+				deferredResult.setResult("message", AlbumExporterService.ALBUMS_PAGE_JSON + " update failed!");
+			});
+			if (deferredResult.isSetOrExpired()) {
+				return;
+			}
 			deferredResult.setResult("message", AlbumExporterService.ALBUMS_PAGE_JSON + " updated!");
 			logger.debug("[updateJsonForAlbumsPage] END");
 		}, this.asyncExecutor);

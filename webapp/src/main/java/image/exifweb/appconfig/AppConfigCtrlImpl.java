@@ -11,7 +11,6 @@ import image.photos.config.AppConfigService;
 import image.photos.util.conversion.PhotosConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
@@ -41,24 +40,27 @@ import java.util.Map;
 @RequestMapping("/json/appconfig")
 public class AppConfigCtrlImpl {
 	private static final Logger logger = LoggerFactory.getLogger(AppConfigCtrlImpl.class);
-	@Autowired
-	private ProcessInfoService processInfoService;
-	@Autowired
-	private MailService mailService;
-	@Autowired
-	private AppConfigRepository appConfigRepository;
-	@Autowired
-	private AppConfigService appConfigService;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private ApplicationContext ac;
-	@Autowired
-	private ConversionService cs;
-	@Autowired
-	private PhotosConversionUtil photosConversionSupport;
+	private final ProcessInfoService processInfoService;
+	private final MailService mailService;
+	private final AppConfigRepository appConfigRepository;
+	private final AppConfigService appConfigService;
+	private final ObjectMapper objectMapper;
+	private final ApplicationContext ac;
+	private final ConversionService conversionService;
+	private final PhotosConversionUtil photosConversionSupport;
 	private String testRAMString = "eYAcmfLplzCjc8zBvuWXmcZ9MjyiQFwnr5ZTFmC9lhObiHR4txz00II8vFXgxpWtamROf3etqVjRvGvBreeAIe50hWjMqOURzx1V318hbOp4ixf4J8nlVVl4JfJrjqMLopTX2WiUmHajurtzfxiXbH367wY1DL43wCE78wR43LryHzEhHMscWBbHHI42pK0atakSx4XFTvoIWGsMJJn58p4HkDdvud8G0M5CxGPK4s0HQc6LDZwiVUW3BOOGuRFVPWfDj9mAiSiASxc30HfuWPOV5nkQfNDeFvWmOOd5FpGwPwVG2Ap3Xq3Yt8FSMUkd9rmWTuDV8fI1wxU6Sbo4srrzQDnpYgh4iLGv9QrG2r3Hn4qAb5EnuzRZfOMN1SuPA4MUKwdOBOfMRN5uy03EJUo631tyGT3RassGmv3Mk74EBpROhMKb93VYwYC28U26XPtATCJkq9qTuoemzXXF34ADfOVem0sal9g9NHrDonz7zbb08llPKErXqOd8gFsYbnSy7nTAAi7RJ3YYnVn2Hg1c9SNHvvy3IZZfoOFh7W1CNWuulccPQLWMYILpLxB0hekhB1x3B7TmTPcIDwKaK7manOH29MY58PIULmQZS5tfOhKyv2DpszhMtfAALYat6YV6VmvCHmafdUS2nvbmR51SIYBlH4JZSpLu83A9CxWVplqMGl1SkYMIDztIFM5FUo9iJnFokkAoFSTHctdUSOzoUzRUOttxaVS3KoTsROoG3eMN0VQLiwGuPXSKvKvObf8EhXXG1KoZw9bidjY32b2wSGa5vRajRHfKkxxAw5i3tQEf4jJjtgLKpjikLemmleQWVvcNI8QxfYmma3m7Q6lqIH071Zm8NXRNLzuhpfTBprb0JS971WApjMk6r9J7nA5qp1hjGhFbEPvoccVvvW0JzTCnpD1wNB7erHIB3gpDsGPbQR4cmd9T4ZwFrL1nMuI6Teaw8T496IYuJjMbShMLhOMq2htNVHDACYjO11xdpwNIFWjBIUMGaNgR2AEd";
 	private List<AppConfig> testRAMObjectToJson;
+
+	public AppConfigCtrlImpl(ProcessInfoService processInfoService, MailService mailService, AppConfigRepository appConfigRepository, AppConfigService appConfigService, ObjectMapper objectMapper, ApplicationContext ac, ConversionService conversionService, PhotosConversionUtil photosConversionSupport) {
+		this.processInfoService = processInfoService;
+		this.mailService = mailService;
+		this.appConfigRepository = appConfigRepository;
+		this.appConfigService = appConfigService;
+		this.objectMapper = objectMapper;
+		this.ac = ac;
+		this.conversionService = conversionService;
+		this.photosConversionSupport = photosConversionSupport;
+	}
 
 	@RequestMapping("subscribeToAsyncProcMemStats")
 	public DeferredResult<Model> subscribeToAsyncProcMemStats() {
@@ -214,7 +216,7 @@ public class AppConfigCtrlImpl {
 	@RequestMapping(value = "findByNameNotCached",
 			method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public AppConfig findByNameNotCached() {
-		return this.cs.convert(
+		return this.conversionService.convert(
 				this.appConfigRepository.findByNameNotCached("albums_path"),
 				AppConfig.class);
 	}

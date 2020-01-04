@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
+import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.conversion.PhotosConversionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 
@@ -25,16 +25,21 @@ import java.util.List;
  */
 @Service
 public class AppConfigService {
+	private final ObjectMapper objectMapper;
+	private final AppConfigRepository appConfigRepository;
+	private final PhotosConversionUtil photosConversionSupport;
+	private final FileStoreService fileStoreService;
 	@PersistenceContext
 	private EntityManager em;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private AppConfigRepository appConfigRepository;
-	@Autowired
-	private PhotosConversionUtil photosConversionSupport;
 	@Value("${app.configs.file}")
 	private String appConfigsFile;
+
+	public AppConfigService(FileStoreService fileStoreService, PhotosConversionUtil photosConversionSupport, ObjectMapper objectMapper, AppConfigRepository appConfigRepository) {
+		this.fileStoreService = fileStoreService;
+		this.photosConversionSupport = photosConversionSupport;
+		this.objectMapper = objectMapper;
+		this.appConfigRepository = appConfigRepository;
+	}
 
 	public boolean getConfigBool(AppConfigEnum name) {
 		return getConfigBool(name.getValue());
@@ -85,15 +90,15 @@ public class AppConfigService {
 	 *
 	 * @throws IOException
 	 */
-	public File writeJsonForAppConfigs() throws IOException {
-		File dir = new File(this.appConfigRepository
+	public Path writeJsonForAppConfigs() throws IOException {
+		Path dir = Path.of(this.appConfigRepository
 				.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path));
-		dir.mkdirs();
-		File file = new File(dir, this.appConfigsFile);
+		fileStoreService.createDirectories(dir);
+		Path file = dir.resolve(this.appConfigsFile);
 		List<AppConfig> appConfigs = this.appConfigRepository.findAll();
 //        logger.debug(ArrayUtils.toString(appConfigs));
 //        logger.debug("lastUpdatedAppConfigs = {}", getLastUpdatedAppConfigs());
-		this.objectMapper.writeValue(file,
+		this.objectMapper.writeValue(file.toFile(),
 				this.photosConversionSupport.cdmAppConfigsOf(appConfigs));
 		return file;
 	}

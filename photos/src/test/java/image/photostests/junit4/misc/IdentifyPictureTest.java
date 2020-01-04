@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.hamcrest.CoreMatchers.not;
@@ -28,7 +27,7 @@ public class IdentifyPictureTest {
 
 	@Before
 	public void beforeEach() {
-		assumeTrue("missing " + ITENTIFY, Files.isExecutable(Paths.get(ITENTIFY)));
+		assumeTrue("missing " + ITENTIFY, Files.isExecutable(Path.of(ITENTIFY)));
 	}
 
 	@Test

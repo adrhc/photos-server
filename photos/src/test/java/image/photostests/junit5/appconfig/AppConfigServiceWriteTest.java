@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -58,8 +59,8 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 	public void writeJsonForAppConfigs(TemporaryFolder temporaryFolder) throws IOException {
 		File dir = temporaryFolder.createDirectory("writeJsonForAppConfigs");
 		insertPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
-		File file = this.appConfigService.writeJsonForAppConfigs();
-		assertTrue(Files.isRegularFile(file.toPath()));
+		Path file = this.appConfigService.writeJsonForAppConfigs();
+		assertTrue(Files.isRegularFile(file));
 		List<image.cdm.AppConfig> appConfigsOfJson = loadCdmAppConfigsFromFile(file);
 		assertAppConfigsEquals(appConfigsOfJson, this.appConfigs);
 	}
@@ -75,8 +76,8 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 		assertFalse(cache.contains(AppConfig.class, id), "AppConfig:" + id + " already in cache!");
 	}
 
-	private List<image.cdm.AppConfig> loadCdmAppConfigsFromFile(File file) throws IOException {
-		String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+	private List<image.cdm.AppConfig> loadCdmAppConfigsFromFile(Path path) throws IOException {
+		String json = FileUtils.readFileToString(path.toFile(), StandardCharsets.UTF_8);
 		return this.photosConversionUtil.cdmAppConfigsOf(json);
 	}
 

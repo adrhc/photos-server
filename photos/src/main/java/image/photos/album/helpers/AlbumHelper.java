@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.photos.infrastructure.filestore.PathUtils.fileName;
 
 @Component
@@ -31,6 +32,6 @@ public class AlbumHelper {
 	}
 
 	public boolean isAlbumWithNoFiles(Path albumPath) {
-		return this.fileStoreService.isEmptyDir(albumPath);
+		return sneak(() -> this.fileStoreService.isEmptyDir(albumPath));
 	}
 }

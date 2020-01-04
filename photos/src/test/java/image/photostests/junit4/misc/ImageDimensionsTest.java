@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -32,7 +31,7 @@ public class ImageDimensionsTest {
 
 	@Before
 	public void beforeMethod() {
-		assumeTrue("missing " + XSH, Files.isExecutable(Paths.get(XSH)));
+		assumeTrue("missing " + XSH, Files.isExecutable(Path.of(XSH)));
 	}
 
 	@Test
