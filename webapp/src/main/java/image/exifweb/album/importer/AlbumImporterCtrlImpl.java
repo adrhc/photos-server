@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -38,35 +39,9 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	private final Executor asyncExecutor;
 	private final AlbumImporterService albumImporterService;
 	/**
-	 * Boolean = "albumName is empty?"
+	 * Boolean = "albumName has text?"
 	 */
-	private final Map<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>>
-			REIMPORT_CHOICES =
-			new HashMap<>() {{
-				put(TRUE, (albumName, deferredResult) -> {
-					Optional<AlbumEvent> albumEvent = AlbumImporterCtrlImpl.this
-							.albumImporterService.importByAlbumName(albumName);
-					albumEvent.ifPresentOrElse(
-							ae -> {
-								logger.debug("reimported {}", albumName);
-								deferredResult.setResult("message",
-										REIMPORT_MSG_PATTERN.format(new Object[]{albumEvent}));
-							},
-							() -> {
-								logger.error("{} reimport failed!", albumName);
-								deferredResult.setResult("message", albumName + " reimport failed!");
-							}
-					);
-				});
-				put(FALSE, (albumName, deferredResult) -> {
-					var albumEvents = AlbumImporterCtrlImpl.this
-							.albumImporterService.importAll();
-					String names = joinAlbumNames(albumEvents);
-					logger.debug("albums re/imported:\n{}", names);
-					deferredResult.setResult("message", REIMPORT_MSG_PATTERN
-							.format(new Object[]{"all albums (" + names + ")"}));
-				});
-			}};
+	private Map<Boolean, BiConsumer<String, KeyValueDeferredResult<String, String>>> REIMPORT_CHOICES;
 
 	public AlbumImporterCtrlImpl(Executor asyncExecutor, AlbumImporterService albumImporterService) {
 		this.asyncExecutor = asyncExecutor;
@@ -107,5 +82,42 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 			logger.debug("imported albums:\n{}", names);
 			deferredResult.setResult("message", "imported albums: " + names);
 		}, this.asyncExecutor);
+	}
+
+	private void importByAlbumName(String albumName,
+			KeyValueDeferredResult<String, String> deferredResult) {
+		Optional<AlbumEvent> albumEvent = AlbumImporterCtrlImpl.this
+				.albumImporterService.importByAlbumName(albumName);
+		albumEvent.ifPresentOrElse(
+				ae -> {
+					logger.debug("reimported {}", albumName);
+					deferredResult.setResult("message",
+							REIMPORT_MSG_PATTERN.format(new Object[]{albumEvent}));
+				},
+				() -> {
+					logger.error("{} reimport failed!", albumName);
+					deferredResult.setResult("message", albumName + " reimport failed!");
+				}
+		);
+	}
+
+	private void importAll(KeyValueDeferredResult<String, String> deferredResult) {
+		var albumEvents = AlbumImporterCtrlImpl.this
+				.albumImporterService.importAll();
+		String names = joinAlbumNames(albumEvents);
+		logger.debug("albums re/imported:\n{}", names);
+		deferredResult.setResult("message", REIMPORT_MSG_PATTERN
+				.format(new Object[]{"all albums (" + names + ")"}));
+	}
+
+	@PostConstruct
+	public void postConstruct() {
+		REIMPORT_CHOICES =
+				new HashMap<>() {{
+					put(TRUE, (albumName, deferredResult) ->
+							importByAlbumName(albumName, deferredResult));
+					put(FALSE, (albumName, deferredResult) ->
+							importAll(deferredResult));
+				}};
 	}
 }
