@@ -1,6 +1,5 @@
 package image.photos.infrastructure.filestore;
 
-import java.nio.file.FileVisitOption;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -15,5 +14,7 @@ public interface FileStoreService {
 
 	boolean isEmptyDir(Path path);
 
-	Stream<Path> walk(Path start, FileVisitOption... options);
+	Stream<Path> walk(Path start);
+
+	Stream<Path> walk1thLevel(Path start);
 }

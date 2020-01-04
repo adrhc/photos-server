@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Date;
 
 import static image.infrastructure.messaging.image.ImageEvent.of;
@@ -32,8 +30,6 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	private final ImageTopic imageTopic;
 	@Autowired
 	private TransactionalOperation transact;
-	@PersistenceContext
-	private EntityManager em;
 
 	public ImageCUDServiceImpl(ImageTopic imageTopic) {
 		this.imageTopic = imageTopic;
@@ -62,8 +58,8 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public void changeName(String newName, Integer imageId) {
 		// transaction
-		Image eventData = transact.readWrite(() -> {
-			Image image = this.em.find(Image.class, imageId);
+		Image eventData = transact.write(em -> {
+			Image image = em.find(Image.class, imageId);
 			image.setName(newName);
 			return image;
 		});
@@ -74,8 +70,8 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public void safelyDeleteImage(Integer imageId) {
 		// transaction
-		Image eventData = transact.readWrite(() -> {
-			Image image = this.em.find(Image.class, imageId);
+		Image eventData = transact.write(em -> {
+			Image image = em.find(Image.class, imageId);
 			removeAsCoverAndFromAlbumImages(image);
 			return image;
 		});
@@ -86,8 +82,8 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public void markDeleted(Integer imageId) {
 		// transaction
-		Image eventData = transact.readWrite(() -> {
-			Image image = this.em.find(Image.class, imageId);
+		Image eventData = transact.write(em -> {
+			Image image = em.find(Image.class, imageId);
 			if (image.isDeleted()) {
 				return null;
 			}
@@ -105,8 +101,8 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Transactional
 	public void updateThumbLastModified(Date thumbLastModified, Integer imageId) {
 		// transaction
-		Image eventData = transact.readWrite(() -> {
-			Image image = this.em.find(Image.class, imageId);
+		Image eventData = transact.write(em -> {
+			Image image = em.find(Image.class, imageId);
 			image.getImageMetadata().setThumbLastModified(thumbLastModified);
 			return image;
 		});
@@ -118,8 +114,8 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
 		// transaction
-		Image eventData = transact.readWrite(() -> {
-			Image image = this.em.find(Image.class, imageId);
+		Image eventData = transact.write(em -> {
+			Image image = em.find(Image.class, imageId);
 			image.setImageMetadata(imageMetadata);
 			return image;
 		});
@@ -133,8 +129,11 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public void persist(Image image) {
 		// transaction
-		this.em.persist(image);
+		Image eventData = transact.write(em -> {
+			em.persist(image);
+			return image;
+		});
 		// emission
-		this.imageTopic.emit(of(image, CREATED));
+		this.imageTopic.emit(of(eventData, CREATED));
 	}
 }

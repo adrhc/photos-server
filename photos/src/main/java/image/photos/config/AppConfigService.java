@@ -25,9 +25,8 @@ import java.util.List;
  */
 @Service
 public class AppConfigService {
-	//	private static final Logger logger = LoggerFactory.getLogger(AppConfigService.class);
 	@PersistenceContext
-	protected EntityManager em;
+	private EntityManager em;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired

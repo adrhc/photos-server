@@ -7,6 +7,7 @@ import image.persistence.entity.Image;
 import image.photos.image.helpers.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Created by adr on 2/2/18.
  */
-@Component
+@Service
 public class AlbumCoverService {
 	//	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverService.class);
 	@Autowired

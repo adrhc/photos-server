@@ -1,7 +1,7 @@
 package image.exifwebtests.page;
 
 import image.exifwebtests.config.WebInMemoryDbFilledConfig;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AlbumPageCtrlIT {
 	private MockMvc mockMvc;
 
-	@BeforeEach
+	@BeforeAll
 	void setup(WebApplicationContext wac) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}

@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 import java.io.FileNotFoundException;
-import java.nio.file.FileVisitOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +96,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private List<Optional<AlbumEvent>> importFilteredFromRoot(Predicate<Path> albumsFilter) {
 		List<Optional<AlbumEvent>> albumEvents = new ArrayList<>();
 		Path root = this.albumHelper.albumsRoot();
-		this.fileStoreService.walk(root, FileVisitOption.FOLLOW_LINKS)
+		this.fileStoreService.walk1thLevel(root)
 				.filter(albumsFilter)
 				.sorted(Collections.reverseOrder())
 				.forEach(path -> albumEvents.add(this.importByAlbumPath(path)));
@@ -137,7 +136,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		} else {
 			// take only files existing in the album's directory but not sub-directories
 			log.debug("BEGIN album has pictures:\n{}", path);
-			this.fileStoreService.walk(path, FileVisitOption.FOLLOW_LINKS)
+			this.fileStoreService.walk(path)
 					.forEach(imgFile -> {
 						try {
 							isAtLeast1ImageChanged.setValue(
@@ -149,7 +148,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					});
 		}
 
-		boolean isNewAlbum = albumEvent.get().getType().equals(UPDATED);
+		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
 		if (!isNewAlbum) {
 			// remove db-images having no corresponding file

@@ -2,6 +2,7 @@ package image.exifwebtests.jsp;
 
 import image.exifwebtests.config.WebInMemoryDbConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebInMemoryDbConfig
+@Tag("controller")
 class IndexJspControllerTest {
 	private MockMvc mockMvc;
 

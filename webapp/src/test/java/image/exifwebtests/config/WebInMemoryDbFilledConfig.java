@@ -2,7 +2,6 @@ package image.exifwebtests.config;
 
 import image.exifweb.RootConfig;
 import image.exifweb.WebConfig;
-import image.exifwebtests.apache.DBInitConfiguration;
 import image.jpa2xtests.config.profiles.InMemoryDbProfile;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;

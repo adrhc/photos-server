@@ -37,7 +37,8 @@ public class ImageImporterService {
 	 * @return true = DB synced with the imgFile, false = nothing changed
 	 */
 	public boolean importFromFile(Path imgFile, Album album) throws FileNotFoundException {
-		assert this.fileStoreService.isDirectory(imgFile) : "Wrong image file (is a directory):\n{}" + imgFile;
+		assert !this.fileStoreService.isDirectory(imgFile) :
+				"Wrong image file (is a directory):\n{}" + imgFile;
 		Image dbImage = this.imageQueryService
 				.findByNameAndAlbumId(fileName(imgFile), album.getId());
 

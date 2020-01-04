@@ -31,12 +31,22 @@
     <!--</appender>-->
 
     <logger name="image" additivity="false">
-        <level value="info"/>
+        <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="image.infrastructure.messaging.album.AlbumTopic" additivity="false">
-        <level value="info"/>
+    <logger name="image.exifweb" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="image.infrastructure" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="image.photos" additivity="false">
+        <level value="debug"/>
         <appender-ref ref="console"/>
     </logger>
 

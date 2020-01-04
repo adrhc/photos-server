@@ -2,12 +2,12 @@ package image.photos.infrastructure.filestore;
 
 import org.springframework.stereotype.Service;
 
-import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
+import static java.nio.file.FileVisitOption.FOLLOW_LINKS;
 
 @Service
 public class FileStoreServiceImpl implements FileStoreService {
@@ -37,7 +37,12 @@ public class FileStoreServiceImpl implements FileStoreService {
 	}
 
 	@Override
-	public Stream<Path> walk(Path start, FileVisitOption... options) {
-		return sneak(() -> Files.walk(start, options));
+	public Stream<Path> walk(Path start) {
+		return sneak(() -> Files.walk(start, FOLLOW_LINKS).filter(p -> !p.equals(start)));
+	}
+
+	@Override
+	public Stream<Path> walk1thLevel(Path start) {
+		return sneak(() -> Files.walk(start, 1, FOLLOW_LINKS).filter(p -> !p.equals(start)));
 	}
 }

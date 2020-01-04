@@ -1,4 +1,4 @@
-package image.exifwebtests.apache;
+package image.exifwebtests.config;
 
 import image.exifwebtests.util.PatchedDataSourceInitializer;
 import org.springframework.beans.factory.annotation.Autowired;

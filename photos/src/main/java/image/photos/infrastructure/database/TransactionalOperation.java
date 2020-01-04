@@ -3,27 +3,28 @@ package image.photos.infrastructure.database;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.function.Supplier;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Component
 public class TransactionalOperation {
+	@PersistenceContext
+	private EntityManager em;
+
 	@Transactional
-	public <T> T readWrite(Supplier<T> transaction) {
-		return transaction.get();
+	public <R> R write(Function<EntityManager, R> transaction) {
+		return transaction.apply(em);
 	}
 
 	@Transactional
-	public void readWriteWithVoidResult(Runnable transaction) {
-		transaction.run();
+	public void writeWithVoidResult(Consumer<EntityManager> transaction) {
+		transaction.accept(em);
 	}
 
 	@Transactional(readOnly = true)
-	public <T> T read(Supplier<T> transaction) {
-		return transaction.get();
-	}
-
-	@Transactional(readOnly = true)
-	public void readWithVoidResult(Runnable transaction) {
-		transaction.run();
+	public <R> R read(Function<EntityManager, R> transaction) {
+		return transaction.apply(em);
 	}
 }
