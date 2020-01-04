@@ -69,7 +69,8 @@ class AlbumImporterCtrlTest implements IAppConfigSupplier {
 				.andExpect(jsonPath("$.message")
 						.value("imported albums: " + SIMFONIA_LALELELOR));
 
-		Thread.sleep(5000);
+		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
+		Thread.sleep(2000);
 	}
 
 	private void setupPhotosPerPage() {
