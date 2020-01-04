@@ -2,12 +2,10 @@ package image.exifweb.album.importer;
 
 import image.exifweb.web.controller.KeyValueDeferredResult;
 import image.exifweb.web.json.JsonStringValue;
-import image.infrastructure.messaging.album.AlbumTopic;
-import image.infrastructure.messaging.album.registration.FilteredTypesAlbumSubscription;
+import image.infrastructure.messaging.album.AlbumEvent;
 import image.photos.album.services.AlbumImporterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -16,16 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-import reactor.core.Disposable;
 
 import java.text.MessageFormat;
-import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -37,10 +35,8 @@ import static java.lang.Boolean.TRUE;
 public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterCtrlImpl.class);
 	private static final MessageFormat REIMPORT_MSG_PATTERN = new MessageFormat("Reimported {0}");
-	@Autowired
-	private Executor asyncExecutor;
-	@Autowired
-	private AlbumImporterService albumImporterService;
+	private final Executor asyncExecutor;
+	private final AlbumImporterService albumImporterService;
 	/**
 	 * Boolean = "albumName is empty?"
 	 */
@@ -48,18 +44,41 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 			REIMPORT_CHOICES =
 			new HashMap<>() {{
 				put(TRUE, (albumName, deferredResult) -> {
-					AlbumImporterCtrlImpl.this.albumImporterService.importByAlbumName(albumName);
-					deferredResult.setResult("message",
-							REIMPORT_MSG_PATTERN.format(new Object[]{albumName}));
+					Optional<AlbumEvent> albumEvent = AlbumImporterCtrlImpl.this
+							.albumImporterService.importByAlbumName(albumName);
+					albumEvent.ifPresentOrElse(
+							ae -> {
+								logger.debug("reimported {}", albumName);
+								deferredResult.setResult("message",
+										REIMPORT_MSG_PATTERN.format(new Object[]{albumEvent}));
+							},
+							() -> {
+								logger.error("{} reimport failed!", albumName);
+								deferredResult.setResult("message", albumName + " reimport failed!");
+							}
+					);
 				});
 				put(FALSE, (albumName, deferredResult) -> {
-					AlbumImporterCtrlImpl.this.albumImporterService.importAll();
-					deferredResult.setResult("message",
-							REIMPORT_MSG_PATTERN.format(new Object[]{"all albums"}));
+					var albumEvents = AlbumImporterCtrlImpl.this
+							.albumImporterService.importAll();
+					String names = joinAlbumNames(albumEvents);
+					logger.debug("albums re/imported:\n{}", names);
+					deferredResult.setResult("message", REIMPORT_MSG_PATTERN
+							.format(new Object[]{"all albums (" + names + ")"}));
 				});
 			}};
-	@Autowired
-	private AlbumTopic albumTopic;
+
+	public AlbumImporterCtrlImpl(Executor asyncExecutor, AlbumImporterService albumImporterService) {
+		this.asyncExecutor = asyncExecutor;
+		this.albumImporterService = albumImporterService;
+	}
+
+	private static String joinAlbumNames(List<Optional<AlbumEvent>> albumEvents) {
+		return albumEvents.stream()
+				.filter(Optional::isPresent)
+				.map(e -> e.get().getEntity().getName())
+				.collect(Collectors.joining(", "));
+	}
 
 	@Override
 	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
@@ -82,31 +101,11 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
 		logger.debug("BEGIN");
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			
-			Disposable disposable = this.albumTopic.register(
-					new FilteredTypesAlbumSubscription(EnumSet.of(CREATED),
-							flux -> flux
-									.take(1L)// todo: take all new imported albums
-									.subscribe(
-											ae -> {
-												logger.debug("imported album: {}", ae.getEntity().getName());
-												deferredResult.setResult("message",
-														"imported album: " + ae.getEntity().getName());
-											},
-											t -> {
-												logger.error(t.getMessage(), t);
-												logger.error("Error while trying to import new albums!");
-											},
-											() -> deferredResult.setResult("message", "No new album to import!"))
-					));
-
 			// this must be blocking in order not to immediately dispose
-			this.albumImporterService.importNewAlbums();
-
-			// todo: make sure to dispose even when an exception occurs
-			disposable.dispose();
-
+			var albumEvents = this.albumImporterService.importNewAlbums();
+			String names = joinAlbumNames(albumEvents);
+			logger.debug("imported albums:\n{}", names);
+			deferredResult.setResult("message", "imported albums: " + names);
 		}, this.asyncExecutor);
 	}
-
 }

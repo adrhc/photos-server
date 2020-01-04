@@ -69,53 +69,58 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	/**
 	 * import new albums and rescan existing
 	 */
-	public void importAll() {
-		importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
+	public List<Optional<AlbumEvent>> importAll() {
+		return importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
 	}
 
 	/**
 	 * import new albums only
 	 */
-	public void importNewAlbums() {
-		importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
+	public List<Optional<AlbumEvent>> importNewAlbums() {
+		return importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
 	}
 
 	/**
 	 * import new album or rescan existing
 	 */
-	public void importByAlbumName(String albumName) {
+	public Optional<AlbumEvent> importByAlbumName(String albumName) {
 		Path path = this.albumHelper.absolutePathOf(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path);
 		}
-		importByAlbumPath(path);
+		return importByAlbumPath(path);
 	}
 
 	/**
 	 * Filters album paths to be imported.
 	 */
-	private void importFilteredFromRoot(Predicate<Path> albumsFilter) {
+	private List<Optional<AlbumEvent>> importFilteredFromRoot(Predicate<Path> albumsFilter) {
+		List<Optional<AlbumEvent>> albumEvents = new ArrayList<>();
 		Path root = this.albumHelper.albumsRoot();
 		this.fileStoreService.walk(root, FileVisitOption.FOLLOW_LINKS)
 				.filter(albumsFilter)
 				.sorted(Collections.reverseOrder())
-				.forEach(this::importByAlbumPath);
+				.forEach(path -> albumEvents.add(this.importByAlbumPath(path)));
+		return albumEvents;
 	}
 
 	/**
 	 * By now we already checked that path is a valid album path.
+	 *
+	 * @return true means "path/album created"
 	 */
-	private void importByAlbumPath(Path path) {
+	private Optional<AlbumEvent> importByAlbumPath(Path path) {
 		StopWatch sw = new StopWatch();
 		sw.start(path.toString());
 
 		// determine or create album
 		// path este album nou dar nu are poze
 		Optional<AlbumEvent> albumEvent = findOrCreate(albumNameFrom(path));
+
 		if (albumEvent.isEmpty()) {
-			// album nou dar gol
+			// new but empty album
 			sw.stop();
-			return;
+			return albumEvent;
 		}
 
 		Album album = albumEvent.get().getEntity();
@@ -159,6 +164,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		sw.stop();
 		log.debug("END album:\n{}\n{}", path, sw.shortSummary());
+
+		return albumEvent;
 	}
 
 	private Optional<AlbumEvent> findOrCreate(String albumName) {
