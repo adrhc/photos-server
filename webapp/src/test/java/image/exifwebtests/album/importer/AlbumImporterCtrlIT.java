@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebInMemoryDbConfig
 @Tag("controller")
-class AlbumImporterCtrlTest implements IAppConfigSupplier {
+class AlbumImporterCtrlIT implements IAppConfigSupplier {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
 	private static final String ALBUMS_ROOT = "classpath:albums-root";
 	private static final String JSON_EXPORT_ROOT = "json-root";

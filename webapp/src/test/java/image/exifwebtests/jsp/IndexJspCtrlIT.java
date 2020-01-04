@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebInMemoryDbConfig
 @Tag("controller")
-class IndexJspControllerTest {
+class IndexJspCtrlIT {
 	private MockMvc mockMvc;
 
 	@BeforeEach
