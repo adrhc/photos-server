@@ -37,7 +37,7 @@ class ApacheCtrlIT {
 				.andExpect(jsonPath("$.['stack trace']").isString());
 	}
 
-	@WithMockUser(value = "ada", roles = {"ADMIN"})
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void getApacheLog() throws Exception {
 		this.mockMvc.perform(get("/json/apache/getApacheLog")

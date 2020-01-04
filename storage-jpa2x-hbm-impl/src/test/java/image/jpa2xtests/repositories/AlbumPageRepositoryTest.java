@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static exifweb.util.MutedExceptionUtils.ignoreExc;
+import static exifweb.util.SuppressExceptionUtils.ignoreExc;
 import static image.persistence.repository.AlbumPageRepository.NULL_ALBUM_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;

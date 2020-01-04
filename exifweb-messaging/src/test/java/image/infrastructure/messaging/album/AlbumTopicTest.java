@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
-import static image.infrastructure.messaging.util.ThreadUtils.safeSleep;
+import static exifweb.util.concurrency.ThreadUtils.safeSleep;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j

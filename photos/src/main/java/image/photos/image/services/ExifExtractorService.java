@@ -23,8 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
 
-import static exifweb.util.MutedExceptionUtils.ignoreExc;
-import static exifweb.util.MutedExceptionUtils.safeDateParse;
+import static exifweb.util.SuppressExceptionUtils.ignoreExc;
+import static exifweb.util.SuppressExceptionUtils.safeDateParse;
 import static image.photos.infrastructure.filestore.PathUtils.fileName;
 import static image.photos.infrastructure.filestore.PathUtils.parentDir;
 

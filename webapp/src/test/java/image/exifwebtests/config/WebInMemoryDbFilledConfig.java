@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
 		@ContextConfiguration(classes = {WebConfig.class})
 })
 @WebAppConfiguration
-@TestPropertySource(properties = "hibernate.show_sql=false")
+@TestPropertySource(properties = {"hibernate.show_sql=false",
+		"users.file=classpath:security/exiweb-users.properties"})
 @InMemoryDbProfile
 @Tag("junit5")
 @Tag("inmemorydb")

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static exifweb.util.MutedExceptionUtils.ignoreExc;
+import static exifweb.util.SuppressExceptionUtils.ignoreExc;
 
 public abstract class ImageTestBase implements IAppConfigSupplier {
 	protected Album album;

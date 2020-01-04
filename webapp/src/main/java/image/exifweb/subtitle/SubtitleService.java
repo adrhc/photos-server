@@ -5,6 +5,7 @@ import image.photos.config.AppConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -29,8 +30,8 @@ public class SubtitleService {
 	private AppConfigService appConfigService;
 	@Autowired
 	private ApplicationContext ac;
-	private ProcessBuilder mkvExtractor =
-			new ProcessBuilder("/home/adr/subtitles-extractor-1.0-SNAPSHOT.sh");
+	@Value("${mkvExtractor}")
+	private ProcessBuilder mkvExtractor;
 	private Process mkvExtractorProcess = null;
 	private String mkvExtractorProcessFolder = null;
 	private RuntimeStatus runtimeStatus = null;

@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.ResourceUtils;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
+import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j
 class ExifExtractorServiceTest {
-	private static final String IMAGE = "classpath:20171105_130105.jpg";
+	private static final String IMAGE = "classpath:images/20171105_130105.jpg";
 	@Autowired
 	private ExifExtractorService service;
 
 	@Test
 	void extractMetadata() throws FileNotFoundException {
-		Path imagePath = Path.of(ResourceUtils.getFile(IMAGE).getAbsolutePath());
+		Path imagePath = pathOf(IMAGE);
 		log.debug("path:\n{}", imagePath);
 		ImageMetadata imageMetadata = this.service.extractMetadata(imagePath);
 		assertNotNull(imageMetadata);

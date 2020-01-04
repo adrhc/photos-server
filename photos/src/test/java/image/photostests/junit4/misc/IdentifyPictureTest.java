@@ -1,46 +1,47 @@
 package image.photostests.junit4.misc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assume.assumeTrue;
 
 @Category(MiscTestCategory.class)
+@Slf4j
 public class IdentifyPictureTest {
-	private static final Logger logger = LoggerFactory.getLogger(IdentifyPictureTest.class);
-
 	private static final String ITENTIFY = "/usr/bin/identify";
-	private static final String IMAGE = "/home/adr/Pictures/FOTO Daniela & Adrian jpeg/albums/2017-10-14 Family/20171105_130105.jpg";
+	private static final Path IMAGE = pathOf("classpath:images/20171105_130105.jpg");
 
 	@Before
 	public void beforeEach() {
-		assumeTrue("missing " + ITENTIFY, Files.isRegularFile(Paths.get(ITENTIFY)));
-		assumeTrue("missing " + IMAGE, Files.isRegularFile(Paths.get(IMAGE)));
+		assumeTrue("missing " + ITENTIFY, Files.isExecutable(Paths.get(ITENTIFY)));
 	}
 
 	@Test
 	public void identifyPictureTest() throws IOException {
-		logger.trace("PATH=" + System.getenv().get("PATH"));
-		ProcessBuilder processBuilder = new ProcessBuilder(ITENTIFY, IMAGE);
+		ProcessBuilder processBuilder = new ProcessBuilder(ITENTIFY, IMAGE.toString());
 		Process exec = processBuilder.start();
 		InputStream is = exec.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 		String sCurrentLine = br.readLine();
-		logger.debug(sCurrentLine);
+		log.debug(sCurrentLine);
 		assertThat(sCurrentLine, not(isEmptyOrNullString()));
+		assertThat(sCurrentLine,
+				containsString("20171105_130105.jpg JPEG 1152x2048 1152x2048+0+0 8-bit sRGB 1.3961MiB 0.000u 0:00"));
 	}
 } 

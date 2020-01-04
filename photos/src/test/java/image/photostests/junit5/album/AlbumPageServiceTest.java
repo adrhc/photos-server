@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static exifweb.util.MutedExceptionUtils.ignoreExc;
+import static exifweb.util.SuppressExceptionUtils.ignoreExc;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 

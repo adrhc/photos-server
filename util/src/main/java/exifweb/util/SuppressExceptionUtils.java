@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.function.Consumer;
 
 @Slf4j
-public class MutedExceptionUtils {
+public class SuppressExceptionUtils {
 	public static void ignoreExc(Runnable... runnables) {
 		Arrays.stream(runnables).forEach(r -> {
 			try {

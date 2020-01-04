@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.page.AlbumPage;
 import image.photos.JsonMapperConfig;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -13,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
+import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -30,26 +29,18 @@ import static org.hamcrest.Matchers.hasSize;
 @Category(JsonMapperConfig.class)
 public class AlbumPageJsonTest {
 	/**
-	 * jsonFile contains only default visible pictures (not hidden, personal, deleted, etc)
-	 */
-	private static final Integer IMAGE_COUNT = 10;
-	/**
 	 * 2013-04-20 Simfonia lalelelor
+	 * <p>
+	 * contains only default visible pictures (not hidden, personal, deleted, etc)
 	 */
-	private final File jsonFile =
-			new File("/home/adr/apps/opt/apache-htdocs/photos/json/10/asc1.json");
+	private static final Path asc1Json = pathOf("classpath:json/10/asc1.json");
 	@Autowired
 	private ObjectMapper mapper;
-
-	@Before
-	public void beforeEach() {
-		Assume.assumeTrue(this.jsonFile.exists());
-	}
 
 	@Test
 	public void decodeAlbumPagesJson() throws IOException {
 		List<AlbumPage> albumPages =
-				this.mapper.readValue(this.jsonFile, new TypeReference<List<AlbumPage>>() {});
-		assertThat(albumPages, hasSize(IMAGE_COUNT));
+				this.mapper.readValue(asc1Json.toFile(), new TypeReference<>() {});
+		assertThat(albumPages, hasSize(10));
 	}
 }

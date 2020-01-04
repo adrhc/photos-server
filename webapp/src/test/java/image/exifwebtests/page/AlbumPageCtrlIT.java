@@ -26,7 +26,7 @@ class AlbumPageCtrlIT {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 
-	@WithMockUser(value = "ada", roles = {"ADMIN"})
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void getAlbumPage() throws Exception {
 		this.mockMvc.perform(get("/json/page")

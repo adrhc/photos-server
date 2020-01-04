@@ -1,4 +1,4 @@
-package image.infrastructure.messaging.util;
+package exifweb.util.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
 

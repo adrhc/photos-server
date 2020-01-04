@@ -6,10 +6,10 @@ import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entitytests.IAppConfigSupplier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 @RootInMemoryDbConfig
 @Slf4j
-@Disabled
 class ApacheService3Test implements IAppConfigSupplier {
 	@Autowired
 	private ApacheService apacheService;
@@ -30,8 +29,9 @@ class ApacheService3Test implements IAppConfigSupplier {
 
 	@BeforeAll
 	void setup() {
-		ApacheService3Test.log.debug("");
-		this.appConfigRepository.persist(entityAppConfigOf("apache-log-dir", "/home/adr/apps/log"));
+		log.debug("");
+		this.appConfigRepository.persist(entityAppConfigOf("apache-log-dir",
+				pathOf("classpath:apache-logs").toString()));
 	}
 
 	@Test
