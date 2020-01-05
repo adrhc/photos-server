@@ -1,12 +1,20 @@
 package image.exifwebtests.album.importer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import image.cdm.album.page.AlbumPage;
 import image.exifwebtests.app.AppConfigFromClassPath;
 import image.exifwebtests.config.WebInMemoryDbConfig;
+import image.jpa2x.repositories.AlbumRepository;
+import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
+import image.persistence.repository.ESortType;
+import image.photos.album.services.AlbumPageService;
+import image.photos.infrastructure.filestore.FileStoreService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,9 +23,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("controller")
 class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
+	private static final int PHOTOS_PER_PAGE = 5;
 	/**
 	 * 2.20.1. The TempDirectory Extension
 	 * <p>
@@ -33,13 +45,19 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	 */
 	@TempDir
 	static Path tempDir;
+	@Autowired
+	private FileStoreService fileStoreService;
+	@Autowired
+	private AlbumRepository albumRepository;
+	@Autowired
+	private AlbumPageService albumPageService;
 	private MockMvc mockMvc;
 
 	@BeforeAll
 	void setup(WebApplicationContext wac) {
 		super.setupWithTempDir(tempDir);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		saveConfig("5", AppConfigEnum.photos_per_page);
+		saveConfig(String.valueOf(PHOTOS_PER_PAGE), AppConfigEnum.photos_per_page);
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
@@ -61,5 +79,22 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
 		Thread.sleep(2000);
+
+		// load album from DB
+		Album album = albumRepository.findByName(SIMFONIA_LALELELOR);
+		assertNotNull(album);
+
+		// read 1th asc json as List<AlbumPage>
+		List<AlbumPage> albumPages = fileStoreService.readJsonAsList(tempDir
+				.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
+		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
+
+		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)
+		albumPageService.getPage(1, ESortType.ASC, null, false, false, album.getId())
+				.forEach(fromDbAlbumPage -> {
+					// 20120.01.05: AlbumPage.thumbLastModified is excluded from serialization to JSON!
+					fromDbAlbumPage.setThumbLastModified(null);
+					assertThat(albumPages, hasItem(fromDbAlbumPage));
+				});
 	}
 }

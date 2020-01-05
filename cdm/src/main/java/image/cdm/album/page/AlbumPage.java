@@ -14,6 +14,9 @@ import java.util.Date;
  * Date: 7/12/14
  * Time: 10:52 PM
  * To change this template use File | Settings | File Templates.
+ *
+ * thumbLastModified is only used for computing thumb path
+ * (not used in angular) so it makes no sense to serialize it!
  */
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"thumbLastModified"})
 public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity {
@@ -37,6 +40,7 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 	/**
 	 * related to thumb's file change
 	 * used for thumb's url (impact browser-cache)
+	 * but not used in angular (so not save into json!)
 	 */
 	@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 	private Date thumbLastModified;
@@ -238,5 +242,57 @@ public class AlbumPage implements IImageBasicInfo, IImageDimensions, ICdmEntity 
 
 	public void setAlbumLastUpdate(Date albumLastUpdate) {
 		this.albumLastUpdate = albumLastUpdate;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		AlbumPage albumPage = (AlbumPage) o;
+
+		if (hidden != albumPage.hidden) return false;
+		if (personal != albumPage.personal) return false;
+		if (ugly != albumPage.ugly) return false;
+		if (duplicate != albumPage.duplicate) return false;
+		if (printable != albumPage.printable) return false;
+		if (imageHeight != albumPage.imageHeight) return false;
+		if (imageWidth != albumPage.imageWidth) return false;
+		if (rating != albumPage.rating) return false;
+		if (isCover != albumPage.isCover) return false;
+		if (!id.equals(albumPage.id)) return false;
+		if (!imgName.equals(albumPage.imgName)) return false;
+		if (albumName != null ? !albumName.equals(albumPage.albumName) : albumPage.albumName != null) return false;
+		if (thumbPath != null ? !thumbPath.equals(albumPage.thumbPath) : albumPage.thumbPath != null) return false;
+		if (imagePath != null ? !imagePath.equals(albumPage.imagePath) : albumPage.imagePath != null) return false;
+		if (thumbLastModified != null ? !thumbLastModified.equals(albumPage.thumbLastModified) : albumPage.thumbLastModified != null)
+			return false;
+		if (!dateTime.equals(albumPage.dateTime)) return false;
+		if (imageLastUpdate != null ? !imageLastUpdate.equals(albumPage.imageLastUpdate) : albumPage.imageLastUpdate != null)
+			return false;
+		return albumLastUpdate != null ? albumLastUpdate.equals(albumPage.albumLastUpdate) : albumPage.albumLastUpdate == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = id.hashCode();
+		result = 31 * result + imgName.hashCode();
+		result = 31 * result + (hidden ? 1 : 0);
+		result = 31 * result + (personal ? 1 : 0);
+		result = 31 * result + (ugly ? 1 : 0);
+		result = 31 * result + (duplicate ? 1 : 0);
+		result = 31 * result + (printable ? 1 : 0);
+		result = 31 * result + imageHeight;
+		result = 31 * result + imageWidth;
+		result = 31 * result + (albumName != null ? albumName.hashCode() : 0);
+		result = 31 * result + (int) rating;
+		result = 31 * result + (isCover ? 1 : 0);
+		result = 31 * result + (thumbPath != null ? thumbPath.hashCode() : 0);
+		result = 31 * result + (imagePath != null ? imagePath.hashCode() : 0);
+		result = 31 * result + (thumbLastModified != null ? thumbLastModified.hashCode() : 0);
+		result = 31 * result + dateTime.hashCode();
+		result = 31 * result + (imageLastUpdate != null ? imageLastUpdate.hashCode() : 0);
+		result = 31 * result + (albumLastUpdate != null ? albumLastUpdate.hashCode() : 0);
+		return result;
 	}
 }

@@ -1,13 +1,16 @@
 package image.photos.infrastructure.filestore;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static java.nio.file.FileVisitOption.FOLLOW_LINKS;
@@ -62,6 +65,18 @@ public class FileStoreServiceImpl implements FileStoreService {
 	public <T> void writeJson(Path path, T value) throws IOException {
 		try (OutputStream fos = Files.newOutputStream(path)) {
 			jsonMapper.writeValue(fos, value);
+		}
+	}
+
+	public <T> T readJson(Path path) throws IOException {
+		try (InputStream fis = Files.newInputStream(path)) {
+			return this.jsonMapper.readValue(fis, new TypeReference<>() {});
+		}
+	}
+
+	public <T> List<T> readJsonAsList(Path path, TypeReference<List<T>> typeReference) throws IOException {
+		try (InputStream fis = Files.newInputStream(path)) {
+			return this.jsonMapper.readValue(fis, typeReference);
 		}
 	}
 }

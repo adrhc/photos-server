@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j
-class AlbumServiceTest implements IImageAssertions {
+class AlbumRepositoryTest implements IImageAssertions {
 	private static final int IMAGE_COUNT = 5;
 	@PersistenceContext
 	protected EntityManager em;

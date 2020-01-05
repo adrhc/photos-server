@@ -22,8 +22,7 @@ public class JsonToCdmAppConfigsConverter implements Converter<String, List<AppC
 	@Override
 	public List<AppConfig> convert(String json) {
 		try {
-			return this.mapper.readValue(json, new TypeReference<List<AppConfig>>() {
-			});
+			return this.mapper.readValue(json, new TypeReference<List<AppConfig>>() {});
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 		}

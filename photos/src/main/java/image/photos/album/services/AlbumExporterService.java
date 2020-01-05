@@ -120,10 +120,10 @@ public class AlbumExporterService {
 		this.fileStoreService.writeJson(dir.resolve("pageCount.json"), map);
 		for (int i = 0; i < pageCount; i++) {
 			log.debug("write page {} asc", (i + 1));
-			this.fileStoreService.writeJson(dir.resolve("asc" + String.valueOf(i + 1) + ".json"),
+			this.fileStoreService.writeJson(dir.resolve("asc" + (i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
 			log.debug("write page {} desc", (i + 1));
-			this.fileStoreService.writeJson(dir.resolve("desc" + String.valueOf(i + 1) + ".json"),
+			this.fileStoreService.writeJson(dir.resolve("desc" + (i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
 		this.albumRepository.clearDirtyForAlbum(album.getId());
