@@ -20,4 +20,6 @@ public interface FileStoreService {
 	Stream<Path> walk1thLevel(Path start) throws IOException;
 
 	Path createDirectories(Path path) throws IOException;
+
+	<T> void writeJson(Path path, T value) throws IOException;
 }

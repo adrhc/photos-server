@@ -1,8 +1,11 @@
 package image.photos.infrastructure.filestore;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -10,7 +13,12 @@ import java.util.stream.Stream;
 import static java.nio.file.FileVisitOption.FOLLOW_LINKS;
 
 @Service
+@Slf4j
 public class FileStoreServiceImpl implements FileStoreService {
+	private final ObjectMapper jsonMapper;
+
+	public FileStoreServiceImpl(ObjectMapper jsonMapper) {this.jsonMapper = jsonMapper;}
+
 	@Override
 	public long lastModifiedTime(Path path) {
 		return PathUtils.lastModifiedTime(path);
@@ -49,5 +57,11 @@ public class FileStoreServiceImpl implements FileStoreService {
 	@Override
 	public Path createDirectories(Path path) throws IOException {
 		return Files.createDirectories(path);
+	}
+
+	public <T> void writeJson(Path path, T value) throws IOException {
+		try (OutputStream fos = Files.newOutputStream(path)) {
+			jsonMapper.writeValue(fos, value);
+		}
 	}
 }

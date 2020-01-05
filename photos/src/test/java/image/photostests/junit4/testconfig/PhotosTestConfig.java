@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({PhotosConfig.class,
-		AsyncConfig.class, ReplacerConfig.class})
+		AsyncConfig.class, ReplacementsConfig.class})
 public class PhotosTestConfig {
 }

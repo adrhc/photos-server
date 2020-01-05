@@ -1,6 +1,5 @@
 package image.photos.album.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.AppConfigRepository;
@@ -36,16 +35,14 @@ public class AlbumExporterService {
 	private final AlbumPageRepository albumPageRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumPageService albumPageService;
-	private final ObjectMapper jsonMapper;
 	private final AlbumCoverService albumCoverService;
 	private final FileStoreService fileStoreService;
 
-	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumPageRepository albumPageRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, ObjectMapper jsonMapper, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
+	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumPageRepository albumPageRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
 		this.albumPageRepository = albumPageRepository;
 		this.albumRepository = albumRepository;
 		this.albumPageService = albumPageService;
-		this.jsonMapper = jsonMapper;
 		this.albumCoverService = albumCoverService;
 		this.fileStoreService = fileStoreService;
 	}
@@ -101,7 +98,7 @@ public class AlbumExporterService {
 		}
 		List<AlbumCover> albums = this.albumCoverService.getCovers();
 		try {
-			this.jsonMapper.writeValue(file.toFile(), albums);
+			this.fileStoreService.writeJson(file, albums);
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
 			logger.debug("failed to write json for: {}", ALBUMS_PAGE_JSON);
@@ -120,13 +117,13 @@ public class AlbumExporterService {
 				(AppConfigEnum.photos_json_FS_path), album.getId().toString());
 		fileStoreService.createDirectories(dir);
 		// write pageCount info
-		this.jsonMapper.writeValue(dir.resolve("pageCount.json").toFile(), map);
+		this.fileStoreService.writeJson(dir.resolve("pageCount.json"), map);
 		for (int i = 0; i < pageCount; i++) {
 			logger.debug("write page {} asc", (i + 1));
-			this.jsonMapper.writeValue(dir.resolve("asc" + String.valueOf(i + 1) + ".json").toFile(),
+			this.fileStoreService.writeJson(dir.resolve("asc" + String.valueOf(i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
 			logger.debug("write page {} desc", (i + 1));
-			this.jsonMapper.writeValue(dir.resolve("desc" + String.valueOf(i + 1) + ".json").toFile(),
+			this.fileStoreService.writeJson(dir.resolve("desc" + String.valueOf(i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
 		this.albumRepository.clearDirtyForAlbum(album.getId());

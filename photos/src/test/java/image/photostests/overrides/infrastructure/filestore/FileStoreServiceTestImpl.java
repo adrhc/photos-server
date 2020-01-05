@@ -1,5 +1,6 @@
 package image.photostests.overrides.infrastructure.filestore;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import image.photos.infrastructure.filestore.FileStoreServiceImpl;
 
 import java.nio.file.Path;
@@ -10,6 +11,10 @@ import java.util.List;
 public class FileStoreServiceTestImpl extends FileStoreServiceImpl implements FileStoreServiceTest {
 	private List<Path> size1Path = Collections.synchronizedList(new ArrayList<>());
 	private List<Path> lastModifiedTime = Collections.synchronizedList(new ArrayList<>());
+
+	public FileStoreServiceTestImpl(ObjectMapper mapper) {
+		super(mapper);
+	}
 
 	@Override
 	public long lastModifiedTime(Path path) {

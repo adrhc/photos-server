@@ -1,14 +1,15 @@
 package image.photostests.junit4.testconfig;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photostests.overrides.infrastructure.filestore.FileStoreServiceTestImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ReplacerConfig {
+public class ReplacementsConfig {
 	@Bean
-	public FileStoreService fileStoreService() {
-		return new FileStoreServiceTestImpl();
+	public FileStoreService fileStoreService(ObjectMapper mapper) {
+		return new FileStoreServiceTestImpl(mapper);
 	}
 }
