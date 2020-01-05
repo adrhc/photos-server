@@ -5,29 +5,25 @@ import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entitytests.IAppConfigSupplier;
 import image.photos.infrastructure.database.TransactionalOperation;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.file.Path;
 
 import static exifweb.util.file.ClassPathUtils.pathOf;
-import static exifweb.util.file.ClassPathUtils.virtualPathOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 
 public abstract class AppConfigFromClassPath implements IAppConfigSupplier {
-	protected static final String ALBUMS_ROOT = "classpath:albums-root";
-	private static final String JSON_EXPORT_ROOT = "json-root";
+	private static final String ALBUMS_ROOT = "classpath:albums-root";
 	@Autowired
 	private TransactionalOperation transact;
 	@Autowired
 	private AppConfigRepository configRepository;
 
-	@BeforeAll
-	public void setup() {
+	protected void setupWithTempDir(Path tempDir) {
 		setupAlbumsRoot();
-		setupPhotosJsonPath();
+		setupPhotosJsonPath(tempDir);
 	}
 
 	@Test
@@ -36,9 +32,8 @@ public abstract class AppConfigFromClassPath implements IAppConfigSupplier {
 		assertThat(root, endsWith(ALBUMS_ROOT.substring("classpath:".length())));
 	}
 
-	private void setupPhotosJsonPath() {
-		Path jsonRoot = virtualPathOf(JSON_EXPORT_ROOT);
-		saveConfig(jsonRoot.toString(), AppConfigEnum.photos_json_FS_path);
+	private void setupPhotosJsonPath(Path tempDir) {
+		saveConfig(tempDir.toString(), AppConfigEnum.photos_json_FS_path);
 	}
 
 	private void setupAlbumsRoot() {

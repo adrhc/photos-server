@@ -6,6 +6,7 @@ import image.persistence.entity.enums.AppConfigEnum;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,7 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.instanceOf;
@@ -25,11 +26,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("controller")
 class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
+	/**
+	 * 2.20.1. The TempDirectory Extension
+	 * <p>
+	 * If you wish to retain a single reference to a temp directory across lifecycle methods and the current test method, please use field injection, by annotating a non-private instance field with @TempDir.
+	 */
+	@TempDir
+	static Path tempDir;
 	private MockMvc mockMvc;
 
 	@BeforeAll
-	void setup(WebApplicationContext wac) throws FileNotFoundException {
-		super.setup();
+	void setup(WebApplicationContext wac) {
+		super.setupWithTempDir(tempDir);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		saveConfig("5", AppConfigEnum.photos_per_page);
 	}
