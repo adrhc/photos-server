@@ -9,8 +9,7 @@ import image.persistence.repository.AlbumPageRepository;
 import image.persistence.repository.ESortType;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.status.E3ResultTypes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,11 +25,11 @@ import java.util.function.Consumer;
  * todo: change the *Safe methods way of work; see writeJsonForAlbumsPage(Consumer<IOException> errorConsumer)
  */
 @Service
+@Slf4j
 public class AlbumExporterService {
 	public static final String ALBUMS_PAGE_JSON = "albums.json";
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
-	private static final Logger logger = LoggerFactory.getLogger(AlbumExporterService.class);
 	private final AppConfigRepository appConfigRepository;
 	private final AlbumPageRepository albumPageRepository;
 	private final AlbumRepository albumRepository;
@@ -50,7 +49,7 @@ public class AlbumExporterService {
 	public boolean writeJsonForAlbumSafe(String name) {
 		Album album = this.albumRepository.findByName(name);
 		if (album == null) {
-			logger.error("Missing album: {}", name);
+			log.error("Missing album: {}", name);
 		}
 		return album != null && writeJsonForAlbumSafe(album);
 	}
@@ -60,8 +59,8 @@ public class AlbumExporterService {
 			writeJsonForAlbum(album);
 			return true;
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			logger.debug("failed to write json for: {}", album.getName());
+			log.error(e.getMessage(), e);
+			log.debug("failed to write json for: {}", album.getName());
 		}
 		return false;
 	}
@@ -91,8 +90,8 @@ public class AlbumExporterService {
 		try {
 			fileStoreService.createDirectories(file.getParent());
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			logger.debug("failed to create directories for: {}", file.getParent());
+			log.error(e.getMessage(), e);
+			log.debug("failed to create directories for: {}", file.getParent());
 			errorConsumer.accept(e);
 			return;
 		}
@@ -100,14 +99,14 @@ public class AlbumExporterService {
 		try {
 			this.fileStoreService.writeJson(file, albums);
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			logger.debug("failed to write json for: {}", ALBUMS_PAGE_JSON);
+			log.error(e.getMessage(), e);
+			log.debug("failed to write json for: {}", ALBUMS_PAGE_JSON);
 			errorConsumer.accept(e);
 		}
 	}
 
 	private void writeJsonForAlbum(Album album) throws IOException {
-		logger.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
+		log.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
 		int pageCount = this.albumPageRepository.countPages(null, false, false, album.getId());
 		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 		Map<String, Object> map = new HashMap<>();
@@ -115,18 +114,19 @@ public class AlbumExporterService {
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
 		Path dir = Path.of(this.appConfigRepository.findValueByEnumeratedName
 				(AppConfigEnum.photos_json_FS_path), album.getId().toString());
+		log.debug("export path:\n{}", dir);
 		fileStoreService.createDirectories(dir);
 		// write pageCount info
 		this.fileStoreService.writeJson(dir.resolve("pageCount.json"), map);
 		for (int i = 0; i < pageCount; i++) {
-			logger.debug("write page {} asc", (i + 1));
+			log.debug("write page {} asc", (i + 1));
 			this.fileStoreService.writeJson(dir.resolve("asc" + String.valueOf(i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
-			logger.debug("write page {} desc", (i + 1));
+			log.debug("write page {} desc", (i + 1));
 			this.fileStoreService.writeJson(dir.resolve("desc" + String.valueOf(i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
 		this.albumRepository.clearDirtyForAlbum(album.getId());
-		logger.debug("END {}", album.getName());
+		log.debug("END {}", album.getName());
 	}
 }
