@@ -144,12 +144,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration combine.self="append">
-                    <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
-                    <environmentVariables>
-                        <!-- for catching tests without proper spring profile annotation -->
-                        <spring.profiles.active>fake-profile</spring.profiles.active>
-                    </environmentVariables>
+                <configuration>
                     <!--<groups>${junit4.photos.groups}</groups>-->
                     <groups>${junit5.photos.groups}</groups>
                     <!--<properties>-->

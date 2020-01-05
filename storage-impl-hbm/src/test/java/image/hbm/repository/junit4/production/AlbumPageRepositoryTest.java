@@ -42,13 +42,13 @@ public class AlbumPageRepositoryTest {
 		logger.debug("imageCount = {}, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
 				pageCount, T1_TO_SEARCH, T1_ALBUM_ID);
-		Assert.assertTrue(pageCount == 1);
+		Assert.assertEquals(1, pageCount);
 		pageCount = this.albumPageRepository.countPages(
 				T2_TO_SEARCH, true, false, T2_ALBUM_ID);
 		logger.debug("imageCount = {}, searching {}, hidden = false, " +
 						"viewOnlyPrintable = false, albumId = {}",
 				pageCount, T2_TO_SEARCH, T2_ALBUM_ID);
-		Assert.assertTrue(pageCount == 1);
+		Assert.assertEquals(1, pageCount);
 	}
 
 	@Test

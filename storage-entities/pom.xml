@@ -37,14 +37,9 @@
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration combine.self="append">
-                    <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
-                    <environmentVariables>
-                        <!-- for catching tests without proper spring profile annotation -->
-                        <spring.profiles.active>fake-profile</spring.profiles.active>
-                    </environmentVariables>
+                <configuration>
                     <groups>${junit5.storage-entities.groups}</groups>
-                    <forkCount>0</forkCount>
+                    <!-- see parent pom for potential issues (ehcache, db) -->
                     <reuseForks>true</reuseForks>
                 </configuration>
             </plugin>

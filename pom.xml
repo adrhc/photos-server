@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>image</groupId>
     <artifactId>exifweb</artifactId>
@@ -65,9 +66,9 @@
         <net.sf.json>2.4</net.sf.json>
         <jstl.version>1.2</jstl.version>
         <commons-lang3.version>3.8.1</commons-lang3.version>
-        <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
-        <maven-surefire-report-plugin.version>3.0.0-M3</maven-surefire-report-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
+        <maven-surefire-report-plugin.version>3.0.0-M4</maven-surefire-report-plugin.version>
         <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
         <!--
             https://projectlombok.org/download-edge
@@ -76,10 +77,9 @@
         <lombok.version>1.18.10</lombok.version>
         <lombok-maven-plugin.version>1.18.10.0</lombok-maven-plugin.version>
 
-        <junit.version>4.12</junit.version>
-        <junit.jupiter.version>5.3.1</junit.jupiter.version>
-        <junit.vintage.version>${junit.jupiter.version}</junit.vintage.version>
-        <junit.platform.version>1.3.1</junit.platform.version>
+        <junit.version>4.13</junit.version>
+        <junit-jupiter.version>5.5.2</junit-jupiter.version>
+        <junit-platform-launcher.version>1.5.2</junit-platform-launcher.version>
 
         <jaxb.version>2.3.1</jaxb.version>
         <forkCount>1C</forkCount>
@@ -689,77 +689,65 @@
             <!--<scope>test</scope>-->
             <!--</dependency>-->
 
+            <!-- junit 5 -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit.jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-params</artifactId>
-                <version>${junit.jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-migrationsupport</artifactId>
-                <version>${junit.jupiter.version}</version>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-console</artifactId>
-                <version>${junit.platform.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- Only required to run tests in an IDE that bundles an older version -->
+            <!--
+                https://junit.org/junit5/docs/current/user-guide/#running-tests-ide-intellij-idea
+                
+                Only needed to run tests in a version of IntelliJ IDEA that bundles older versions
+            -->
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>${junit.platform.version}</version>
+                <version>${junit-platform-launcher.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-runner</artifactId>
-                <version>${junit.platform.version}</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-surefire-provider</artifactId>
-                <version>${junit.platform.version}</version>
-                <scope>test</scope>
-            </dependency>
-
             <dependency>
                 <groupId>org.junit.vintage</groupId>
                 <artifactId>junit-vintage-engine</artifactId>
-                <version>${junit.vintage.version}</version>
+                <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
 
+            <!-- junit 4 -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
+                <version>2.2</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.exparity</groupId>
                 <artifactId>hamcrest-date</artifactId>
-                <version>2.0.4</version>
+                <version>2.0.7</version>
                 <scope>test</scope>
             </dependency>
+            
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
@@ -772,6 +760,7 @@
                 <version>${spring-security.version}</version>
                 <scope>test</scope>
             </dependency>
+            
             <!--
                 https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite
 
@@ -783,6 +772,7 @@
                 <version>1.2.7</version>
                 <scope>test</scope>
             </dependency>
+            
             <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
             <!--<dependency>-->
             <!--<groupId>net.sf.jexample</groupId>-->
@@ -796,12 +786,14 @@
                 <version>1.0</version>
                 <scope>test</scope>
             </dependency>
+            
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.23.0</version>
+                <version>3.2.4</version>
                 <scope>test</scope>
             </dependency>
+            
             <!--
                 https://glytching.github.io/junit-extensions/
             -->
@@ -822,7 +814,7 @@
             <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.23.1-GA</version>
+                <version>3.26.0-GA</version>
                 <scope>runtime</scope>
             </dependency>
 
@@ -837,34 +829,18 @@
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-migrationsupport</artifactId>
+            <artifactId>junit-jupiter</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-console</artifactId>
-        </dependency>
+        <!-- Only needed to run tests in a version of IntelliJ IDEA that bundles older versions -->
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
@@ -1024,11 +1000,12 @@
                         <forkCount>1C</forkCount>
                         <reuseForks>false</reuseForks>
                         <disableXmlReport>false</disableXmlReport>
+                        <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
                         <environmentVariables>
                             <!-- for catching tests without proper spring profile annotation -->
                             <spring.profiles.active>fake-profile</spring.profiles.active>
                         </environmentVariables>
-                        <groups>controller</groups>
+<!--                        <groups>controller</groups>-->
                     </configuration>
                 </plugin>
 
@@ -1040,39 +1017,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
-                    <dependencies>
-                        <!--<dependency>-->
-                        <!--
-                            https://github.com/junit-team/junit5/issues/1367
-                                When you update to Surefire 2.20.0, make sure to remove your junit-platform-surefire-provider plugin dependency declaration for the surefire plugin or you will keep getting this error.
-                        -->
-                        <!--<groupId>org.junit.platform</groupId>-->
-                        <!--<artifactId>junit-platform-surefire-provider</artifactId>-->
-                        <!--<version>${junit.platform.version}</version>-->
-                        <!--</dependency>-->
-                        <dependency>
-                            <groupId>org.junit.jupiter</groupId>
-                            <artifactId>junit-jupiter-engine</artifactId>
-                            <version>${junit.jupiter.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.junit.vintage</groupId>
-                            <artifactId>junit-vintage-engine</artifactId>
-                            <version>${junit.vintage.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <!--
-                        When directly using surefire-junit47 I get:
-                            NoClassDefFoundError: org/junit/runner/notification/RunListener
-
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.maven.surefire</groupId>
-                                <artifactId>surefire-junit47</artifactId>
-                                <version>2.20.1</version>
-                            </dependency>
-                        </dependencies>
-                    -->
+                    <!-- combine.children="merge" is the default -->
                     <configuration>
                         <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
                         <!--
@@ -1125,7 +1070,7 @@
                         <!--
                             2019.05.04: it's possible to work with reuseForks = true but the tests must be
                                         prepared for this parallelism (especially those working with the DB)
-                            2019.06.01: ehcache won't work!
+                            2019.06.01: ehcache won't work with reuseForks=true!
                                         net.sf.ehcache.CacheException: Another CacheManager with
                                         same name 'in-memory' already exists in the same VM.
                         -->
@@ -1134,6 +1079,11 @@
                             maven-surefire-report-plugin needs false value
                         -->
                         <disableXmlReport>false</disableXmlReport>
+                        <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
+                        <environmentVariables>
+                            <!-- for catching tests without proper spring profile annotation -->
+                            <spring.profiles.active>fake-profile</spring.profiles.active>
+                        </environmentVariables>
                     </configuration>
                 </plugin>
 
@@ -1144,7 +1094,7 @@
                     <configuration>
                         <aggregate>true</aggregate>
                         <alwaysGenerateSurefireReport>false</alwaysGenerateSurefireReport>
-                        <showSuccess>false</showSuccess>
+                        <showSuccess>true</showSuccess>
                     </configuration>
                 </plugin>
 
@@ -1289,6 +1239,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
+                <!--
+                    https://stackoverflow.com/questions/23653625/how-to-integrate-maven-surefire-report-plugin-into-maven-site-plugin-using-repor?answertab=active#tab-top
+                -->
                 <reportSets>
                     <reportSet>
                         <id>integration-tests</id>
@@ -1326,35 +1279,6 @@
                 Requires <forkCount> usage!
             -->
             <id>db-off</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!--<argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
-                            <argLine>-Xmx512m</argLine>
-                            <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
-                            <forkCount>${forkCount}</forkCount>
-                            <!--
-                                ERROR
-                                    ExecutionException The forked VM terminated without properly saying goodbye.
-                                    VM crash or System.exit called?
-                                SOLUTION
-                                    <reuseForks>false</reuseForks>
-
-                                2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
-                                2019.05.04: it's possible to work with reuseForks = true but the tests must be
-                                            prepared for this parallelism (especially those working with the DB)
-                            -->
-                            <reuseForks>false</reuseForks>
-                            <!-- all @NotThreadSafe classes are run with a single thread! -->
-                            <!--<threadCount>4</threadCount>-->
-                            <!--<parallel>methods</parallel>-->
-                            <disableXmlReport>false</disableXmlReport>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
             <properties>
                 <!--
                     org.junit.Test.class means "no category"
@@ -1444,9 +1368,6 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
-                            <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
-                            <forkCount>1C</forkCount>
                             <!--
                                 ERROR
                                     ExecutionException The forked VM terminated without properly saying goodbye.
@@ -1457,12 +1378,11 @@
                                 2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
                                 2019.05.04: it's possible to work with reuseForks = true but the tests must be
                                             prepared for this parallelism (especially those working with the DB)
+                                2019.06.01: ehcache won't work with reuseForks=true!
+                                            net.sf.ehcache.CacheException: Another CacheManager with
+                                            same name 'in-memory' already exists in the same VM.
                             -->
                             <reuseForks>true</reuseForks>
-                            <!-- all @NotThreadSafe classes are run with a single thread! -->
-                            <!--<threadCount>4</threadCount>-->
-                            <!--<parallel>methods</parallel>-->
-                            <disableXmlReport>false</disableXmlReport>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1498,9 +1418,6 @@
                     <plugin>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
-                            <!-- @NotThreadSafe no longer matters because we are not using threads in the forked JVMs -->
-                            <forkCount>1C</forkCount>
                             <!--
                                 ERROR
                                     ExecutionException The forked VM terminated without properly saying goodbye.
@@ -1511,12 +1428,11 @@
                                 2019.05.04: reuseForks set true but might fail because of ehcache or spring ApplicationContext
                                 2019.05.04: it's possible to work with reuseForks = true but the tests must be
                                             prepared for this parallelism (especially those working with the DB)
+                                2019.06.01: ehcache won't work with reuseForks=true!
+                                            net.sf.ehcache.CacheException: Another CacheManager with
+                                            same name 'in-memory' already exists in the same VM.
                             -->
                             <reuseForks>true</reuseForks>
-                            <!-- all @NotThreadSafe classes are run with a single thread! -->
-                            <!--<threadCount>4</threadCount>-->
-                            <!--<parallel>methods</parallel>-->
-                            <disableXmlReport>false</disableXmlReport>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -1559,5 +1475,5 @@
         <!-- photos = business logic -->
         <module>photos</module>
         <module>webapp</module>
-  </modules>
+    </modules>
 </project>
