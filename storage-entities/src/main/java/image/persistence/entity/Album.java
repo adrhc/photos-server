@@ -36,7 +36,7 @@ public class Album implements Serializable {
 	 * <p>
 	 * Album dirty flag is used in GUI to highlight must-regenerate-json albums.
 	 */
-	private boolean dirty;
+	private boolean dirty = true;
 	@JsonView(AlbumViews.Images.class)
 	private List<Image> images;
 	@JsonView(AlbumViews.Cover.class)

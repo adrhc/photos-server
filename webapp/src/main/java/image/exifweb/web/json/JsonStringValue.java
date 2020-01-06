@@ -27,7 +27,7 @@ public class JsonStringValue implements Comparable<JsonStringValue>, Serializabl
 
 	@JsonIgnore
 	public Integer getValueAsInteger() {
-		return new Integer(this.value);
+		return Integer.valueOf(this.value);
 	}
 
 	@Override

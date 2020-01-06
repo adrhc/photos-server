@@ -1,7 +1,9 @@
 package image.exifwebtests.album.importer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import image.cdm.album.page.AlbumPage;
+import image.exifweb.web.json.JsonStringValue;
 import image.exifwebtests.app.AppConfigFromClassPath;
 import image.exifwebtests.config.WebInMemoryDbConfig;
 import image.jpa2x.repositories.AlbumRepository;
@@ -37,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("controller")
 class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
+	private static final String MISSING_ALBUM = "MISSING ALBUM";
 	private static final int PHOTOS_PER_PAGE = 5;
 	/**
 	 * 2.20.1. The TempDirectory Extension
@@ -45,6 +48,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	 */
 	@TempDir
 	static Path tempDir;
+	@Autowired
+	private ObjectMapper mapper;
 	@Autowired
 	private FileStoreService fileStoreService;
 	@Autowired
@@ -57,7 +62,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	void setup(WebApplicationContext wac) {
 		super.setupWithTempDir(tempDir);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		saveConfig(String.valueOf(PHOTOS_PER_PAGE), AppConfigEnum.photos_per_page);
+		this.saveConfig(String.valueOf(PHOTOS_PER_PAGE), AppConfigEnum.photos_per_page);
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
@@ -81,20 +86,41 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 		Thread.sleep(2000);
 
 		// load album from DB
-		Album album = albumRepository.findByName(SIMFONIA_LALELELOR);
+		Album album = this.albumRepository.findByName(SIMFONIA_LALELELOR);
 		assertNotNull(album);
 
 		// read 1th asc json as List<AlbumPage>
-		List<AlbumPage> albumPages = fileStoreService.readJsonAsList(tempDir
+		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(tempDir
 				.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
 		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
 
 		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)
-		albumPageService.getPage(1, ESortType.ASC, null, false, false, album.getId())
+		this.albumPageService.getPage(1, ESortType.ASC, null, false, false, album.getId())
 				.forEach(fromDbAlbumPage -> {
 					// 20120.01.05: AlbumPage.thumbLastModified is excluded from serialization to JSON!
 					fromDbAlbumPage.setThumbLastModified(null);
 					assertThat(albumPages, hasItem(fromDbAlbumPage));
 				});
+	}
+
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
+	@Test
+	void importMissingAlbum() throws Exception {
+		MvcResult mvcResult = this.mockMvc.perform(
+				post("/json/import/reImport")
+						.content(this.mapper.writeValueAsString(
+								new JsonStringValue(MISSING_ALBUM)))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(request().asyncStarted())
+				.andExpect(request().asyncResult(instanceOf(Map.class)))
+				.andReturn();
+
+		this.mockMvc.perform(asyncDispatch(mvcResult))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message")
+						.value("Reimported album: " + MISSING_ALBUM + " failed"));
 	}
 }

@@ -7,17 +7,15 @@ import image.infrastructure.messaging.album.AlbumEvent;
 import image.photos.album.services.AlbumImporterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.annotation.PostConstruct;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +27,7 @@ import java.util.stream.Collectors;
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Created by adr on 2/6/18.
@@ -37,7 +36,6 @@ import static java.lang.Boolean.TRUE;
 @RequestMapping("/json/import")
 public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumImporterCtrlImpl.class);
-	private static final MessageFormat REIMPORT_MSG_PATTERN = new MessageFormat("Reimported {0}");
 	private final Executor asyncExecutor;
 	private final AlbumImporterService albumImporterService;
 	/**
@@ -53,13 +51,23 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	private static String joinAlbumNames(List<Optional<AlbumEvent>> albumEvents) {
 		return albumEvents.stream()
 				.filter(Optional::isPresent)
-				.map(e -> e.get().getEntity().getName())
+				.map(Optional::get)
+				.map(AlbumImporterCtrlImpl::importFeedBack)
 				.collect(Collectors.joining(", "));
 	}
 
+	private static String importFeedBack(AlbumEvent event) {
+		switch (event.getType()) {
+			case FAILED_UPDATE:
+				return event.getEntity().getName() + " failed";
+			case NEW_BUT_EMPTY:
+				return event.getEntity().getName() + " is new but empty";
+		}
+		return event.getEntity().getName();
+	}
+
 	@Override
-	@RequestMapping(value = "/reImport", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/reImport", produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonStringValue json1Value) {
 		logger.debug("BEGIN {}", json1Value.getValue());
@@ -72,8 +80,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	}
 
 	@Override
-	@RequestMapping(value = "/importNewAlbumsOnly", method = RequestMethod.POST,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/importNewAlbumsOnly", produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
 	public DeferredResult<Map<String, String>> importNewAlbumsOnly() {
 		logger.debug("BEGIN");
@@ -93,21 +100,17 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 
 	private void importByAlbumName(String albumName,
 			KeyValueDeferredResult<String, String> deferredResult) {
-		Optional<AlbumEvent> albumEvent = DeferredResultUtils.getOrFail(
-				sneaked(() -> this.albumImporterService.importByAlbumName(albumName)),
-				albumName + "import failed!", deferredResult);
-		if (deferredResult.isSetOrExpired()) {
-			return;
-		}
+		Optional<AlbumEvent> albumEvent = this
+				.albumImporterService.importByAlbumName(albumName);
 		albumEvent.ifPresentOrElse(
-				ae -> {
-					logger.debug("reimported {}", albumName);
+				event -> {
+					logger.debug("{} {}", albumName, importFeedBack(event));
 					deferredResult.setResult("message",
-							REIMPORT_MSG_PATTERN.format(new Object[]{albumEvent}));
+							"Reimported album: " + importFeedBack(event));
 				},
 				() -> {
-					logger.error("{} reimport failed!", albumName);
-					deferredResult.setResult("message", albumName + " reimport failed!");
+					logger.error("{} is empty! (re)import failed!", albumName);
+					deferredResult.setResult("message", albumName + " is empty! (re)import failed!");
 				}
 		);
 	}
@@ -121,18 +124,16 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 		}
 		String names = joinAlbumNames(albumEvents);
 		logger.debug("albums re/imported:\n{}", names);
-		deferredResult.setResult("message", REIMPORT_MSG_PATTERN
-				.format(new Object[]{"all albums (" + names + ")"}));
+		deferredResult.setResult("message", "Reimported albums: " + names);
 	}
 
 	@PostConstruct
 	public void postConstruct() {
-		REIMPORT_CHOICES =
+		this.REIMPORT_CHOICES =
 				new HashMap<>() {{
-					put(TRUE, (albumName, deferredResult) ->
-							importByAlbumName(albumName, deferredResult));
-					put(FALSE, (albumName, deferredResult) ->
-							importAll(deferredResult));
+					this.put(TRUE, AlbumImporterCtrlImpl.this::importByAlbumName);
+					this.put(FALSE, (albumName, deferredResult) ->
+							AlbumImporterCtrlImpl.this.importAll(deferredResult));
 				}};
 	}
 }

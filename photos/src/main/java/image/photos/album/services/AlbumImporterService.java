@@ -30,9 +30,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
-import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
+import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 import static image.jpa2x.util.PathUtils.fileName;
 
@@ -85,12 +83,12 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	/**
 	 * import new album or rescan existing
 	 */
-	public Optional<AlbumEvent> importByAlbumName(String albumName) throws IOException {
+	public Optional<AlbumEvent> importByAlbumName(String albumName) {
 		Path path = this.albumHelper.absolutePathOf(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
-			throw new UnsupportedOperationException("Wrong album path:\n" + path);
+			return Optional.of(AlbumEvent.of(new Album(albumName), FAILED_UPDATE));
 		}
-		return this.importByAlbumPath(path);
+		return this.safelyImportByAlbumPath(path);
 	}
 
 	/**
@@ -102,9 +100,17 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		this.fileStoreService.walk1thLevel(root)
 				.filter(albumsFilter)
 				.sorted(Collections.reverseOrder())
-				// todo: replace sneak() with an album-import-fail event
-				.forEach(path -> albumEvents.add(sneak(() -> this.importByAlbumPath(path))));
+				.forEach(path -> albumEvents.add(this.safelyImportByAlbumPath(path)));
 		return albumEvents;
+	}
+
+	private Optional<AlbumEvent> safelyImportByAlbumPath(Path path) {
+		try {
+			return this.importByAlbumPath(path);
+		} catch (IOException e) {
+			return Optional.of(AlbumEvent
+					.of(new Album(albumNameFrom(path)), FAILED_UPDATE));
+		}
 	}
 
 	/**
@@ -116,14 +122,16 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		StopWatch sw = new StopWatch();
 		sw.start(path.toString());
 
+		String albumName = albumNameFrom(path);
+
 		// determine or create album
 		// path este album nou dar nu are poze
-		Optional<AlbumEvent> albumEvent = this.findOrCreateAlbum(albumNameFrom(path));
+		Optional<AlbumEvent> albumEvent = this.findOrCreateAlbum(albumName);
 
 		if (albumEvent.isEmpty()) {
 			// new but empty album
 			sw.stop();
-			return albumEvent;
+			return Optional.of(AlbumEvent.of(new Album(albumName), NEW_BUT_EMPTY));
 		}
 
 		Album album = albumEvent.get().getEntity();
@@ -192,9 +200,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// new empty album
 			return Optional.empty();
 		}
-		// creem un nou album (path aferent contine poze)
+		// create new album (contains pictures)
 		album = new Album(albumName);
-		album.setDirty(true);
 		this.albumRepository.persist(album);
 		return Optional.of(AlbumEvent.of(album, CREATED));
 	}

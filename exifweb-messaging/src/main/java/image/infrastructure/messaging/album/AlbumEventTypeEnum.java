@@ -5,5 +5,7 @@ package image.infrastructure.messaging.album;
  */
 public enum AlbumEventTypeEnum {
 	CREATED,
-	UPDATED
+	UPDATED,
+	FAILED_UPDATE,
+	NEW_BUT_EMPTY
 }

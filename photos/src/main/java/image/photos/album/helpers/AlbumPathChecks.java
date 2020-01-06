@@ -14,18 +14,21 @@ import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 public class AlbumPathChecks {
 	private final FileStoreService fileStoreService;
 	private final AlbumRepository albumRepository;
-	private final AlbumHelper albumHelper;
 
-	public AlbumPathChecks(FileStoreService fileStoreService, AlbumRepository albumRepository, AlbumHelper albumHelper) {
+	public AlbumPathChecks(FileStoreService fileStoreService, AlbumRepository albumRepository) {
 		this.fileStoreService = fileStoreService;
 		this.albumRepository = albumRepository;
-		this.albumHelper = albumHelper;
 	}
 
 	public boolean isValidAlbumPath(Path path) {
+		// missing path
+		if (!this.fileStoreService.exists(path)) {
+			log.error("Missing albumPath:\n{}", path);
+			return false;
+		}
 		// cazul in care albumPath este o poza
 		if (!this.fileStoreService.isDirectory(path)) {
-			log.error("Wrong albumPath (is a file):\n{}", path);
+			log.error("Album path is not a directory:\n{}", path);
 			return false;
 		}
 		// valid album
@@ -33,14 +36,7 @@ public class AlbumPathChecks {
 	}
 
 	public boolean isValidNewAlbumPath(Path path) {
-		if (!isValidAlbumPath(path)) {
-			return false;
-		}
-		// check for path to have files
-		if (this.albumHelper.isAlbumWithNoFiles(path)) {
-			// ne dorim sa fie album nou dar albumPath nu are poze asa ca daca
-			// ar fi intr-adevar album nou atunci nu ar avea sens sa-l import
-			log.warn("{} este gol!", path);
+		if (!this.isValidAlbumPath(path)) {
 			return false;
 		}
 		// check path for not to already be an album
