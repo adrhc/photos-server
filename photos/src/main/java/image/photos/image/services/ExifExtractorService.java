@@ -25,8 +25,6 @@ import java.util.function.Consumer;
 
 import static exifweb.util.SuppressExceptionUtils.ignoreExc;
 import static exifweb.util.SuppressExceptionUtils.safeDateParse;
-import static image.photos.infrastructure.filestore.PathUtils.fileName;
-import static image.photos.infrastructure.filestore.PathUtils.parentDir;
 
 /**
  * Created with IntelliJ IDEA.
@@ -63,6 +61,7 @@ public class ExifExtractorService {
 		ImageMetadata imageMetadata =
 				new ImageMetadata(new Date(this.fileStoreService.lastModifiedTime(imgFile)));
 
+		// EXIF loading
 		try {
 			loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
 		} catch (FileNotFoundException e) {
@@ -70,20 +69,24 @@ public class ExifExtractorService {
 			throw e;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			log.error("{}: {}", parentDir(imgFile), fileName(imgFile));
+			log.error("EXIF error:\n{}", imgFile);
 		}
 
+		// when null than set exifData.datetimeOriginal to Image's dateTime
 		if (imageMetadata.getExifData().getDateTimeOriginal() == null) {
 			imageMetadata.getExifData().setDateTimeOriginal(imageMetadata.getDateTime());
 		}
+
+		// update thumb last modified date
+		Date thumbLastModified = this.thumbHelper.thumbLastModified(
+				imgFile, imageMetadata.getDateTime());
+		imageMetadata.setThumbLastModified(thumbLastModified);
+
+		// update exifData with the Image's dimensions
 		if (imageMetadata.getExifData().getImageHeight() == 0 ||
 				imageMetadata.getExifData().getImageWidth() == 0) {
 			loadDimensions(imageMetadata.getExifData(), imgFile);
 		}
-
-		Date thumbLastModified = this.thumbHelper.thumbLastModified(
-				imgFile, imageMetadata.getDateTime());
-		imageMetadata.setThumbLastModified(thumbLastModified);
 
 		return imageMetadata;
 	}
@@ -102,7 +105,7 @@ public class ExifExtractorService {
 		directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
 		Consumer<Runnable> ignoreExcWithLog = r ->
-				ignoreExc(r, e -> log.error("EXIF error: {}", imgFile));
+				ignoreExc(r, e -> log.error("EXIF error:\n{}", imgFile));
 		ignoreExcWithLog.accept(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
@@ -143,8 +146,8 @@ public class ExifExtractorService {
 			imageDimensions.setImageWidth(Integer.parseInt(dims[WIDTH]));
 			imageDimensions.setImageHeight(Integer.parseInt(dims[HEIGHT]));
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
-			log.error("Using default dimensions: {}x{}", this.maxThumbSizeInt, this.maxThumbSizeInt);
+			log.error("Using default dimensions ({}x{}) for:\n{}",
+					this.maxThumbSizeInt, this.maxThumbSizeInt, path);
 			imageDimensions.setImageWidth(this.maxThumbSizeInt);
 			imageDimensions.setImageHeight(this.maxThumbSizeInt);
 		}
