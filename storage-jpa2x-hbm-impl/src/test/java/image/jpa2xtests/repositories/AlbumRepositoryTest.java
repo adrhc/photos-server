@@ -66,7 +66,7 @@ class AlbumRepositoryTest extends AlbumTestBase {
 	@Test
 	void clearDirtyForAlbum() {
 		Album album = this.albums.get(0);
-		this.albumRepository.clearDirtyForAlbum(album.getId());
+		this.albumRepository.clearDirty(album.getId());
 		Album dbAlbum = this.albumRepository.getById(album.getId());
 		assertFalse(dbAlbum.isDirty());
 	}

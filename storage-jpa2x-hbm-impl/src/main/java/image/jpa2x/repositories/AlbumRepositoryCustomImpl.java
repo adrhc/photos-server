@@ -42,16 +42,25 @@ public class AlbumRepositoryCustomImpl implements AlbumRepositoryCustom {
 	}
 
 	@Override
-	public boolean clearDirtyForAlbum(Integer albumId) {
+	public boolean clearDirty(Integer albumId) {
+		return this.changeDirtyFlag(false, albumId);
+	}
+
+	@Override
+	public boolean markAsDirty(Integer albumId) {
+		return this.changeDirtyFlag(true, albumId);
+	}
+
+	private boolean changeDirtyFlag(boolean dirty, Integer albumId) {
 //		logger.debug("BEGIN");
 		Album album = this.em.find(Album.class, albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
-		if (!album.isDirty()) {
-//			logger.debug("END dirty update cancelled (already false)");
+		if (album.isDirty() == dirty) {
+//			logger.debug("END dirty update cancelled (already {})", dirty);
 			return false;
 		}
-		album.setDirty(false);
-//		logger.debug("END dirty set to false, {}", sdf.format(album.getLastUpdate()));
+		album.setDirty(dirty);
+//		logger.debug("END dirty set to {}, {}", dirty, sdf.format(album.getLastUpdate()));
 		return true;
 	}
 }

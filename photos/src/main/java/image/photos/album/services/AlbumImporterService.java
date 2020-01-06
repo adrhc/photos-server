@@ -157,14 +157,22 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
+		// remove db-images having no corresponding file
 		if (!isNewAlbum) {
-			// remove db-images having no corresponding file
 			List<ImageEvent> events = this.removeImagesHavingNoFile(album, foundImageFileNames);
 			isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
 		}
 
+		// mark album as dirty
+		//
+		// Better would be to only use isAtLeast1ImageChanged() because between
+		// creation moment and here someone could clear the dirty flag!
+		if (!isNewAlbum && isAtLeast1ImageChanged.get()) {
+			this.albumRepository.markAsDirty(album.getId());
+		}
+
+		// album event emission (see AlbumExporterSubscription)
 		if (isAtLeast1ImageChanged.get()) {
-			// album event emission (see AlbumExporterSubscription)
 			this.albumTopic.emit(albumEvent.get());
 		}
 
@@ -186,6 +194,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		}
 		// creem un nou album (path aferent contine poze)
 		album = new Album(albumName);
+		album.setDirty(true);
 		this.albumRepository.persist(album);
 		return Optional.of(AlbumEvent.of(album, CREATED));
 	}

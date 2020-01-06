@@ -5,5 +5,7 @@ public interface AlbumRepositoryCustom {
 
 	boolean removeAlbumCover(Integer albumId);
 
-	boolean clearDirtyForAlbum(Integer albumId);
+	boolean clearDirty(Integer albumId);
+
+	boolean markAsDirty(Integer albumId);
 }

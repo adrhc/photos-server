@@ -51,12 +51,12 @@ public class AlbumExporterService {
 		if (album == null) {
 			log.error("Missing album: {}", name);
 		}
-		return album != null && writeJsonForAlbumSafe(album);
+		return album != null && this.writeJsonForAlbumSafe(album);
 	}
 
 	public boolean writeJsonForAlbumSafe(Album album) {
 		try {
-			writeJsonForAlbum(album);
+			this.writeJsonForAlbum(album);
 			return true;
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
@@ -69,7 +69,7 @@ public class AlbumExporterService {
 		List<Album> albums = this.albumRepository.findByDeletedFalseOrderByNameDesc();
 		boolean successForAlbum, existsFail = false, existsSuccess = false;
 		for (Album album : albums) {
-			successForAlbum = writeJsonForAlbumSafe(album);
+			successForAlbum = this.writeJsonForAlbumSafe(album);
 			existsFail = existsFail || !successForAlbum;
 			existsSuccess = existsSuccess || successForAlbum;
 		}
@@ -88,7 +88,7 @@ public class AlbumExporterService {
 		Path file = Path.of(this.appConfigRepository
 				.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path), ALBUMS_PAGE_JSON);
 		try {
-			fileStoreService.createDirectories(file.getParent());
+			this.fileStoreService.createDirectories(file.getParent());
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			log.debug("failed to create directories for: {}", file.getParent());
@@ -107,17 +107,28 @@ public class AlbumExporterService {
 
 	private void writeJsonForAlbum(Album album) throws IOException {
 		log.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
+
+		// prepare pageCount.json data
 		int pageCount = this.albumPageRepository.countPages(null, false, false, album.getId());
 		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Integer> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);
 		map.put(PHOTOS_PER_PAGE, photosPerPage);
+
+		// create export dir
 		Path dir = Path.of(this.appConfigRepository.findValueByEnumeratedName
 				(AppConfigEnum.photos_json_FS_path), album.getId().toString());
 		log.debug("export path:\n{}", dir);
-		fileStoreService.createDirectories(dir);
+		this.fileStoreService.createDirectories(dir);
+
+		// this updates the album's lastUpdate date which will no longer
+		// correspond to (asd/desc)N.json pages if put after their writes!
+		this.albumRepository.clearDirty(album.getId());
+
 		// write pageCount info
 		this.fileStoreService.writeJson(dir.resolve("pageCount.json"), map);
+
+		// write json pages
 		for (int i = 0; i < pageCount; i++) {
 			log.debug("write page {} asc", (i + 1));
 			this.fileStoreService.writeJson(dir.resolve("asc" + (i + 1) + ".json"),
@@ -126,7 +137,7 @@ public class AlbumExporterService {
 			this.fileStoreService.writeJson(dir.resolve("desc" + (i + 1) + ".json"),
 					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
-		this.albumRepository.clearDirtyForAlbum(album.getId());
+
 		log.debug("END {}", album.getName());
 	}
 }
