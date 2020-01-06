@@ -68,7 +68,7 @@ public class ImageImporterService {
 		var dbImageLastModified = image.getImageMetadata().getDateTime();
 		var imageLastModifiedFromFile = this.fileStoreService.lastModifiedTime(imgFile);
 
-		// update ImageMetadata if image-file is newer
+		// update ImageMetadata (thumbLastModified too) if image-file is newer
 		if (imageLastModifiedFromFile > dbImageLastModified.getTime()) {
 			// extractMetadata updates thumb lastModified date too!
 			ImageMetadata updatedImageMetadata =
