@@ -3,7 +3,7 @@ package image.jpa2xtests.repositories;
 import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.cdm.image.status.ImageStatus;
 import image.jpa2x.repositories.ImageRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
@@ -127,7 +127,7 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 	}
 
 	@Test
-	void changeStatus(@Random EImageStatus status) {
+	void changeStatus(@Random ImageFlagEnum status) {
 		Image image = this.album.getImages().get(0);
 		ImageStatus imageStatus = new ImageStatus(image.getId(), status.getValueAsByte());
 		log.debug("*** imageRepository.changeStatus ***");

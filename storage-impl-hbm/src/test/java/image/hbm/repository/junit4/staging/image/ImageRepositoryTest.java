@@ -1,7 +1,7 @@
 package image.hbm.repository.junit4.staging.image;
 
 import image.cdm.image.ImageRating;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.cdm.image.status.ImageStatus;
 import image.hbm.repository.junit4.staging.album.AlbumRepoWriteTestBase;
 import image.hbm.repository.springconfig.HbmStageJdbcDbConfig;
@@ -54,9 +54,9 @@ public class ImageRepositoryTest extends AlbumRepoWriteTestBase
 
 	@Test
 	public void changeStatus() {
-		EImageStatus newStatus = EImageStatus.DEFAULT;
+		ImageFlagEnum newStatus = ImageFlagEnum.DEFAULT;
 		if (areEquals(this.image.getFlags(), newStatus)) {
-			newStatus = EImageStatus.PRINTABLE;
+			newStatus = ImageFlagEnum.PRINTABLE;
 		}
 		boolean changed = this.imageRepository.changeStatus(new ImageStatus(
 				this.imageId, newStatus.getValueAsByte()));

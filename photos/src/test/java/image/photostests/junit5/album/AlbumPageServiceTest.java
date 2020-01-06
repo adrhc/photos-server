@@ -3,7 +3,7 @@ package image.photostests.junit5.album;
 import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.AppConfigRepository;
 import image.persistence.entity.Album;
@@ -55,11 +55,11 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	void beforeAll1() {
 		this.specialAlbum.getImages().forEach(i -> {
 			i.setAlbum(this.specialAlbum);
-			i.setFlags(of(EImageStatus.DEFAULT));
+			i.setFlags(of(ImageFlagEnum.DEFAULT));
 		});
-		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
+		this.hiddenImage.setFlags(of(ImageFlagEnum.HIDDEN));
 		this.specialAlbum.addImage(this.hiddenImage);
-		this.printableImage.setFlags(of(EImageStatus.PRINTABLE));
+		this.printableImage.setFlags(of(ImageFlagEnum.PRINTABLE));
 		this.specialAlbum.addImage(this.printableImage);
 		this.albumRepository.persist(this.specialAlbum);
 	}
@@ -70,9 +70,9 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 		this.albums.forEach(a -> {
 			a.addImages(randomInstanceList(randomPositiveInt(1, MAX_IMAGES_FOR_ALBUM), false, Image.class));
 		});
-		// set EImageStatus.DEFAULT for all images
+		// set ImageFlagEnum.DEFAULT for all images
 		this.albums.stream().map(Album::getImages).flatMap(List<Image>::stream)
-				.forEach(i -> i.setFlags(of(EImageStatus.DEFAULT)));
+				.forEach(i -> i.setFlags(of(ImageFlagEnum.DEFAULT)));
 		// insert albums
 		this.albums.forEach(this.albumRepository::persist);
 		// create photos_per_page app config

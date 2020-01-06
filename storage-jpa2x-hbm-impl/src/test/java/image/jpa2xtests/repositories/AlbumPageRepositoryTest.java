@@ -2,7 +2,7 @@ package image.jpa2xtests.repositories;
 
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.AppConfigRepository;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
@@ -55,22 +55,22 @@ class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils {
 	void beforeAll(@Random(type = Image.class, size = 50, excludes = {"id", "lastUpdate",
 			"deleted", "album"}) Stream<Image> imageStream,
 			@Random(excludes = {"id", "lastUpdate", "deleted", "images"}) Album album) {
-		// images: deleted = false, status = EImageStatus.DEFAULT
+		// images: deleted = false, status = ImageFlagEnum.DEFAULT
 		List<Image> images = imageStream
 				.peek(i -> i.setAlbum(album))
 				.collect(Collectors.toList());
 		// all status types available
-		Stream.of(EImageStatus.values())
+		Stream.of(ImageFlagEnum.values())
 				.forEach(e -> images.get(10 + e.ordinal()).setFlags(of(e)));
 		// one deleted image
 		images.get(1).setDeleted(true);
 		images.get(2).setDeleted(false);
 		images.get(2).setName(this.T1_TO_SEARCH);
-		images.get(2).setFlags(of(EImageStatus.DEFAULT));
+		images.get(2).setFlags(of(ImageFlagEnum.DEFAULT));
 		this.hiddenImage = images.get(3);
-		this.hiddenImage.setFlags(of(EImageStatus.HIDDEN));
+		this.hiddenImage.setFlags(of(ImageFlagEnum.HIDDEN));
 		images.get(4).setDeleted(false);
-		images.get(4).setFlags(of(EImageStatus.PRINTABLE));
+		images.get(4).setFlags(of(ImageFlagEnum.PRINTABLE));
 		// album cover
 		album.setCover(images.get(0));
 		album.addImages(images);

@@ -1,7 +1,7 @@
 package image.photos.album.services;
 
 import image.cdm.image.ImageRating;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.infrastructure.messaging.album.AlbumEvent;
 import image.infrastructure.messaging.album.AlbumTopic;
 import image.infrastructure.messaging.image.ImageEvent;
@@ -195,28 +195,31 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private void removeImagesHavingNoFile(Album album,
 			List<String> foundImageFileNames, Runnable dbChangedCallBack) {
 		log.debug("BEGIN {}", album.getName());
+		// loading images from DB
 		List<Image> images = this.imageQueryRepository.findByAlbumId(album.getId());
+		// iterating images
 		images.forEach(image -> {
 			String dbName = image.getName();
 			int fsNameIdx = foundImageFileNames.indexOf(dbName);
 			if (fsNameIdx >= 0) {
-				// db-image having same name as file-image
+				// db-image exists with name the same as image-fileName
 				return;
 			}
 			String oppositeExtensionCase = this.imageHelper.changeToOppositeExtensionCase(dbName);
+			// finding with the opposite extension case
 			fsNameIdx = foundImageFileNames.indexOf(oppositeExtensionCase);
 			if (fsNameIdx >= 0) {
-				// change image's name
+				// found: update db-image name
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
 				this.imageCUDService.changeName(oppositeExtensionCase, image.getId());
-			} else if (areEquals(image.getFlags(), EImageStatus.DEFAULT) ||
+			} else if (areEquals(image.getFlags(), ImageFlagEnum.DEFAULT) ||
 					image.getRating() != ImageRating.MIN_RATING) {
-				// purge image from DB
+				// not found (flags & rating not changed): purge image from DB
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
 				this.imageCUDService.safelyDeleteImage(image.getId());
 			} else {
-				// logically delete image (status != 0 means a "reviewed" image)
+				// not found (flags or rating changed): logically delete image
 				log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
 				this.imageCUDService.markDeleted(image.getId());
 			}

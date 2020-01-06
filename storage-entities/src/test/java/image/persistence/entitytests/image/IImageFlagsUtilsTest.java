@@ -1,6 +1,6 @@
 package image.persistence.entitytests.image;
 
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
 import image.persistence.entitytests.testconfig.Junit5MiscNoSpringConfig;
@@ -16,16 +16,16 @@ import java.util.Arrays;
 class IImageFlagsUtilsTest implements IImageFlagsUtils {
 	@Test
 	void ofEImageStatus() {
-		Assertions.assertEquals(of(EImageStatus.DEFAULT), new ImageFlags());
+		Assertions.assertEquals(of(ImageFlagEnum.DEFAULT), new ImageFlags());
 	}
 
 	@Nested
 	class OfCombinedFlagsTest implements IImageFlagsUtils {
-		private byte allFlags = (byte) Arrays.stream(EImageStatus.values()).mapToInt(EImageStatus::getValue).sum();
-		private byte noFlag = EImageStatus.DEFAULT.getValueAsByte();
-		private byte hidden = EImageStatus.HIDDEN.getValueAsByte();
+		private byte allFlags = (byte) Arrays.stream(ImageFlagEnum.values()).mapToInt(ImageFlagEnum::getValue).sum();
+		private byte noFlag = ImageFlagEnum.DEFAULT.getValueAsByte();
+		private byte hidden = ImageFlagEnum.HIDDEN.getValueAsByte();
 		private byte hiddenAndPersonal =
-				(byte) (EImageStatus.HIDDEN.getValueAsByte() + EImageStatus.PERSONAL.getValueAsByte());
+				(byte) (ImageFlagEnum.HIDDEN.getValueAsByte() + ImageFlagEnum.PERSONAL.getValueAsByte());
 
 		@Test
 		void of() {
@@ -78,31 +78,31 @@ class IImageFlagsUtilsTest implements IImageFlagsUtils {
 		@Test
 		void areEqualsDUPLICATE() {
 			this.imageFlags.setHidden(true);
-			areEquals(this.imageFlags, EImageStatus.DUPLICATE);
+			areEquals(this.imageFlags, ImageFlagEnum.DUPLICATE);
 		}
 
 		@Test
 		void areEqualsHIDDEN() {
 			this.imageFlags.setHidden(true);
-			areEquals(this.imageFlags, EImageStatus.HIDDEN);
+			areEquals(this.imageFlags, ImageFlagEnum.HIDDEN);
 		}
 
 		@Test
 		void areEqualsPERSONAL() {
 			this.imageFlags.setHidden(true);
-			areEquals(this.imageFlags, EImageStatus.PERSONAL);
+			areEquals(this.imageFlags, ImageFlagEnum.PERSONAL);
 		}
 
 		@Test
 		void areEqualsPRINTABLE() {
 			this.imageFlags.setHidden(true);
-			areEquals(this.imageFlags, EImageStatus.PRINTABLE);
+			areEquals(this.imageFlags, ImageFlagEnum.PRINTABLE);
 		}
 
 		@Test
 		void areEqualsUGLY() {
 			this.imageFlags.setHidden(true);
-			areEquals(this.imageFlags, EImageStatus.UGLY);
+			areEquals(this.imageFlags, ImageFlagEnum.UGLY);
 		}
 	}
 }

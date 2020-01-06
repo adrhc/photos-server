@@ -1,10 +1,10 @@
 package image.persistence.entity.image;
 
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 
 public interface IImageFlagsUtils {
-	default boolean areEquals(ImageFlags imageFlags, EImageStatus eImageStatus) {
-		switch (eImageStatus) {
+	default boolean areEquals(ImageFlags imageFlags, ImageFlagEnum imageFlagEnum) {
+		switch (imageFlagEnum) {
 			case DEFAULT:
 				return !imageFlags.isDuplicate() && !imageFlags.isHidden() &&
 						!imageFlags.isPersonal() && !imageFlags.isPrintable() && !imageFlags.isUgly();
@@ -28,9 +28,9 @@ public interface IImageFlagsUtils {
 		}
 	}
 
-	default ImageFlags of(EImageStatus eImageStatus) {
+	default ImageFlags of(ImageFlagEnum imageFlagEnum) {
 		ImageFlags imageFlags = new ImageFlags();
-		switch (eImageStatus) {
+		switch (imageFlagEnum) {
 			case DEFAULT:
 				break;
 			case DUPLICATE:
@@ -57,15 +57,15 @@ public interface IImageFlagsUtils {
 	default ImageFlags of(byte combinedFlags) {
 		ImageFlags imageFlags = new ImageFlags();
 		imageFlags.setDuplicate((combinedFlags &
-				EImageStatus.DUPLICATE.getValue()) == EImageStatus.DUPLICATE.getValue());
+				ImageFlagEnum.DUPLICATE.getValue()) == ImageFlagEnum.DUPLICATE.getValue());
 		imageFlags.setHidden((combinedFlags &
-				EImageStatus.HIDDEN.getValue()) == EImageStatus.HIDDEN.getValue());
+				ImageFlagEnum.HIDDEN.getValue()) == ImageFlagEnum.HIDDEN.getValue());
 		imageFlags.setPersonal((combinedFlags &
-				EImageStatus.PERSONAL.getValue()) == EImageStatus.PERSONAL.getValue());
+				ImageFlagEnum.PERSONAL.getValue()) == ImageFlagEnum.PERSONAL.getValue());
 		imageFlags.setPrintable((combinedFlags &
-				EImageStatus.PRINTABLE.getValue()) == EImageStatus.PRINTABLE.getValue());
+				ImageFlagEnum.PRINTABLE.getValue()) == ImageFlagEnum.PRINTABLE.getValue());
 		imageFlags.setUgly((combinedFlags &
-				EImageStatus.UGLY.getValue()) == EImageStatus.UGLY.getValue());
+				ImageFlagEnum.UGLY.getValue()) == ImageFlagEnum.UGLY.getValue());
 		return imageFlags;
 	}
 }

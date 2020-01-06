@@ -2,7 +2,7 @@ package image.persistence.entity;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import image.cdm.image.ImageRating;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
@@ -39,7 +39,7 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	@Embedded
 	private ImageMetadata imageMetadata;
 	@Embedded
-	private ImageFlags flags = of(EImageStatus.DEFAULT);
+	private ImageFlags flags = of(ImageFlagEnum.DEFAULT);
 	/**
 	 * see MIN_RATING = 1 (defined above)
 	 */

@@ -2,7 +2,7 @@ package image.persistence.entitytests;
 
 import exifweb.util.random.IEnhancedRandom;
 import exifweb.util.random.IPositiveIntegerRandom;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -31,7 +31,7 @@ public interface IImageSupplier extends IPositiveIntegerRandom, IEnhancedRandom,
 		image.setImageMetadata(imageMetadata);
 		image.setName("image-" + random);
 		image.setRating((byte) (random % 6));
-		image.setFlags(of(EImageStatus.findByValue((int) Math.pow(2, random % 5))));
+		image.setFlags(of(ImageFlagEnum.findByValue((int) Math.pow(2, random % 5))));
 		return image;
 	}
 }

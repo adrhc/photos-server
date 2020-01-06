@@ -3,7 +3,7 @@ package image.hbm.repository.junit5.staging;
 import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
-import image.cdm.image.status.EImageStatus;
+import image.cdm.image.status.ImageFlagEnum;
 import image.cdm.image.status.ImageStatus;
 import image.hbm.repository.junit5.springconfig.Junit5HbmStageJdbcDbConfig;
 import image.persistence.entity.Album;
@@ -89,7 +89,7 @@ class ImageRepositoryTest implements IImageAssertions, IPositiveIntegerRandom, I
 	}
 
 	@Test
-	void changeStatus(@Random EImageStatus status) {
+	void changeStatus(@Random ImageFlagEnum status) {
 		Image image = pickRandomlyAnImage();
 		ImageStatus imageStatus = new ImageStatus(image.getId(), status.getValueAsByte());
 		this.imageRepository.changeStatus(imageStatus);
