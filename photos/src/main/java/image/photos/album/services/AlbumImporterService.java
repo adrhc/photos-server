@@ -4,6 +4,7 @@ import image.cdm.image.ImageRating;
 import image.cdm.image.status.EImageStatus;
 import image.infrastructure.messaging.album.AlbumEvent;
 import image.infrastructure.messaging.album.AlbumTopic;
+import image.infrastructure.messaging.image.ImageEvent;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageQueryRepository;
 import image.persistence.entity.Album;
@@ -15,7 +16,6 @@ import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.filestore.FileStoreService;
-import image.photos.util.ValueHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
@@ -129,7 +130,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// When importing a new album existsAtLeast1ImageChange will
 		// always be true because we are skipping (new) empty albums.
-		ValueHolder<Boolean> isAtLeast1ImageChanged = ValueHolder.of(false);
+		AtomicBoolean isAtLeast1ImageChanged = new AtomicBoolean(false);
 
 		// iterate and process image files
 		List<String> foundImageFileNames = new ArrayList<>();
@@ -142,8 +143,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			this.fileStoreService.walk(path)
 					.forEach(imgFile -> {
 						try {
-							isAtLeast1ImageChanged.setValue(
-									this.imageImporterService.importFromFile(imgFile, album));
+							Optional<ImageEvent> event = this.imageImporterService.importFromFile(imgFile, album);
+							if (event.isEmpty()) {
+								return;
+							}
+							isAtLeast1ImageChanged.set(true);
 							foundImageFileNames.add(fileName(imgFile));
 						} catch (FileNotFoundException e) {
 							log.error("{} no longer exists!", imgFile);
@@ -156,10 +160,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		if (!isNewAlbum) {
 			// remove db-images having no corresponding file
 			removeImagesHavingNoFile(album, foundImageFileNames,
-					() -> isAtLeast1ImageChanged.setValue(true));
+					() -> isAtLeast1ImageChanged.set(true));
 		}
 
-		if (isNewAlbum || isAtLeast1ImageChanged.getValue()) {
+		if (isNewAlbum || isAtLeast1ImageChanged.get()) {
 			// album event emission (see AlbumExporterSubscription)
 			this.albumTopic.emit(albumEvent.get());
 		}

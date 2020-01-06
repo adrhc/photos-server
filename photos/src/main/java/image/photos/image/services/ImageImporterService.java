@@ -1,5 +1,6 @@
 package image.photos.image.services;
 
+import image.infrastructure.messaging.image.ImageEvent;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.Optional;
 
 import static image.photos.infrastructure.filestore.PathUtils.fileName;
 
@@ -36,20 +38,34 @@ public class ImageImporterService {
 	/**
 	 * @return true = DB synced with the imgFile, false = nothing changed
 	 */
-	public boolean importFromFile(Path imgFile, Album album) throws FileNotFoundException {
+	public Optional<ImageEvent> importFromFile(Path imgFile, Album album) throws FileNotFoundException {
 		assert !this.fileStoreService.isDirectory(imgFile) :
 				"Wrong image file (is a directory):\n{}" + imgFile;
+
+		// load Image from DB (if any)
 		Image dbImage = this.imageQueryService
 				.findByNameAndAlbumId(fileName(imgFile), album.getId());
 
-		// create the db Image-record if doesn't already exists
 		if (dbImage == null) {
-			log.debug("insert {}/{}", album.getName(), fileName(imgFile));
-			this.imageCUDService.persist(createFromFile(imgFile, album));
-			return true;
+			// create db-image
+			return Optional.of(createFromFile(imgFile, album));
+		} else {
+			// update db-image
+			return updateFromFile(imgFile, dbImage);
 		}
+	}
 
-		var dbImageLastModified = dbImage.getImageMetadata().getDateTime();
+	private ImageEvent createFromFile(Path imgFile, Album album) throws FileNotFoundException {
+		log.debug("insert {}/{}", album.getName(), fileName(imgFile));
+		Image image = new Image();
+		image.setImageMetadata(this.exifExtractorService.extractMetadata(imgFile));
+		image.setName(fileName(imgFile));
+		image.setAlbum(album);
+		return this.imageCUDService.persist(image);
+	}
+
+	private Optional<ImageEvent> updateFromFile(Path imgFile, Image image) throws FileNotFoundException {
+		var dbImageLastModified = image.getImageMetadata().getDateTime();
 		var imageLastModifiedFromFile = this.fileStoreService.lastModifiedTime(imgFile);
 
 		// update ImageMetadata if image-file is newer
@@ -57,26 +73,17 @@ public class ImageImporterService {
 			// extractMetadata updates thumb lastModified date too!
 			ImageMetadata updatedImageMetadata =
 					this.exifExtractorService.extractMetadata(imgFile);
-			this.imageCUDService.updateImageMetadata(updatedImageMetadata, dbImage.getId());
-			return true;
+			return Optional.of(this.imageCUDService.updateImageMetadata(updatedImageMetadata, image.getId()));
 		}
 
 		// update thumbLastModified if thumb-file is newer
-		var dbThumbLastModified = dbImage.getImageMetadata().getThumbLastModified();
+		var dbThumbLastModified = image.getImageMetadata().getThumbLastModified();
 		Date thumbLastModifiedFromFile = this.thumbHelper
 				.thumbLastModified(imgFile, dbThumbLastModified);
 		if (thumbLastModifiedFromFile.after(dbThumbLastModified)) {
-			this.imageCUDService.updateThumbLastModified(thumbLastModifiedFromFile, dbImage.getId());
-			return true;
+			return Optional.of(this.imageCUDService.updateThumbLastModified(thumbLastModifiedFromFile, image.getId()));
 		}
-		return false;
-	}
 
-	private Image createFromFile(Path imgFile, Album album) throws FileNotFoundException {
-		Image image = new Image();
-		image.setImageMetadata(this.exifExtractorService.extractMetadata(imgFile));
-		image.setName(fileName(imgFile));
-		image.setAlbum(album);
-		return image;
+		return Optional.empty();
 	}
 }

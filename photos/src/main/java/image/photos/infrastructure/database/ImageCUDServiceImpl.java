@@ -1,7 +1,7 @@
 package image.photos.infrastructure.database;
 
+import image.infrastructure.messaging.image.ImageEvent;
 import image.infrastructure.messaging.image.ImageEventTypeEnum;
-import image.infrastructure.messaging.image.ImageTopic;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 import static image.infrastructure.messaging.image.ImageEvent.of;
 import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
@@ -27,13 +28,8 @@ import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
 @Service
 @Slf4j
 public class ImageCUDServiceImpl implements ImageCUDService {
-	private final ImageTopic imageTopic;
 	@Autowired
 	private TransactionalOperation transact;
-
-	public ImageCUDServiceImpl(ImageTopic imageTopic) {
-		this.imageTopic = imageTopic;
-	}
 
 	/**
 	 * Remove album's cover (set it to null) when image is its album's cover.
@@ -56,7 +52,7 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	}
 
 	@Override
-	public void changeName(String newName, Integer imageId) {
+	public ImageEvent changeName(String newName, Integer imageId) {
 		// transaction
 		Image eventData = transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
@@ -64,11 +60,11 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 			return image;
 		});
 		// emission
-		this.imageTopic.emit(of(eventData, ImageEventTypeEnum.UPDATED));
+		return of(eventData, ImageEventTypeEnum.UPDATED);
 	}
 
 	@Override
-	public void safelyDeleteImage(Integer imageId) {
+	public ImageEvent safelyDeleteImage(Integer imageId) {
 		// transaction
 		Image eventData = transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
@@ -76,11 +72,11 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 			return image;
 		});
 		// emission
-		this.imageTopic.emit(of(eventData, DELETED));
+		return of(eventData, DELETED);
 	}
 
 	@Override
-	public void markDeleted(Integer imageId) {
+	public Optional<ImageEvent> markDeleted(Integer imageId) {
 		// transaction
 		Image eventData = transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
@@ -92,14 +88,12 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 			return image;
 		});
 		// emission
-		if (eventData != null) {
-			this.imageTopic.emit(of(eventData, MARKED_AS_DELETED));
-		}
+		return Optional.ofNullable(eventData != null ? of(eventData, MARKED_AS_DELETED) : null);
 	}
 
 	@Override
 	@Transactional
-	public void updateThumbLastModified(Date thumbLastModified, Integer imageId) {
+	public ImageEvent updateThumbLastModified(Date thumbLastModified, Integer imageId) {
 		// transaction
 		Image eventData = transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
@@ -108,11 +102,11 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 		});
 		// emission
 		log.debug("updated thumb's lastModified for {}", eventData.getName());
-		this.imageTopic.emit(of(eventData, THUMB_LAST_MODIF_DATE_UPDATED));
+		return of(eventData, THUMB_LAST_MODIF_DATE_UPDATED);
 	}
 
 	@Override
-	public void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
+	public ImageEvent updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
 		// transaction
 		Image eventData = transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
@@ -120,20 +114,20 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 			return image;
 		});
 		// emission
-		this.imageTopic.emit(of(eventData, EXIF_UPDATED));
+		return of(eventData, EXIF_UPDATED);
 	}
 
 	/**
 	 * todo: what if an Album with Image(s) is persisted; the related events won't be emitted
 	 */
 	@Override
-	public void persist(Image image) {
+	public ImageEvent persist(Image image) {
 		// transaction
 		Image eventData = transact.write(em -> {
 			em.persist(image);
 			return image;
 		});
 		// emission
-		this.imageTopic.emit(of(eventData, CREATED));
+		return of(eventData, CREATED);
 	}
 }

@@ -1,20 +1,22 @@
 package image.photos.infrastructure.database;
 
+import image.infrastructure.messaging.image.ImageEvent;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 
 import java.util.Date;
+import java.util.Optional;
 
 public interface ImageCUDService {
-	void changeName(String newName, Integer imageId);
+	ImageEvent changeName(String newName, Integer imageId);
 
-	void safelyDeleteImage(Integer imageId);
+	ImageEvent safelyDeleteImage(Integer imageId);
 
-	void markDeleted(Integer imageId);
+	Optional<ImageEvent> markDeleted(Integer imageId);
 
-	void updateThumbLastModified(Date thumbLastModified, Integer imageId);
+	ImageEvent updateThumbLastModified(Date thumbLastModified, Integer imageId);
 
-	void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId);
+	ImageEvent updateImageMetadata(ImageMetadata imageMetadata, Integer imageId);
 
-	void persist(Image image);
+	ImageEvent persist(Image image);
 }
