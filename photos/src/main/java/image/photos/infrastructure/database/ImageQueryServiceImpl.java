@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import static image.photos.image.helpers.ImageHelper.relativeFilePathFor;
-import static image.photos.infrastructure.filestore.PathUtils.fileName;
+import static image.jpa2x.util.PathUtils.fileName;
 
 @Service
 @Transactional

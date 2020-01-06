@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.nio.file.Path;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
-import static image.photos.infrastructure.filestore.PathUtils.fileName;
 
 @Component
 public class AlbumHelper {
@@ -17,10 +16,6 @@ public class AlbumHelper {
 	public AlbumHelper(AppConfigRepository appConfigRepository, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
 		this.fileStoreService = fileStoreService;
-	}
-
-	public static String albumNameFrom(Path path) {
-		return fileName(path);
 	}
 
 	public Path albumsRoot() {

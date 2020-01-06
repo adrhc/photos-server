@@ -24,7 +24,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.EnumSet;
 
-import static image.photos.infrastructure.filestore.PathUtils.fileName;
+import static image.jpa2x.util.PathUtils.fileName;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

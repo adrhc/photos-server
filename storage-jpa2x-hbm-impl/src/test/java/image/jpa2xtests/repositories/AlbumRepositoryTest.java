@@ -33,14 +33,14 @@ class AlbumRepositoryTest extends AlbumTestBase {
 	void getAlbumById() {
 		Album album = this.albums.get(0);
 		Album dbAlbum = this.albumRepository.getById(album.getId());
-		assertAlbumEquals(album, dbAlbum);
+		this.assertAlbumEquals(album, dbAlbum);
 	}
 
 	@Test
 	void findAlbumByName() {
 		Album album = this.albums.get(0);
 		Album dbAlbum = this.albumRepository.findByName(album.getName());
-		assertAlbumEquals(album, dbAlbum);
+		this.assertAlbumEquals(album, dbAlbum);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ class AlbumRepositoryTest extends AlbumTestBase {
 		void createAlbum() {
 			this.albumRepository.persist(this.album);
 			Album dbAlbum = this.albumRepository.getById(this.album.getId());
-			assertAlbumEquals(this.album, dbAlbum);
+			AlbumRepositoryTest.this.assertAlbumEquals(this.album, dbAlbum);
 		}
 	}
 
@@ -99,7 +99,8 @@ class AlbumRepositoryTest extends AlbumTestBase {
 	class CreateAlbumForNameTest extends AlbumCreationTestBase {
 		@Test
 		void createAlbumForName(@Random String albumName) {
-			this.album = this.albumRepository.createByName(albumName);
+			this.album = new Album(albumName);
+			this.albumRepository.persist(this.album);
 			assertEquals(albumName, this.album.getName());
 		}
 	}
@@ -112,7 +113,7 @@ class AlbumRepositoryTest extends AlbumTestBase {
 			Image cover = this.album.getImages().get(0);
 			this.albumRepository.putAlbumCover(cover.getId());
 			Album dbAlbum = this.albumRepository.getById(this.album.getId());
-			assertImageEquals(cover, dbAlbum.getCover());
+			this.assertImageEquals(cover, dbAlbum.getCover());
 		}
 	}
 

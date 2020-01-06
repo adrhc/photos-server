@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 
-import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
+import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 
 @Component
 @Slf4j

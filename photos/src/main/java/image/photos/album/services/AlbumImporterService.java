@@ -33,8 +33,8 @@ import java.util.function.Predicate;
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
-import static image.photos.album.helpers.AlbumHelper.albumNameFrom;
-import static image.photos.infrastructure.filestore.PathUtils.fileName;
+import static image.jpa2x.util.AlbumUtils.albumNameFrom;
+import static image.jpa2x.util.PathUtils.fileName;
 
 /**
  * Created with IntelliJ IDEA.
@@ -72,14 +72,14 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * import new albums and rescan existing
 	 */
 	public List<Optional<AlbumEvent>> importAll() throws IOException {
-		return importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
+		return this.importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
 	}
 
 	/**
 	 * import new albums only
 	 */
 	public List<Optional<AlbumEvent>> importNewAlbums() throws IOException {
-		return importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
+		return this.importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
 			throw new UnsupportedOperationException("Wrong album path:\n" + path);
 		}
-		return importByAlbumPath(path);
+		return this.importByAlbumPath(path);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// determine or create album
 		// path este album nou dar nu are poze
-		Optional<AlbumEvent> albumEvent = findOrCreate(albumNameFrom(path));
+		Optional<AlbumEvent> albumEvent = this.findOrCreateAlbum(albumNameFrom(path));
 
 		if (albumEvent.isEmpty()) {
 			// new but empty album
@@ -159,11 +159,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		if (!isNewAlbum) {
 			// remove db-images having no corresponding file
-			removeImagesHavingNoFile(album, foundImageFileNames,
-					() -> isAtLeast1ImageChanged.set(true));
+			List<ImageEvent> events = this.removeImagesHavingNoFile(album, foundImageFileNames);
+			isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
 		}
 
-		if (isNewAlbum || isAtLeast1ImageChanged.get()) {
+		if (isAtLeast1ImageChanged.get()) {
 			// album event emission (see AlbumExporterSubscription)
 			this.albumTopic.emit(albumEvent.get());
 		}
@@ -174,7 +174,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		return albumEvent;
 	}
 
-	private Optional<AlbumEvent> findOrCreate(String albumName) {
+	private Optional<AlbumEvent> findOrCreateAlbum(String albumName) {
 		Album album = this.albumRepository.findByName(albumName);
 		if (album != null) {
 			// already existing album
@@ -185,18 +185,20 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			return Optional.empty();
 		}
 		// creem un nou album (path aferent contine poze)
-		album = this.albumRepository.createByName(albumName);
+		album = new Album(albumName);
+		this.albumRepository.persist(album);
 		return Optional.of(AlbumEvent.of(album, CREATED));
 	}
 
 	/**
 	 * Album is detached so can't be used as persistent (as needed by this method).
 	 */
-	private void removeImagesHavingNoFile(Album album,
-			List<String> foundImageFileNames, Runnable dbChangedCallBack) {
+	private List<ImageEvent> removeImagesHavingNoFile(
+			Album album, List<String> foundImageFileNames) {
 		log.debug("BEGIN {}", album.getName());
 		// loading images from DB
 		List<Image> images = this.imageQueryRepository.findByAlbumId(album.getId());
+		List<ImageEvent> events = new ArrayList<>();
 		// iterating images
 		images.forEach(image -> {
 			String dbName = image.getName();
@@ -212,19 +214,20 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				// found: update db-image name
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				this.imageCUDService.changeName(oppositeExtensionCase, image.getId());
-			} else if (areEquals(image.getFlags(), ImageFlagEnum.DEFAULT) ||
+				events.add(this.imageCUDService.changeName(oppositeExtensionCase, image.getId()));
+			} else if (this.areEquals(image.getFlags(), ImageFlagEnum.DEFAULT) ||
 					image.getRating() != ImageRating.MIN_RATING) {
 				// not found (flags & rating not changed): purge image from DB
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				this.imageCUDService.safelyDeleteImage(image.getId());
+				events.add(this.imageCUDService.safelyDeleteImage(image.getId()));
 			} else {
 				// not found (flags or rating changed): logically delete image
 				log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-				this.imageCUDService.markDeleted(image.getId());
+				Optional<ImageEvent> imageEvent = this.imageCUDService.markDeleted(image.getId());
+				imageEvent.ifPresent(events::add);
 			}
-			dbChangedCallBack.run();
 		});
 		log.debug("END {}", album.getName());
+		return events;
 	}
 }

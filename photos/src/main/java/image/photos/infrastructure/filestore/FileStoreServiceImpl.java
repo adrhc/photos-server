@@ -24,12 +24,12 @@ public class FileStoreServiceImpl implements FileStoreService {
 
 	@Override
 	public long lastModifiedTime(Path path) {
-		return PathUtils.lastModifiedTime(path);
+		return FileStoreUtils.lastModifiedTime(path);
 	}
 
 	@Override
 	public long fileSize(Path path) {
-		return PathUtils.fileSize(path);
+		return FileStoreUtils.fileSize(path);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class FileStoreServiceImpl implements FileStoreService {
 
 	public <T> void writeJson(Path path, T value) throws IOException {
 		try (OutputStream fos = Files.newOutputStream(path)) {
-			jsonMapper.writeValue(fos, value);
+			this.jsonMapper.writeValue(fos, value);
 		}
 	}
 

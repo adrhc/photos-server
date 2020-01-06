@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.Date;
 import java.util.Optional;
 
-import static image.photos.infrastructure.filestore.PathUtils.fileName;
+import static image.jpa2x.util.PathUtils.fileName;
 
 @Component
 @Slf4j

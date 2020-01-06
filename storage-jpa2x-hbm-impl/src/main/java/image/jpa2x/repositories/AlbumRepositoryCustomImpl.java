@@ -31,13 +31,6 @@ public class AlbumRepositoryCustomImpl implements AlbumRepositoryCustom {
 	}
 
 	@Override
-	public Album createByName(String name) {
-		Album album = new Album(name);
-		this.em.persist(album);
-		return album;
-	}
-
-	@Override
 	public boolean removeAlbumCover(Integer albumId) {
 		Album album = this.em.find(Album.class, albumId);
 		// NPE when album is NULL
