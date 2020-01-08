@@ -176,7 +176,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 			int cpus = Runtime.getRuntime().availableProcessors();
 			int parallelism = cpus * 3 / 2;
-			ExecutorService executorService = Executors.newFixedThreadPool(cpus);
+			ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
 
 			// heavy processing (EXIF + db save)
 			Mono<Void> heavyMono = Flux.fromIterable(heavy)
