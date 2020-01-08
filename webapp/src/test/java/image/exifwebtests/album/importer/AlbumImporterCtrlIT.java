@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import static exifweb.util.concurrency.ThreadUtils.safeSleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -83,7 +84,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 						.value("imported albums: " + SIMFONIA_LALELELOR));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		Thread.sleep(2000);
+		safeSleep(2000);
 
 		// load album from DB
 		Album album = this.albumRepository.findByName(SIMFONIA_LALELELOR);

@@ -17,11 +17,14 @@ import image.photos.image.services.ImageImportOperation;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.filestore.FileStoreService;
-import image.photos.util.reactor.FluxUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,15 +34,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
+import static image.jpa2x.util.PathUtils.fileName;
 import static image.photos.image.services.ImageImportProcTypeEnum.HEAVY;
 
 /**
@@ -61,9 +64,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumPathChecks albumPathChecks;
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
-	private final ExecutorService executorService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService, ExecutorService executorService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageQueryRepository = imageQueryRepository;
@@ -73,7 +75,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		this.albumPathChecks = albumPathChecks;
 		this.albumHelper = albumHelper;
 		this.fileStoreService = fileStoreService;
-		this.executorService = executorService;
 	}
 
 	/**
@@ -150,8 +151,9 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		// always be true because we are skipping (new) empty albums.
 		AtomicBoolean isAtLeast1ImageChanged = new AtomicBoolean(false);
 
+		List<String> foundImageNames = Collections.synchronizedList(new ArrayList<>());
+
 		// iterate and process image files
-		List<String> foundImageNames = new ArrayList<>();
 		if (this.albumHelper.isAlbumWithNoFiles(path)) {
 			// existing empty album
 			log.debug("BEGIN album with no pictures:\n{}", path);
@@ -159,59 +161,64 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// take only files existing in the album's directory but not sub-directories
 			log.debug("BEGIN album has pictures:\n{}", path);
 
-			List<ImageImportOperation<Supplier<ImageEvent>,
-					FileNotFoundException>> heavy = Collections.synchronizedList(new ArrayList<>());
-			List<ImageImportOperation<Supplier<ImageEvent>,
-					FileNotFoundException>> lightweight = Collections.synchronizedList(new ArrayList<>());
-
-			// stage1:
-			// light file system access (e.g. ImageUtils.imageNameFrom) and
-			// some db reading (e.g. imageQueryService.findByNameAndAlbumId)
+			List<Tuple2<ImageImportOperation<Supplier<ImageEvent>,
+					FileNotFoundException>, Path>> heavy = Collections.synchronizedList(new ArrayList<>());
+			List<Tuple2<ImageImportOperation<Supplier<ImageEvent>,
+					FileNotFoundException>, Path>> lightweight = Collections.synchronizedList(new ArrayList<>());
 
 			// heavy / light lists construction
 			this.fileStoreService.walk(path)
-					.map(imgFile -> this.imageImporterService.importFromFile(imgFile, album))
+					.map(imgFile -> this.imageImporterService
+							.importFromFile(imgFile, album).map(it -> Tuples.of(it, imgFile)))
 					.filter(Optional::isPresent)
 					.map(Optional::get)
-					.forEach(it -> (it.getType().equals(HEAVY) ? heavy : lightweight).add(it));
+					.forEach(it -> (it.getT1().getType().equals(HEAVY) ? heavy : lightweight).add(it));
+
+			int parallelism = Runtime.getRuntime().availableProcessors() * 3 / 2;
+			ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
 
 			// heavy processing (EXIF + db save)
-			Future<Optional<List<ImageEvent>>> heavyEventsFuture = this.executorService.submit(() ->
-					FluxUtils.create(
-							heavy.stream()
-									.map(ImageImportOperation::getUnsafeSupplier)
-									.collect(Collectors.toList()),
-							this.executorService,
-							e -> {
-								log.debug(e.getMessage(), e);
-								return true;
-							})
-							.log()
-							.map(Supplier::get) // db operation executed (ImageEvent returned)
-							.collectList()
-							.blockOptional()
-			);
+			Mono<Void> heavyMono = Flux.fromIterable(heavy)
+					.log()
+					.parallel(parallelism * 2 / 3, parallelism * 2 / 3)
+					.runOn(Schedulers.fromExecutorService(executorService, "light"))
+					.log()
+					.doOnNext(it -> log.debug("[heavy, before flatMap]"))
+					.flatMap(it -> Mono.just(it)
+							.doOnNext(it1 -> log.debug("[heavy mono] {}", fileName(it1.getT2())))
+							.map(it1 -> sneak(it1.getT1()::getUnsafe).get().getEntity().getName())
+							.doOnError(FileNotFoundException.class, t ->
+									log.error("File no longer exists:\n{}", t.getMessage()))
+							.onErrorResume(h1 -> Mono.empty()))
+					.doOnNext(it -> {
+						log.debug("[heavy] {}", it);
+						foundImageNames.add(it);
+					})
+					.then();
 
 			// light processing (db save only)
-			Optional<List<ImageEvent>> lightEvents = Flux.fromIterable(lightweight)
+			Mono<Void> lightMono = Flux.fromIterable(lightweight)
 					.log()
-					.map(op -> sneak(op::getUnsafe)) // db operation available
-					.onErrorContinue(FileNotFoundException.class,
-							(e, it) -> log.error("File no longer exists:\n{}", it))
-					.map(Supplier::get) // db operation executed (ImageEvent returned)
-					.collectList()
-					.blockOptional();
+					.parallel(parallelism / 3, parallelism / 3)
+					.runOn(Schedulers.fromExecutorService(executorService, "light"))
+					.log()
+					.doOnNext(it -> log.debug("[light, before flatMap]"))
+					.flatMap(it -> Mono.just(it)
+							.doOnNext(it1 -> log.debug("[light mono] {}", fileName(it1.getT2())))
+							.map(it1 -> sneak(it1.getT1()::getUnsafe).get().getEntity().getName())
+							.doOnError(FileNotFoundException.class, t1 ->
+									log.error("File no longer exists:\n{}", t1.getMessage()))
+							.onErrorResume(it1 -> Mono.empty()))
+					.doOnNext(it -> {
+						log.debug("[light] {}", it);
+						foundImageNames.add(it);
+					})
+					.then();
 
-			Optional<List<ImageEvent>> heavyEvents = sneak(heavyEventsFuture::get);
-
-			isAtLeast1ImageChanged.set(
-					!lightEvents.orElse(Collections.emptyList()).isEmpty() ||
-							!heavyEvents.orElse(Collections.emptyList()).isEmpty());
-
-			lightEvents.ifPresent(events -> events.forEach((e) -> foundImageNames.add(e.getEntity().getName())));
-			heavyEvents.ifPresent(events -> events.forEach((e) -> foundImageNames.add(e.getEntity().getName())));
+			Mono.zipDelayError(it -> it, heavyMono, lightMono).block();
 		}
 
+		isAtLeast1ImageChanged.set(!foundImageNames.isEmpty());
 		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
 		// remove db-images having no corresponding file

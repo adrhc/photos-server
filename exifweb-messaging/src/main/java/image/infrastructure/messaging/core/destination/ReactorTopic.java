@@ -26,7 +26,7 @@ public abstract class ReactorTopic<S, C extends Enum<C>, M extends Message<S, C>
 
 	@PreDestroy
 	public void preDestroy() {
-		log.debug("sink.complete");
+		log.debug("sink.complete: {}", this.getClass());
 		this.sink.complete();
 	}
 }
