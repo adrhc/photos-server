@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 import static exifweb.util.concurrency.ThreadUtils.safeSleep;
+import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
@@ -48,7 +48,7 @@ class AlbumTopicTest {
 						.subscribe(ae -> {
 									log.debug("[subscribe] received {}", ae.getEntity().getName());
 									assertNotEquals("main", Thread.currentThread().getName());
-									// simulating ong processing
+									// simulating long processing
 									sneaked(() -> Thread.sleep(1000)).run();
 									newAlbums.add(ae.getEntity());
 									if (ae.getEntity().getName().equals("STOP")) {

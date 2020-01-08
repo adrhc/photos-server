@@ -9,9 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.util.function.Tuple2;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static image.infrastructure.messaging.image.ImageEvent.of;
 import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
@@ -54,31 +58,31 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public ImageEvent changeName(String newName, Integer imageId) {
 		// transaction
-		Image eventData = transact.write(em -> {
+		Image eventData = this.transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
 			image.setName(newName);
 			return image;
 		});
-		// emission
+		// emission (only when transaction succeeds)
 		return of(eventData, ImageEventTypeEnum.UPDATED);
 	}
 
 	@Override
 	public ImageEvent safelyDeleteImage(Integer imageId) {
 		// transaction
-		Image eventData = transact.write(em -> {
+		Image eventData = this.transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
 			removeAsCoverAndFromAlbumImages(image);
 			return image;
 		});
-		// emission
+		// emission (only when transaction succeeds)
 		return of(eventData, DELETED);
 	}
 
 	@Override
 	public Optional<ImageEvent> markDeleted(Integer imageId) {
 		// transaction
-		Image eventData = transact.write(em -> {
+		Image eventData = this.transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
 			if (image.isDeleted()) {
 				return null;
@@ -87,7 +91,7 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 			removeAsCoverAndFromAlbumImages(image);
 			return image;
 		});
-		// emission
+		// emission (only when transaction succeeds)
 		return Optional.ofNullable(eventData != null ? of(eventData, MARKED_AS_DELETED) : null);
 	}
 
@@ -95,27 +99,56 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Transactional
 	public ImageEvent updateThumbLastModified(Date thumbLastModified, Integer imageId) {
 		// transaction
-		Image eventData = transact.write(em -> {
+		Image eventData = this.transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
 			image.getImageMetadata().setThumbLastModified(thumbLastModified);
 			return image;
 		});
-		// emission
+		// emission (only when transaction succeeds)
 		log.debug("updated thumb's lastModified for {}", eventData.getName());
 		return of(eventData, THUMB_LAST_MODIF_DATE_UPDATED);
+	}
+
+	public List<ImageEvent> updateThumbLastModifiedMany(List<Tuple2<Date, Integer>> thumbLastModifiedForImageIds) {
+		List<Image> images = new ArrayList<>(thumbLastModifiedForImageIds.size());
+		// transaction
+		this.transact.writeWithVoidResult(em ->
+				thumbLastModifiedForImageIds.forEach(t2 -> {
+					Image image = em.find(Image.class, t2.getT2());
+					image.getImageMetadata().setThumbLastModified(t2.getT1());
+					images.add(image);
+				}));
+		// emission (only when transaction succeeds)
+		log.debug("updated thumb's lastModified for {} images", thumbLastModifiedForImageIds.size());
+		return of(images, THUMB_LAST_MODIF_DATE_UPDATED);
 	}
 
 	@Override
 	public ImageEvent updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
 		// transaction
-		Image eventData = transact.write(em -> {
+		Image eventData = this.transact.write(em -> {
 			Image image = em.find(Image.class, imageId);
 			image.setImageMetadata(imageMetadata);
 			return image;
 		});
-		// emission
+		// emission (only when transaction succeeds)
 		return of(eventData, EXIF_UPDATED);
 	}
+
+	public List<ImageEvent> updateImageMetadataMany(List<Tuple2<ImageMetadata, Integer>> imageMetadataForImageIds) {
+		List<Image> images = new ArrayList<>(imageMetadataForImageIds.size());
+		// transaction
+		this.transact.writeWithVoidResult(em ->
+				imageMetadataForImageIds.forEach(t2 -> {
+					Image image = em.find(Image.class, t2.getT2());
+					image.setImageMetadata(t2.getT1());
+					images.add(image);
+				}));
+		// emission (only when transaction succeeds)
+		log.debug("updated thumb's ImageMetadata for {} images", imageMetadataForImageIds.size());
+		return of(images, EXIF_UPDATED);
+	}
+
 
 	/**
 	 * todo: what if an Album with Image(s) is persisted; the related events won't be emitted
@@ -123,11 +156,19 @@ public class ImageCUDServiceImpl implements ImageCUDService {
 	@Override
 	public ImageEvent persist(Image image) {
 		// transaction
-		Image eventData = transact.write(em -> {
+		Image eventData = this.transact.write(em -> {
 			em.persist(image);
 			return image;
 		});
-		// emission
+		// emission (only when transaction succeeds)
 		return of(eventData, CREATED);
+	}
+
+	@Override
+	public List<ImageEvent> persistMany(List<Image> images) {
+		// transaction
+		this.transact.writeWithVoidResult(em -> images.forEach(em::persist));
+		// emission (only when transaction succeeds)
+		return images.stream().map(i -> of(i, CREATED)).collect(Collectors.toList());
 	}
 }

@@ -243,7 +243,7 @@
             <dependency>
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-bom</artifactId>
-                <version>Bismuth-RELEASE</version>
+                <version>Dysprosium-SR2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -747,7 +747,7 @@
                 <version>2.0.7</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
@@ -760,7 +760,7 @@
                 <version>${spring-security.version}</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <!--
                 https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite
 
@@ -772,7 +772,7 @@
                 <version>1.2.7</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <!-- https://mvnrepository.com/artifact/net.sf.jexample/jexample -->
             <!--<dependency>-->
             <!--<groupId>net.sf.jexample</groupId>-->
@@ -786,14 +786,14 @@
                 <version>1.0</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
                 <version>3.2.4</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <!--
                 https://glytching.github.io/junit-extensions/
             -->
@@ -1005,7 +1005,7 @@
                             <!-- for catching tests without proper spring profile annotation -->
                             <spring.profiles.active>fake-profile</spring.profiles.active>
                         </environmentVariables>
-<!--                        <groups>controller</groups>-->
+                        <!--                        <groups>controller</groups>-->
                     </configuration>
                 </plugin>
 

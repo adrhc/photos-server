@@ -18,6 +18,10 @@ public class CountDownCoordinator {
 	 * @return true means "stop"
 	 */
 	public boolean advanceAndReportIfNoMore() {
-		return atomicInteger.decrementAndGet() == 0;
+		return this.atomicInteger.decrementAndGet() == 0;
+	}
+
+	public void advance() {
+		this.atomicInteger.decrementAndGet();
 	}
 }

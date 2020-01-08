@@ -13,8 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.nio.file.Path;
 import java.util.List;
 
+import static image.jpa2x.util.ImageUtils.imageNameFrom;
 import static image.photos.image.helpers.ImageHelper.relativeFilePathFor;
-import static image.jpa2x.util.PathUtils.fileName;
 
 @Service
 @Transactional
@@ -83,10 +83,10 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 */
 	@Override
 	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) {
-		String nameNoExt = FilenameUtils.getBaseName(fileName(imgFile));
+		String nameNoExt = FilenameUtils.getBaseName(imageNameFrom(imgFile));
 		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
 		long imgFileSize = this.fileStoreService.fileSize(imgFile);
-		return image.stream().anyMatch(i -> imgFileSize == fileSizeOf(i));
+		return image.stream().anyMatch(i -> imgFileSize == this.fileSizeOf(i));
 	}
 
 	/**

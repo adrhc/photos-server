@@ -26,7 +26,7 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	 */
 	@Override
 	public Executor getAsyncExecutor() {
-		return asyncExecutor();
+		return this.asyncExecutor();
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	 */
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-		taskRegistrar.setScheduler(scheduler());
+		taskRegistrar.setScheduler(this.scheduler());
 	}
 
 	/**
@@ -52,8 +52,9 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 	@Bean(value = {"asyncExecutor", "threadPoolTaskExecutor"})
 	public ThreadPoolTaskExecutor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
 		executor.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
-		executor.setQueueCapacity(executor.getMaxPoolSize() / 2);
+//		executor.setQueueCapacity(executor.getMaxPoolSize() * 2);
 		executor.setThreadNamePrefix("async-");
 		executor.setKeepAliveSeconds(30);
 		executor.initialize();
@@ -62,6 +63,6 @@ public class AsyncAndSchedulingConfig implements AsyncConfigurer, SchedulingConf
 
 	@Bean
 	public ExecutorService executorService() {
-		return asyncExecutor().getThreadPoolExecutor();
+		return this.asyncExecutor().getThreadPoolExecutor();
 	}
 }

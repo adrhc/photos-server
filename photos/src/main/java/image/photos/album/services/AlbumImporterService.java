@@ -13,12 +13,15 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.image.helpers.ImageHelper;
+import image.photos.image.services.ImageImportOperation;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.filestore.FileStoreService;
+import image.photos.util.reactor.FluxUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
+import reactor.core.publisher.Flux;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,12 +30,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
-import static image.jpa2x.util.PathUtils.fileName;
+import static image.photos.image.services.ImageImportProcTypeEnum.HEAVY;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,8 +61,9 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumPathChecks albumPathChecks;
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
+	private final ExecutorService executorService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService, ExecutorService executorService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageQueryRepository = imageQueryRepository;
@@ -64,6 +73,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		this.albumPathChecks = albumPathChecks;
 		this.albumHelper = albumHelper;
 		this.fileStoreService = fileStoreService;
+		this.executorService = executorService;
 	}
 
 	/**
@@ -141,33 +151,72 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		AtomicBoolean isAtLeast1ImageChanged = new AtomicBoolean(false);
 
 		// iterate and process image files
-		List<String> foundImageFileNames = new ArrayList<>();
+		List<String> foundImageNames = new ArrayList<>();
 		if (this.albumHelper.isAlbumWithNoFiles(path)) {
 			// existing empty album
 			log.debug("BEGIN album with no pictures:\n{}", path);
 		} else {
 			// take only files existing in the album's directory but not sub-directories
 			log.debug("BEGIN album has pictures:\n{}", path);
+
+			List<ImageImportOperation<Supplier<ImageEvent>,
+					FileNotFoundException>> heavy = Collections.synchronizedList(new ArrayList<>());
+			List<ImageImportOperation<Supplier<ImageEvent>,
+					FileNotFoundException>> lightweight = Collections.synchronizedList(new ArrayList<>());
+
+			// stage1:
+			// light file system access (e.g. ImageUtils.imageNameFrom) and
+			// some db reading (e.g. imageQueryService.findByNameAndAlbumId)
+
+			// heavy / light lists construction
 			this.fileStoreService.walk(path)
-					.forEach(imgFile -> {
-						try {
-							Optional<ImageEvent> event = this.imageImporterService.importFromFile(imgFile, album);
-							if (event.isEmpty()) {
-								return;
-							}
-							isAtLeast1ImageChanged.set(true);
-							foundImageFileNames.add(fileName(imgFile));
-						} catch (FileNotFoundException e) {
-							log.error("{} no longer exists!", imgFile);
-						}
-					});
+					.map(imgFile -> this.imageImporterService.importFromFile(imgFile, album))
+					.filter(Optional::isPresent)
+					.map(Optional::get)
+					.forEach(it -> (it.getType().equals(HEAVY) ? heavy : lightweight).add(it));
+
+			// heavy processing (EXIF + db save)
+			Future<Optional<List<ImageEvent>>> heavyEventsFuture = this.executorService.submit(() ->
+					FluxUtils.create(
+							heavy.stream()
+									.map(ImageImportOperation::getUnsafeSupplier)
+									.collect(Collectors.toList()),
+							this.executorService,
+							e -> {
+								log.debug(e.getMessage(), e);
+								return true;
+							})
+							.log()
+							.map(Supplier::get) // db operation executed (ImageEvent returned)
+							.collectList()
+							.blockOptional()
+			);
+
+			// light processing (db save only)
+			Optional<List<ImageEvent>> lightEvents = Flux.fromIterable(lightweight)
+					.log()
+					.map(op -> sneak(op::getUnsafe)) // db operation available
+					.onErrorContinue(FileNotFoundException.class,
+							(e, it) -> log.error("File no longer exists:\n{}", it))
+					.map(Supplier::get) // db operation executed (ImageEvent returned)
+					.collectList()
+					.blockOptional();
+
+			Optional<List<ImageEvent>> heavyEvents = sneak(heavyEventsFuture::get);
+
+			isAtLeast1ImageChanged.set(
+					!lightEvents.orElse(Collections.emptyList()).isEmpty() ||
+							!heavyEvents.orElse(Collections.emptyList()).isEmpty());
+
+			lightEvents.ifPresent(events -> events.forEach((e) -> foundImageNames.add(e.getEntity().getName())));
+			heavyEvents.ifPresent(events -> events.forEach((e) -> foundImageNames.add(e.getEntity().getName())));
 		}
 
 		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
 		// remove db-images having no corresponding file
 		if (!isNewAlbum) {
-			List<ImageEvent> events = this.removeImagesHavingNoFile(album, foundImageFileNames);
+			List<ImageEvent> events = this.removeImagesHavingNoFile(album, foundImageNames);
 			isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
 		}
 
