@@ -28,8 +28,6 @@ import java.util.List;
  */
 @Component
 public class AlbumRepositoryImpl implements AlbumRepository {
-	//	private static final Logger logger = LoggerFactory.getLogger(AlbumRepositoryImpl.class);
-//	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -139,7 +137,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Override
 	@Transactional
 	public boolean removeAlbumCover(Integer albumId) {
-		Album album = getById(albumId);
+		Album album = this.getById(albumId);
 		// NPE when album is NULL
 		if (album.getCover() == null) {
 			return false;
@@ -158,7 +156,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 	@Transactional
 	public boolean clearDirtyForAlbum(Integer albumId) {
 //		logger.debug("BEGIN");
-		Album album = getById(albumId);
+		Album album = this.getById(albumId);
 		// check solved by hibernate BytecodeEnhancement (+hibernate-enhance-maven-plugin)
 		if (!album.isDirty()) {
 //			logger.debug("END dirty update cancelled (already false)");
@@ -185,7 +183,7 @@ public class AlbumRepositoryImpl implements AlbumRepository {
 		CriteriaBuilder cb = session.getCriteriaBuilder();
 		CriteriaQuery<Date> criteria = cb.createQuery(Date.class);
 		Root<Album> root = criteria.from(Album.class);
-		criteria.select(cb.greatest(root.get(lastUpdate())));
+		criteria.select(cb.greatest(root.get(this.lastUpdate())));
 		Query<Date> q = session.createQuery(criteria);
 		return q.setCacheable(true).getSingleResult();
 	}

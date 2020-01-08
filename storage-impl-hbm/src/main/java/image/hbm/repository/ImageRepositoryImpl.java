@@ -11,8 +11,6 @@ import image.persistence.repository.ImageRepository;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +19,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -30,9 +27,6 @@ import java.util.List;
  */
 @Component
 public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
-	private static final Logger logger = LoggerFactory.getLogger(ImageRepositoryImpl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
-
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -76,7 +70,7 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Session session = this.sessionFactory.getCurrentSession();
 		Image image = session.load(Image.class, imageStatus.getImageId());
-		ImageFlags imageFlags = of(imageStatus.getStatus());
+		ImageFlags imageFlags = this.of(imageStatus.getStatus());
 		if (image.getFlags().equals(imageFlags)) {
 			return false;
 		}
@@ -126,7 +120,7 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 		if (image.isDeleted()) {
 			return false;
 		}
-		checkAndRemoveAlbumCoverAndFromAlbumImages(image, true);
+		this.checkAndRemoveAlbumCoverAndFromAlbumImages(image, true);
 		image.setDeleted(true);
 		return true;
 	}
@@ -142,7 +136,7 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	@Transactional
 	public void safelyDeleteImage(Integer imageId) {
 		Image image = this.sessionFactory.getCurrentSession().load(Image.class, imageId);
-		checkAndRemoveAlbumCoverAndFromAlbumImages(image, false);
+		this.checkAndRemoveAlbumCoverAndFromAlbumImages(image, false);
 	}
 
 	@Override
@@ -176,11 +170,11 @@ public class ImageRepositoryImpl implements ImageRepository, IImageFlagsUtils {
 	@Override
 	@Transactional
 	public Image findByNameAndAlbumId(String name, Integer albumId) {
-		Integer imageId = getImageIdByNameAndAlbumId(name, albumId);
+		Integer imageId = this.getImageIdByNameAndAlbumId(name, albumId);
 		if (imageId == null) {
 			return null;
 		}
-		return getById(imageId);
+		return this.getById(imageId);
 	}
 
 	@Override

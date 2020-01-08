@@ -10,8 +10,11 @@ import image.persistence.entity.jsonview.ImageViews;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+import static image.persistence.entity.util.DateUtils.safeFormat;
 
 /**
  * Watch out to triggers!
@@ -28,7 +31,8 @@ import java.util.Date;
 @Table(name = "Image")
 @Entity
 public class Image implements IStorageEntity, IImageFlagsUtils {
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -39,7 +43,7 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 	@Embedded
 	private ImageMetadata imageMetadata;
 	@Embedded
-	private ImageFlags flags = of(ImageFlagEnum.DEFAULT);
+	private ImageFlags flags = this.of(ImageFlagEnum.DEFAULT);
 	/**
 	 * see MIN_RATING = 1 (defined above)
 	 */
@@ -173,7 +177,7 @@ public class Image implements IStorageEntity, IImageFlagsUtils {
 				", flags=" + (this.flags == null ? null : this.flags.toString()) +
 				", rating=" + this.rating +
 				", album=" + (this.album == null ? null : this.album.toString()) +
-				", lastUpdate=" + (this.lastUpdate == null ? null : sdf.format(this.lastUpdate)) +
+				", lastUpdate=" + safeFormat(this.lastUpdate, sdf) +
 				'}';
 	}
 }

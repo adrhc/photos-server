@@ -9,10 +9,13 @@ import org.hibernate.annotations.NaturalIdCache;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static image.persistence.entity.util.DateUtils.safeFormat;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +30,8 @@ import java.util.List;
 @Table(name = "Album")
 @Entity
 public class Album implements Serializable {
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
 
 	private Integer id;
 	private String name;
@@ -203,7 +207,7 @@ public class Album implements Serializable {
 				", name='" + this.name + '\'' +
 				", dirty=" + this.dirty +
 				", cover=" + (this.cover == null ? null : this.cover.getId()) +
-				", lastUpdate=" + (this.lastUpdate == null ? null : sdf.format(this.lastUpdate)) +
+				", lastUpdate=" + safeFormat(this.lastUpdate, sdf) +
 				", deleted=" + this.deleted +
 				'}';
 	}

@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
+import static image.persistence.entity.util.DateUtils.safeFormat;
 
 /**
  * Created by adr on 2/9/18.
@@ -23,7 +26,8 @@ import java.text.SimpleDateFormat;
 @RequestMapping("/json/album")
 public class AlbumCtrlImpl implements AlbumCtrl {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumCtrlImpl.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
 
 	@Autowired
 	private AlbumRepository albumRepository;
@@ -38,7 +42,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
-		logger.debug("END album ({}) modified since: {}", id, sdf.format(album.getLastUpdate()));
+		logger.debug("END album ({}) modified since: {}", id, safeFormat(album.getLastUpdate(), sdf));
 		return album;
 	}
 
@@ -52,7 +56,7 @@ public class AlbumCtrlImpl implements AlbumCtrl {
 		if (webRequest.checkNotModified(album.getLastUpdate().getTime())) {
 			return null;
 		}
-		logger.debug("END album ({}) modified since: {}", name, sdf.format(album.getLastUpdate()));
+		logger.debug("END album ({}) modified since: {}", name, safeFormat(album.getLastUpdate(), sdf));
 		return album;
 	}
 }

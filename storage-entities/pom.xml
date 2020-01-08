@@ -26,6 +26,14 @@
             <artifactId>cdm</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+        <dependency>
             <groupId>image.exifweb</groupId>
             <artifactId>util</artifactId>
             <classifier>tests</classifier>

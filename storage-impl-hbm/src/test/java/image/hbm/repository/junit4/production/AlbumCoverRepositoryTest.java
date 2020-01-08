@@ -2,17 +2,18 @@ package image.hbm.repository.junit4.production;
 
 import image.hbm.repository.springconfig.HbmProdJdbcDbConfig;
 import image.persistence.repository.AlbumRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import static image.persistence.entity.util.DateUtils.safeFormat;
 import static org.exparity.hamcrest.date.DateMatchers.sameOrBefore;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -22,9 +23,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @RunWith(SpringRunner.class)
 @HbmProdJdbcDbConfig
 @Category(HbmProdJdbcDbConfig.class)
+@Slf4j
 public class AlbumCoverRepositoryTest {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverRepositoryTest.class);
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss.SSS").withZone(ZoneOffset.UTC);
 
 	@Autowired
 	private AlbumRepository albumRepository;
@@ -33,6 +35,6 @@ public class AlbumCoverRepositoryTest {
 	public void getAlbumCoversLastUpdateDate() {
 		Date date = this.albumRepository.getAlbumCoversLastUpdateDate();
 		assertThat(date, sameOrBefore(new Date()));
-		logger.debug("albumCoversLastUpdateDate: {}", sdf.format(date));
+		log.debug("albumCoversLastUpdateDate: {}", safeFormat(date, sdf));
 	}
 }

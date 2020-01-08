@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * Created by adr on 2/21/18.
@@ -29,13 +30,11 @@ public class JsonMapperConfig {
 		ObjectMapper mapper = new ObjectMapper();
 
 		// using server's timezone
-//		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy"));
-		// using server's timezone
-		mapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
-		// using server's GMT
-//		mapper.setDateFormat(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss") {{
-//			setTimeZone(TimeZone.getTimeZone("GMT"));
-//		}});
+//		mapper.setDateFormat(new SimpleDateFormat(DATE_FORMAT));
+		// GMT = UTC
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		mapper.setDateFormat(simpleDateFormat);
 
 		Hibernate5Module hm = new Hibernate5Module()
 				.disable(Hibernate5Module.Feature.FORCE_LAZY_LOADING)

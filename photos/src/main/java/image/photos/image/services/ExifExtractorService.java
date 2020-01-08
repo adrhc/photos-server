@@ -19,12 +19,13 @@ import org.springframework.stereotype.Service;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.function.Consumer;
 
 import static exifweb.util.SuppressExceptionUtils.ignoreExc;
-import static exifweb.util.SuppressExceptionUtils.safeDateParse;
+import static image.persistence.entity.util.DateUtils.safeParse;
 
 /**
  * Created with IntelliJ IDEA.
@@ -37,10 +38,10 @@ import static exifweb.util.SuppressExceptionUtils.safeDateParse;
 @Slf4j
 public class ExifExtractorService {
 	/**
-	 * metadata extractor uses this yyyy:MM:dd format
+	 * metadata extractor uses this yyyy.MM.dd format
 	 */
-	private static final SimpleDateFormat sdf =
-			new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern("yyyy:MM:dd HH:mm:ss").withZone(ZoneOffset.UTC);
 	private static final int WIDTH = 0;
 	private static final int HEIGHT = 1;
 	private final int maxThumbSizeInt;
@@ -63,7 +64,7 @@ public class ExifExtractorService {
 
 		// EXIF loading
 		try {
-			loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
+			this.loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
 		} catch (FileNotFoundException e) {
 			// path no longer exists
 			throw e;
@@ -85,7 +86,7 @@ public class ExifExtractorService {
 		// update exifData with the Image's dimensions
 		if (imageMetadata.getExifData().getImageHeight() == 0 ||
 				imageMetadata.getExifData().getImageWidth() == 0) {
-			loadDimensions(imageMetadata.getExifData(), imgFile);
+			this.loadDimensions(imageMetadata.getExifData(), imgFile);
 		}
 
 		return imageMetadata;
@@ -112,7 +113,7 @@ public class ExifExtractorService {
 		ignoreExcWithLog.accept(() -> exifData.setIsoSpeedRatings(
 				Integer.parseInt(exifSubIFDDescriptor.getIsoEquivalentDescription())));
 		ignoreExcWithLog.accept(() -> exifData.setDateTimeOriginal(
-				safeDateParse(exifSubIFDDescriptor
+				safeParse(exifSubIFDDescriptor
 						.getDescription(ExifDirectoryBase.TAG_DATETIME_ORIGINAL), sdf)));
 		ignoreExcWithLog.accept(() -> exifData.setShutterSpeedValue(exifSubIFDDescriptor.getShutterSpeedDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setApertureValue(exifSubIFDDescriptor.getApertureValueDescription()));

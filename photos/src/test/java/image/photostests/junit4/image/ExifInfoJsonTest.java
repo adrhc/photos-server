@@ -15,8 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
+import static image.persistence.entity.util.DateUtils.safeFormat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
@@ -28,14 +30,11 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = JsonMapperConfig.class)
 @Category(JsonMapperConfig.class)
 public class ExifInfoJsonTest {
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern(JsonMapperConfig.DATE_FORMAT).withZone(ZoneOffset.UTC);
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageJsonTest.class);
-
 	@Autowired
 	private ObjectMapper mapper;
-	private SimpleDateFormat sdf = new SimpleDateFormat(JsonMapperConfig.DATE_FORMAT);
-//	private SimpleDateFormat sdf = new SimpleDateFormat(JsonMapperConfig.DATE_FORMAT) {{
-//		setTimeZone(TimeZone.getTimeZone("GMT"));
-//	}};
 
 	@Test
 	public void decodeExifInfoJson() throws IOException, ParseException {
@@ -43,7 +42,7 @@ public class ExifInfoJsonTest {
 		ExifInfo exifInfo = this.mapper.readValue(json, ExifInfo.class);
 		assertThat(exifInfo, notNullValue());
 		// use json.dateTimeOriginal
-		assertEquals(this.sdf.format(exifInfo.getDateTimeOriginal()), "17.07.2016 09:18:41");
+		assertEquals(safeFormat(exifInfo.getDateTimeOriginal(), sdf), "17.07.2016 09:18:41");
 		logger.debug(exifInfo.toString());
 	}
 }

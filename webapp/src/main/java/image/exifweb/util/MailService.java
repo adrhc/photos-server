@@ -4,10 +4,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static image.persistence.entity.util.DateUtils.safeFormat;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,13 +21,14 @@ import java.util.List;
  */
 @Service
 public class MailService {
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	private static final DateTimeFormatter sdf =
+			DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss").withZone(ZoneOffset.UTC);
 
 	public boolean checkMailService() throws IOException, InterruptedException {
-		List<String> params = new ArrayList<String>();
+		List<String> params = new ArrayList<>();
 		params.add("/usr/sbin/email_notify.sh");
 		params.add("by_command");
-		String date = sdf.format(new Date());
+		String date = safeFormat(new Date(), sdf);
 		params.add("[" + date + "] NSA310 mail service status is ok");
 		params.add("[" + date + "] NSA310 mail service status is ok");
 		ProcessBuilder ps = new ProcessBuilder(params);
