@@ -27,16 +27,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class ExifExtractorServiceTest {
 	private static final DateTimeFormatter sdf =
 			DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss").withZone(ZoneOffset.UTC);
-	private static final String IMAGE = "classpath:images/20171105_130105.jpg";
+	private static final String WITH_EXIF_IMAGE = "classpath:images/20171105_130105.jpg";
+	private static final String NO_EXIF_IMAGE = "classpath:images/IMG_1369.JPG";
 	@Autowired
 	private ExifExtractorService service;
 
 	@Test
-	void extractMetadata() throws FileNotFoundException {
-		Path imagePath = pathOf(IMAGE);
+	void extractFromWithExifImage() throws FileNotFoundException {
+		Path imagePath = pathOf(WITH_EXIF_IMAGE);
 		log.debug("path:\n{}", imagePath);
 		ImageMetadata imageMetadata = this.service.extractMetadata(imagePath);
-		assertNotNull(imageMetadata);
 		assertNotNull(imageMetadata);
 		ExifData exifData = imageMetadata.getExifData();
 		assertNotNull(exifData);
@@ -47,5 +47,20 @@ class ExifExtractorServiceTest {
 		assertNotEquals(exifData.getDateTimeOriginal(), imageMetadata.getDateTime());
 		assertNotNull(exifData.getShutterSpeedValue());
 		assertEquals(exifData.getShutterSpeedValue(), "1/17 sec");
+	}
+
+	@Test
+	void extractFromNoExifImage() throws FileNotFoundException {
+		Path imagePath = pathOf(NO_EXIF_IMAGE);
+		log.debug("path:\n{}", imagePath);
+		ImageMetadata imageMetadata = this.service.extractMetadata(imagePath);
+		assertNotNull(imageMetadata);
+		ExifData exifData = imageMetadata.getExifData();
+		assertNotNull(exifData);
+		assertNotNull(imageMetadata.getDateTime());
+		assertNotNull(imageMetadata.getThumbLastModified());
+		assertNotNull(exifData.getDateTimeOriginal());
+		assertEquals(exifData.getDateTimeOriginal(), imageMetadata.getDateTime());
+		assertNull(exifData.getShutterSpeedValue());
 	}
 }
