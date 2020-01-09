@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	 */
 	@TempDir
 	static Path tempDir;
+	private Path jsonDir;
 	@Autowired
 	private ObjectMapper mapper;
 	@Autowired
@@ -66,8 +68,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private MockMvc mockMvc;
 
 	@BeforeAll
-	void setup(WebApplicationContext wac) {
-		super.setupWithTempDir(tempDir);
+	void setup(WebApplicationContext wac) throws IOException {
+		super.setupWithTempDir(this.jsonDir = Files.createDirectory(tempDir.resolve("json")));
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		this.saveConfig(String.valueOf(PHOTOS_PER_PAGE), AppConfigEnum.photos_per_page);
 	}
@@ -98,8 +100,9 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
-	void reImportNone(@TempDir Path emptyAlbumsRoot) throws Exception {
-		this.saveConfig(emptyAlbumsRoot.toString(), AppConfigEnum.albums_path);
+	void reImportNone() throws Exception {
+		this.saveConfig(Files.createDirectory(tempDir
+				.resolve("reImportNone")).toString(), AppConfigEnum.albums_path);
 
 		MvcResult mvcResult = this.mockMvc.perform(
 				post("/json/import/reImport")
@@ -170,8 +173,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 		assertNotNull(album);
 
 		// read 1th asc json as List<AlbumPage>
-		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(tempDir
-				.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
+		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(
+				this.jsonDir.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
 		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
 
 		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)
