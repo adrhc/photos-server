@@ -15,4 +15,8 @@ public class Jpa2ndLevelCacheUtils {
 		CacheImplementor cache = this.em.getEntityManagerFactory().getCache().unwrap(CacheImplementor.class);
 		cache.evictQueryRegions();
 	}
+
+	public void evictAll() {
+		this.em.getEntityManagerFactory().getCache().evictAll();
+	}
 }

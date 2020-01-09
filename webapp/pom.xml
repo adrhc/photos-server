@@ -331,6 +331,7 @@
                     <!--<includeTags>junit5&amp;photos&amp;json</includeTags>-->
                     <!--<includeTags>junit5&amp;photos&amp;misc</includeTags>-->
                     <!--</properties>-->
+                    <!--<reuseForks>true</reuseForks>-->
                 </configuration>
             </plugin>
 

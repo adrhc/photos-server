@@ -68,6 +68,9 @@
     <logger name="org.springframework.cache">
         <level value="warn"/>
     </logger>
+    <logger name="org.springframework.jdbc.datasource.init">
+        <level value="debug"/>
+    </logger>
     <logger name="org.springframework.test.context.cache">
         <level value="warn"/>
     </logger>

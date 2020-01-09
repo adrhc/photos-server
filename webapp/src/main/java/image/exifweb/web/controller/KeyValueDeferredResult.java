@@ -22,7 +22,7 @@ public class KeyValueDeferredResult<K, V> extends DeferredResult<Map<K, V>> {
 				asyncProcessing.accept(deferredResult);
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
-				deferredResult.setErrorResult(Map.of("message", "Pperation failed!"));
+				deferredResult.setErrorResult(Map.of("message", "Preparation failed!"));
 			}
 		});
 		return deferredResult;
@@ -31,6 +31,6 @@ public class KeyValueDeferredResult<K, V> extends DeferredResult<Map<K, V>> {
 	public void setResult(K key, V value) {
 		Map<K, V> model = new HashMap<>(1, 1);
 		model.put(key, value);
-		setResult(model);
+		this.setResult(model);
 	}
 }
