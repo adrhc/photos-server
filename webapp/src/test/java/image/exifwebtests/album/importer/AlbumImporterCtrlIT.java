@@ -56,6 +56,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	 */
 	@TempDir
 	static Path tempDir;
+	// used for photos_json_FS_path
 	private Path jsonDir;
 	@Autowired
 	private ObjectMapper mapper;
