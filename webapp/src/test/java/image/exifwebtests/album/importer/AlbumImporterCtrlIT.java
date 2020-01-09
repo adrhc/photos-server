@@ -35,6 +35,7 @@ import static exifweb.util.concurrency.ThreadUtils.safeSleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -69,6 +70,54 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 		super.setupWithTempDir(tempDir);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 		this.saveConfig(String.valueOf(PHOTOS_PER_PAGE), AppConfigEnum.photos_per_page);
+	}
+
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
+	@Test
+	void reImportAll() throws Exception {
+		MvcResult mvcResult = this.mockMvc.perform(
+				post("/json/import/reImport")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(request().asyncStarted())
+				.andExpect(request().asyncResult(instanceOf(Map.class)))
+				.andReturn();
+
+		this.mockMvc.perform(asyncDispatch(mvcResult))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message")
+						.value("Reimported albums: " +
+								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
+
+		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
+		safeSleep(2000);
+
+		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
+	}
+
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
+	@Test
+	void reImportNone(@TempDir Path emptyAlbumsRoot) throws Exception {
+		this.saveConfig(emptyAlbumsRoot.toString(), AppConfigEnum.albums_path);
+
+		MvcResult mvcResult = this.mockMvc.perform(
+				post("/json/import/reImport")
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(request().asyncStarted())
+				.andExpect(request().asyncResult(instanceOf(Map.class)))
+				.andReturn();
+
+		this.mockMvc.perform(asyncDispatch(mvcResult))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message").value("Reimported albums: none"));
+
+		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
+		safeSleep(2000);
+
+		assertTrue(this.albumRepository.findAll().isEmpty());
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})

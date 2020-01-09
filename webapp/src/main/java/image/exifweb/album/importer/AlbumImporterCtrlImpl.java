@@ -8,7 +8,6 @@ import image.photos.album.services.AlbumImporterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +27,7 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.util.StringUtils.hasText;
 
 /**
  * Created by adr on 2/6/18.
@@ -69,13 +69,14 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 	@Override
 	@PostMapping(value = "/reImport", produces = APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasRole('ADMIN')")
-	public DeferredResult<Map<String, String>> reImport(@RequestBody JsonStringValue json1Value) {
-		logger.debug("BEGIN {}", json1Value.getValue());
+	public DeferredResult<Map<String, String>> reImport(
+			@RequestBody(required = false) JsonStringValue json1Value) {
+		String albumName = json1Value == null ? null : json1Value.getValue();
+		logger.debug("BEGIN {}", albumName == null ? "all" : albumName);
 		return KeyValueDeferredResult.of((deferredResult) -> {
-			String albumName = json1Value.getValue();
-			this.REIMPORT_CHOICES.get(StringUtils.hasText(albumName))
+			this.REIMPORT_CHOICES.get(hasText(albumName))
 					.accept(albumName, deferredResult);
-			logger.debug("[reImport] END {}", json1Value.getValue());
+			logger.debug("[reImport] END {}", albumName == null ? "all" : albumName);
 		}, this.asyncExecutor);
 	}
 
@@ -124,7 +125,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 		}
 		String names = joinAlbumNames(albumEvents);
 		logger.debug("albums re/imported:\n{}", names);
-		deferredResult.setResult("message", "Reimported albums: " + names);
+		deferredResult.setResult("message", "Reimported albums: " + (hasText(names) ? names : "none"));
 	}
 
 	@PostConstruct
