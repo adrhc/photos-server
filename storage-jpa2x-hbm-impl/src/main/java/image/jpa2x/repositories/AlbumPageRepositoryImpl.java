@@ -65,7 +65,9 @@ public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 				(emptyAlbumId ? "" : "AND a.id = :albumId ") +
 				VIEW_HIDDEN_SQL + VIEW_PRINTABLE_SQL +
 				(hasSearch ? "AND i.name LIKE :toSearch " : "") +
-				"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort, AlbumPage.class);
+				// sometimes dateTimeOriginal is the same for many images
+				// so I have to keep the order with some additional column
+				"ORDER BY i.imageMetadata.exifData.dateTimeOriginal " + sort + ", i.id", AlbumPage.class);
 		if (hasSearch) {
 			// searches case-sensitive for name!
 			q.setParameter("toSearch", "%" + toSearch + "%");
