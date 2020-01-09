@@ -74,7 +74,7 @@ class AlbumTopicTest {
 		log.debug("after emission");
 
 		// just sleeping
-		safeSleep(10000);
+		safeSleep(10000L, "albumEventsByTypesTest");
 
 		// todo: make sure to dispose even when an exception occurs
 //		subscription.dispose();
@@ -145,7 +145,7 @@ class AlbumTopicTest {
 		log.debug("after emission");
 
 		// just sleeping
-		safeSleep(1000);
+		safeSleep(1000L, "missEvents");
 
 		log.debug(newAlbums.stream().map(Album::getName).collect(Collectors.joining(", ")));
 	}

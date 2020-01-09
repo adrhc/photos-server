@@ -24,19 +24,33 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 
 	@Override
 	public Integer getPhotosPerPage() {
-		String photosPerPage = findValueByEnumeratedName(AppConfigEnum.photos_per_page);
+		String photosPerPage = this.findValueByEnumeratedName(AppConfigEnum.photos_per_page);
 		return Integer.valueOf(photosPerPage);
 	}
 
 	@Override
 	public String getAlbumsPath() {
-		return findValueByEnumeratedName(AppConfigEnum.albums_path);
+		return this.findValueByEnumeratedName(AppConfigEnum.albums_path);
 	}
 
 	@Override
 	public void updateValue(String value, Integer id) {
 		AppConfig appConfig = this.em.find(AppConfig.class, id);
 		appConfig.setValue(value);
+	}
+
+	@Override
+	public AppConfig updateOrCreate(String value, AppConfigEnum appConfigEnum) {
+		AppConfig appConfig = this.findByEnumeratedName(appConfigEnum);
+		if (appConfig != null) {
+			appConfig.setValue(value);
+			return appConfig;
+		}
+		AppConfig config = new AppConfig();
+		config.setValue(value);
+		config.setName(appConfigEnum.getValue());
+		this.em.persist(config);
+		return config;
 	}
 
 	/**
@@ -51,7 +65,7 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 
 	@Override
 	public String findValueByEnumeratedName(AppConfigEnum appConfigEnum) {
-		return findByEnumeratedName(appConfigEnum).getValue();
+		return this.findByEnumeratedName(appConfigEnum).getValue();
 	}
 
 	/**
@@ -60,6 +74,6 @@ public class AppConfigRepositoryCustomImpl implements AppConfigRepositoryCustom 
 	 */
 	@Override
 	public void updateAll(List<AppConfig> appConfigs) {
-		appConfigs.forEach(c -> updateValue(c.getValue(), c.getId()));
+		appConfigs.forEach(c -> this.updateValue(c.getValue(), c.getId()));
 	}
 }

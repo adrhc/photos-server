@@ -7,19 +7,21 @@ import image.exifweb.web.json.JsonStringValue;
 import image.exifwebtests.app.AppConfigFromClassPath;
 import image.exifwebtests.config.WebInMemoryDbConfig;
 import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.persistence.entity.Album;
-import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.repository.ESortType;
 import image.photos.album.services.AlbumPageService;
 import image.photos.infrastructure.filestore.FileStoreService;
+import lombok.extern.slf4j.Slf4j;
+import net.jcip.annotations.NotThreadSafe;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -41,9 +43,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Is @NotThreadSafe because @BeforeEach deletes all albums!
+ */
+@NotThreadSafe
 @WebInMemoryDbConfig
-@DirtiesContext
 @Tag("controller")
+@Slf4j
 class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
 	private static final String CASA_URLUIENI = "2017-07-15 Casa Urluieni";
@@ -57,7 +63,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	@TempDir
 	static Path tempDir;
 	// used for photos_json_FS_path
-	private Path jsonDir;
+	static Path jsonDir;
 	@Autowired
 	private ObjectMapper mapper;
 	@Autowired
@@ -66,13 +72,23 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private AlbumRepository albumRepository;
 	@Autowired
 	private AlbumPageService albumPageService;
+	@Autowired
+	private Jpa2ndLevelCacheUtils cacheUtils;
 	private MockMvc mockMvc;
 
 	@BeforeAll
-	void setup(WebApplicationContext wac) throws IOException {
-		super.setupWithTempDir(this.jsonDir = Files.createDirectory(tempDir.resolve("json")));
+	static void beforeAll() throws IOException {
+		jsonDir = Files.createDirectory(tempDir.resolve("json"));
+	}
+
+	@BeforeEach
+	void setup(WebApplicationContext wac) {
+		this.cacheUtils.evictAll();
+		this.albumRepository.deleteAll();
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-		this.saveConfig(String.valueOf(PHOTOS_PER_PAGE), AppConfigEnum.photos_per_page);
+		this.defaultAlbumsRoot();
+		this.photosJsonPath(jsonDir);
+		this.photosPerPage(PHOTOS_PER_PAGE);
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
@@ -94,16 +110,17 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		safeSleep(2000);
+		safeSleep(2000L, "reImportAll");
 
 		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
+
+		log.debug("END");
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void reImportNone() throws Exception {
-		this.saveConfig(Files.createDirectory(tempDir
-				.resolve("reImportNone")).toString(), AppConfigEnum.albums_path);
+		this.albumsRoot(Files.createDirectory(tempDir.resolve("reImportNone")));
 
 		MvcResult mvcResult = this.mockMvc.perform(
 				post("/json/import/reImport")
@@ -119,9 +136,11 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(jsonPath("$.message").value("Reimported albums: none"));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		safeSleep(2000);
+		safeSleep(2000L, "reImportNone");
 
 		assertTrue(this.albumRepository.findAll().isEmpty());
+
+		log.debug("END");
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
@@ -143,9 +162,11 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		safeSleep(2000);
+		safeSleep(2000L, "importNewAlbumsOnly");
 
 		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
+
+		log.debug("END");
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
@@ -167,6 +188,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message")
 						.value("Reimported album: " + MISSING_ALBUM + " failed"));
+
+		log.debug("END");
 	}
 
 	private void verifyAlbum(String name) throws IOException {
@@ -175,7 +198,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 
 		// read 1th asc json as List<AlbumPage>
 		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(
-				this.jsonDir.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
+				jsonDir.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
 		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
 
 		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)

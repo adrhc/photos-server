@@ -14,6 +14,8 @@ public interface AppConfigRepositoryCustom {
 
 	void updateValue(String value, Integer appConfigId);
 
+	AppConfig updateOrCreate(String value, AppConfigEnum appConfigEnum);
+
 	AppConfig findByEnumeratedName(AppConfigEnum appConfigEnum);
 
 	String findValueByEnumeratedName(AppConfigEnum appConfigEnum);
