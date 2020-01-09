@@ -24,10 +24,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static exifweb.util.concurrency.ThreadUtils.safeSleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -40,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("controller")
 class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
+	private static final String CASA_URLUIENI = "2017-07-15 Casa Urluieni";
 	private static final String MISSING_ALBUM = "MISSING ALBUM";
 	private static final int PHOTOS_PER_PAGE = 5;
 	/**
@@ -81,13 +84,17 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message")
-						.value("imported albums: " + SIMFONIA_LALELELOR));
+						.value("imported albums: " +
+								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
 		safeSleep(2000);
 
-		// load album from DB
-		Album album = this.albumRepository.findByName(SIMFONIA_LALELELOR);
+		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
+	}
+
+	private void verifyAlbum(String name) throws IOException {
+		Album album = this.albumRepository.findByName(name);
 		assertNotNull(album);
 
 		// read 1th asc json as List<AlbumPage>
