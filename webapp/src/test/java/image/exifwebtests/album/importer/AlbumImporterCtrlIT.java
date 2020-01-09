@@ -93,24 +93,6 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
 	}
 
-	private void verifyAlbum(String name) throws IOException {
-		Album album = this.albumRepository.findByName(name);
-		assertNotNull(album);
-
-		// read 1th asc json as List<AlbumPage>
-		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(tempDir
-				.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
-		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
-
-		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)
-		this.albumPageService.getPage(1, ESortType.ASC, null, false, false, album.getId())
-				.forEach(fromDbAlbumPage -> {
-					// 20120.01.05: AlbumPage.thumbLastModified is excluded from serialization to JSON!
-					fromDbAlbumPage.setThumbLastModified(null);
-					assertThat(albumPages, hasItem(fromDbAlbumPage));
-				});
-	}
-
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void importMissingAlbum() throws Exception {
@@ -130,5 +112,23 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message")
 						.value("Reimported album: " + MISSING_ALBUM + " failed"));
+	}
+
+	private void verifyAlbum(String name) throws IOException {
+		Album album = this.albumRepository.findByName(name);
+		assertNotNull(album);
+
+		// read 1th asc json as List<AlbumPage>
+		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(tempDir
+				.resolve(album.getId().toString()).resolve("asc1.json"), new TypeReference<>() {});
+		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
+
+		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)
+		this.albumPageService.getPage(1, ESortType.ASC, null, false, false, album.getId())
+				.forEach(fromDbAlbumPage -> {
+					// 20120.01.05: AlbumPage.thumbLastModified is excluded from serialization to JSON!
+					fromDbAlbumPage.setThumbLastModified(null);
+					assertThat(albumPages, hasItem(fromDbAlbumPage));
+				});
 	}
 }
