@@ -219,6 +219,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(jsonPath("$.message")
 						.value("Reimported album: " + SIMFONIA_LALELELOR));
 
+		safeSleep(2000L, "reImportExistingPath");
+
 		log.debug("END");
 	}
 
