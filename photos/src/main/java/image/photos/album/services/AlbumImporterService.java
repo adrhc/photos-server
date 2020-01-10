@@ -164,26 +164,35 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 			// heavy / light lists construction
 			foundImageNames = Flux.fromStream(this.fileStoreService.walk(path))
+
+					.parallel(cpus, cpus)
+					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "stage1"), 1)
+					.log()
+					.doOnNext(it -> log.debug("[stage1] {}", fileName(it)))
+
 					// imgFile -> CategorizedUnsafeProcessing
 					.map(imgFile -> this.imageImporterService
 							.importFromFile(imgFile, album)
 							.map(it -> Tuples.of(it, imgFile)))
 					.filter(Optional::isPresent)
 					.map(Optional::get)
+					.sequential(cpus)
+
 					// grouping by processing type (HEAVY / LIGHTWEIGHT)
 					.log()
 					.doOnNext(it -> log.debug("[{} before groupBy]", it.getT1().getType()))
-					.groupBy(it -> it.getT1().getType(), total)
+					.groupBy(it -> it.getT1().getType(), 11)
+					// cpus * EnumSet.allOf(ProcessingTypeEnum.class).size())
 					// each group is a Flux which is flattened
 					.log()
 					.doOnNext(it -> log.debug("[{} before flatMap-group]", it.key()))
 					.flatMap(group -> group
 									// each group is processed on threads "rails" (aka parallel & runOn)
-									.parallel(parallelism.get(group.key()))
+									.parallel(parallelism.get(group.key()), 17)
 
 //							        .runOn(Schedulers.fromExecutorService(executorService, String.valueOf(group.key()) + "-import"))
 									.runOn(Schedulers.newBoundedElastic(parallelism.get(group.key()),
-											Integer.MAX_VALUE, String.valueOf(group.key()) + "-import"))
+											Integer.MAX_VALUE, String.valueOf(group.key()) + "-import"), 19)
 
 									.log()
 									.doOnNext(tuple2 -> log.debug("[{} before flatMap-mono]", group.key()))
@@ -201,12 +210,12 @@ public class AlbumImporterService implements IImageFlagsUtils {
 															.get()
 															// after db save
 															.getEntity().getName(), monoTuple2.getT1().getType()))
-											.log()
 											.doOnNext(imageName -> log.debug("[{} after mono processing] {}", group.key(), imageName))
 											.doOnError(FileNotFoundException.class, t ->
 													log.error("File no longer exists:\n{}", t.getMessage()))
+											// 1: see onSubscribe([Fuseable] FluxPublishOn.PublishOnSubscriber)
 											.onErrorResume(monoTuple2 -> Mono.empty()), false, 1),
-							total / 2)
+							1)
 //							EnumSet.allOf(ProcessingTypeEnum.class).size())
 					.log()
 					.doOnNext(tuple2 -> log.debug("[{} done] {}", tuple2.getT2(), tuple2.getT1()))
