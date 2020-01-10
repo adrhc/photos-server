@@ -171,7 +171,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
-	void importMissingAlbum() throws Exception {
+	void reImportMissingPath() throws Exception {
 		MvcResult mvcResult = this.mockMvc.perform(
 				post("/json/import/reImport")
 						.content(this.mapper.writeValueAsString(
@@ -188,6 +188,29 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message")
 						.value("Reimported album: " + MISSING_ALBUM + " failed"));
+
+		log.debug("END");
+	}
+
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
+	@Test
+	void reImportExistingPath() throws Exception {
+		MvcResult mvcResult = this.mockMvc.perform(
+				post("/json/import/reImport")
+						.content(this.mapper.writeValueAsString(
+								new JsonStringValue(SIMFONIA_LALELELOR)))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(request().asyncStarted())
+				.andExpect(request().asyncResult(instanceOf(Map.class)))
+				.andReturn();
+
+		this.mockMvc.perform(asyncDispatch(mvcResult))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message")
+						.value("Reimported album: " + SIMFONIA_LALELELOR));
 
 		log.debug("END");
 	}

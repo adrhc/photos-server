@@ -13,7 +13,6 @@ import image.persistence.entity.image.IImageFlagsUtils;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.image.helpers.ImageHelper;
-import image.photos.image.services.ImageImportOperation;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.filestore.FileStoreService;
@@ -29,21 +28,16 @@ import reactor.util.function.Tuples;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 import static image.jpa2x.util.PathUtils.fileName;
-import static image.photos.image.services.ImageImportProcTypeEnum.HEAVY;
+import static image.photos.image.services.ProcessingTypeEnum.HEAVY;
+import static image.photos.image.services.ProcessingTypeEnum.LIGHTWEIGHT;
 
 /**
  * Created with IntelliJ IDEA.
@@ -151,81 +145,79 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		// always be true because we are skipping (new) empty albums.
 		AtomicBoolean isAtLeast1ImageChanged = new AtomicBoolean(false);
 
-		List<String> foundImageNames = Collections.synchronizedList(new ArrayList<>());
+		Optional<List<String>> foundImageNames;
 
 		// iterate and process image files
 		if (this.albumHelper.isAlbumWithNoFiles(path)) {
 			// existing empty album
 			log.debug("BEGIN album with no pictures:\n{}", path);
+			foundImageNames = Optional.empty();
 		} else {
 			// take only files existing in the album's directory but not sub-directories
 			log.debug("BEGIN album has pictures:\n{}", path);
 
-			List<Tuple2<ImageImportOperation<Supplier<ImageEvent>,
-					FileNotFoundException>, Path>> heavy = Collections.synchronizedList(new ArrayList<>());
-			List<Tuple2<ImageImportOperation<Supplier<ImageEvent>,
-					FileNotFoundException>, Path>> lightweight = Collections.synchronizedList(new ArrayList<>());
+			int cpus = Runtime.getRuntime().availableProcessors();
+			int total = cpus * 3 / 2;
+			var parallelism = Map.of(HEAVY, cpus, LIGHTWEIGHT, total - cpus);
+
+//			var executorService = Executors.newFixedThreadPool(total);
 
 			// heavy / light lists construction
-			this.fileStoreService.walk(path)
+			foundImageNames = Flux.fromStream(this.fileStoreService.walk(path))
+					// imgFile -> CategorizedUnsafeProcessing
 					.map(imgFile -> this.imageImporterService
-							.importFromFile(imgFile, album).map(it -> Tuples.of(it, imgFile)))
+							.importFromFile(imgFile, album)
+							.map(it -> Tuples.of(it, imgFile)))
 					.filter(Optional::isPresent)
 					.map(Optional::get)
-					.forEach(it -> (it.getT1().getType().equals(HEAVY) ? heavy : lightweight).add(it));
+					// grouping by processing type (HEAVY / LIGHTWEIGHT)
+					.groupBy(it -> it.getT1().getType(), cpus * cpus)
+					// each group is a Flux which is flattened
+					.flatMap(group -> group
+									// each group is processed on threads "rails" (aka parallel & runOn)
+									.log()
+									.parallel(parallelism.get(group.key()))
 
-			int cpus = Runtime.getRuntime().availableProcessors();
-			int parallelism = cpus * 3 / 2;
-			ExecutorService executorService = Executors.newFixedThreadPool(parallelism);
+//							        .runOn(Schedulers.fromExecutorService(executorService, String.valueOf(group.key()) + "-import"))
+									.runOn(Schedulers.newBoundedElastic(parallelism.get(group.key()),
+											Integer.MAX_VALUE, String.valueOf(group.key()) + "-import"))
 
-			// heavy processing (EXIF + db save)
-			Mono<Void> heavyMono = Flux.fromIterable(heavy)
-					.log()
-					.parallel(cpus, cpus)
-					.runOn(Schedulers.fromExecutorService(executorService, "light"))
-					.log()
-					.doOnNext(it -> log.debug("[heavy, before flatMap]"))
-					.flatMap(it -> Mono.just(it)
-							.doOnNext(it1 -> log.debug("[heavy mono] {}", fileName(it1.getT2())))
-							.map(it1 -> sneak(it1.getT1()::getUnsafe).get().getEntity().getName())
-							.doOnError(FileNotFoundException.class, t ->
-									log.error("File no longer exists:\n{}", t.getMessage()))
-							.onErrorResume(h1 -> Mono.empty()))
-					.doOnNext(it -> {
-						log.debug("[heavy] {}", it);
-						foundImageNames.add(it);
-					})
-					.then();
-
-			// light processing (db save only)
-			Mono<Void> lightMono = Flux.fromIterable(lightweight)
-					.log()
-					.parallel(parallelism - cpus, parallelism - cpus)
-					.runOn(Schedulers.fromExecutorService(executorService, "light"))
-					.log()
-					.doOnNext(it -> log.debug("[light, before flatMap]"))
-					.flatMap(it -> Mono.just(it)
-							.doOnNext(it1 -> log.debug("[light mono] {}", fileName(it1.getT2())))
-							.map(it1 -> sneak(it1.getT1()::getUnsafe).get().getEntity().getName())
-							.doOnError(FileNotFoundException.class, t1 ->
-									log.error("File no longer exists:\n{}", t1.getMessage()))
-							.onErrorResume(it1 -> Mono.empty()))
-					.doOnNext(it -> {
-						log.debug("[light] {}", it);
-						foundImageNames.add(it);
-					})
-					.then();
-
-			Mono.zipDelayError(it -> it, heavyMono, lightMono).block();
+									.log()
+									.doOnNext(tuple2 -> log.trace("[{} before mono creation]", group.key()))
+									// Changing to Mono in order to have doOnError & onErrorResume per Image.
+									// I would use onErrorContinue but ParallelFlux doesn't have it.
+									.flatMap(tuple2 -> Mono
+											.just(tuple2)
+											.doOnNext(monoTuple2 -> log.trace("[{} before mono processing] {}",
+													group.key(), fileName(monoTuple2.getT2())))
+											.map(monoTuple2 ->
+													// HEAVY is EXIF extracting
+													Tuples.of(sneak(monoTuple2.getT1()::getUnsafe)
+															// db save
+															.get()
+															// after db save
+															.getEntity().getName(), monoTuple2.getT1().getType()))
+											.doOnNext(imageName -> log.trace("[{} after mono processing] {}", group.key(), imageName))
+											.doOnError(FileNotFoundException.class, t ->
+													log.error("File no longer exists:\n{}", t.getMessage()))
+											.onErrorResume(monoTuple2 -> Mono.empty())),
+							1)
+//							EnumSet.allOf(ProcessingTypeEnum.class).size())
+					.doOnNext(tuple2 -> log.debug("[{} done] {}", tuple2.getT2(), tuple2.getT1()))
+					.map(Tuple2::getT1)
+					.collectList()
+					.blockOptional();
 		}
 
-		isAtLeast1ImageChanged.set(!foundImageNames.isEmpty());
+		foundImageNames.ifPresent(list -> isAtLeast1ImageChanged.set(!list.isEmpty()));
 		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
 		// remove db-images having no corresponding file
 		if (!isNewAlbum) {
-			List<ImageEvent> events = this.removeImagesHavingNoFile(album, foundImageNames);
-			isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
+			foundImageNames.ifPresent(list -> {
+				List<ImageEvent> events = this.removeImagesHavingNoFile(album, list);
+				isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
+			});
 		}
 
 		// mark album as dirty

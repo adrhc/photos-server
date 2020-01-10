@@ -13,7 +13,6 @@ import reactor.core.scheduler.Schedulers;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.EnumSet;
-import java.util.concurrent.ExecutorService;
 
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
@@ -22,13 +21,11 @@ import static image.infrastructure.messaging.album.AlbumEventTypeEnum.UPDATED;
 @Slf4j
 public class AlbumExporterSubscription implements AlbumSubscription {
 	private final AlbumTopic albumTopic;
-	private final ExecutorService executorService;
 	private final AlbumExporterService exporterService;
 	private Disposable disposable;
 
-	public AlbumExporterSubscription(AlbumTopic albumTopic, ExecutorService executorService, AlbumExporterService exporterService) {
+	public AlbumExporterSubscription(AlbumTopic albumTopic, AlbumExporterService exporterService) {
 		this.albumTopic = albumTopic;
-		this.executorService = executorService;
 		this.exporterService = exporterService;
 	}
 
@@ -36,7 +33,7 @@ public class AlbumExporterSubscription implements AlbumSubscription {
 	public Disposable subscribe(Flux<AlbumEvent> flux) {
 		this.disposable = flux
 				.filter(e -> EnumSet.of(CREATED, UPDATED).contains(e.getType()))
-				.publishOn(Schedulers.fromExecutor(this.executorService))
+				.publishOn(Schedulers.newBoundedElastic(1, Integer.MAX_VALUE, "album-exporter"))
 				.subscribe(
 						e -> {
 							assert !Thread.currentThread().getName().equals("main");

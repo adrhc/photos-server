@@ -21,7 +21,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static exifweb.util.SuppressExceptionUtils.ignoreExc;
@@ -105,8 +107,8 @@ public class ExifExtractorService {
 
 		directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 		ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-		Consumer<Runnable> ignoreExcWithLog = r ->
-				ignoreExc(r, e -> log.error("EXIF error:\n{}", imgFile));
+		List<Exception> exifErrors = new ArrayList<>();
+		Consumer<Runnable> ignoreExcWithLog = r -> ignoreExc(r, exifErrors::add);
 		ignoreExcWithLog.accept(() -> exifData.setExposureTime(exifSubIFDDescriptor.getExposureTimeDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setfNumber(exifSubIFDDescriptor.getFNumberDescription()));
 		ignoreExcWithLog.accept(() -> exifData.setExposureProgram(exifSubIFDDescriptor.getExposureProgramDescription()));
@@ -136,6 +138,8 @@ public class ExifExtractorService {
 		directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
 		ignoreExcWithLog.accept(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifDirectoryBase.TAG_MODEL)));
+
+		log.error("EXIF errors ({}) exist for:\n{}", exifErrors.size(), imgFile);
 	}
 
 	private void loadDimensions(ExifData imageDimensions, Path path) {

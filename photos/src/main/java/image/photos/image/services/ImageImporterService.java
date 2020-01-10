@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static image.jpa2x.util.ImageUtils.imageNameFrom;
-import static image.photos.image.services.ImageImportOperation.heavyImport;
-import static image.photos.image.services.ImageImportOperation.lightweightImport;
+import static image.photos.image.services.CategorizedUnsafeProcessing.heavyImport;
+import static image.photos.image.services.CategorizedUnsafeProcessing.lightweightImport;
 
 @Component
 @Slf4j
@@ -39,9 +39,9 @@ public class ImageImporterService {
 	}
 
 	/**
-	 * @return ImageImportOperation(s) containing the DB operation to be performed
+	 * @return CategorizedUnsafeProcessing(s) containing the DB operation to be performed
 	 */
-	public Optional<ImageImportOperation<Supplier<ImageEvent>,
+	public Optional<CategorizedUnsafeProcessing<Supplier<ImageEvent>,
 			FileNotFoundException>> importFromFile(Path imgFile, Album album) {
 		assert !this.fileStoreService.isDirectory(imgFile) :
 				"Wrong image file (is a directory):\n{}" + imgFile;
@@ -61,7 +61,7 @@ public class ImageImporterService {
 
 	private Supplier<ImageEvent> createFromFile(Path imgFile, Album album) throws FileNotFoundException {
 		String imageName = imageNameFrom(imgFile);
-		log.debug("insert {}/{}", album.getName(), imageName);
+		log.debug("{}/{}", album.getName(), imageName);
 		Image image = new Image();
 		image.setImageMetadata(this.exifExtractorService.extractMetadata(imgFile));
 		image.setName(imageName);
@@ -70,7 +70,7 @@ public class ImageImporterService {
 		return () -> this.imageCUDService.persist(image);
 	}
 
-	private Optional<ImageImportOperation<Supplier<ImageEvent>,
+	private Optional<CategorizedUnsafeProcessing<Supplier<ImageEvent>,
 			FileNotFoundException>> updateFromFile(Path imgFile, Image image) {
 		var dbImageLastModified = image.getImageMetadata().getDateTime();
 		var imageLastModifiedFromFile = this.fileStoreService.lastModifiedTime(imgFile);
