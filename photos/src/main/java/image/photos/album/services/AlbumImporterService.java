@@ -21,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -171,7 +173,12 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 					.log()
 					.doOnNext(it -> log.debug("[{} before db insert/update]", it.getType()))
-					.map(it -> sneak(() -> it.getUnsafe().get()))
+					.flatMap(it -> Mono
+							.just(it)
+							.map(it1 -> sneak(() -> it1.getUnsafe().get()))
+							.onErrorContinue(FileNotFoundException.class,
+									(t, o) -> log.error("File missing:\n{}", t.getMessage()))
+					)
 
 					.doOnNext(event -> isAtLeast1ImageChanged.compareAndSet(
 							false, !event.getType().equals(ImageEventTypeEnum.NOTHING)))
@@ -184,10 +191,9 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		// remove db-images having no corresponding file
 		if (!isNewAlbum) {
-			foundImageNames.ifPresent(list -> {
-				List<ImageEvent> events = this.removeImagesHavingNoFile(album, list);
-				isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
-			});
+			List<ImageEvent> events = this.removeImagesHavingNoFile(
+					album, foundImageNames.orElse(Collections.emptyList()));
+			isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
 		}
 
 		// mark album as dirty
