@@ -1003,7 +1003,7 @@
                     <configuration>
                         <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
                         <forkCount>1C</forkCount>
-                        <reuseForks>true</reuseForks>
+                        <reuseForks>false</reuseForks>
                         <disableXmlReport>false</disableXmlReport>
                         <!--<argLine>-Dspring.profiles.active=jdbc-ds</argLine>-->
                         <environmentVariables>
