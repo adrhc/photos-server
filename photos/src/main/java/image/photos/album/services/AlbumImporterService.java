@@ -165,7 +165,9 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			// heavy / light lists construction
 			foundImageNames = Flux.fromStream(this.fileStoreService.walk(path))
 
+					// Prepare this Flux by dividing data on a number of 'rails' matching the number of CPU cores, in a round-robin fashion.
 					.parallel(cpus, cpus)
+					// Specifies where each 'rail' will observe its incoming values with possibly work-stealing and a given prefetch amount.
 					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "stage1"), 1)
 					.log()
 					.doOnNext(it -> log.debug("[stage1] {}", fileName(it)))
