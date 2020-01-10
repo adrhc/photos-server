@@ -20,12 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-import reactor.util.function.Tuple2;
-import reactor.util.function.Tuples;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
@@ -36,8 +32,6 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 import static image.jpa2x.util.PathUtils.fileName;
-import static image.photos.image.services.ProcessingTypeEnum.HEAVY;
-import static image.photos.image.services.ProcessingTypeEnum.LIGHTWEIGHT;
 
 /**
  * Created with IntelliJ IDEA.
@@ -124,10 +118,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 * @return true means "path/album created"
 	 */
 	private Optional<AlbumEvent> importByAlbumPath(Path path) throws IOException {
-		StopWatch sw = new StopWatch();
-		sw.start(path.toString());
-
 		String albumName = albumNameFrom(path);
+
+		StopWatch stopWatch = new StopWatch(albumName);
+		stopWatch.start(albumName);
+
 
 		// determine or create album
 		// path este album nou dar nu are poze
@@ -135,7 +130,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 		if (albumEvent.isEmpty()) {
 			// new but empty album
-			sw.stop();
+			stopWatch.stop();
+			log.debug("END album\n{}", stopWatch.shortSummary());
 			return Optional.of(AlbumEvent.of(new Album(albumName), NEW_BUT_EMPTY));
 		}
 
@@ -157,10 +153,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			log.debug("BEGIN album has pictures:\n{}", path);
 
 			int cpus = Runtime.getRuntime().availableProcessors();
-			int total = cpus * 3 / 2;
-			var parallelism = Map.of(HEAVY, cpus, LIGHTWEIGHT, total - cpus);
-
-//			var executorService = Executors.newFixedThreadPool(total);
 
 			// heavy / light lists construction
 			foundImageNames = Flux.fromStream(this.fileStoreService.walk(path))
@@ -168,61 +160,19 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					// Prepare this Flux by dividing data on a number of 'rails' matching the number of CPU cores, in a round-robin fashion.
 					.parallel(cpus, cpus)
 					// Specifies where each 'rail' will observe its incoming values with possibly work-stealing and a given prefetch amount.
-					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "stage1"), 1)
-					.log()
-					.doOnNext(it -> log.debug("[stage1] {}", fileName(it)))
+					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "import"), 1)
 
-					// imgFile -> CategorizedUnsafeProcessing
-					.map(imgFile -> this.imageImporterService
-							.importFromFile(imgFile, album)
-							.map(it -> Tuples.of(it, imgFile)))
+					.log()
+					.doOnNext(it -> log.debug("[before categorized processing] {}", fileName(it)))
+					.map(imgFile -> this.imageImporterService.importFromFile(imgFile, album))
 					.filter(Optional::isPresent)
 					.map(Optional::get)
-					.sequential(cpus)
 
-					// grouping by processing type (HEAVY / LIGHTWEIGHT)
 					.log()
-					.doOnNext(it -> log.debug("[{} before groupBy]", it.getT1().getType()))
-					.groupBy(it -> it.getT1().getType(), 11)
-					// cpus * EnumSet.allOf(ProcessingTypeEnum.class).size())
-					// each group is a Flux which is flattened
-					.log()
-					.doOnNext(it -> log.debug("[{} before flatMap-group]", it.key()))
-					.flatMap(group -> group
-									// each group is processed on threads "rails" (aka parallel & runOn)
-									.parallel(parallelism.get(group.key()), 17)
+					.doOnNext(it -> log.debug("[{} before db insert/update]", it.getType()))
+					.map(it -> sneak(() -> it.getUnsafe().get().getEntity().getName()))
 
-//							        .runOn(Schedulers.fromExecutorService(executorService, String.valueOf(group.key()) + "-import"))
-									.runOn(Schedulers.newBoundedElastic(parallelism.get(group.key()),
-											Integer.MAX_VALUE, String.valueOf(group.key()) + "-import"), 19)
-
-									.log()
-									.doOnNext(procAndFile -> log.debug("[{} before flatMap-mono]", group.key()))
-									// Changing to Mono in order to have doOnError & onErrorResume per Image.
-									// I would use onErrorContinue but ParallelFlux doesn't have it.
-									.flatMap(procAndFile -> Mono
-											.just(procAndFile)
-											.log()
-											.doOnNext(monoTuple2 -> log.debug("[{} before mono processing] {}",
-													group.key(), fileName(monoTuple2.getT2())))
-											.map(monoTuple2 ->
-													// HEAVY is EXIF extracting
-													Tuples.of(sneak(monoTuple2.getT1()::getUnsafe)
-															// db save
-															.get()
-															// after db save
-															.getEntity().getName(), monoTuple2.getT1().getType()))
-											.doOnNext(imageName -> log.debug("[{} after mono processing] {}", group.key(), imageName))
-											.doOnError(FileNotFoundException.class, t ->
-													log.error("File no longer exists:\n{}", t.getMessage()))
-											// 1: see onSubscribe([Fuseable] FluxPublishOn.PublishOnSubscriber)
-											.onErrorResume(monoTuple2 -> Mono.empty()), false, 1),
-							1)
-//							EnumSet.allOf(ProcessingTypeEnum.class).size())
-					.log()
-					.doOnNext(tuple2 -> log.debug("[{} done] {}", tuple2.getT2(), tuple2.getT1()))
-					.map(Tuple2::getT1)
-					.collectList()
+					.collectSortedList(Comparator.naturalOrder())
 					.blockOptional();
 		}
 
@@ -250,8 +200,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			this.albumTopic.emit(albumEvent.get());
 		}
 
-		sw.stop();
-		log.debug("END album:\n{}\n{}", path, sw.shortSummary());
+		stopWatch.stop();
+		log.debug("END album\n{}", stopWatch.shortSummary());
 
 		return albumEvent;
 	}

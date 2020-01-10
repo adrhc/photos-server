@@ -139,7 +139,9 @@ public class ExifExtractorService {
 		ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor((ExifIFD0Directory) directory);
 		ignoreExcWithLog.accept(() -> exifData.setModel(exifIFD0Descriptor.getDescription(ExifDirectoryBase.TAG_MODEL)));
 
-		log.error("EXIF errors ({}) exist for:\n{}", exifErrors.size(), imgFile);
+		if (!exifErrors.isEmpty()) {
+			log.error("EXIF errors ({}) exist for:\n{}", exifErrors.size(), imgFile);
+		}
 	}
 
 	private void loadDimensions(ExifData imageDimensions, Path path) {
