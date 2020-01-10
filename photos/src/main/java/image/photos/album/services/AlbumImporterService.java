@@ -5,6 +5,7 @@ import image.cdm.image.status.ImageFlagEnum;
 import image.infrastructure.messaging.album.AlbumEvent;
 import image.infrastructure.messaging.album.AlbumTopic;
 import image.infrastructure.messaging.image.ImageEvent;
+import image.infrastructure.messaging.image.ImageEventTypeEnum;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageQueryRepository;
 import image.persistence.entity.Album;
@@ -170,13 +171,15 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 					.log()
 					.doOnNext(it -> log.debug("[{} before db insert/update]", it.getType()))
-					.map(it -> sneak(() -> it.getUnsafe().get().getEntity().getName()))
+					.map(it -> sneak(() -> it.getUnsafe().get()))
 
+					.doOnNext(event -> isAtLeast1ImageChanged.compareAndSet(
+							false, !event.getType().equals(ImageEventTypeEnum.NOTHING)))
+					.map(event -> event.getEntity().getName())
 					.collectSortedList(Comparator.naturalOrder())
 					.blockOptional();
 		}
 
-		foundImageNames.ifPresent(list -> isAtLeast1ImageChanged.set(!list.isEmpty()));
 		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
 
 		// remove db-images having no corresponding file
