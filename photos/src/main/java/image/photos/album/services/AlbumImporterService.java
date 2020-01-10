@@ -171,11 +171,14 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 					// grouping by processing type (HEAVY / LIGHTWEIGHT)
-					.groupBy(it -> it.getT1().getType())
+					.log()
+					.doOnNext(it -> log.debug("[{} before groupBy]", it.getT1().getType()))
+					.groupBy(it -> it.getT1().getType(), total)
 					// each group is a Flux which is flattened
+					.log()
+					.doOnNext(it -> log.debug("[{} before flatMap-group]", it.key()))
 					.flatMap(group -> group
 									// each group is processed on threads "rails" (aka parallel & runOn)
-									.log()
 									.parallel(parallelism.get(group.key()))
 
 //							        .runOn(Schedulers.fromExecutorService(executorService, String.valueOf(group.key()) + "-import"))
@@ -183,13 +186,13 @@ public class AlbumImporterService implements IImageFlagsUtils {
 											Integer.MAX_VALUE, String.valueOf(group.key()) + "-import"))
 
 									.log()
-									.doOnNext(tuple2 -> log.trace("[{} before mono creation]", group.key()))
+									.doOnNext(tuple2 -> log.debug("[{} before flatMap-mono]", group.key()))
 									// Changing to Mono in order to have doOnError & onErrorResume per Image.
 									// I would use onErrorContinue but ParallelFlux doesn't have it.
 									.flatMap(tuple2 -> Mono
 											.just(tuple2)
 											.log()
-											.doOnNext(monoTuple2 -> log.trace("[{} before mono processing] {}",
+											.doOnNext(monoTuple2 -> log.debug("[{} before mono processing] {}",
 													group.key(), fileName(monoTuple2.getT2())))
 											.map(monoTuple2 ->
 													// HEAVY is EXIF extracting
@@ -198,12 +201,14 @@ public class AlbumImporterService implements IImageFlagsUtils {
 															.get()
 															// after db save
 															.getEntity().getName(), monoTuple2.getT1().getType()))
-											.doOnNext(imageName -> log.trace("[{} after mono processing] {}", group.key(), imageName))
+											.log()
+											.doOnNext(imageName -> log.debug("[{} after mono processing] {}", group.key(), imageName))
 											.doOnError(FileNotFoundException.class, t ->
 													log.error("File no longer exists:\n{}", t.getMessage()))
-											.onErrorResume(monoTuple2 -> Mono.empty())),
-							1)
+											.onErrorResume(monoTuple2 -> Mono.empty()), false, 1),
+							total / 2)
 //							EnumSet.allOf(ProcessingTypeEnum.class).size())
+					.log()
 					.doOnNext(tuple2 -> log.debug("[{} done] {}", tuple2.getT2(), tuple2.getT1()))
 					.map(Tuple2::getT1)
 					.collectList()
