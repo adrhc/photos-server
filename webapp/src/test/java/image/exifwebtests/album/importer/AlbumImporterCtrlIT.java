@@ -19,6 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -146,7 +148,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void reImportAllHaving1AlbumInDB() throws Exception {
-		this.reImportExistingPath();
+		this.reImportExistingPath(SIMFONIA_LALELELOR);
 		this.reImportAll();
 	}
 
@@ -200,12 +202,13 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
-	@Test
-	void reImportExistingPath() throws Exception {
+	@ParameterizedTest
+	@ValueSource(strings = SIMFONIA_LALELELOR)
+	void reImportExistingPath(String albumToReimport) throws Exception {
 		MvcResult mvcResult = this.mockMvc.perform(
 				post("/json/import/reImport")
 						.content(this.mapper.writeValueAsString(
-								new JsonStringValue(SIMFONIA_LALELELOR)))
+								new JsonStringValue(albumToReimport)))
 						.contentType(MediaType.APPLICATION_JSON)
 						.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -217,7 +220,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message")
-						.value("Reimported album: " + SIMFONIA_LALELELOR));
+						.value("Reimported album: " + albumToReimport));
 
 		safeSleep(2000L, "reImportExistingPath");
 

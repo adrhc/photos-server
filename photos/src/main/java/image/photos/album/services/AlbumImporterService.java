@@ -171,7 +171,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 					// grouping by processing type (HEAVY / LIGHTWEIGHT)
-					.groupBy(it -> it.getT1().getType(), cpus * cpus)
+					.groupBy(it -> it.getT1().getType())
 					// each group is a Flux which is flattened
 					.flatMap(group -> group
 									// each group is processed on threads "rails" (aka parallel & runOn)
@@ -188,6 +188,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 									// I would use onErrorContinue but ParallelFlux doesn't have it.
 									.flatMap(tuple2 -> Mono
 											.just(tuple2)
+											.log()
 											.doOnNext(monoTuple2 -> log.trace("[{} before mono processing] {}",
 													group.key(), fileName(monoTuple2.getT2())))
 											.map(monoTuple2 ->

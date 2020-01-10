@@ -100,6 +100,10 @@
         <level value="warn"/>
     </logger>
 
+    <logger name="reactor">
+        <level value="debug"/>
+    </logger>
+
     <!-- Root Logger -->
     <root>
         <priority value="warn"/>
