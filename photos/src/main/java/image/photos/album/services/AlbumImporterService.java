@@ -195,11 +195,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 											Integer.MAX_VALUE, String.valueOf(group.key()) + "-import"), 19)
 
 									.log()
-									.doOnNext(tuple2 -> log.debug("[{} before flatMap-mono]", group.key()))
+									.doOnNext(procAndFile -> log.debug("[{} before flatMap-mono]", group.key()))
 									// Changing to Mono in order to have doOnError & onErrorResume per Image.
 									// I would use onErrorContinue but ParallelFlux doesn't have it.
-									.flatMap(tuple2 -> Mono
-											.just(tuple2)
+									.flatMap(procAndFile -> Mono
+											.just(procAndFile)
 											.log()
 											.doOnNext(monoTuple2 -> log.debug("[{} before mono processing] {}",
 													group.key(), fileName(monoTuple2.getT2())))
