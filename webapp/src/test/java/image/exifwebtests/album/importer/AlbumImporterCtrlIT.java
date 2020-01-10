@@ -145,6 +145,13 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
+	void reImportAllHaving1AlbumInDB() throws Exception {
+		this.reImportExistingPath();
+		this.reImportAll();
+	}
+
+	@WithMockUser(value = "admin", roles = {"ADMIN"})
+	@Test
 	void importNewAlbumsOnly() throws Exception {
 		MvcResult mvcResult = this.mockMvc.perform(
 				post("/json/import/importNewAlbumsOnly")

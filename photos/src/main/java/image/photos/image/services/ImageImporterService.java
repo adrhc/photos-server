@@ -1,6 +1,7 @@
 package image.photos.image.services;
 
 import image.infrastructure.messaging.image.ImageEvent;
+import image.infrastructure.messaging.image.ImageEventTypeEnum;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -97,6 +98,6 @@ public class ImageImporterService {
 					.updateThumbLastModified(thumbLastModifiedFromFile, image.getId())));
 		}
 
-		return Optional.empty();
+		return Optional.of(lightweightImport(() -> () -> ImageEvent.of(image, ImageEventTypeEnum.NOTHING)));
 	}
 }
