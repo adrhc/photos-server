@@ -148,8 +148,9 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void reImportAllHaving1AlbumInDB() throws Exception {
-		this.reImportExistingPath(SIMFONIA_LALELELOR);
-		this.reImportAll();
+		this.reImportExistingPath(SIMFONIA_LALELELOR);// 1 new
+		this.reImportAll();// 1 new, 1 to update
+		this.reImportAll();// 2 to update
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
@@ -223,6 +224,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 						.value("Reimported album: " + albumToReimport));
 
 		safeSleep(2000L, "reImportExistingPath");
+
+		this.verifyAlbum(albumToReimport);
 
 		log.debug("END");
 	}
