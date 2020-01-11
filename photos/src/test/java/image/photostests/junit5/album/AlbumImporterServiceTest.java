@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.*;
 @Junit5PhotosStageDbConfig
 @ContextConfiguration(classes = {PhotosTestConfig.class, AlbumImporterServiceSpy.class})
 class AlbumImporterServiceTest {
-
 	@Autowired
 	private AlbumImporterService service;
 
