@@ -168,7 +168,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message")
-						.value("imported albums: " +
+						.value("Imported albums: " +
 								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
