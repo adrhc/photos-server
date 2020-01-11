@@ -4,6 +4,7 @@ import image.photos.infrastructure.filestore.FileStoreService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -20,8 +21,8 @@ public class ThumbHelper {
 
 	public ThumbHelper(FileStoreService fileStoreService) {this.fileStoreService = fileStoreService;}
 
-	public Date thumbLastModified(Path imageFile, Date defaultValue) {
-		Path thumbFile = thumbFileForImgFile(imageFile);
+	public Date thumbLastModified(Path imageFile, Date defaultValue) throws IOException {
+		Path thumbFile = this.thumbFileForImgFile(imageFile);
 		if (this.fileStoreService.exists(thumbFile)) {
 			return new Date(this.fileStoreService.lastModifiedTime(thumbFile));
 		} else {

@@ -26,6 +26,7 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,7 +35,6 @@ import java.util.function.Predicate;
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
-import static image.jpa2x.util.PathUtils.fileName;
 
 /**
  * Created with IntelliJ IDEA.
@@ -166,19 +166,16 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "import"), 1)
 
 					.log()
-					.doOnNext(it -> log.debug("[before categorized processing] {}", fileName(it)))
-					.map(imgFile -> this.imageImporterService.importFromFile(imgFile, album))
-					.filter(Optional::isPresent)
-					.map(Optional::get)
-
-					.log()
-					.doOnNext(it -> log.debug("[{} before db insert/update]", it.getType()))
+					.doOnNext(it -> log.debug("[before import] {}", it))
 					.flatMap(it -> Mono
 							.just(it)
-							.map(it1 -> sneak(() -> it1.getUnsafe().get()))
-							.onErrorContinue(FileNotFoundException.class,
-									(t, o) -> log.error("File missing:\n{}", t.getMessage()))
+							.map(it1 -> sneak(() -> this.imageImporterService.importFromFile(it, album)))
+							.onErrorContinue(e -> e instanceof FileNotFoundException
+											|| e instanceof NoSuchFileException,
+									(t, o) -> log.error("File is missing:\n{}", it))
 					)
+					.filter(Optional::isPresent)
+					.map(Optional::get)
 
 					.doOnNext(event -> isAtLeast1ImageChanged.compareAndSet(
 							false, !event.getType().equals(ImageEventTypeEnum.NOTHING)))

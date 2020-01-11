@@ -23,12 +23,12 @@ public class FileStoreServiceImpl implements FileStoreService {
 	public FileStoreServiceImpl(ObjectMapper jsonMapper) {this.jsonMapper = jsonMapper;}
 
 	@Override
-	public long lastModifiedTime(Path path) {
+	public long lastModifiedTime(Path path) throws IOException {
 		return FileStoreUtils.lastModifiedTime(path);
 	}
 
 	@Override
-	public long fileSize(Path path) {
+	public long fileSize(Path path) throws IOException {
 		return FileStoreUtils.fileSize(path);
 	}
 

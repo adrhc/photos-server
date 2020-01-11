@@ -1,7 +1,6 @@
 package image.photos.infrastructure.filestore;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import image.cdm.album.page.AlbumPage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -9,9 +8,9 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public interface FileStoreService {
-	long lastModifiedTime(Path path);
+	long lastModifiedTime(Path path) throws IOException;
 
-	long fileSize(Path path);
+	long fileSize(Path path) throws IOException;
 
 	boolean exists(Path path);
 

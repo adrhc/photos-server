@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.TestPropertySource;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Date;
 
@@ -32,7 +33,7 @@ class ThumbHelperTest {
 	private String albumsDir;
 
 	@Test
-	void getThumbLastModified() {
+	void getThumbLastModified() throws IOException {
 		Path thumbFile = Path.of(this.thumbsDir, "image.jpeg");
 		this.fileStoreService.setSpecialLastModifiedTimeForPath(thumbFile);
 		Date date = this.thumbHelper.thumbLastModified(

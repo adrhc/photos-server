@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -34,7 +35,7 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	void getImages() {
 		List<Image> dbImages = this.imageQueryService.getImages(this.album.getId());
 		this.album.getImages().forEach(i -> {
-			assertImageEquals(i, dbImages.stream()
+			this.assertImageEquals(i, dbImages.stream()
 					.filter(dbi -> dbi.getId().equals(i.getId()))
 					.findAny().orElseThrow(AssertionError::new));
 		});
@@ -45,11 +46,11 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 		Image image = this.album.getImages().get(0);
 		Image dbImage = this.imageQueryService.findByNameAndAlbumId(image.getName(), this.album.getId());
 		Assertions.assertNotNull(dbImage);
-		assertImageEquals(image, dbImage);
+		this.assertImageEquals(image, dbImage);
 	}
 
 	@Test
-	void imageExistsInOtherAlbum() {
+	void imageExistsInOtherAlbum() throws IOException {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName());
 		// found in another album because its album is declared
@@ -59,7 +60,7 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	}
 
 	@Test
-	void noOtherAlbumHasIt() {
+	void noOtherAlbumHasIt() throws IOException {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName());
 		// image found only in its album; the declared album is the real one
@@ -68,7 +69,7 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	}
 
 	@Test
-	void sizeDifference() {
+	void sizeDifference() throws IOException {
 		Image image = this.album.getImages().get(1);
 		Path imgFile = Path.of(image.getName());
 		this.fileStoreService.addSize1Path(imgFile);
@@ -78,7 +79,7 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	}
 
 	@Test
-	void shortName() {
+	void shortName() throws IOException {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName().substring(0, image.getName().length() - 2));
 		// shorter name
@@ -87,7 +88,7 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	}
 
 	@Test
-	void longName() {
+	void longName() throws IOException {
 		Image image = this.album.getImages().get(0);
 		Path imgFile = Path.of(image.getName());
 		// longer name

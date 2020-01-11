@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -33,7 +33,7 @@ class ExifExtractorServiceTest {
 	private ExifExtractorService service;
 
 	@Test
-	void extractFromWithExifImage() throws FileNotFoundException {
+	void extractFromWithExifImage() throws IOException {
 		Path imagePath = pathOf(WITH_EXIF_IMAGE);
 		log.debug("path:\n{}", imagePath);
 		ImageMetadata imageMetadata = this.service.extractMetadata(imagePath);
@@ -50,7 +50,7 @@ class ExifExtractorServiceTest {
 	}
 
 	@Test
-	void extractFromNoExifImage() throws FileNotFoundException {
+	void extractFromNoExifImage() throws IOException {
 		Path imagePath = pathOf(NO_EXIF_IMAGE);
 		log.debug("path:\n{}", imagePath);
 		ImageMetadata imageMetadata = this.service.extractMetadata(imagePath);

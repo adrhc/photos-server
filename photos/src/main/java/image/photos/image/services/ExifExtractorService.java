@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -60,14 +61,15 @@ public class ExifExtractorService {
 		this.fileStoreService = fileStoreService;
 	}
 
-	public ImageMetadata extractMetadata(Path imgFile) throws FileNotFoundException {
-		ImageMetadata imageMetadata =
-				new ImageMetadata(new Date(this.fileStoreService.lastModifiedTime(imgFile)));
+	public ImageMetadata extractMetadata(Path imgFile) throws IOException {
+		// ImageMetadata
+		ImageMetadata imageMetadata = new ImageMetadata(new Date(
+				this.fileStoreService.lastModifiedTime(imgFile)));
 
 		// EXIF loading
 		try {
 			this.loadExifFromImgFile(imageMetadata.getExifData(), imgFile);
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException | NoSuchFileException e) {
 			// path no longer exists
 			throw e;
 		} catch (Exception e) {

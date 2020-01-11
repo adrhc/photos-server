@@ -10,9 +10,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.jpa2x.util.ImageUtils.imageNameFrom;
 import static image.photos.image.helpers.ImageHelper.relativeFilePathFor;
 
@@ -82,17 +84,17 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 * @return whether imgFile from albumId exists in other albums too
 	 */
 	@Override
-	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) {
+	public boolean imageExistsInOtherAlbum(Path imgFile, Integer albumId) throws IOException {
 		String nameNoExt = FilenameUtils.getBaseName(imageNameFrom(imgFile));
 		List<Image> image = this.imageRepository.findDuplicates(nameNoExt, albumId);
 		long imgFileSize = this.fileStoreService.fileSize(imgFile);
-		return image.stream().anyMatch(i -> imgFileSize == this.fileSizeOf(i));
+		return image.stream().anyMatch(i -> imgFileSize == sneak(() -> this.fileSizeOf(i)));
 	}
 
 	/**
 	 * @return size of the image's file
 	 */
-	private long fileSizeOf(Image image) {
+	private long fileSizeOf(Image image) throws IOException {
 		String imgRelPath = relativeFilePathFor(image);
 		Path imgFullPath = this.albumHelper.absolutePathOf(imgRelPath);
 		return this.fileStoreService.fileSize(imgFullPath);

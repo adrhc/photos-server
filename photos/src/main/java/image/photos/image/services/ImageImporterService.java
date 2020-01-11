@@ -12,15 +12,12 @@ import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static image.jpa2x.util.ImageUtils.imageNameFrom;
-import static image.photos.image.services.CategorizedUnsafeProcessing.heavyImport;
-import static image.photos.image.services.CategorizedUnsafeProcessing.lightweightImport;
 
 @Component
 @Slf4j
@@ -39,11 +36,7 @@ public class ImageImporterService {
 		this.fileStoreService = fileStoreService;
 	}
 
-	/**
-	 * @return CategorizedUnsafeProcessing(s) containing the DB operation to be performed
-	 */
-	public Optional<CategorizedUnsafeProcessing<Supplier<ImageEvent>,
-			FileNotFoundException>> importFromFile(Path imgFile, Album album) {
+	public Optional<ImageEvent> importFromFile(Path imgFile, Album album) throws IOException {
 		assert !this.fileStoreService.isDirectory(imgFile) :
 				"Wrong image file (is a directory):\n{}" + imgFile;
 
@@ -53,14 +46,14 @@ public class ImageImporterService {
 
 		if (dbImage == null) {
 			// create db-image
-			return Optional.of(heavyImport(() -> this.createFromFile(imgFile, album)));
+			return Optional.of(this.createFromFile(imgFile, album));
 		} else {
 			// update db-image
 			return this.updateFromFile(imgFile, dbImage);
 		}
 	}
 
-	private Supplier<ImageEvent> createFromFile(Path imgFile, Album album) throws FileNotFoundException {
+	private ImageEvent createFromFile(Path imgFile, Album album) throws IOException {
 		String imageName = imageNameFrom(imgFile);
 		log.debug("{}/{}", album.getName(), imageName);
 		Image image = new Image();
@@ -68,24 +61,21 @@ public class ImageImporterService {
 		image.setName(imageName);
 		image.setAlbum(album);
 		// returns DB operation only
-		return () -> this.imageCUDService.persist(image);
+		return this.imageCUDService.persist(image);
 	}
 
-	private Optional<CategorizedUnsafeProcessing<Supplier<ImageEvent>,
-			FileNotFoundException>> updateFromFile(Path imgFile, Image image) {
+	private Optional<ImageEvent> updateFromFile(Path imgFile, Image image) throws IOException {
 		var dbImageLastModified = image.getImageMetadata().getDateTime();
 		var imageLastModifiedFromFile = this.fileStoreService.lastModifiedTime(imgFile);
 
 		// update ImageMetadata (thumbLastModified too) if image-file is newer
 		if (imageLastModifiedFromFile > dbImageLastModified.getTime()) {
 			// extractMetadata updates thumb lastModified date too!
-			return Optional.of(heavyImport(() -> {
-				ImageMetadata updatedImageMetadata =
-						this.exifExtractorService.extractMetadata(imgFile);
-				// returns DB operation only
-				return () -> this.imageCUDService
-						.updateImageMetadata(updatedImageMetadata, image.getId());
-			}));
+			ImageMetadata updatedImageMetadata =
+					this.exifExtractorService.extractMetadata(imgFile);
+			// returns DB operation only
+			return Optional.of(this.imageCUDService
+					.updateImageMetadata(updatedImageMetadata, image.getId()));
 		}
 
 		// update thumbLastModified if thumb-file is newer
@@ -94,10 +84,10 @@ public class ImageImporterService {
 				.thumbLastModified(imgFile, dbThumbLastModified);
 		if (thumbLastModifiedFromFile.after(dbThumbLastModified)) {
 			// returns DB operation only
-			return Optional.of(lightweightImport(() -> () -> this.imageCUDService
-					.updateThumbLastModified(thumbLastModifiedFromFile, image.getId())));
+			return Optional.of(this.imageCUDService
+					.updateThumbLastModified(thumbLastModifiedFromFile, image.getId()));
 		}
 
-		return Optional.of(lightweightImport(() -> () -> ImageEvent.of(image, ImageEventTypeEnum.NOTHING)));
+		return Optional.of(ImageEvent.of(image, ImageEventTypeEnum.NOTHING));
 	}
 }

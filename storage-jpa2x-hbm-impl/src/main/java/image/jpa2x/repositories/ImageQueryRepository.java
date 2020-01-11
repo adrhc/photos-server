@@ -17,11 +17,17 @@ public interface ImageQueryRepository {
 	 * be cached which would be List<Image.id> per Album
 	 * <p>
 	 * competes with ImageQueryServiceImpl.getImages(Integer albumId)
-	 *
+	 * <p>
 	 * Result is cached till any Image (despite the album) is changed:
 	 * select * from Image where FK_ALBUM=?
 	 * select album0_.*, <<cover>> from Album left outer join ... where album0_.id=?
 	 */
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Image> findByAlbumId(Integer albumId);
+
+	boolean existsByNameAndAlbumName(String imageName, String albumName);
+
+	int countByAlbum_Id(Integer albumId);
+
+	int countByAlbum_name(String albumName);
 }

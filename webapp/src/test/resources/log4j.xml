@@ -100,7 +100,7 @@
     </logger>
 
     <logger name="reactor">
-        <level value="debug"/>
+        <level value="warn"/>
     </logger>
 
     <!-- Root Logger -->
