@@ -152,16 +152,16 @@
             <groupId>image.exifweb</groupId>
             <artifactId>util</artifactId>
             <classifier>tests</classifier>
-            <version>${project.version}</version>
             <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>image.exifweb</groupId>
             <artifactId>storage-entities</artifactId>
             <classifier>tests</classifier>
-            <version>${project.version}</version>
             <scope>test</scope>
+            <version>${project.version}</version>
         </dependency>
 
         <!--
@@ -178,6 +178,14 @@
                 needs version because including jar also
                 solves ERROR: The POM for exifweb:photos:jar:1.0-SNAPSHOT is invalid, transitive dependencies (if any) will not be available, enable debug logging for more details
             -->
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>image.exifweb</groupId>
+            <artifactId>photos</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
             <version>${project.version}</version>
         </dependency>
 

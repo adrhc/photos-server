@@ -66,6 +66,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	static Path tempDir;
 	// used for photos_json_FS_path
 	static Path jsonDir;
+	private MockMvc mockMvc;
 	@Autowired
 	private ObjectMapper mapper;
 	@Autowired
@@ -76,10 +77,9 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private AlbumPageService albumPageService;
 	@Autowired
 	private Jpa2ndLevelCacheUtils cacheUtils;
-	private MockMvc mockMvc;
 
 	@BeforeAll
-	static void beforeAll() throws IOException {
+	void beforeAll() throws IOException {
 		jsonDir = Files.createDirectory(tempDir.resolve("json"));
 	}
 

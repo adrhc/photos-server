@@ -203,6 +203,14 @@
             </dependency>
 
             <dependency>
+                <groupId>image.exifweb</groupId>
+                <artifactId>photos</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>com.rainerhahnekamp</groupId>
                 <artifactId>sneakythrow</artifactId>
                 <version>1.1.0</version>
@@ -1010,7 +1018,7 @@
                             <!-- for catching tests without proper spring profile annotation -->
                             <spring.profiles.active>fake-profile</spring.profiles.active>
                         </environmentVariables>
-                        <!--                        <groups>controller</groups>-->
+                        <!--<groups>controller</groups>-->
                     </configuration>
                 </plugin>
 
@@ -1311,10 +1319,7 @@
                     junit5&amp;photos&amp;inmemorydb,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
-                <junit5.webapp.groups>
-                    root&amp;inmemorydb&amp;!controller,
-                    webapp&amp;inmemorydb&amp;!controller
-                </junit5.webapp.groups>
+                <junit5.webapp.groups>inmemorydb&amp;!controller</junit5.webapp.groups>
             </properties>
         </profile>
         <profile>
@@ -1363,7 +1368,7 @@
                     junit5&amp;photos&amp;production,
                     junit5&amp;photos&amp;misc
                 </junit5.photos.groups>
-                <junit5.webapp.groups>root,webapp</junit5.webapp.groups>
+                <junit5.webapp.groups>!controller</junit5.webapp.groups>
             </properties>
         </profile>
         <profile>

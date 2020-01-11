@@ -95,7 +95,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 			}
 			String names = joinAlbumNames(albumEvents);
 			logger.debug("imported albums:\n{}", names);
-			deferredResult.setResult("message", "imported albums: " + names);
+			deferredResult.setResult("message", "Imported albums: " + names);
 		}, this.asyncExecutor);
 	}
 
