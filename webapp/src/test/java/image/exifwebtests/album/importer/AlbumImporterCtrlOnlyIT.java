@@ -3,7 +3,6 @@ package image.exifwebtests.album.importer;
 import image.exifweb.RootConfig;
 import image.exifweb.WebConfig;
 import image.exifwebtests.config.WebInMemoryDbConfig;
-import image.photostests.junit5.album.AlbumImporterServiceSpy;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -20,7 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 import java.util.Map;
 
-import static image.photostests.junit5.album.AlbumImporterServiceSpy.*;
+import static image.exifwebtests.album.importer.AlbumImporterServiceSpy.*;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

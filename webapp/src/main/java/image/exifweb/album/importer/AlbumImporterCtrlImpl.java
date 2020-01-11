@@ -58,7 +58,7 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 
 	private static String importFeedBack(AlbumEvent event) {
 		switch (event.getType()) {
-			case FAILED_UPDATE:
+			case MISSING_PATH:
 				return event.getEntity().getName() + " failed";
 			case NEW_BUT_EMPTY:
 				return event.getEntity().getName() + " is new but empty";

@@ -1,4 +1,4 @@
-package image.photostests.junit5.album;
+package image.exifwebtests.album.importer;
 
 import image.infrastructure.messaging.album.AlbumEvent;
 import image.infrastructure.messaging.album.AlbumEventTypeEnum;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
-import static image.infrastructure.messaging.album.AlbumEventTypeEnum.FAILED_UPDATE;
+import static image.infrastructure.messaging.album.AlbumEventTypeEnum.MISSING_PATH;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -45,7 +45,7 @@ public class AlbumImporterServiceSpy {
 		var albumEvents = List.of(albumEvent(CASA_URLUIENI, CREATED), albumEvent(SIMFONIA_LALELELOR, CREATED));
 		var withFailed = new ArrayList<>(albumEvents);
 		Collections.copy(withFailed, albumEvents);
-		withFailed.add(albumEvent(MISSING_ALBUM, FAILED_UPDATE));
+		withFailed.add(albumEvent(MISSING_ALBUM, MISSING_PATH));
 
 		doReturn(withFailed).when(bean).importAll();
 		doReturn(albumEvent(CASA_URLUIENI, CREATED)).when(bean).importByAlbumName(anyString());

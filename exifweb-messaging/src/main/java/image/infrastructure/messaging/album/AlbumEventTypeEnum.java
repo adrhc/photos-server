@@ -6,6 +6,6 @@ package image.infrastructure.messaging.album;
 public enum AlbumEventTypeEnum {
 	CREATED,
 	UPDATED,
-	FAILED_UPDATE,
+	MISSING_PATH,
 	NEW_BUT_EMPTY
 }

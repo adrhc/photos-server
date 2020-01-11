@@ -88,7 +88,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	public Optional<AlbumEvent> importByAlbumName(String albumName) {
 		Path path = this.albumHelper.absolutePathOf(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
-			return Optional.of(AlbumEvent.of(new Album(albumName), FAILED_UPDATE));
+			return Optional.of(AlbumEvent.of(new Album(albumName), MISSING_PATH));
 		}
 		return this.safelyImportByAlbumPath(path);
 	}
@@ -111,7 +111,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			return this.importByAlbumPath(path);
 		} catch (IOException e) {
 			return Optional.of(AlbumEvent
-					.of(new Album(albumNameFrom(path)), FAILED_UPDATE));
+					.of(new Album(albumNameFrom(path)), MISSING_PATH));
 		}
 	}
 
