@@ -24,4 +24,6 @@ public interface AlbumRepository extends AlbumRepositoryCustom, ICustomJpaReposi
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	@Query("select max(lastUpdate) from Album")
 	Date getMaxLastUpdateForAll();
+
+	boolean existsByName(String albumName);
 }
