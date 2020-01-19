@@ -36,6 +36,7 @@ public class SubtitleService {
 		this.processInfoService = processInfoService;
 		this.appConfigService = appConfigService;
 		this.ac = ac;
+		// spring boot requires this approach
 		this.mkvExtractor = new StringToProcessBuilderConverter().convert(mkvExtractor);
 	}
 
