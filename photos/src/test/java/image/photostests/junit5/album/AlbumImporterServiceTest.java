@@ -48,6 +48,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
 	private static final String CASA_URLUIENI = "2017-07-15 Casa Urluieni";
 	private static final String MISSING_ALBUM = "MISSING ALBUM";
+	private static final String IMAGE = "DSC_0383.jpg";
 	private static final int PHOTOS_PER_PAGE = 5;
 	@Autowired
 	private AlbumImporterService service;
@@ -73,11 +74,13 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 
 		assertTrue(albumEvent::isPresent);
 
+		// check that the album is reported as created
 		assertThat(albumEvent.get(), allOf(
 				hasProperty("type", is(CREATED)),
 				hasProperty("entity",
 						hasProperty("name", is(albumToReimport)))));
 
+		// verify that the album exists in database
 		this.verifyAlbum(albumToReimport);
 	}
 
@@ -88,6 +91,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		List<AlbumEvent> events = albumEvent.stream()
 				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
+		// check that SIMFONIA_LALELELOR and CASA_URLUIENI are reported as created
 		assertThat(events, hasItem(
 				allOf(
 						hasProperty("type", is(CREATED)),
@@ -96,6 +100,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 										is(in(List.of(SIMFONIA_LALELELOR, CASA_URLUIENI)))))
 				)));
 
+		// verify that the albums exist in database
 		List.of(SIMFONIA_LALELELOR, CASA_URLUIENI).forEach(this::verifyAlbum);
 	}
 
@@ -105,6 +110,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		// see also Config.fileStoreService below
 		this.importByAlbumName(SIMFONIA_LALELELOR);
 
+		// check that all SIMFONIA_LALELELOR available images were imported
 		assertEquals(11, this.imageQueryRepository.countByAlbum_name(SIMFONIA_LALELELOR));
 
 		var albumEvent = this.service.importAll();
@@ -112,6 +118,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		List<AlbumEvent> events = albumEvent.stream()
 				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
+		// check that CASA_URLUIENI is reported as created
 		assertThat(events, hasItem(
 				allOf(
 						hasProperty("type", is(CREATED)),
@@ -119,6 +126,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 								hasProperty("name", is(CASA_URLUIENI)))
 				)));
 
+		// check that SIMFONIA_LALELELOR is reported as updated
 		assertThat(events, hasItem(
 				allOf(
 						hasProperty("type", is(UPDATED)),
@@ -126,8 +134,12 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 								hasProperty("name", is(SIMFONIA_LALELELOR)))
 				)));
 
-		assertEquals(10, this.imageQueryRepository.countByAlbum_name(SIMFONIA_LALELELOR));
+		assertEquals(10, this.imageQueryRepository.countByAlbum_name(SIMFONIA_LALELELOR),
+				"1 image should have been removed from " + SIMFONIA_LALELELOR);
+		assertFalse(this.imageQueryRepository.existsByNameAndAlbumName(IMAGE, SIMFONIA_LALELELOR),
+				"Image " + IMAGE + " should have been deleted!");
 
+		// verify that the albums exist in database
 		List.of(SIMFONIA_LALELELOR, CASA_URLUIENI).forEach(this::verifyAlbum);
 	}
 
@@ -161,8 +173,8 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 
 			doAnswer(invocation -> {
 				Path path = invocation.getArgument(0);
-				if (fileName(path).equals("DSC_0383.jpg") &&
-						queryRepository.existsByNameAndAlbumName("DSC_0383.jpg", SIMFONIA_LALELELOR)) {
+				if (fileName(path).equals(IMAGE) &&
+						queryRepository.existsByNameAndAlbumName(IMAGE, SIMFONIA_LALELELOR)) {
 					// importAll(): simulate file deleted when calling FileStoreService.lastModifiedTime
 					throw new FileNotFoundException(path.toString());
 				} else {

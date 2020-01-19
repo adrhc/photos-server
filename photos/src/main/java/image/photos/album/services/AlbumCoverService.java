@@ -6,7 +6,6 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.photos.image.helpers.ImageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,12 +31,12 @@ public class AlbumCoverService {
 
 	public AlbumCover getCoverById(Integer albumId) {
 		Album album = this.albumRepository.getById(albumId);
-		return convertAlbumToCover(album);
+		return this.convertAlbumToCover(album);
 	}
 
 	public AlbumCover getCoverByName(String albumName) {
 		Album album = this.albumRepository.findByName(albumName);
-		return convertAlbumToCover(album);
+		return this.convertAlbumToCover(album);
 	}
 
 	private AlbumCover convertAlbumToCover(Album album) {

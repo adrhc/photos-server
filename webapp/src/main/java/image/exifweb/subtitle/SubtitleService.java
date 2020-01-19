@@ -2,9 +2,9 @@ package image.exifweb.subtitle;
 
 import image.exifweb.util.procinfo.ProcessInfoService;
 import image.photos.config.AppConfigService;
+import image.photos.util.conversion.StringToProcessBuilderConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -24,17 +24,20 @@ public class SubtitleService {
 	public static final String[] SUBTITLE_EXTRACT_COMMANDS = {
 			"subtitles-extractor", "mkvinfo", "mkvmerge", "mkvextract"};
 	private static final Logger logger = LoggerFactory.getLogger(SubtitleService.class);
-	@Autowired
-	private ProcessInfoService processInfoService;
-	@Autowired
-	private AppConfigService appConfigService;
-	@Autowired
-	private ApplicationContext ac;
-	@Value("${mkvExtractor}")
+	private final ProcessInfoService processInfoService;
+	private final AppConfigService appConfigService;
+	private final ApplicationContext ac;
 	private ProcessBuilder mkvExtractor;
 	private Process mkvExtractorProcess = null;
 	private String mkvExtractorProcessFolder = null;
 	private RuntimeStatus runtimeStatus = null;
+
+	public SubtitleService(ProcessInfoService processInfoService, AppConfigService appConfigService, ApplicationContext ac, @Value("${mkvExtractor}") String mkvExtractor) {
+		this.processInfoService = processInfoService;
+		this.appConfigService = appConfigService;
+		this.ac = ac;
+		this.mkvExtractor = new StringToProcessBuilderConverter().convert(mkvExtractor);
+	}
 
 	public synchronized boolean isSubtitlesExtractorRunning() {
 		return this.mkvExtractorProcess != null || this.runtimeStatus != null;
@@ -48,7 +51,7 @@ public class SubtitleService {
 		} else if (this.mkvExtractorProcess != null) {
 			this.mkvExtractorProcess.destroy();// de fapt niciodata nu a functionat
 			this.mkvExtractorProcess = null;// marchez finalizarea extragerii
-			wait(250);// asteptam ca proc sa fie distrus
+			this.wait(250);// asteptam ca proc sa fie distrus
 			this.processInfoService.killSubtitlesExtractor();
 			this.mkvExtractorProcessFolder = null;
 			return true;
@@ -59,10 +62,10 @@ public class SubtitleService {
 	}
 
 	public boolean extractSubtitles(String startVideoDir, boolean appendVideoRoot) {
-		if (isSubtitlesExtractorRunning()) {
+		if (this.isSubtitlesExtractorRunning()) {
 			return false;
 		}
-		doExtractSubtitles(startVideoDir, appendVideoRoot);
+		this.doExtractSubtitles(startVideoDir, appendVideoRoot);
 		return true;
 	}
 

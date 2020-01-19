@@ -990,6 +990,9 @@
                     <executions>
                         <execution>
                             <goals>
+                                <!--
+                                    Generated only after running tests!
+                                -->
                                 <goal>test-jar</goal>
                             </goals>
                         </execution>
