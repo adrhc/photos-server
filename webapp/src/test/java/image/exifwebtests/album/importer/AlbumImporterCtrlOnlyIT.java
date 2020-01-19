@@ -63,6 +63,9 @@ public class AlbumImporterCtrlOnlyIT {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
 	}
 
+	/**
+	 * importing all albums + using a missing path
+	 */
 	@WithMockUser(value = "admin", roles = {"ADMIN"})
 	@Test
 	void reImportAll() throws Exception {
