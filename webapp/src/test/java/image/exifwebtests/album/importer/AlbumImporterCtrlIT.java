@@ -6,6 +6,7 @@ import image.cdm.album.page.AlbumPage;
 import image.exifweb.web.json.JsonStringValue;
 import image.exifwebtests.config.WebInMemoryDbConfig;
 import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.ImageQueryRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.persistence.entity.Album;
 import image.persistence.repository.ESortType;
@@ -39,8 +40,7 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneaked;
 import static exifweb.util.concurrency.ThreadUtils.safeSleep;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,6 +56,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
 	private static final String CASA_URLUIENI = "2017-07-15 Casa Urluieni";
 	private static final String MISSING_ALBUM = "MISSING ALBUM";
+	private static final Map<String, Integer> COUNT = Map.of(SIMFONIA_LALELELOR, 11, CASA_URLUIENI, 45);
 	private static final int PHOTOS_PER_PAGE = 5;
 	/**
 	 * 2.20.1. The TempDirectory Extension
@@ -77,6 +78,8 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private AlbumPageService albumPageService;
 	@Autowired
 	private Jpa2ndLevelCacheUtils cacheUtils;
+	@Autowired
+	private ImageQueryRepository imageQueryRepository;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
@@ -233,6 +236,10 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	private void verifyAlbum(String name) throws IOException {
 		Album album = this.albumRepository.findByName(name);
 		assertNotNull(album);
+
+		// check that all album's available images were imported
+		assertEquals(COUNT.get(name), this
+				.imageQueryRepository.countByAlbum_Id(album.getId()));
 
 		// read 1th asc json as List<AlbumPage>
 		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(
