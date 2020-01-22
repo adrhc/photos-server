@@ -2,7 +2,6 @@ package image.photos.infrastructure.database;
 
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
-import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.infrastructure.filestore.FileStoreService;
@@ -22,29 +21,13 @@ import static image.photos.image.helpers.ImageHelper.relativeFilePathFor;
 @Transactional
 public class ImageQueryServiceImpl implements ImageQueryService {
 	private final ImageRepository imageRepository;
-	private final AlbumRepository albumRepository;
 	private final FileStoreService fileStoreService;
 	private final AlbumHelper albumHelper;
 
 	public ImageQueryServiceImpl(ImageRepository imageRepository, AlbumRepository albumRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
 		this.imageRepository = imageRepository;
-		this.albumRepository = albumRepository;
 		this.fileStoreService = fileStoreService;
 		this.albumHelper = albumHelper;
-	}
-
-	/**
-	 * competes with ImageQueryRepository.findByAlbumId
-	 * <p>
-	 * album.getImages() ignores 2nd level cache:
-	 * select * from Image where FK_ALBUM=?
-	 */
-	@Override
-	public List<Image> getImages(Integer albumId) {
-		Album album = this.albumRepository.getById(albumId);
-		List<Image> images = album.getImages();
-		images.size();// initialize the lazy collection
-		return images;
 	}
 
 	/*

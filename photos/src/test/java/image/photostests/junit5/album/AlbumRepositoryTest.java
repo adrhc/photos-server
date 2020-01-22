@@ -2,10 +2,10 @@ package image.photostests.junit5.album;
 
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.infrastructure.database.ImageQueryService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ class AlbumRepositoryTest implements IImageAssertions {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private ImageQueryService imageQueryService;
+	private ImageRepository imageRepository;
 
 	@Random(excludes = {"id", "lastUpdate", "cover", "images"})
 	private Album album;
@@ -60,7 +60,7 @@ class AlbumRepositoryTest implements IImageAssertions {
 	 */
 	@Test
 	void albumImagesNoCacheTest() {
-		AlbumImagesCacheData data = preAlbumImagesCacheTest();
+		AlbumImagesCacheData data = this.preAlbumImagesCacheTest();
 		assertFalse(data.cache.containsCollection(data.albumImagesRegionName, this.album.getId()),
 				"Album[" + this.album.getId() + "].images found in cache!");
 	}
@@ -71,7 +71,7 @@ class AlbumRepositoryTest implements IImageAssertions {
 	@Test
 	@Disabled
 	void albumImagesCacheTest() {
-		AlbumImagesCacheData data = preAlbumImagesCacheTest();
+		AlbumImagesCacheData data = this.preAlbumImagesCacheTest();
 		assertTrue(data.cache.containsCollection(data.albumImagesRegionName, this.album.getId()),
 				"Album[" + this.album.getId() + "].images not in cache!");
 	}
@@ -85,7 +85,7 @@ class AlbumRepositoryTest implements IImageAssertions {
 		cache.evictCollectionData(albumImagesRegionName, this.album.getId());
 		assertFalse(cache.containsCollection(albumImagesRegionName, this.album.getId()),
 				"Album[" + this.album.getId() + "].images already in cache!");
-		this.imageQueryService.getImages(this.album.getId());
+		this.imageRepository.findByAlbumId(this.album.getId());
 		return new AlbumImagesCacheData(cache, albumImagesRegionName);
 	}
 

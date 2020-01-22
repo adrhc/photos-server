@@ -11,6 +11,14 @@ import java.util.List;
 public interface ImageRepository extends ImageQueryRepository,
 		ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {
 	/**
+	 * competes with ImageQueryRepository.findByAlbumId
+	 * <p>
+	 * album.getImages() ignores 2nd level cache:
+	 * select * from Image where FK_ALBUM=?
+	 */
+	List<Image> findByAlbumId(Integer albumId);
+
+	/**
 	 * Make no sense to cache because only Image.id is cached!
 	 * <p>
 	 * 2020.01.02, 2nd level cache active:

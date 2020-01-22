@@ -1,6 +1,7 @@
 package image.photostests.junit5.image;
 
 import exifweb.util.random.RandomBeansExtensionEx;
+import image.jpa2x.repositories.ImageRepository;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
@@ -30,10 +31,12 @@ class ImageQueryServiceTest extends ImageTestBase implements IImageAssertions {
 	private ImageQueryService imageQueryService;
 	@Autowired
 	private FileStoreServiceTest fileStoreService;
+	@Autowired
+	private ImageRepository imageRepository;
 
 	@Test
 	void getImages() {
-		List<Image> dbImages = this.imageQueryService.getImages(this.album.getId());
+		List<Image> dbImages = this.imageRepository.findByAlbumId(this.album.getId());
 		this.album.getImages().forEach(i -> {
 			this.assertImageEquals(i, dbImages.stream()
 					.filter(dbi -> dbi.getId().equals(i.getId()))
