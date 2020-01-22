@@ -1,4 +1,4 @@
-package image.photos.image.services;
+package image.photos.infrastructure.mixed;
 
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
@@ -18,12 +18,12 @@ import static image.photos.image.util.ImageUtils.relativeFilePathFor;
 
 @Service
 @Transactional
-public class ImageQueryServiceImpl implements ImageQueryService {
+public class ComplexImageQueriesImpl implements ComplexImageQueries {
 	private final ImageRepository imageRepository;
 	private final FileStoreService fileStoreService;
 	private final AlbumHelper albumHelper;
 
-	public ImageQueryServiceImpl(ImageRepository imageRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
+	public ComplexImageQueriesImpl(ImageRepository imageRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
 		this.imageRepository = imageRepository;
 		this.fileStoreService = fileStoreService;
 		this.albumHelper = albumHelper;
