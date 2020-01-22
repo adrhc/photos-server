@@ -3,13 +3,14 @@ package image.photos.image.helpers;
 import image.cdm.album.cover.AlbumCover;
 import image.cdm.image.feature.IImageBasicInfo;
 import image.cdm.image.feature.IImageDimensions;
-import image.persistence.entity.Image;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.List;
+
+import static image.photos.image.util.ImageUtils.relativeUriPathFor;
 
 /**
  * Created by adr on 2/2/18.
@@ -19,10 +20,6 @@ import java.util.List;
 public class ImageHelper {
 	private static MessageFormat fullUriPathFormatter =
 			new MessageFormat("{0}/{1}");
-	private static MessageFormat relativeFilePathFormatter =
-			new MessageFormat("{0}/{1}");
-	private static MessageFormat relativeUriPathFormatter =
-			new MessageFormat("{0}/{1,number,#}/{2}");
 	@Value("${thumbs.dir}")
 	private String thumbsDir;
 	@Value("${albums.dir}")
@@ -31,21 +28,6 @@ public class ImageHelper {
 	private double maxThumbSize;
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
-
-	/**
-	 * @return albumName/lastModifTime/imgName, see relativeUriPathFormatter
-	 */
-	private static String relativeUriPathFor(Long lastModifTime, String imgName, String albumName) {
-		return relativeUriPathFormatter.format(new Object[]{albumName, lastModifTime, imgName});
-	}
-
-	/**
-	 * @return albumName/imgName, see relativeFilePathFormatter
-	 */
-	public static String relativeFilePathFor(Image image) {
-		return relativeFilePathFormatter.format(
-				new Object[]{image.getAlbum().getName(), image.getName()});
-	}
 
 	/**
 	 * @param relativePath is albumName/lastModifTime/imgName
