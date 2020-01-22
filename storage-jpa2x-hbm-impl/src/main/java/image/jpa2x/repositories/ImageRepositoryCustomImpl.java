@@ -2,13 +2,16 @@ package image.jpa2x.repositories;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
+import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
+import image.persistence.entity.image.ImageMetadata;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 
 /**
  * 4.6.1. Customizing Individual Repositories
@@ -20,6 +23,64 @@ import javax.persistence.PersistenceContext;
 public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageFlagsUtils {
 	@PersistenceContext
 	private EntityManager em;
+
+	/**
+	 * Remove album's cover (set it to null) when image is its album's cover.
+	 *
+	 * @return whether any change occurred in DB
+	 */
+	private static boolean removeAsCoverAndFromAlbumImages(Image persistentImage) {
+		boolean result = false;
+		Album album = persistentImage.getAlbum();
+		// isDeleted means "marked as deleted"
+		if (!persistentImage.isDeleted()) {
+			// purge the image from DB
+			result = album.getImages().remove(persistentImage);
+		}
+		if (album.getCover() == null ||
+				!album.getCover().getId().equals(persistentImage.getId())) {
+			// album has no cover or image is not the cover for its album
+			return result;
+		}
+		// removing cover
+		album.setCover(null);
+		return true;
+	}
+
+	@Override
+	public void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
+		Image image = this.em.find(Image.class, imageId);
+		image.setImageMetadata(imageMetadata);
+	}
+
+	@Override
+	public void updateThumbLastModified(Date thumbLastModified, Integer imageId) {
+		Image image = this.em.find(Image.class, imageId);
+		image.getImageMetadata().setThumbLastModified(thumbLastModified);
+	}
+
+	@Override
+	public void changeName(String newName, Integer imageId) {
+		Image image = this.em.find(Image.class, imageId);
+		image.setName(newName);
+	}
+
+	@Override
+	public boolean markDeleted(Integer imageId) {
+		Image image = this.em.find(Image.class, imageId);
+		if (image.isDeleted()) {
+			return false;
+		}
+		image.setDeleted(true);
+		removeAsCoverAndFromAlbumImages(image);
+		return true;
+	}
+
+	@Override
+	public boolean safelyDeleteImage(Integer imageId) {
+		Image image = this.em.find(Image.class, imageId);
+		return removeAsCoverAndFromAlbumImages(image);
+	}
 
 	@Override
 	public boolean changeRating(ImageRating imageRating) {
@@ -40,7 +101,7 @@ public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageF
 	@Override
 	public boolean changeStatus(ImageStatus imageStatus) {
 		Image image = this.em.find(Image.class, imageStatus.getImageId());
-		ImageFlags imageFlags = of(imageStatus.getStatus());
+		ImageFlags imageFlags = this.of(imageStatus.getStatus());
 		if (image.getFlags().equals(imageFlags)) {
 			return false;
 		}
