@@ -1,6 +1,5 @@
 package image.photos.image.services;
 
-import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import image.photos.album.helpers.AlbumHelper;
@@ -24,7 +23,7 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	private final FileStoreService fileStoreService;
 	private final AlbumHelper albumHelper;
 
-	public ImageQueryServiceImpl(ImageRepository imageRepository, AlbumRepository albumRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
+	public ImageQueryServiceImpl(ImageRepository imageRepository, FileStoreService fileStoreService, AlbumHelper albumHelper) {
 		this.imageRepository = imageRepository;
 		this.fileStoreService = fileStoreService;
 		this.albumHelper = albumHelper;
@@ -47,23 +46,6 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 */
 
 	/**
-	 * this is the best approach when using 2nd level cache:
-	 * take the imageId then load the Image
-	 * <p>
-	 * competes with ImageRepository.findByNameAndAlbumId
-	 */
-	@Override
-	public Image findByNameAndAlbumId(String name, Integer albumId) {
-		// not cached query
-		Integer imageId = this.imageRepository.findIdByNameAndAlbumId(name, albumId);
-		if (imageId == null) {
-			return null;
-		}
-		// Image is cached by id
-		return this.imageRepository.getById(imageId);
-	}
-
-	/**
 	 * @return whether imgFile from albumId exists in other albums too
 	 */
 	@Override
@@ -78,8 +60,8 @@ public class ImageQueryServiceImpl implements ImageQueryService {
 	 * @return size of the image's file
 	 */
 	private long fileSizeOf(Image image) throws IOException {
-		String imgRelPath = relativeFilePathFor(image);
-		Path imgFullPath = this.albumHelper.absolutePathOf(imgRelPath);
+		String imgRelativeFilePath = relativeFilePathFor(image);
+		Path imgFullPath = this.albumHelper.absolutePathOf(imgRelativeFilePath);
 		return this.fileStoreService.fileSize(imgFullPath);
 	}
 }

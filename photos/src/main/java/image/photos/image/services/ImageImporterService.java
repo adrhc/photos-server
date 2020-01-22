@@ -6,6 +6,7 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
+import image.photos.infrastructure.database.AdvancedImageQueryRepository;
 import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +23,17 @@ import static image.jpa2x.util.ImageUtils.imageNameFrom;
 @Slf4j
 public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
-	private final ImageQueryService imageQueryService;
+	private final AdvancedImageQueryRepository advancedImageQueryRepository;
 	private final ThumbHelper thumbHelper;
 	private final ImageCUDService imageCUDService;
 	private final FileStoreService fileStoreService;
 
-	public ImageImporterService(ExifExtractorService exifExtractorService, ImageQueryService imageQueryService, ThumbHelper thumbHelper, ImageCUDService imageCUDService, FileStoreService fileStoreService) {
+	public ImageImporterService(ExifExtractorService exifExtractorService,
+			AdvancedImageQueryRepository advancedImageQueryRepository,
+			ThumbHelper thumbHelper, ImageCUDService imageCUDService,
+			FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
-		this.imageQueryService = imageQueryService;
+		this.advancedImageQueryRepository = advancedImageQueryRepository;
 		this.thumbHelper = thumbHelper;
 		this.imageCUDService = imageCUDService;
 		this.fileStoreService = fileStoreService;
@@ -40,7 +44,7 @@ public class ImageImporterService {
 				"Wrong image file (is a directory):\n{}" + imgFile;
 
 		// load Image from DB (if any)
-		Image dbImage = this.imageQueryService
+		Image dbImage = this.advancedImageQueryRepository
 				.findByNameAndAlbumId(imageNameFrom(imgFile), album.getId());
 
 		if (dbImage == null) {

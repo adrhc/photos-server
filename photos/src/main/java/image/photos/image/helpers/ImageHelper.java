@@ -32,19 +32,33 @@ public class ImageHelper {
 	@Value("${max.thumb.size}")
 	private int maxThumbSizeInt;
 
+	/**
+	 * @return albumName/lastModifTime/imgName, see relativeUriPathFormatter
+	 */
 	private static String relativeUriPathFor(Long lastModifTime, String imgName, String albumName) {
 		return relativeUriPathFormatter.format(new Object[]{albumName, lastModifTime, imgName});
 	}
 
+	/**
+	 * @return albumName/imgName, see relativeFilePathFormatter
+	 */
 	public static String relativeFilePathFor(Image image) {
 		return relativeFilePathFormatter.format(
 				new Object[]{image.getAlbum().getName(), image.getName()});
 	}
 
+	/**
+	 * @param relativePath is albumName/lastModifTime/imgName
+	 *                     see also relativeUriPathFor(), relativeUriPathFormatter
+	 */
 	private String fullUriPathForThumb(String relativePath) {
 		return fullUriPathFormatter.format(new Object[]{this.thumbsDir, relativePath});
 	}
 
+	/**
+	 * @param relativePath is albumName/lastModifTime/imgName
+	 *                     see also relativeUriPathFor(), relativeUriPathFormatter
+	 */
 	private String fullUriPathForImage(String relativePath) {
 		return fullUriPathFormatter.format(new Object[]{this.albumsDir, relativePath});
 	}
@@ -57,7 +71,7 @@ public class ImageHelper {
 			if (basicInfo.getImgName() == null) {
 				continue;
 			}
-			appendImagePaths(basicInfo);
+			this.appendImagePaths(basicInfo);
 		}
 	}
 
@@ -71,8 +85,8 @@ public class ImageHelper {
 		Long thumbLastModified = basicInfo.getThumbLastModified().getTime();
 		Long imageLastModified = basicInfo.getDateTime().getTime();
 
-		basicInfo.setThumbPath(thumbPathFor(thumbLastModified, imgName, albumName));
-		basicInfo.setImagePath(imagePathFor(imageLastModified, imgName, albumName));
+		basicInfo.setThumbPath(this.thumbPathFor(thumbLastModified, imgName, albumName));
+		basicInfo.setImagePath(this.imagePathFor(imageLastModified, imgName, albumName));
 	}
 
 	/**
@@ -82,17 +96,17 @@ public class ImageHelper {
 		String albumName = cover.getAlbumName();
 		String imgName = cover.getImgName();
 
-		cover.setThumbPath(thumbPathFor(thumbLastModified, imgName, albumName));
+		cover.setThumbPath(this.thumbPathFor(thumbLastModified, imgName, albumName));
 	}
 
 	private String thumbPathFor(Long thumbLastModif, String imgName, String albumName) {
 		String relativePath = relativeUriPathFor(thumbLastModif, imgName, albumName);
-		return fullUriPathForThumb(relativePath);
+		return this.fullUriPathForThumb(relativePath);
 	}
 
 	private String imagePathFor(Long imageLastModif, String imgName, String albumName) {
 		String relativePath = relativeUriPathFor(imageLastModif, imgName, albumName);
-		return fullUriPathForImage(relativePath);
+		return this.fullUriPathForImage(relativePath);
 	}
 
 	/**
@@ -100,7 +114,7 @@ public class ImageHelper {
 	 */
 	public void appendImageDimensions(List<? extends IImageDimensions> imageDimensions) {
 		for (IImageDimensions entity : imageDimensions) {
-			appendImageDimensions(entity);
+			this.appendImageDimensions(entity);
 		}
 	}
 
