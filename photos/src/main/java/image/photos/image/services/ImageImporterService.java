@@ -7,7 +7,6 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
 import image.photos.infrastructure.database.ImageCUDService;
-import image.photos.infrastructure.database.ImageQueryService;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package image.photos.infrastructure.database;
+package image.photos.image.services;
 
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageRepository;
