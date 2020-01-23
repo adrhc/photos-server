@@ -17,6 +17,7 @@ import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 
@@ -45,7 +46,7 @@ public class ImageDimensionsTest {
 				XSH, "image_dims", IMAGE.toString());
 		String dimensions = this.processRunner.getProcessOutput(identifyImgDimensions);
 		logger.debug("dimensions " + dimensions + " for:\n" + IMAGE);
-		assertThat(dimensions, is(emptyOrNullString()));
+		assertThat(dimensions, not(emptyOrNullString()));
 		String[] dims = dimensions.split("[x ]");
 		assertThat(dims.length, is(2));
 		assertEquals(dims[0], "1152");

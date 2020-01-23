@@ -37,7 +37,7 @@ public class IdentifyPictureTest {
 		BufferedReader br = new BufferedReader(isr);
 		String sCurrentLine = br.readLine();
 		log.debug(sCurrentLine);
-		assertThat(sCurrentLine, is(emptyOrNullString()));
+		assertThat(sCurrentLine, not(emptyOrNullString()));
 		assertThat(sCurrentLine,
 				containsString("20171105_130105.jpg JPEG 1152x2048 1152x2048+0+0 8-bit sRGB"));
 	}
