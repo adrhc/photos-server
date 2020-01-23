@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -14,9 +15,8 @@ import java.nio.file.Path;
 
 import static exifweb.util.file.ClassPathUtils.pathOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 
@@ -34,6 +34,7 @@ public class ImageDimensionsTest {
 		assumeTrue("missing " + XSH, Files.isExecutable(Path.of(XSH)));
 	}
 
+	@EnabledIf("#{systemProperties['os.name'].toLowerCase().contains('linux')}")
 	@Test
 	public void prepareImageDimensions() throws IOException, InterruptedException {
 //            ProcessBuilder identifyImgDimensions = new ProcessBuilder(
@@ -44,7 +45,7 @@ public class ImageDimensionsTest {
 				XSH, "image_dims", IMAGE.toString());
 		String dimensions = this.processRunner.getProcessOutput(identifyImgDimensions);
 		logger.debug("dimensions " + dimensions + " for:\n" + IMAGE);
-		assertThat(dimensions, not(isEmptyOrNullString()));
+		assertThat(dimensions, is(emptyOrNullString()));
 		String[] dims = dimensions.split("[x ]");
 		assertThat(dims.length, is(2));
 		assertEquals(dims[0], "1152");

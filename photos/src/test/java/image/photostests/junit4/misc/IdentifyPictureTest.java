@@ -13,10 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static exifweb.util.file.ClassPathUtils.pathOf;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assume.assumeTrue;
 
 @Category(MiscTestCategory.class)
@@ -39,8 +37,8 @@ public class IdentifyPictureTest {
 		BufferedReader br = new BufferedReader(isr);
 		String sCurrentLine = br.readLine();
 		log.debug(sCurrentLine);
-		assertThat(sCurrentLine, not(isEmptyOrNullString()));
+		assertThat(sCurrentLine, is(emptyOrNullString()));
 		assertThat(sCurrentLine,
-				containsString("20171105_130105.jpg JPEG 1152x2048 1152x2048+0+0 8-bit sRGB 1.3961MiB 0.000u 0:00"));
+				containsString("20171105_130105.jpg JPEG 1152x2048 1152x2048+0+0 8-bit sRGB"));
 	}
 } 
