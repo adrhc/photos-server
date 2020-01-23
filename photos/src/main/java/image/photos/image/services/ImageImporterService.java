@@ -7,7 +7,7 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
 import image.photos.infrastructure.database.AdvancedImageQueryRepository;
-import image.photos.infrastructure.database.ImageStateService;
+import image.photos.infrastructure.database.ImageCUDService;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,17 +25,17 @@ public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
 	private final AdvancedImageQueryRepository advancedImageQueryRepository;
 	private final ThumbHelper thumbHelper;
-	private final ImageStateService imageStateService;
+	private final ImageCUDService imageCUDService;
 	private final FileStoreService fileStoreService;
 
 	public ImageImporterService(ExifExtractorService exifExtractorService,
 			AdvancedImageQueryRepository advancedImageQueryRepository,
-			ThumbHelper thumbHelper, ImageStateService imageStateService,
+			ThumbHelper thumbHelper, ImageCUDService imageCUDService,
 			FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
 		this.advancedImageQueryRepository = advancedImageQueryRepository;
 		this.thumbHelper = thumbHelper;
-		this.imageStateService = imageStateService;
+		this.imageCUDService = imageCUDService;
 		this.fileStoreService = fileStoreService;
 	}
 
@@ -64,7 +64,7 @@ public class ImageImporterService {
 		image.setName(imageName);
 		image.setAlbum(album);
 		// returns DB operation only
-		return this.imageStateService.persist(image);
+		return this.imageCUDService.persist(image);
 	}
 
 	private Optional<ImageEvent> updateFromFile(Path imgFile, Image image) throws IOException {
@@ -77,7 +77,7 @@ public class ImageImporterService {
 			ImageMetadata updatedImageMetadata =
 					this.exifExtractorService.extractMetadata(imgFile);
 			// returns DB operation only
-			return Optional.of(this.imageStateService
+			return Optional.of(this.imageCUDService
 					.updateImageMetadata(updatedImageMetadata, image.getId()));
 		}
 
@@ -87,7 +87,7 @@ public class ImageImporterService {
 				.thumbLastModified(imgFile, dbThumbLastModified);
 		if (thumbLastModifiedFromFile.after(dbThumbLastModified)) {
 			// returns DB operation only
-			return Optional.of(this.imageStateService
+			return Optional.of(this.imageCUDService
 					.updateThumbLastModified(thumbLastModifiedFromFile, image.getId()));
 		}
 

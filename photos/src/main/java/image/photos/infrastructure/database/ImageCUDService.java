@@ -6,7 +6,7 @@ import image.persistence.entity.image.ImageMetadata;
 
 import java.util.Date;
 
-public interface ImageStateService {
+public interface ImageCUDService {
 	ImageEvent changeName(String newName, Integer imageId);
 
 	ImageEvent safelyDeleteImage(Integer imageId);

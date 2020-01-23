@@ -7,7 +7,7 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IAlbumAssertions;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.infrastructure.database.ImageStateService;
+import image.photos.infrastructure.database.ImageCUDService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ class SafelyDeleteImageTest extends ImageTestBase implements IAlbumAssertions, I
 	@Autowired
 	private ImageRepository imageRepository;
 	@Autowired
-	private ImageStateService imageStateService;
+	private ImageCUDService imageCUDService;
 
 	@Test
 	void safelyDeleteImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
@@ -41,8 +41,8 @@ class SafelyDeleteImageTest extends ImageTestBase implements IAlbumAssertions, I
 		this.imageRepository.persist(image);
 		log.debug("albumRepository.putAlbumCover");
 		this.albumRepository.putAlbumCover(image.getId());
-		log.debug("imageStateService.safelyDeleteImage");
-		this.imageStateService.safelyDeleteImage(image.getId());
+		log.debug("imageCUDService.safelyDeleteImage");
+		this.imageCUDService.safelyDeleteImage(image.getId());
 		log.debug("imageRepository.findById");
 		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
 		assertFalse(dbImage.isPresent());
@@ -62,8 +62,8 @@ class SafelyDeleteImageTest extends ImageTestBase implements IAlbumAssertions, I
 		this.imageRepository.persist(image);
 		log.debug("albumRepository.putAlbumCover");
 		this.albumRepository.putAlbumCover(image.getId());
-		log.debug("imageStateService.safelyDeleteImage");
-		this.imageStateService.safelyDeleteImage(image.getId());
+		log.debug("imageCUDService.safelyDeleteImage");
+		this.imageCUDService.safelyDeleteImage(image.getId());
 		log.debug("imageRepository.findById");
 		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
 		assertTrue(dbImage.isPresent());

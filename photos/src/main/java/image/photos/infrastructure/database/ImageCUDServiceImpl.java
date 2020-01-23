@@ -22,7 +22,7 @@ import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
  */
 @Service
 @Slf4j
-public class ImageStateServiceImpl implements ImageStateService {
+public class ImageCUDServiceImpl implements ImageCUDService {
 	@Autowired
 	private ImageRepository imageRepository;
 

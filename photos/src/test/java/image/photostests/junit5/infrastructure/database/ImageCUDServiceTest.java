@@ -6,7 +6,7 @@ import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.infrastructure.database.ImageStateService;
+import image.photos.infrastructure.database.ImageCUDService;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5PhotosInMemoryDbConfig
 @Slf4j
-public class ImageStateServiceTest extends ImageTestBase implements IImageAssertions {
+public class ImageCUDServiceTest extends ImageTestBase implements IImageAssertions {
 	@Autowired
-	private ImageStateService imageStateService;
+	private ImageCUDService imageCUDService;
 	@Autowired
 	private ImageRepository imageRepository;
 
@@ -35,7 +35,7 @@ public class ImageStateServiceTest extends ImageTestBase implements IImageAssert
 		Image image = this.album.getImages().get(0);
 		Date date = new Date();
 		log.debug("*** imageRepository.updateThumbLastModifiedForImg ***");
-		this.imageStateService.updateThumbLastModified(date, image.getId());
+		this.imageCUDService.updateThumbLastModified(date, image.getId());
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertEquals(date, dbImage.getImageMetadata().getThumbLastModified());
@@ -47,7 +47,7 @@ public class ImageStateServiceTest extends ImageTestBase implements IImageAssert
 	void markDeleted() {
 		Image image = this.album.getImages().get(0);
 		log.debug("*** imageRepository.markDeleted ***");
-		this.imageStateService.markDeleted(image.getId());
+		this.imageCUDService.markDeleted(image.getId());
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertTrue(dbImage.isDeleted());
@@ -58,7 +58,7 @@ public class ImageStateServiceTest extends ImageTestBase implements IImageAssert
 	@Test
 	void changeName(@Random String newName) {
 		Image image = this.album.getImages().get(0);
-		this.imageStateService.changeName(newName, image.getId());
+		this.imageCUDService.changeName(newName, image.getId());
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertEquals(newName, dbImage.getName());
 		image.setName(newName);
@@ -68,7 +68,7 @@ public class ImageStateServiceTest extends ImageTestBase implements IImageAssert
 	@Test
 	void updateImageMetadata(@Random ImageMetadata imageMetadata) {
 		Image image = this.album.getImages().get(0);
-		this.imageStateService.updateImageMetadata(imageMetadata, image.getId());
+		this.imageCUDService.updateImageMetadata(imageMetadata, image.getId());
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		this.assertImageMetadataEquals(imageMetadata, dbImage.getImageMetadata());
 		image.setImageMetadata(imageMetadata);
