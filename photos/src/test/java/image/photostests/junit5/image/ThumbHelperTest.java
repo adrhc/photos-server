@@ -18,7 +18,7 @@ import java.util.Date;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@TestPropertySource(properties = "hibernate.show_sql=true")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @Junit5PhotosInMemoryDbConfig
 @ExtendWith(RandomBeansExtensionEx.class)
 @Slf4j

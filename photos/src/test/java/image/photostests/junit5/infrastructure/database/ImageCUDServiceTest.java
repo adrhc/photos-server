@@ -20,7 +20,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@TestPropertySource(properties = "hibernate.show_sql=true")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5PhotosInMemoryDbConfig
 @Slf4j

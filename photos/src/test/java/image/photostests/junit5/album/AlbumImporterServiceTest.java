@@ -44,7 +44,7 @@ import static org.mockito.Mockito.*;
 @Junit5PhotosInMemoryDbConfig
 @ContextConfiguration(classes = {
 		PhotosTestConfig.class, AlbumImporterServiceTest.Config.class})
-@TestPropertySource(properties = "hibernate.show_sql=true")
+@TestPropertySource(properties = "hibernate.show_sql=false")
 class AlbumImporterServiceTest extends AppConfigFromClassPath {
 	private static final String SIMFONIA_LALELELOR = "2013-04-20_Simfonia_lalelelor";
 	private static final String CASA_URLUIENI = "2017-07-15 Casa Urluieni";
