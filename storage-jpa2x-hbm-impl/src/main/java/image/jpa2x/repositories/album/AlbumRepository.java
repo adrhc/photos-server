@@ -11,7 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface AlbumRepository extends AlbumRepositoryCustom, ICustomJpaRepository<Album, Integer> {
+public interface AlbumRepository extends AlbumUpdateRepository, AlbumQueryRepositoryEx, ICustomJpaRepository<Album, Integer> {
+	Integer NULL_ALBUM_ID = -1;
+
 	@QueryHints(@QueryHint(name = "org.hibernate.cacheable", value = "true"))
 	List<Album> findByDeletedFalseOrderByNameDesc();
 

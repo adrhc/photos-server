@@ -7,7 +7,6 @@ import image.infrastructure.messaging.album.AlbumEvent;
 import image.infrastructure.messaging.album.AlbumEventTypeEnum;
 import image.infrastructure.messaging.album.AlbumTopic;
 import image.jpa2x.repositories.album.AlbumRepository;
-import image.jpa2x.repositories.image.ImageQueryRepository;
 import image.jpa2x.repositories.image.ImageRepository;
 import image.persistence.entity.Album;
 import image.photos.album.helpers.AlbumHelper;
@@ -93,9 +92,9 @@ public class AlbumImporterCtrlOnlyIT {
 		}
 
 		@Bean
-		AlbumImporterService albumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) throws IOException {
+		AlbumImporterService albumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) throws IOException {
 			var bean = spy(new AlbumImporterService(imageHelper, imageImporterService,
-					imageRepository, imageQueryRepository, albumRepository, albumTopic,
+					imageRepository, albumRepository, albumTopic,
 					albumPathChecks, albumHelper, fileStoreService));
 
 			var albumEvents = List.of(albumEvent(CASA_URLUIENI, CREATED), albumEvent(SIMFONIA_LALELELOR, CREATED));

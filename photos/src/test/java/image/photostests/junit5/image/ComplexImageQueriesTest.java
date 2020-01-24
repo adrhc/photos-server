@@ -1,7 +1,6 @@
 package image.photostests.junit5.image;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.image.ImageQueryRepositoryEx;
 import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
@@ -31,8 +30,6 @@ class ComplexImageQueriesTest extends ImageTestBase implements IImageAssertions 
 	@Autowired
 	private ComplexImageQueries complexImageQueries;
 	@Autowired
-	private ImageQueryRepositoryEx imageQueryRepositoryEx;
-	@Autowired
 	private FileStoreServiceTest fileStoreService;
 	@Autowired
 	private ImageRepository imageRepository;
@@ -50,7 +47,7 @@ class ComplexImageQueriesTest extends ImageTestBase implements IImageAssertions 
 	@Test
 	void findByNameAndAlbumId() {
 		Image image = this.album.getImages().get(0);
-		Image dbImage = this.imageQueryRepositoryEx
+		Image dbImage = this.imageRepository
 				.findByNameAndAlbumId(image.getName(), this.album.getId());
 		Assertions.assertNotNull(dbImage);
 		this.assertImageEquals(image, dbImage);

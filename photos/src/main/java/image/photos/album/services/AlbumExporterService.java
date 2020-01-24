@@ -2,7 +2,6 @@ package image.photos.album.services;
 
 import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.repositories.ESortType;
-import image.jpa2x.repositories.album.AlbumPageRepository;
 import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.Album;
@@ -31,15 +30,13 @@ public class AlbumExporterService {
 	public static final String PAGE_COUNT = "pageCount";
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private final AppConfigRepository appConfigRepository;
-	private final AlbumPageRepository albumPageRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumPageService albumPageService;
 	private final AlbumCoverService albumCoverService;
 	private final FileStoreService fileStoreService;
 
-	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumPageRepository albumPageRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
+	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
-		this.albumPageRepository = albumPageRepository;
 		this.albumRepository = albumRepository;
 		this.albumPageService = albumPageService;
 		this.albumCoverService = albumCoverService;
@@ -109,7 +106,7 @@ public class AlbumExporterService {
 		log.debug("BEGIN id = {}, name = {}", album.getId(), album.getName());
 
 		// prepare pageCount.json data
-		int pageCount = this.albumPageRepository.countPages(null, false, false, album.getId());
+		int pageCount = this.albumRepository.countPages(null, false, false, album.getId());
 		Integer photosPerPage = this.appConfigRepository.getPhotosPerPage();
 		Map<String, Integer> map = new HashMap<>();
 		map.put(PAGE_COUNT, pageCount);

@@ -1,11 +1,7 @@
 package image.jpa2x.repositories.image;
 
 import image.persistence.entity.Image;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-@Repository
-@Transactional
 public class ImageQueryRepositoryExImpl implements ImageQueryRepositoryEx {
 	private final ImageRepository imageRepository;
 

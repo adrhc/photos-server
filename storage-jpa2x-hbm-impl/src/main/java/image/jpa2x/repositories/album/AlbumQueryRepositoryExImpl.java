@@ -5,8 +5,6 @@ import image.jpa2x.repositories.ESortType;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import org.hibernate.jpa.QueryHints;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -16,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-@Transactional
-public class AlbumPageRepositoryImpl implements AlbumPageRepository {
+import static image.jpa2x.repositories.album.AlbumRepository.NULL_ALBUM_ID;
+
+public class AlbumQueryRepositoryExImpl implements AlbumQueryRepositoryEx {
 	@PersistenceContext
 	private EntityManager em;
 	@Autowired

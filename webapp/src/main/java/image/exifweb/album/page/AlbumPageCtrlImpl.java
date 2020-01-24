@@ -4,7 +4,7 @@ import image.cdm.album.page.AlbumPage;
 import image.exifweb.util.date.IDateUtil;
 import image.exifweb.web.controller.INotModifiedChecker;
 import image.jpa2x.repositories.ESortType;
-import image.jpa2x.repositories.album.AlbumPageRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.photos.album.services.AlbumPageService;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	private static final Logger logger = LoggerFactory.getLogger(AlbumPageCtrlImpl.class);
 	@Autowired
-	private AlbumPageRepository albumPageRepository;
+	private AlbumRepository albumRepository;
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 	@Autowired
@@ -50,7 +50,7 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 			@RequestParam(name = "viewHidden", defaultValue = "false") boolean viewHidden,
 			@RequestParam(name = "viewOnlyPrintable", defaultValue = "false") boolean viewOnlyPrintable) {
 		PageCount pageCount = new PageCount();
-		pageCount.setPageCount(this.albumPageRepository.countPages(
+		pageCount.setPageCount(this.albumRepository.countPages(
 				toSearch, viewHidden, viewOnlyPrintable, albumId));
 		pageCount.setPhotosPerPage(this.appConfigRepository.getPhotosPerPage());
 		logger.debug(pageCount.toString());
@@ -75,7 +75,7 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 			return valueSupplier.get();
 		}
 		return this.checkNotModified(
-				() -> this.albumPageRepository.getPageLastUpdate(pageNr, toSearch,
+				() -> this.albumRepository.getPageLastUpdate(pageNr, toSearch,
 						viewHidden, viewOnlyPrintable, albumId).orElseGet(Date::new),
 				valueSupplier, webRequest);
 	}

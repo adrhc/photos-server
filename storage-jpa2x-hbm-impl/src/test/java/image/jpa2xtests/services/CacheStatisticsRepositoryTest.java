@@ -2,7 +2,6 @@ package image.jpa2xtests.services;
 
 import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.album.AlbumPageRepository;
 import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.jpa2x.services.CacheStatisticsRepository;
@@ -21,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static image.jpa2x.repositories.album.AlbumRepository.NULL_ALBUM_ID;
+
 @ExtendWith(RandomBeansExtensionEx.class)
 @Junit5Jpa2xInMemoryDbConfig
 class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfigSupplier {
@@ -30,8 +31,6 @@ class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfi
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private AlbumRepository albumRepository;
-	@Autowired
-	private AlbumPageRepository albumPageRepository;
 
 	@Random(type = Album.class, size = 5, excludes = {"id", "dirty", "images", "cover", "lastUpdate"})
 	private List<Album> albums;
@@ -58,7 +57,7 @@ class CacheStatisticsRepositoryTest implements IPositiveIntegerRandom, IAppConfi
 	void getSecondLevelCacheStatistics() {
 		// cache loading
 		this.albumRepository.getById(this.albums.get(0).getId());
-		this.albumPageRepository.countPages(null, false, false, AlbumPageRepository.NULL_ALBUM_ID);
+		this.albumRepository.countPages(null, false, false, NULL_ALBUM_ID);
 		this.cacheStatisticsRepository.getSecondLevelCacheStatistics(Album.class.getName());
 	}
 }

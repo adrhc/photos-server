@@ -2,7 +2,6 @@ package image.photos.image.services;
 
 import image.infrastructure.messaging.image.ImageEvent;
 import image.infrastructure.messaging.image.ImageEventTypeEnum;
-import image.jpa2x.repositories.image.ImageQueryRepositoryEx;
 import image.jpa2x.repositories.image.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
@@ -23,17 +22,14 @@ import static image.jpa2x.util.ImageUtils.imageNameFrom;
 @Slf4j
 public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
-	private final ImageQueryRepositoryEx imageQueryRepositoryEx;
 	private final ThumbHelper thumbHelper;
 	private final FileStoreService fileStoreService;
 	private final ImageRepository imageRepository;
 
 	public ImageImporterService(ExifExtractorService exifExtractorService,
-			ImageQueryRepositoryEx imageQueryRepositoryEx,
 			ThumbHelper thumbHelper, ImageRepository imageRepository,
 			FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
-		this.imageQueryRepositoryEx = imageQueryRepositoryEx;
 		this.thumbHelper = thumbHelper;
 		this.imageRepository = imageRepository;
 		this.fileStoreService = fileStoreService;
@@ -44,7 +40,7 @@ public class ImageImporterService {
 				"Wrong image file (is a directory):\n{}" + imgFile;
 
 		// load Image from DB (if any)
-		Image dbImage = this.imageQueryRepositoryEx
+		Image dbImage = this.imageRepository
 				.findByNameAndAlbumId(imageNameFrom(imgFile), album.getId());
 
 		if (dbImage == null) {

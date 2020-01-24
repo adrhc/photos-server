@@ -7,7 +7,7 @@ import image.exifweb.web.json.JsonStringValue;
 import image.exifwebtests.config.WebInMemoryDbConfig;
 import image.jpa2x.repositories.ESortType;
 import image.jpa2x.repositories.album.AlbumRepository;
-import image.jpa2x.repositories.image.ImageQueryRepository;
+import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.persistence.entity.Album;
 import image.photos.album.services.AlbumPageService;
@@ -79,7 +79,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	@Autowired
 	private Jpa2ndLevelCacheUtils cacheUtils;
 	@Autowired
-	private ImageQueryRepository imageQueryRepository;
+	private ImageRepository imageRepository;
 
 	@BeforeAll
 	void beforeAll() throws IOException {
@@ -239,7 +239,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 
 		// check that all album's available images were imported
 		assertEquals(COUNT.get(name), this
-				.imageQueryRepository.countByAlbum_Id(album.getId()));
+				.imageRepository.countByAlbum_Id(album.getId()));
 
 		// read 1th asc json as List<AlbumPage>
 		List<AlbumPage> albumPages = this.fileStoreService.readJsonAsList(

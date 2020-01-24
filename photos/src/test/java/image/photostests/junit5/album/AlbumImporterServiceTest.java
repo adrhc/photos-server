@@ -3,7 +3,7 @@ package image.photostests.junit5.album;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.infrastructure.messaging.album.AlbumEvent;
 import image.jpa2x.repositories.album.AlbumRepository;
-import image.jpa2x.repositories.image.ImageQueryRepository;
+import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.persistence.entity.Album;
 import image.photos.album.services.AlbumExporterService;
@@ -59,7 +59,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private ImageQueryRepository imageQueryRepository;
+	private ImageRepository imageRepository;
 
 	@BeforeEach
 	void setup() {
@@ -83,7 +83,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 						hasProperty("name", is(albumToReimport)))));
 
 		// check that all SIMFONIA_LALELELOR available images were imported
-		assertEquals(COUNT.get(albumToReimport), this.imageQueryRepository.countByAlbum_name(albumToReimport));
+		assertEquals(COUNT.get(albumToReimport), this.imageRepository.countByAlbum_name(albumToReimport));
 
 		// verify that the album exists in database
 		this.verifyAlbum(albumToReimport);
@@ -106,10 +106,10 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 				)));
 
 		// check that all SIMFONIA_LALELELOR available images were imported
-		assertEquals(COUNT.get(SIMFONIA_LALELELOR), this.imageQueryRepository.countByAlbum_name(SIMFONIA_LALELELOR));
+		assertEquals(COUNT.get(SIMFONIA_LALELELOR), this.imageRepository.countByAlbum_name(SIMFONIA_LALELELOR));
 
 		// check that all SIMFONIA_LALELELOR available images were imported
-		assertEquals(COUNT.get(CASA_URLUIENI), this.imageQueryRepository.countByAlbum_name(CASA_URLUIENI));
+		assertEquals(COUNT.get(CASA_URLUIENI), this.imageRepository.countByAlbum_name(CASA_URLUIENI));
 
 		// verify that the albums exist in database
 		List.of(SIMFONIA_LALELELOR, CASA_URLUIENI).forEach(this::verifyAlbum);
@@ -122,7 +122,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		this.importByAlbumName(SIMFONIA_LALELELOR);
 
 		// check that all SIMFONIA_LALELELOR available images were imported
-		assertEquals(COUNT.get(SIMFONIA_LALELELOR), this.imageQueryRepository.countByAlbum_name(SIMFONIA_LALELELOR));
+		assertEquals(COUNT.get(SIMFONIA_LALELELOR), this.imageRepository.countByAlbum_name(SIMFONIA_LALELELOR));
 
 		var albumEvent = this.service.importAll();
 
@@ -146,14 +146,14 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 				)));
 
 		assertEquals(COUNT.get(SIMFONIA_LALELELOR) - 1,
-				this.imageQueryRepository.countByAlbum_name(SIMFONIA_LALELELOR),
+				this.imageRepository.countByAlbum_name(SIMFONIA_LALELELOR),
 				"1 image should be removed from " + SIMFONIA_LALELELOR);
-		assertFalse(this.imageQueryRepository.existsByNameAndAlbumName(IMAGE, SIMFONIA_LALELELOR),
+		assertFalse(this.imageRepository.existsByNameAndAlbumName(IMAGE, SIMFONIA_LALELELOR),
 				"Image " + IMAGE + " should be deleted!");
 
 		// check that all SIMFONIA_LALELELOR available images were imported
 		assertEquals(COUNT.get(CASA_URLUIENI), this
-				.imageQueryRepository.countByAlbum_name(CASA_URLUIENI));
+				.imageRepository.countByAlbum_name(CASA_URLUIENI));
 
 		// verify that the albums exist in database
 		List.of(SIMFONIA_LALELELOR, CASA_URLUIENI).forEach(this::verifyAlbum);
@@ -185,14 +185,14 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		}
 
 		@Bean
-		FileStoreService fileStoreService(ObjectMapper mapper, ImageQueryRepository queryRepository) throws IOException {
+		FileStoreService fileStoreService(ObjectMapper mapper, ImageRepository imageRepository) throws IOException {
 			FileStoreService delegate = new FileStoreServiceImpl(mapper);
 			FileStoreService storeServiceSpy = spy(delegate);
 
 			doAnswer(invocation -> {
 				Path path = invocation.getArgument(0);
 				if (fileName(path).equals(IMAGE) &&
-						queryRepository.existsByNameAndAlbumName(IMAGE, SIMFONIA_LALELELOR)) {
+						imageRepository.existsByNameAndAlbumName(IMAGE, SIMFONIA_LALELELOR)) {
 					// When the related path-album exists in DB we simulate a missing path situation.
 					// importAll(): simulate file deleted when calling FileStoreService.lastModifiedTime
 					throw new FileNotFoundException(path.toString());

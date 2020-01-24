@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Created by adr on 2/22/18.
  */
-public interface AlbumPageRepository {
+public interface AlbumQueryRepositoryEx {
 	/**
 	 * Shows in addition to status=0 and printable also !deleted, hidden, personal, ugly, duplicate images.
 	 * <p>
@@ -23,7 +23,6 @@ public interface AlbumPageRepository {
 	 * Shows only printable images.
 	 */
 	String VIEW_PRINTABLE_SQL = "AND (:viewOnlyPrintable = false OR i.flags.printable = true) ";
-	Integer NULL_ALBUM_ID = -1;
 
 	int countPages(String toSearch, boolean viewHidden,
 			boolean viewOnlyPrintable, Integer albumId);

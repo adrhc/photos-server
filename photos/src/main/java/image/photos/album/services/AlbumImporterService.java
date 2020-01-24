@@ -7,7 +7,6 @@ import image.infrastructure.messaging.album.AlbumTopic;
 import image.infrastructure.messaging.image.ImageEvent;
 import image.infrastructure.messaging.image.ImageEventTypeEnum;
 import image.jpa2x.repositories.album.AlbumRepository;
-import image.jpa2x.repositories.image.ImageQueryRepository;
 import image.jpa2x.repositories.image.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
@@ -48,7 +47,6 @@ import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageImporterService imageImporterService;
 	private final ImageHelper imageHelper;
-	private final ImageQueryRepository imageQueryRepository;
 	private final ImageRepository imageRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
@@ -56,11 +54,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageRepository = imageRepository;
-		this.imageQueryRepository = imageQueryRepository;
 		this.albumRepository = albumRepository;
 		this.albumTopic = albumTopic;
 		this.albumPathChecks = albumPathChecks;
@@ -235,7 +232,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 			Album album, List<String> foundImageFileNames) {
 		log.debug("BEGIN {}", album.getName());
 		// loading images from DB
-		List<Image> images = this.imageQueryRepository.findByAlbumId(album.getId());
+		List<Image> images = this.imageRepository.findByAlbumId(album.getId());
 		List<ImageEvent> events = new ArrayList<>();
 		// iterating images
 		images.forEach(image -> {

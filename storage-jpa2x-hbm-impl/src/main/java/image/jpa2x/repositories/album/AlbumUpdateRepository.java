@@ -1,6 +1,6 @@
 package image.jpa2x.repositories.album;
 
-public interface AlbumRepositoryCustom {
+public interface AlbumUpdateRepository {
 	boolean putAlbumCover(Integer imageId);
 
 	boolean removeAlbumCover(Integer albumId);
