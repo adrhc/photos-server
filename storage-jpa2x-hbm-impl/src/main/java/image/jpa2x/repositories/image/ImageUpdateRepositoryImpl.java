@@ -27,33 +27,11 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	@PersistenceContext
 	private EntityManager em;
 
-	/**
-	 * Remove album's cover (set it to null) when image is its album's cover.
-	 *
-	 * @return whether any change occurred in DB
-	 */
-	private static boolean removeAsCoverAndFromAlbumImages(Image persistentImage) {
-		boolean result = false;
-		Album album = persistentImage.getAlbum();
-		// isDeleted means "labeled" as deleted
-		if (!persistentImage.isDeleted()) {
-			// purge image from DB
-			result = album.getImages().remove(persistentImage);
-		}
-		if (album.getCover() == null ||
-				!album.getCover().getId().equals(persistentImage.getId())) {
-			// album has no cover or image is not the cover for its album
-			return result;
-		}
-		// removing cover
-		album.setCover(null);
-		return true;
-	}
-
 	@Override
 	public ImageEvent updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.setImageMetadata(imageMetadata);
+		image.getAlbum().setDirty(true);
 		return ImageEvent.of(image, EXIF_UPDATED);
 	}
 
@@ -61,6 +39,7 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	public ImageEvent updateThumbLastModified(Date thumbLastModified, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.getImageMetadata().setThumbLastModified(thumbLastModified);
+		image.getAlbum().setDirty(true);
 		return ImageEvent.of(image, THUMB_LAST_MODIF_DATE_UPDATED);
 	}
 
@@ -68,6 +47,7 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	public ImageEvent changeName(String newName, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.setName(newName);
+		image.getAlbum().setDirty(true);
 		return ImageEvent.of(image, UPDATED);
 	}
 
@@ -78,14 +58,14 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 			return ImageEvent.of(image, NOTHING);
 		}
 		image.setDeleted(true);
-		removeAsCoverAndFromAlbumImages(image);
+		this.removeAsCoverAndFromAlbumImages(image);
 		return ImageEvent.of(image, MARKED_AS_DELETED);
 	}
 
 	@Override
 	public ImageEvent safelyDeleteImage(Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
-		boolean deleted = removeAsCoverAndFromAlbumImages(image);
+		boolean deleted = this.removeAsCoverAndFromAlbumImages(image);
 		return ImageEvent.of(image, DELETED, !deleted);
 	}
 
@@ -119,6 +99,40 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 
 	public ImageEvent insert(Image image) {
 		this.em.persist(image);
+		image.getAlbum().setDirty(true);
 		return ImageEvent.of(image, CREATED);
+	}
+
+	/**
+	 * Remove album's cover (set it to null) when image is its album's cover.
+	 *
+	 * @return whether any change occurred in DB
+	 */
+	private boolean removeAsCoverAndFromAlbumImages(Image persistentImage) {
+		boolean result = false;
+		Album album = persistentImage.getAlbum();
+		// isDeleted means "labeled" as deleted
+		if (!persistentImage.isDeleted()) {
+			// purges the image from DB
+/*
+			// loads all images from DB!
+			result = album.getImages().remove(persistentImage);
+			if (result) {
+				album.setDirty(true);
+			}
+*/
+			this.em.remove(persistentImage);
+			album.setDirty(true);
+			result = true;
+		}
+		if (album.getCover() == null ||
+				!album.getCover().getId().equals(persistentImage.getId())) {
+			// album has no cover or image is not the cover for its album
+			return result;
+		}
+		// removing cover
+		album.setCover(null);
+		album.setDirty(true);
+		return true;
 	}
 }
