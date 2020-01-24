@@ -1013,7 +1013,7 @@
                     </executions>
                     <configuration>
                         <skipAfterFailureCount>1</skipAfterFailureCount>
-                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
+<!--                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
                         <forkCount>1C</forkCount>
                         <reuseForks>false</reuseForks>
                         <disableXmlReport>false</disableXmlReport>
@@ -1037,7 +1037,7 @@
                     <!-- combine.children="merge" is the default -->
                     <configuration>
                         <skipAfterFailureCount>1</skipAfterFailureCount>
-                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>
+<!--                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
                         <!--
                             https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
                             parallel=methods -> ApplicationContext fails with this multithreaded environment
