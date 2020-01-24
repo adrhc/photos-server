@@ -8,7 +8,7 @@ import image.infrastructure.messaging.image.ImageEvent;
 import image.infrastructure.messaging.image.ImageEventTypeEnum;
 import image.jpa2x.repositories.AlbumRepository;
 import image.jpa2x.repositories.ImageQueryRepository;
-import image.jpa2x.repositories.ImageUpdateRepository;
+import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -50,7 +50,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageImporterService imageImporterService;
 	private final ImageHelper imageHelper;
 	private final ImageQueryRepository imageQueryRepository;
-	private final ImageUpdateRepository imageUpdateRepository;
+	private final ImageRepository imageRepository;
 	private final ImageUpdateRepositoryEx imageUpdateRepositoryEx;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
@@ -58,10 +58,10 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageUpdateRepository imageUpdateRepository, ImageUpdateRepositoryEx imageUpdateRepositoryEx, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, ImageUpdateRepositoryEx imageUpdateRepositoryEx, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
-		this.imageUpdateRepository = imageUpdateRepository;
+		this.imageRepository = imageRepository;
 		this.imageQueryRepository = imageQueryRepository;
 		this.imageUpdateRepositoryEx = imageUpdateRepositoryEx;
 		this.albumRepository = albumRepository;
@@ -255,7 +255,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				// found: update db-image name
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				events.add(this.imageUpdateRepository.changeName(oppositeExtensionCase, image.getId()));
+				events.add(this.imageRepository.changeName(oppositeExtensionCase, image.getId()));
 			} else if (this.areEquals(image.getFlags(), ImageFlagEnum.DEFAULT) ||
 					image.getRating() != ImageRating.MIN_RATING) {
 				// not found (flags & rating not changed): purge image from DB
