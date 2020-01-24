@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 
-import static image.infrastructure.messaging.image.ImageEventTypeEnum.UPDATED;
+import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
 
 /**
  * 4.6.1. Customizing Individual Repositories
@@ -51,15 +51,17 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	}
 
 	@Override
-	public void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
+	public ImageEvent updateImageMetadata(ImageMetadata imageMetadata, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.setImageMetadata(imageMetadata);
+		return ImageEvent.of(image, EXIF_UPDATED);
 	}
 
 	@Override
-	public void updateThumbLastModified(Date thumbLastModified, Integer imageId) {
+	public ImageEvent updateThumbLastModified(Date thumbLastModified, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.getImageMetadata().setThumbLastModified(thumbLastModified);
+		return ImageEvent.of(image, THUMB_LAST_MODIF_DATE_UPDATED);
 	}
 
 	@Override
@@ -70,28 +72,29 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	}
 
 	@Override
-	public boolean markDeleted(Integer imageId) {
+	public ImageEvent markDeleted(Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		if (image.isDeleted()) {
-			return false;
+			return ImageEvent.of(image, NOTHING);
 		}
 		image.setDeleted(true);
 		removeAsCoverAndFromAlbumImages(image);
-		return true;
+		return ImageEvent.of(image, MARKED_AS_DELETED);
 	}
 
 	@Override
-	public boolean safelyDeleteImage(Integer imageId) {
+	public ImageEvent safelyDeleteImage(Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
-		return removeAsCoverAndFromAlbumImages(image);
+		boolean deleted = removeAsCoverAndFromAlbumImages(image);
+		return ImageEvent.of(image, deleted ? DELETED : NOTHING);
 	}
 
 	@Override
-	public boolean changeRating(ImageRating imageRating) {
+	public ImageEvent changeRating(ImageRating imageRating) {
 		Image image = this.em.find(Image.class, imageRating.getImageId());
 		if (image.getRating() == imageRating.getRating()) {
 //			logger.debug("END (same rating {})", imageRating.getRating());
-			return false;
+			return ImageEvent.of(image, NOTHING);
 		}
 //		logger.debug("before setRating({})", imageRating.getRating());
 		image.setRating(imageRating.getRating());
@@ -99,18 +102,23 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 //				sdf.format(image.getAlbum().getLastUpdate()));
 		image.getAlbum().setDirty(true);
 //		logger.debug("END");
-		return true;
+		return ImageEvent.of(image, RATING_CHANGED);
 	}
 
 	@Override
-	public boolean changeStatus(ImageStatus imageStatus) {
+	public ImageEvent changeStatus(ImageStatus imageStatus) {
 		Image image = this.em.find(Image.class, imageStatus.getImageId());
 		ImageFlags imageFlags = this.of(imageStatus.getStatus());
 		if (image.getFlags().equals(imageFlags)) {
-			return false;
+			return ImageEvent.of(image, NOTHING);
 		}
 		image.setFlags(imageFlags);
 		image.getAlbum().setDirty(true);
-		return true;
+		return ImageEvent.of(image, STATUS_CHANGED);
+	}
+
+	public ImageEvent insert(Image image) {
+		this.em.persist(image);
+		return ImageEvent.of(image, CREATED);
 	}
 }

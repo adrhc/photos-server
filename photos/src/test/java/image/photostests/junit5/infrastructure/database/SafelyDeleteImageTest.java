@@ -7,7 +7,6 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IAlbumAssertions;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.infrastructure.database.ImageUpdateRepositoryEx;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +29,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class SafelyDeleteImageTest extends ImageTestBase implements IAlbumAssertions, IImageAssertions {
 	@Autowired
 	private ImageRepository imageRepository;
-	@Autowired
-	private ImageUpdateRepositoryEx imageUpdateRepositoryEx;
 
 	@Test
 	void safelyDeleteImage(@Random(excludes = {"id", "lastUpdate", "album"}) Image image) {
@@ -42,7 +39,7 @@ class SafelyDeleteImageTest extends ImageTestBase implements IAlbumAssertions, I
 		log.debug("albumRepository.putAlbumCover");
 		this.albumRepository.putAlbumCover(image.getId());
 		log.debug("imageUpdateRepositoryEx.safelyDeleteImage");
-		this.imageUpdateRepositoryEx.safelyDeleteImage(image.getId());
+		this.imageRepository.safelyDeleteImage(image.getId());
 		log.debug("imageRepository.findById");
 		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
 		assertFalse(dbImage.isPresent());
@@ -63,7 +60,7 @@ class SafelyDeleteImageTest extends ImageTestBase implements IAlbumAssertions, I
 		log.debug("albumRepository.putAlbumCover");
 		this.albumRepository.putAlbumCover(image.getId());
 		log.debug("imageUpdateRepositoryEx.safelyDeleteImage");
-		this.imageUpdateRepositoryEx.safelyDeleteImage(image.getId());
+		this.imageRepository.safelyDeleteImage(image.getId());
 		log.debug("imageRepository.findById");
 		Optional<Image> dbImage = this.imageRepository.findById(image.getId());
 		assertTrue(dbImage.isPresent());

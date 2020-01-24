@@ -15,7 +15,6 @@ import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.album.services.AlbumImporterService;
 import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
-import image.photos.infrastructure.database.ImageUpdateRepositoryEx;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -94,9 +93,9 @@ public class AlbumImporterCtrlOnlyIT {
 		}
 
 		@Bean
-		AlbumImporterService albumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, ImageUpdateRepositoryEx imageUpdateRepositoryEx, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) throws IOException {
+		AlbumImporterService albumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) throws IOException {
 			var bean = spy(new AlbumImporterService(imageHelper, imageImporterService,
-					imageRepository, imageUpdateRepositoryEx, imageQueryRepository, albumRepository, albumTopic,
+					imageRepository, imageQueryRepository, albumRepository, albumTopic,
 					albumPathChecks, albumHelper, fileStoreService));
 
 			var albumEvents = List.of(albumEvent(CASA_URLUIENI, CREATED), albumEvent(SIMFONIA_LALELELOR, CREATED));

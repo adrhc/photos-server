@@ -6,7 +6,6 @@ import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.infrastructure.database.ImageUpdateRepositoryEx;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 public class ImageUpdateRepositoryExTest extends ImageTestBase implements IImageAssertions {
 	@Autowired
-	private ImageUpdateRepositoryEx imageUpdateRepositoryEx;
-	@Autowired
 	private ImageRepository imageRepository;
 
 	@Test
@@ -35,7 +32,7 @@ public class ImageUpdateRepositoryExTest extends ImageTestBase implements IImage
 		Image image = this.album.getImages().get(0);
 		Date date = new Date();
 		log.debug("*** imageRepository.updateThumbLastModifiedForImg ***");
-		this.imageUpdateRepositoryEx.updateThumbLastModified(date, image.getId());
+		this.imageRepository.updateThumbLastModified(date, image.getId());
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertEquals(date, dbImage.getImageMetadata().getThumbLastModified());
@@ -47,7 +44,7 @@ public class ImageUpdateRepositoryExTest extends ImageTestBase implements IImage
 	void markDeleted() {
 		Image image = this.album.getImages().get(0);
 		log.debug("*** imageRepository.markDeleted ***");
-		this.imageUpdateRepositoryEx.markDeleted(image.getId());
+		this.imageRepository.markDeleted(image.getId());
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertTrue(dbImage.isDeleted());
@@ -68,7 +65,7 @@ public class ImageUpdateRepositoryExTest extends ImageTestBase implements IImage
 	@Test
 	void updateImageMetadata(@Random ImageMetadata imageMetadata) {
 		Image image = this.album.getImages().get(0);
-		this.imageUpdateRepositoryEx.updateImageMetadata(imageMetadata, image.getId());
+		this.imageRepository.updateImageMetadata(imageMetadata, image.getId());
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		this.assertImageMetadataEquals(imageMetadata, dbImage.getImageMetadata());
 		image.setImageMetadata(imageMetadata);

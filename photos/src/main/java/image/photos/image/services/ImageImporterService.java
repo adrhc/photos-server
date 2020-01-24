@@ -2,12 +2,12 @@ package image.photos.image.services;
 
 import image.infrastructure.messaging.image.ImageEvent;
 import image.infrastructure.messaging.image.ImageEventTypeEnum;
+import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
 import image.photos.infrastructure.database.ImageQueryRepositoryEx;
-import image.photos.infrastructure.database.ImageUpdateRepositoryEx;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,17 +25,17 @@ public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
 	private final ImageQueryRepositoryEx imageQueryRepositoryEx;
 	private final ThumbHelper thumbHelper;
-	private final ImageUpdateRepositoryEx imageUpdateRepositoryEx;
 	private final FileStoreService fileStoreService;
+	private final ImageRepository imageRepository;
 
 	public ImageImporterService(ExifExtractorService exifExtractorService,
 			ImageQueryRepositoryEx imageQueryRepositoryEx,
-			ThumbHelper thumbHelper, ImageUpdateRepositoryEx imageUpdateRepositoryEx,
+			ThumbHelper thumbHelper, ImageRepository imageRepository,
 			FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
 		this.imageQueryRepositoryEx = imageQueryRepositoryEx;
 		this.thumbHelper = thumbHelper;
-		this.imageUpdateRepositoryEx = imageUpdateRepositoryEx;
+		this.imageRepository = imageRepository;
 		this.fileStoreService = fileStoreService;
 	}
 
@@ -64,7 +64,7 @@ public class ImageImporterService {
 		image.setName(imageName);
 		image.setAlbum(album);
 		// returns DB operation only
-		return this.imageUpdateRepositoryEx.persist(image);
+		return this.imageRepository.insert(image);
 	}
 
 	private Optional<ImageEvent> updateFromFile(Path imgFile, Image image) throws IOException {
@@ -77,7 +77,7 @@ public class ImageImporterService {
 			ImageMetadata updatedImageMetadata =
 					this.exifExtractorService.extractMetadata(imgFile);
 			// returns DB operation only
-			return Optional.of(this.imageUpdateRepositoryEx
+			return Optional.of(this.imageRepository
 					.updateImageMetadata(updatedImageMetadata, image.getId()));
 		}
 
@@ -87,7 +87,7 @@ public class ImageImporterService {
 				.thumbLastModified(imgFile, dbThumbLastModified);
 		if (thumbLastModifiedFromFile.after(dbThumbLastModified)) {
 			// returns DB operation only
-			return Optional.of(this.imageUpdateRepositoryEx
+			return Optional.of(this.imageRepository
 					.updateThumbLastModified(thumbLastModifiedFromFile, image.getId()));
 		}
 

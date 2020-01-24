@@ -3,6 +3,7 @@ package image.jpa2x.repositories;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
 import image.infrastructure.messaging.image.ImageEvent;
+import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 
 import java.util.Date;
@@ -12,17 +13,19 @@ import java.util.Date;
  * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.single-repository-behavior
  */
 public interface ImageUpdateRepository {
-	boolean changeRating(ImageRating imageRating);
+	ImageEvent changeRating(ImageRating imageRating);
 
-	boolean changeStatus(ImageStatus imageStatus);
+	ImageEvent changeStatus(ImageStatus imageStatus);
 
-	boolean safelyDeleteImage(Integer imageId);
+	ImageEvent safelyDeleteImage(Integer imageId);
 
-	boolean markDeleted(Integer imageId);
+	ImageEvent markDeleted(Integer imageId);
 
 	ImageEvent changeName(String newName, Integer imageId);
 
-	void updateThumbLastModified(Date thumbLastModified, Integer imageId);
+	ImageEvent updateThumbLastModified(Date thumbLastModified, Integer imageId);
 
-	void updateImageMetadata(ImageMetadata imageMetadata, Integer imageId);
+	ImageEvent updateImageMetadata(ImageMetadata imageMetadata, Integer imageId);
+
+	ImageEvent insert(Image image);
 }
