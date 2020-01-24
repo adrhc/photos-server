@@ -14,6 +14,10 @@ public abstract class BaseMessage<T, S, C> implements Message<S, C> {
 	private C type;
 	private T entity;
 
+	public boolean isTypeOf(C type) {
+		return this.type.equals(type);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

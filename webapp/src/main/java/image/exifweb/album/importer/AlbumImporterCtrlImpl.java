@@ -18,7 +18,6 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -48,10 +47,11 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 		this.albumImporterService = albumImporterService;
 	}
 
-	private static String joinAlbumNames(List<Optional<AlbumEvent>> albumEvents) {
+	private static String joinAlbumNames(List<AlbumEvent> albumEvents) {
+		if (albumEvents == null) {
+			return "none";
+		}
 		return albumEvents.stream()
-				.filter(Optional::isPresent)
-				.map(Optional::get)
 				.map(AlbumImporterCtrlImpl::importFeedBack)
 				.collect(Collectors.joining(", "));
 	}
@@ -101,19 +101,11 @@ public class AlbumImporterCtrlImpl implements AlbumImporterCtrl {
 
 	private void importByAlbumName(String albumName,
 			KeyValueDeferredResult<String, String> deferredResult) {
-		Optional<AlbumEvent> albumEvent = this
+		AlbumEvent albumEvent = this
 				.albumImporterService.importByAlbumName(albumName);
-		albumEvent.ifPresentOrElse(
-				event -> {
-					logger.debug("{} {}", albumName, importFeedBack(event));
-					deferredResult.setResult("message",
-							"Reimported album: " + importFeedBack(event));
-				},
-				() -> {
-					logger.error("{} is empty! (re)import failed!", albumName);
-					deferredResult.setResult("message", albumName + " is empty! (re)import failed!");
-				}
-		);
+		logger.debug("{} {}", albumName, importFeedBack(albumEvent));
+		deferredResult.setResult("message",
+				"Reimported album: " + importFeedBack(albumEvent));
 	}
 
 	private void importAll(KeyValueDeferredResult<String, String> deferredResult) {

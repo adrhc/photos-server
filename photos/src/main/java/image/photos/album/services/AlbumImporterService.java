@@ -27,12 +27,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
+import static image.infrastructure.messaging.util.ImageEventUtils.sortedNamesOf;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 
 /**
@@ -68,24 +71,24 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	/**
 	 * import new albums and rescan existing
 	 */
-	public List<Optional<AlbumEvent>> importAll() throws IOException {
+	public List<AlbumEvent> importAll() throws IOException {
 		return this.importFilteredFromRoot(this.albumPathChecks::isValidAlbumPath);
 	}
 
 	/**
 	 * import new albums only
 	 */
-	public List<Optional<AlbumEvent>> importNewAlbums() throws IOException {
+	public List<AlbumEvent> importNewAlbums() throws IOException {
 		return this.importFilteredFromRoot(this.albumPathChecks::isValidNewAlbumPath);
 	}
 
 	/**
 	 * import new album or rescan existing
 	 */
-	public Optional<AlbumEvent> importByAlbumName(String albumName) {
+	public AlbumEvent importByAlbumName(String albumName) {
 		Path path = this.albumHelper.absolutePathOf(albumName);
 		if (!this.albumPathChecks.isValidAlbumPath(path)) {
-			return Optional.of(AlbumEvent.of(new Album(albumName), MISSING_PATH));
+			return AlbumEvent.of(new Album(albumName), MISSING_PATH);
 		}
 		return this.safelyImportByAlbumPath(path);
 	}
@@ -93,8 +96,8 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	/**
 	 * Filters album paths to be imported.
 	 */
-	private List<Optional<AlbumEvent>> importFilteredFromRoot(Predicate<Path> albumsFilter) throws IOException {
-		List<Optional<AlbumEvent>> albumEvents = new ArrayList<>();
+	private List<AlbumEvent> importFilteredFromRoot(Predicate<Path> albumsFilter) throws IOException {
+		List<AlbumEvent> albumEvents = new ArrayList<>();
 		Path root = this.albumHelper.albumsRoot();
 		this.fileStoreService.walk1thLevel(root)
 				.filter(albumsFilter)
@@ -103,12 +106,11 @@ public class AlbumImporterService implements IImageFlagsUtils {
 		return albumEvents;
 	}
 
-	private Optional<AlbumEvent> safelyImportByAlbumPath(Path path) {
+	private AlbumEvent safelyImportByAlbumPath(Path path) {
 		try {
 			return this.importByAlbumPath(path);
 		} catch (IOException e) {
-			return Optional.of(AlbumEvent
-					.of(new Album(albumNameFrom(path)), MISSING_PATH));
+			return AlbumEvent.of(new Album(albumNameFrom(path)), MISSING_PATH);
 		}
 	}
 
@@ -117,92 +119,82 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	 *
 	 * @return true means "path/album created"
 	 */
-	private Optional<AlbumEvent> importByAlbumPath(Path path) throws IOException {
+	private AlbumEvent importByAlbumPath(Path path) throws IOException {
 		String albumName = albumNameFrom(path);
+
+		// find or create the albumName
+		Optional<AlbumEvent> albumEventOpt = this.findOrCreateAlbum(albumName);
+
+		// see in conjunction with findOrCreateAlbum()
+		if (albumEventOpt.isEmpty()) {
+			log.debug("New but empty (no files) album:\n{}", path);
+			return AlbumEvent.of(new Album(albumName), NEW_BUT_EMPTY);
+		}
+
+		AlbumEvent albumEvent = albumEventOpt.get();
+
+		// see in conjunction with findOrCreateAlbum()
+		if (albumEvent.isTypeOf(UPDATED) && this.albumHelper.isAlbumWithNoFiles(path)) {
+			log.debug("Already existing empty (no files) album\n{}", path);
+			return albumEvent;
+		}
 
 		StopWatch stopWatch = new StopWatch(albumName);
 		stopWatch.start(albumName);
 
-
-		// determine or create album
-		// path este album nou dar nu are poze
-		Optional<AlbumEvent> albumEvent = this.findOrCreateAlbum(albumName);
-
-		if (albumEvent.isEmpty()) {
-			// new but empty album
-			stopWatch.stop();
-			log.debug("END album\n{}", stopWatch.shortSummary());
-			return Optional.of(AlbumEvent.of(new Album(albumName), NEW_BUT_EMPTY));
-		}
-
-		Album album = albumEvent.get().getEntity();
-
-		// When importing a new album existsAtLeast1ImageChange will
-		// always be true because we are skipping (new) empty albums.
-		AtomicBoolean isAtLeast1ImageChanged = new AtomicBoolean(false);
-
-		Optional<List<String>> foundImageNames;
-
 		// iterate and process image files
-		if (this.albumHelper.isAlbumWithNoFiles(path)) {
-			// existing empty album
-			log.debug("BEGIN album with no pictures:\n{}", path);
-			foundImageNames = Optional.empty();
-		} else {
-			// take only files existing in the album's directory but not sub-directories
-			log.debug("BEGIN album has pictures:\n{}", path);
+		log.debug("BEGIN album has pictures:\n{}", path);
 
-			int cpus = Runtime.getRuntime().availableProcessors();
+		boolean isNewAlbum = albumEvent.isTypeOf(CREATED);
+		Album album = albumEvent.getEntity();
 
-			foundImageNames = Flux.fromStream(this.fileStoreService.walk(path))
+		int cpus = Runtime.getRuntime().availableProcessors();
 
-					// Prepare this Flux by dividing data on a number of 'rails' matching the number of CPU cores, in a round-robin fashion.
-					.parallel(cpus, cpus)
-					// Specifies where each 'rail' will observe its incoming values with possibly work-stealing and a given prefetch amount.
-					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "import"), 1)
+		// take files existing in the album's directory and sub-directories
+		Flux.fromStream(this.fileStoreService.walk(path))
 
-					// importing image from file
-					.log()
-					.doOnNext(it -> log.debug("[before import] {}", it))
-					.flatMap(it -> Mono
-							.just(it)
-							.map(it1 -> sneak(() -> this.imageImporterService.importFromFile(it, album)))
-							.onErrorContinue(e -> e instanceof FileNotFoundException
-											|| e instanceof NoSuchFileException,
-									(t, o) -> log.error("File is missing:\n{}", it))
-					)
-					.filter(Optional::isPresent)
-					.map(Optional::get)
+				// Prepare this Flux by dividing data on a number of 'rails' matching the number of CPU cores, in a round-robin fashion.
+				.parallel(cpus, cpus)
+				// Specifies where each 'rail' will observe its incoming values with possibly work-stealing and a given prefetch amount.
+				.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "import"), 1)
 
-					// setting isAtLeast1ImageChanged and preparing the file-names list
-					.doOnNext(event -> isAtLeast1ImageChanged.compareAndSet(
-							false, !event.getType().equals(ImageEventTypeEnum.NOTHING)))
-					.map(event -> event.getEntity().getName())
-					.collectSortedList(Comparator.naturalOrder())
-					.blockOptional();
-		}
+				// importing image from file
+				.log()
+				.doOnNext(it -> log.debug("[before import] {}", it))
+				.flatMap(it -> Mono
+						.just(it)
+						.map(it1 -> sneak(() -> this.imageImporterService.importFromFile(it, album)))
+						.onErrorContinue(e -> e instanceof FileNotFoundException
+										|| e instanceof NoSuchFileException,
+								(t, o) -> log.error("File is missing:\n{}", it))
+				)
+				.filter(Optional::isPresent)
+				.map(Optional::get)
 
-		boolean isNewAlbum = albumEvent.get().getType().equals(CREATED);
+				.sequential().collectList()
 
-		// remove db-images having no corresponding file
-		if (!isNewAlbum) {
-			List<ImageEvent> events = this.removeImagesHavingNoFile(
-					album, foundImageNames.orElse(Collections.emptyList()));
-			isAtLeast1ImageChanged.compareAndSet(false, !events.isEmpty());
-		}
+				.doOnNext(events -> {
+					// any image was imported or changed in any way?
+					boolean isAtLeast1ImageChanged = events.stream()
+							.anyMatch(ie -> !ie.isTypeOf(ImageEventTypeEnum.NOTHING));
 
-		// mark album as dirty
-		//
-		// Better would be to only use isAtLeast1ImageChanged() because between
-		// creation moment and here someone could clear the dirty flag!
-		if (!isNewAlbum && isAtLeast1ImageChanged.get()) {
-			this.albumRepository.markAsDirty(album.getId());
-		}
+					// remove db-images having no corresponding file
+					if (!isNewAlbum) {
+						// on any change this dirties the related album
+						// ImageRepository.[changeName|safelyDeleteImage|markDeleted] dirty the album
+						List<ImageEvent> eventsOnRemoval = this.removeImagesHavingNoFile(
+								album, sortedNamesOf(events));
+						// mark any changes
+						isAtLeast1ImageChanged = isAtLeast1ImageChanged || !eventsOnRemoval.isEmpty();
+					}
 
-		// album event emission (see AlbumExporterSubscription)
-		if (isAtLeast1ImageChanged.get()) {
-			this.albumTopic.emit(albumEvent.get());
-		}
+					// album event emission (see AlbumExporterSubscription)
+					if (isAtLeast1ImageChanged) {
+						this.albumTopic.emit(albumEvent);
+					}
+				})
+
+				.block();
 
 		stopWatch.stop();
 		log.debug("END album\n{}", stopWatch.shortSummary());

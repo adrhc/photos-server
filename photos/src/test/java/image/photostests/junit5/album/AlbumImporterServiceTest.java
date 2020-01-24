@@ -1,7 +1,6 @@
 package image.photostests.junit5.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.infrastructure.messaging.album.AlbumEvent;
 import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
@@ -29,8 +28,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
@@ -74,10 +71,8 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 	void importByAlbumName(String albumToReimport) {
 		var albumEvent = this.service.importByAlbumName(albumToReimport);
 
-		assertTrue(albumEvent::isPresent);
-
 		// check that the album is reported as created
-		assertThat(albumEvent.get(), allOf(
+		assertThat(albumEvent, allOf(
 				hasProperty("type", is(CREATED)),
 				hasProperty("entity",
 						hasProperty("name", is(albumToReimport)))));
@@ -91,13 +86,10 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 
 	@Test
 	void importNewAlbumsOnly() throws IOException {
-		var albumEvent = this.service.importNewAlbums();
-
-		List<AlbumEvent> events = albumEvent.stream()
-				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+		var albumEvents = this.service.importNewAlbums();
 
 		// check that SIMFONIA_LALELELOR and CASA_URLUIENI are reported as created
-		assertThat(events, hasItem(
+		assertThat(albumEvents, hasItem(
 				allOf(
 						hasProperty("type", is(CREATED)),
 						hasProperty("entity",
@@ -124,13 +116,10 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		// check that all SIMFONIA_LALELELOR available images were imported
 		assertEquals(COUNT.get(SIMFONIA_LALELELOR), this.imageRepository.countByAlbum_name(SIMFONIA_LALELELOR));
 
-		var albumEvent = this.service.importAll();
-
-		List<AlbumEvent> events = albumEvent.stream()
-				.filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+		var albumEvents = this.service.importAll();
 
 		// check that CASA_URLUIENI is reported as created
-		assertThat(events, hasItem(
+		assertThat(albumEvents, hasItem(
 				allOf(
 						hasProperty("type", is(CREATED)),
 						hasProperty("entity",
@@ -138,7 +127,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 				)));
 
 		// check that SIMFONIA_LALELELOR is reported as updated
-		assertThat(events, hasItem(
+		assertThat(albumEvents, hasItem(
 				allOf(
 						hasProperty("type", is(UPDATED)),
 						hasProperty("entity",
@@ -163,9 +152,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 	void reImportMissingPath() {
 		var albumEvent = this.service.importByAlbumName(MISSING_ALBUM);
 
-		assertTrue(albumEvent::isPresent);
-
-		assertThat(albumEvent.get(), allOf(
+		assertThat(albumEvent, allOf(
 				hasProperty("type", is(MISSING_PATH)),
 				hasProperty("entity",
 						hasProperty("name", is(MISSING_ALBUM)))));
