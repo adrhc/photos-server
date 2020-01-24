@@ -13,7 +13,6 @@ import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entitytests.IAppConfigSupplier;
 import image.persistence.entitytests.IImageSupplier;
-import image.photos.album.services.AlbumPageService;
 import image.photostests.junit5.testconfig.Junit5PhotosStageDbConfig;
 import io.github.glytching.junit.extension.random.Random;
 import org.junit.jupiter.api.AfterAll;
@@ -38,8 +37,6 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	private AppConfigRepository appConfigRepository;
 	@Autowired
 	private AlbumRepository albumRepository;
-	@Autowired
-	private AlbumPageService albumPageService;
 
 	@Random(type = Album.class, size = 5, excludes = {"id", "dirty", "cover", "lastUpdate", "images"})
 	private List<Album> albums;
@@ -90,7 +87,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	@Test
 	void finding1Image() {
 		Image image = this.pickRandomlyAnImage(this.specialAlbum);
-		List<AlbumPage> imagesForPage = this.albumPageService.getPage(1,
+		List<AlbumPage> imagesForPage = this.albumRepository.getPage(1,
 				ESortType.ASC, image.getName(), true, false, this.specialAlbum.getId());
 		assertThat(imagesForPage, hasSize(1));
 	}
@@ -98,7 +95,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	@Test
 	void finding1FullPageOfImages() {
 		Album album = this.pickRandomlyAnAlbum();
-		List<AlbumPage> imagesForPage = this.albumPageService.getPage(1, ESortType.ASC,
+		List<AlbumPage> imagesForPage = this.albumRepository.getPage(1, ESortType.ASC,
 				"", true, false, album.getId());
 		int notDeletedCount = (int) album.getImages().stream().filter(i -> !i.isDeleted()).count();
 		assertThat(imagesForPage, hasSize(Math.min(notDeletedCount, PAGE_SIZE)));
@@ -106,7 +103,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@Test
 	void findNoHidden() {
-		List<AlbumPage> imagesForPage = this.albumPageService.getPage(1,
+		List<AlbumPage> imagesForPage = this.albumRepository.getPage(1,
 				ESortType.ASC, this.hiddenImage.getName(), false,
 				false, this.specialAlbum.getId());
 		assertThat(imagesForPage, hasSize(0));
@@ -114,7 +111,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@Test
 	void findOnlyPrintable() {
-		List<AlbumPage> imagesForPage = this.albumPageService.getPage(1, ESortType.ASC,
+		List<AlbumPage> imagesForPage = this.albumRepository.getPage(1, ESortType.ASC,
 				"", true, true, this.specialAlbum.getId());
 		assertThat(imagesForPage, hasSize(1));
 	}

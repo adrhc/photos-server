@@ -27,7 +27,7 @@ public interface AlbumQueryRepositoryEx {
 	int countPages(String toSearch, boolean viewHidden,
 			boolean viewOnlyPrintable, Integer albumId);
 
-	List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
+	List<AlbumPage> getPage(int pageNr, ESortType sort, String toSearch,
 			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId);
 
 	Optional<Date> getPageLastUpdate(int pageNr, String toSearch,

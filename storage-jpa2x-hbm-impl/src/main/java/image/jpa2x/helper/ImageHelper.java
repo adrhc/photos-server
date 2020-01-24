@@ -1,16 +1,15 @@
-package image.photos.image.helpers;
+package image.jpa2x.helper;
 
 import image.cdm.album.cover.AlbumCover;
 import image.cdm.image.feature.IImageBasicInfo;
 import image.cdm.image.feature.IImageDimensions;
+import image.jpa2x.util.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.List;
-
-import static image.photos.image.util.ImageUtils.relativeUriPathFor;
 
 /**
  * Created by adr on 2/2/18.
@@ -106,12 +105,12 @@ public class ImageHelper {
 	}
 
 	private String thumbUriPathFor(Long thumbLastModif, String imgName, String albumName) {
-		String relativePath = relativeUriPathFor(thumbLastModif, imgName, albumName);
+		String relativePath = ImageUtils.relativeUriPathFor(thumbLastModif, imgName, albumName);
 		return this.fullUriPathForThumb(relativePath);
 	}
 
 	private String imageUriPathFor(Long imageLastModif, String imgName, String albumName) {
-		String relativePath = relativeUriPathFor(imageLastModif, imgName, albumName);
+		String relativePath = ImageUtils.relativeUriPathFor(imageLastModif, imgName, albumName);
 		return this.fullUriPathForImage(relativePath);
 	}
 }

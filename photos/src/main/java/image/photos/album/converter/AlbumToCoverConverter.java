@@ -1,9 +1,9 @@
 package image.photos.album.converter;
 
 import image.cdm.album.cover.AlbumCover;
+import image.jpa2x.helper.ImageHelper;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
-import image.photos.image.helpers.ImageHelper;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

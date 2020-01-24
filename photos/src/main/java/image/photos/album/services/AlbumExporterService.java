@@ -31,14 +31,12 @@ public class AlbumExporterService {
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private final AppConfigRepository appConfigRepository;
 	private final AlbumRepository albumRepository;
-	private final AlbumPageService albumPageService;
 	private final AlbumCoverService albumCoverService;
 	private final FileStoreService fileStoreService;
 
-	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumRepository albumRepository, AlbumPageService albumPageService, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
+	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumRepository albumRepository, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
 		this.albumRepository = albumRepository;
-		this.albumPageService = albumPageService;
 		this.albumCoverService = albumCoverService;
 		this.fileStoreService = fileStoreService;
 	}
@@ -129,10 +127,10 @@ public class AlbumExporterService {
 		for (int i = 0; i < pageCount; i++) {
 			log.debug("write page {} asc", (i + 1));
 			this.fileStoreService.writeJson(dir.resolve("asc" + (i + 1) + ".json"),
-					this.albumPageService.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
+					this.albumRepository.getPage(i + 1, ESortType.ASC, null, false, false, album.getId()));
 			log.debug("write page {} desc", (i + 1));
 			this.fileStoreService.writeJson(dir.resolve("desc" + (i + 1) + ".json"),
-					this.albumPageService.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
+					this.albumRepository.getPage(i + 1, ESortType.DESC, null, false, false, album.getId()));
 		}
 
 		log.debug("END {}", album.getName());

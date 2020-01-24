@@ -1,6 +1,7 @@
 package image.jpa2x.repositories.album;
 
 import image.cdm.album.page.AlbumPage;
+import image.jpa2x.helper.ImageHelper;
 import image.jpa2x.repositories.ESortType;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import org.hibernate.jpa.QueryHints;
@@ -21,6 +22,8 @@ import static image.jpa2x.repositories.album.AlbumRepository.NULL_ALBUM_ID;
 public class AlbumQueryRepositoryExImpl implements AlbumQueryRepositoryEx {
 	@PersistenceContext
 	private EntityManager em;
+	@Autowired
+	private ImageHelper imageHelper;
 	@Autowired
 	private AppConfigRepository appConfigRepository;
 
@@ -50,7 +53,16 @@ public class AlbumQueryRepositoryExImpl implements AlbumQueryRepositoryEx {
 	}
 
 	@Override
-	public List<AlbumPage> getPageFromDb(int pageNr, ESortType sort, String toSearch,
+	public List<AlbumPage> getPage(int pageNr, ESortType sort, String toSearch,
+			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
+		List<AlbumPage> thumbs = this.getPageFromDbImpl(pageNr, sort,
+				toSearch, viewHidden, viewOnlyPrintable, albumId);
+		this.imageHelper.appendImageDimensions(thumbs);
+		this.imageHelper.appendImagePaths(thumbs);
+		return thumbs;
+	}
+
+	private List<AlbumPage> getPageFromDbImpl(int pageNr, ESortType sort, String toSearch,
 			boolean viewHidden, boolean viewOnlyPrintable, Integer albumId) {
 		boolean emptyAlbumId = albumId == null || albumId.equals(NULL_ALBUM_ID);
 		boolean hasSearch = StringUtils.hasText(toSearch);

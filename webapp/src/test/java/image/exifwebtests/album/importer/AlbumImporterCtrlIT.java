@@ -10,7 +10,6 @@ import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.persistence.entity.Album;
-import image.photos.album.services.AlbumPageService;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photostests.junit5.app.AppConfigFromClassPath;
 import lombok.extern.slf4j.Slf4j;
@@ -75,8 +74,6 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private AlbumPageService albumPageService;
-	@Autowired
 	private Jpa2ndLevelCacheUtils cacheUtils;
 	@Autowired
 	private ImageRepository imageRepository;
@@ -115,7 +112,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		safeSleep(2000L, "reImportAll");
+		safeSleep(1000L, "reImportAll");
 
 		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
 
@@ -141,7 +138,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(jsonPath("$.message").value("Reimported albums: none"));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		safeSleep(2000L, "reImportNone");
+		safeSleep(1000L, "reImportNone");
 
 		assertTrue(this.albumRepository.findAll().isEmpty());
 
@@ -175,7 +172,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 								String.join(", ", List.of(CASA_URLUIENI, SIMFONIA_LALELELOR))));
 
 		// waiting for AlbumExporterSubscription (writeJsonForAlbumSafe)
-		safeSleep(2000L, "importNewAlbumsOnly");
+		safeSleep(1000L, "importNewAlbumsOnly");
 
 		List.of(CASA_URLUIENI, SIMFONIA_LALELELOR).forEach(sneaked(this::verifyAlbum));
 
@@ -226,7 +223,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 				.andExpect(jsonPath("$.message")
 						.value("Reimported album: " + albumToReimport));
 
-		safeSleep(2000L, "reImportExistingPath");
+		safeSleep(1000L, "reImportExistingPath");
 
 		this.verifyAlbum(albumToReimport);
 
@@ -247,7 +244,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 		assertThat(albumPages, hasSize(PHOTOS_PER_PAGE));
 
 		// compare 1th asc json to albumPageService.getPage(1, ASC, null, null, albumId)
-		this.albumPageService.getPage(1, ESortType.ASC, null, false, false, album.getId())
+		this.albumRepository.getPage(1, ESortType.ASC, null, false, false, album.getId())
 				.forEach(fromDbAlbumPage -> {
 					// 20120.01.05: AlbumPage.thumbLastModified is excluded from serialization to JSON!
 					fromDbAlbumPage.setThumbLastModified(null);

@@ -6,7 +6,6 @@ import image.exifweb.web.controller.INotModifiedChecker;
 import image.jpa2x.repositories.ESortType;
 import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
-import image.photos.album.services.AlbumPageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +32,6 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 	private AlbumRepository albumRepository;
 	@Autowired
 	private AppConfigRepository appConfigRepository;
-	@Autowired
-	private AlbumPageService albumPageService;
 
 	/**
 	 * Test without authorization:
@@ -68,7 +65,7 @@ public class AlbumPageCtrlImpl implements INotModifiedChecker, IDateUtil {
 			@RequestParam(name = "toSearch", required = false) String toSearch,
 			@RequestParam(name = "knownPageSize", required = false) Integer knownPageSize,
 			WebRequest webRequest) {
-		Supplier<List<AlbumPage>> valueSupplier = () -> this.albumPageService
+		Supplier<List<AlbumPage>> valueSupplier = () -> this.albumRepository
 				.getPage(pageNr, ESortType.valueOf(sort.toUpperCase()),
 						toSearch, viewHidden, viewOnlyPrintable, albumId);
 		if (knownPageSize == null || !knownPageSize.equals(this.appConfigRepository.getPhotosPerPage())) {

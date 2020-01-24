@@ -15,5 +15,5 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @ComponentScan
 @Import({MessagingConfig.class, Jpa2xConfig.class})
-@PropertySource("classpath:/photos.properties")
+@PropertySource("classpath:photos.properties")
 public class PhotosConfig {}

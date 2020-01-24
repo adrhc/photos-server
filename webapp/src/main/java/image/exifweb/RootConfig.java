@@ -19,5 +19,5 @@ import subtitles.SubtitlesConfig;
 				type = FilterType.ASSIGNABLE_TYPE,
 				value = {WebConfig.class, WebContextUtilities.class})})
 @Import({SubtitlesConfig.class, PhotosConfig.class})
-@PropertySource("classpath:/exifweb.properties")
+@PropertySource("classpath:exifweb.properties")
 public class RootConfig {}

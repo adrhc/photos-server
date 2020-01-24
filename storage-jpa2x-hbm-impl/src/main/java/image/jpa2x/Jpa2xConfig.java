@@ -12,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 @ComponentScan
 @EnableTransactionManagement
 @Import({HibernatePropertiesConfig.class, DataSourceConfig.class})
+@PropertySource("classpath:photos-jpa2x.properties")
 public class Jpa2xConfig {
 	@Bean
 	public PlatformTransactionManager transactionManager(

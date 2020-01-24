@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.jpa2x.util.ImageUtils.imageNameFrom;
-import static image.photos.image.util.ImageUtils.relativeFilePathFor;
+import static image.jpa2x.util.ImageUtils.relativeFilePathFor;
 
 @Service
 @Transactional

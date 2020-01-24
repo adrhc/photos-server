@@ -13,7 +13,7 @@ import java.util.Properties;
 
 @Configuration
 @Import({DataSourcePropertiesConfig.class})
-@PropertySource("classpath:/jndi-datasource.properties")
+@PropertySource("classpath:jndi-datasource.properties")
 public class DataSourceConfig {
 	/**
 	 * SQLErrorCodeSQLExceptionTranslator (uses sql-error-codes.xml) -> for jdbc only?
