@@ -13,7 +13,6 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.album.helpers.AlbumPathChecks;
-import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +36,7 @@ import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.*;
 import static image.infrastructure.messaging.util.ImageEventUtils.sortedNamesOf;
 import static image.jpa2x.util.AlbumUtils.albumNameFrom;
+import static image.photos.infrastructure.filestore.FileStoreUtils.changeToOppositeExtensionCase;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,7 +49,6 @@ import static image.jpa2x.util.AlbumUtils.albumNameFrom;
 @Slf4j
 public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageImporterService imageImporterService;
-	private final ImageHelper imageHelper;
 	private final ImageRepository imageRepository;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
@@ -57,8 +56,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
-		this.imageHelper = imageHelper;
+	public AlbumImporterService(ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageImporterService = imageImporterService;
 		this.imageRepository = imageRepository;
 		this.albumRepository = albumRepository;
@@ -235,7 +233,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				// db-image exists with name the same as image-fileName
 				return;
 			}
-			String oppositeExtensionCase = this.imageHelper.changeToOppositeExtensionCase(dbName);
+			String oppositeExtensionCase = changeToOppositeExtensionCase(dbName);
 			// finding with the opposite extension case
 			fsNameIdx = foundImageFileNames.indexOf(oppositeExtensionCase);
 			if (fsNameIdx >= 0) {

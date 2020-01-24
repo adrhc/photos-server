@@ -12,7 +12,6 @@ import image.persistence.entity.Album;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.album.services.AlbumImporterService;
-import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
@@ -92,8 +91,8 @@ public class AlbumImporterCtrlOnlyIT {
 		}
 
 		@Bean
-		AlbumImporterService albumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) throws IOException {
-			var bean = spy(new AlbumImporterService(imageHelper, imageImporterService,
+		AlbumImporterService albumImporterService(ImageImporterService imageImporterService, ImageRepository imageRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) throws IOException {
+			var bean = spy(new AlbumImporterService(imageImporterService,
 					imageRepository, albumRepository, albumTopic,
 					albumPathChecks, albumHelper, fileStoreService));
 
