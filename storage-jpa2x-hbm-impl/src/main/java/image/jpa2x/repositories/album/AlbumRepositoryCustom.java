@@ -1,4 +1,4 @@
-package image.jpa2x.repositories;
+package image.jpa2x.repositories.album;
 
 public interface AlbumRepositoryCustom {
 	boolean putAlbumCover(Integer imageId);

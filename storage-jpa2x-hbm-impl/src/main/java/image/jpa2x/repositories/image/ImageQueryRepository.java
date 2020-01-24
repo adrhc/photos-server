@@ -1,4 +1,4 @@
-package image.jpa2x.repositories;
+package image.jpa2x.repositories.image;
 
 import image.persistence.entity.Image;
 import org.springframework.data.jpa.repository.Query;

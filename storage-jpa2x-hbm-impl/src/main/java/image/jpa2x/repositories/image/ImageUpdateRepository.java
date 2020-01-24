@@ -1,4 +1,4 @@
-package image.jpa2x.repositories;
+package image.jpa2x.repositories.image;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;

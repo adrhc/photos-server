@@ -4,15 +4,15 @@ import exifweb.util.random.IPositiveIntegerRandom;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.ImageFlagEnum;
-import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.ESortType;
+import image.jpa2x.repositories.album.AlbumRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entitytests.IAppConfigSupplier;
 import image.persistence.entitytests.IImageSupplier;
-import image.persistence.repository.ESortType;
 import image.photos.album.services.AlbumPageService;
 import image.photostests.junit5.testconfig.Junit5PhotosStageDbConfig;
 import io.github.glytching.junit.extension.random.Random;
@@ -55,11 +55,11 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	void beforeAll1() {
 		this.specialAlbum.getImages().forEach(i -> {
 			i.setAlbum(this.specialAlbum);
-			i.setFlags(of(ImageFlagEnum.DEFAULT));
+			i.setFlags(this.of(ImageFlagEnum.DEFAULT));
 		});
-		this.hiddenImage.setFlags(of(ImageFlagEnum.HIDDEN));
+		this.hiddenImage.setFlags(this.of(ImageFlagEnum.HIDDEN));
 		this.specialAlbum.addImage(this.hiddenImage);
-		this.printableImage.setFlags(of(ImageFlagEnum.PRINTABLE));
+		this.printableImage.setFlags(this.of(ImageFlagEnum.PRINTABLE));
 		this.specialAlbum.addImage(this.printableImage);
 		this.albumRepository.persist(this.specialAlbum);
 	}
@@ -68,16 +68,16 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	void beforeAll2() {
 		// add images to albums
 		this.albums.forEach(a -> {
-			a.addImages(randomInstanceList(randomPositiveInt(1, MAX_IMAGES_FOR_ALBUM), false, Image.class));
+			a.addImages(this.randomInstanceList(this.randomPositiveInt(1, MAX_IMAGES_FOR_ALBUM), false, Image.class));
 		});
 		// set ImageFlagEnum.DEFAULT for all images
 		this.albums.stream().map(Album::getImages).flatMap(List<Image>::stream)
-				.forEach(i -> i.setFlags(of(ImageFlagEnum.DEFAULT)));
+				.forEach(i -> i.setFlags(this.of(ImageFlagEnum.DEFAULT)));
 		// insert albums
 		this.albums.forEach(this.albumRepository::persist);
 		// create photos_per_page app config
 		this.appConfigRepository.persist(
-				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
+				this.entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
 	}
 
 	@AfterAll
@@ -89,7 +89,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@Test
 	void finding1Image() {
-		Image image = pickRandomlyAnImage(this.specialAlbum);
+		Image image = this.pickRandomlyAnImage(this.specialAlbum);
 		List<AlbumPage> imagesForPage = this.albumPageService.getPage(1,
 				ESortType.ASC, image.getName(), true, false, this.specialAlbum.getId());
 		assertThat(imagesForPage, hasSize(1));
@@ -97,7 +97,7 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 
 	@Test
 	void finding1FullPageOfImages() {
-		Album album = pickRandomlyAnAlbum();
+		Album album = this.pickRandomlyAnAlbum();
 		List<AlbumPage> imagesForPage = this.albumPageService.getPage(1, ESortType.ASC,
 				"", true, false, album.getId());
 		int notDeletedCount = (int) album.getImages().stream().filter(i -> !i.isDeleted()).count();
@@ -120,11 +120,11 @@ class AlbumPageServiceTest implements IPositiveIntegerRandom, IAppConfigSupplier
 	}
 
 	private Album pickRandomlyAnAlbum() {
-		return this.albums.get(randomPositiveInt(this.albums.size()));
+		return this.albums.get(this.randomPositiveInt(this.albums.size()));
 	}
 
 	private Image pickRandomlyAnImage(Album album) {
 		List<Image> images = album.getImages();
-		return images.get(randomPositiveInt(images.size()));
+		return images.get(this.randomPositiveInt(images.size()));
 	}
 }

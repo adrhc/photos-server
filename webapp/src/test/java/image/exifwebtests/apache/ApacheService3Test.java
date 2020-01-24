@@ -2,7 +2,7 @@ package image.exifwebtests.apache;
 
 import image.exifweb.apache.ApacheService;
 import image.exifwebtests.config.RootInMemoryDbConfig;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entitytests.IAppConfigSupplier;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +30,7 @@ class ApacheService3Test implements IAppConfigSupplier {
 	@BeforeAll
 	void setup() {
 		log.debug("");
-		this.appConfigRepository.persist(entityAppConfigOf("apache-log-dir",
+		this.appConfigRepository.persist(this.entityAppConfigOf("apache-log-dir",
 				pathOf("classpath:apache-logs").toString()));
 	}
 

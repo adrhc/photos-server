@@ -1,7 +1,7 @@
 package image.exifweb.cache;
 
+import image.jpa2x.services.CacheStatisticsRepository;
 import image.persistence.entity.Album;
-import image.persistence.repository.CacheStatisticsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

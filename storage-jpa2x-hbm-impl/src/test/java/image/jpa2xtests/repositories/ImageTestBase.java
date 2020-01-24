@@ -1,7 +1,7 @@
 package image.jpa2xtests.repositories;
 
-import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
@@ -37,7 +37,7 @@ public abstract class ImageTestBase implements IAppConfigSupplier {
 		this.album = album;
 		this.album.addImages(images);
 		this.albumRepository.save(this.album);
-		this.appConfigRepository.persist(entityAppConfigOf(AppConfigEnum.albums_path, "/dummy-path"));
+		this.appConfigRepository.persist(this.entityAppConfigOf(AppConfigEnum.albums_path, "/dummy-path"));
 	}
 
 	/**

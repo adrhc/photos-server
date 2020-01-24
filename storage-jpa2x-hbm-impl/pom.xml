@@ -32,14 +32,6 @@
             <groupId>image.exifweb</groupId>
             <artifactId>storage-entities</artifactId>
         </dependency>
-        <dependency>
-            <groupId>image.exifweb</groupId>
-            <artifactId>storage-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>image.exifweb</groupId>
-            <artifactId>storage-impl-hbm</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>

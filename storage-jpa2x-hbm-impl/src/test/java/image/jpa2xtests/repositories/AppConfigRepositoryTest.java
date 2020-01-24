@@ -1,7 +1,7 @@
 package image.jpa2xtests.repositories;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
@@ -46,7 +46,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			this.appConfig = AppConfigRepositoryTest.this.appConfigRepository
-					.save(entityAppConfigOf("byName", "byName-value"));
+					.save(AppConfigRepositoryTest.this.entityAppConfigOf("byName", "byName-value"));
 		}
 
 		@AfterAll
@@ -73,7 +73,7 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
-					.persist(entityAppConfigOf(AppConfigEnum.albums_path, "albums_path-value"));
+					.persist(AppConfigRepositoryTest.this.entityAppConfigOf(AppConfigEnum.albums_path, "albums_path-value"));
 		}
 
 		@AfterAll
@@ -104,11 +104,11 @@ class AppConfigRepositoryTest implements IAppConfigSupplier {
 		@BeforeAll
 		void beforeAll() {
 			AppConfigRepositoryTest.this.appConfigRepository
-					.persist(entityAppConfigOf("byName", "byName-value"));
+					.persist(AppConfigRepositoryTest.this.entityAppConfigOf("byName", "byName-value"));
 			AppConfigRepositoryTest.this.appConfigRepository
-					.persist(entityAppConfigOf(AppConfigEnum.photos_per_page, "120"));
+					.persist(AppConfigRepositoryTest.this.entityAppConfigOf(AppConfigEnum.photos_per_page, "120"));
 			AppConfigRepositoryTest.this.appConfigRepository
-					.persist(entityAppConfigOf(AppConfigEnum.albums_path, "albums_path-value"));
+					.persist(AppConfigRepositoryTest.this.entityAppConfigOf(AppConfigEnum.albums_path, "albums_path-value"));
 		}
 
 		@AfterAll

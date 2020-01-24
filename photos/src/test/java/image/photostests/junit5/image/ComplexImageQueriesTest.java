@@ -1,8 +1,8 @@
 package image.photostests.junit5.image;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.ImageQueryRepositoryEx;
-import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.repositories.image.ImageQueryRepositoryEx;
+import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;

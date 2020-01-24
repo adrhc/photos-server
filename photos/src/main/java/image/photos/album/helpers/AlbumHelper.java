@@ -1,6 +1,6 @@
 package image.photos.album.helpers;
 
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.photos.infrastructure.filestore.FileStoreService;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +23,7 @@ public class AlbumHelper {
 	}
 
 	public Path absolutePathOf(String albumName) {
-		return albumsRoot().resolve(albumName);
+		return this.albumsRoot().resolve(albumName);
 	}
 
 	public boolean isAlbumWithNoFiles(Path albumPath) {

@@ -1,7 +1,7 @@
 package image.photos.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.photos.infrastructure.filestore.FileStoreService;
@@ -42,29 +42,29 @@ public class AppConfigService {
 	}
 
 	public boolean getConfigBool(AppConfigEnum name) {
-		return getConfigBool(name.getValue());
+		return this.getConfigBool(name.getValue());
 	}
 
 	public boolean getConfigBool(String name) {
-		String s = getConfig(name);
+		String s = this.getConfig(name);
 		return Boolean.parseBoolean(s);
 	}
 
 	public Boolean getConfigBoolean(AppConfigEnum name) {
-		return getConfigBoolean(name.getValue());
+		return this.getConfigBoolean(name.getValue());
 	}
 
 	public Boolean getConfigBoolean(String name) {
-		String s = getConfig(name);
+		String s = this.getConfig(name);
 		return Boolean.valueOf(s);
 	}
 
 	public Integer getConfigInteger(AppConfigEnum name) {
-		return getConfigInteger(name.getValue());
+		return this.getConfigInteger(name.getValue());
 	}
 
 	public Integer getConfigInteger(String name) {
-		String s = getConfig(name);
+		String s = this.getConfig(name);
 		if (s == null) {
 			return 0;
 		}
@@ -72,7 +72,7 @@ public class AppConfigService {
 	}
 
 	public String getConfig(AppConfigEnum name) {
-		return getConfig(name.getValue());
+		return this.getConfig(name.getValue());
 	}
 
 	public String getConfig(String name) {
@@ -93,7 +93,7 @@ public class AppConfigService {
 	public Path writeJsonForAppConfigs() throws IOException {
 		Path dir = Path.of(this.appConfigRepository
 				.findValueByEnumeratedName(AppConfigEnum.photos_json_FS_path));
-		fileStoreService.createDirectories(dir);
+		this.fileStoreService.createDirectories(dir);
 		Path file = dir.resolve(this.appConfigsFile);
 		List<AppConfig> appConfigs = this.appConfigRepository.findAll();
 //        logger.debug(ArrayUtils.toString(appConfigs));

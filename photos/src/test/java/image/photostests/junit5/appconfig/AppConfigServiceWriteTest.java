@@ -1,7 +1,7 @@
 package image.photostests.junit5.appconfig;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entitytests.IAppConfigSupplier;
@@ -58,11 +58,11 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 	@ExtendWith(TemporaryFolderExtension.class)
 	public void writeJsonForAppConfigs(TemporaryFolder temporaryFolder) throws IOException {
 		File dir = temporaryFolder.createDirectory("writeJsonForAppConfigs");
-		insertPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
+		this.insertPhotosJsonFSPathAppConfig(dir.getAbsolutePath());
 		Path file = this.appConfigService.writeJsonForAppConfigs();
 		assertTrue(Files.isRegularFile(file));
-		List<image.cdm.AppConfig> appConfigsOfJson = loadCdmAppConfigsFromFile(file);
-		assertAppConfigsEquals(appConfigsOfJson, this.appConfigs);
+		List<image.cdm.AppConfig> appConfigsOfJson = this.loadCdmAppConfigsFromFile(file);
+		this.assertAppConfigsEquals(appConfigsOfJson, this.appConfigs);
 	}
 
 	@Test

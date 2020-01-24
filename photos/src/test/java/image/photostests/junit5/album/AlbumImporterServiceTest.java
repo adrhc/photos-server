@@ -2,8 +2,8 @@ package image.photostests.junit5.album;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import image.infrastructure.messaging.album.AlbumEvent;
-import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.ImageQueryRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
+import image.jpa2x.repositories.image.ImageQueryRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.persistence.entity.Album;
 import image.photos.album.services.AlbumExporterService;

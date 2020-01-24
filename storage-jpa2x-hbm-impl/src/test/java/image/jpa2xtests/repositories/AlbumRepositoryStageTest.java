@@ -1,7 +1,7 @@
 package image.jpa2xtests.repositories;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2xtests.config.Junit5Jpa2xStageDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entitytests.IAlbumSupplier;
@@ -41,9 +41,9 @@ class AlbumRepositoryStageTest implements IAlbumSupplier {
 
 	@Test
 	void findByDeletedFalseOrderByNameDesc() {
-		List<String> descSortedNames = notDeletedAlbumNamesDesc(this.albums);
+		List<String> descSortedNames = this.notDeletedAlbumNamesDesc(this.albums);
 		List<Album> dbAlbums = this.albumRepository.findByDeletedFalseOrderByNameDesc();
-		List<String> descDbSortedNames = notDeletedAlbumNames(dbAlbums);
+		List<String> descDbSortedNames = this.notDeletedAlbumNames(dbAlbums);
 		descDbSortedNames.retainAll(descSortedNames);
 		assertThat("size", descDbSortedNames, hasSize(descSortedNames.size()));
 		// fails with org.hibernate.dialect.H2Dialect (order not solved by H2)

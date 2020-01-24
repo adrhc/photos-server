@@ -1,12 +1,12 @@
 package image.photos.album.services;
 
 import image.cdm.album.cover.AlbumCover;
-import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.ESortType;
+import image.jpa2x.repositories.album.AlbumPageRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.enums.AppConfigEnum;
-import image.persistence.repository.AlbumPageRepository;
-import image.persistence.repository.ESortType;
 import image.photos.infrastructure.filestore.FileStoreService;
 import image.photos.util.status.E3ResultTypes;
 import lombok.extern.slf4j.Slf4j;

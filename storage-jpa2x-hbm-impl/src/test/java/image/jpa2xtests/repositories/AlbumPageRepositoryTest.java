@@ -3,16 +3,16 @@ package image.jpa2xtests.repositories;
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.album.page.AlbumPage;
 import image.cdm.image.status.ImageFlagEnum;
-import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.ESortType;
+import image.jpa2x.repositories.album.AlbumPageRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entitytests.IAppConfigSupplier;
-import image.persistence.repository.AlbumPageRepository;
-import image.persistence.repository.ESortType;
 import io.github.glytching.junit.extension.random.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static exifweb.util.SuppressExceptionUtils.ignoreExc;
-import static image.persistence.repository.AlbumPageRepository.NULL_ALBUM_ID;
+import static image.jpa2x.repositories.album.AlbumPageRepository.NULL_ALBUM_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -61,16 +61,16 @@ class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils {
 				.collect(Collectors.toList());
 		// all status types available
 		Stream.of(ImageFlagEnum.values())
-				.forEach(e -> images.get(10 + e.ordinal()).setFlags(of(e)));
+				.forEach(e -> images.get(10 + e.ordinal()).setFlags(this.of(e)));
 		// one deleted image
 		images.get(1).setDeleted(true);
 		images.get(2).setDeleted(false);
 		images.get(2).setName(this.T1_TO_SEARCH);
-		images.get(2).setFlags(of(ImageFlagEnum.DEFAULT));
+		images.get(2).setFlags(this.of(ImageFlagEnum.DEFAULT));
 		this.hiddenImage = images.get(3);
-		this.hiddenImage.setFlags(of(ImageFlagEnum.HIDDEN));
+		this.hiddenImage.setFlags(this.of(ImageFlagEnum.HIDDEN));
 		images.get(4).setDeleted(false);
-		images.get(4).setFlags(of(ImageFlagEnum.PRINTABLE));
+		images.get(4).setFlags(this.of(ImageFlagEnum.PRINTABLE));
 		// album cover
 		album.setCover(images.get(0));
 		album.addImages(images);
@@ -78,7 +78,7 @@ class AlbumPageRepositoryTest implements IAppConfigSupplier, IImageFlagsUtils {
 		this.albumId = album.getId();
 		// required photos_per_page created
 		this.appConfigRepository.persist(
-				entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
+				this.entityAppConfigOf(AppConfigEnum.photos_per_page, String.valueOf(PAGE_SIZE)));
 	}
 
 	@AfterAll

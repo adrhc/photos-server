@@ -1,4 +1,4 @@
-package image.jpa2x.repositories;
+package image.jpa2x.repositories.album;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;

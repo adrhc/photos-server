@@ -1,6 +1,6 @@
 package image.photostests.junit4.appconfig;
 
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entitytests.IAppConfigSupplier;
@@ -57,7 +57,7 @@ public class AppConfigServiceWriteTest implements IAppConfigSupplier {
 		photosJsonFSPath.setValue(this.tempDir.toAbsolutePath().toString());
 		this.appConfigRepository.persist(photosJsonFSPath);
 		// some other random AppConfig
-		randomInstanceStream(3, false, AppConfig.class)
+		this.randomInstanceStream(3, false, AppConfig.class)
 				.forEach(this.appConfigRepository::persist);
 	}
 

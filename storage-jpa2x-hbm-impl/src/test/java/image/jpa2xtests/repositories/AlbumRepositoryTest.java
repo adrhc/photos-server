@@ -1,7 +1,7 @@
 package image.jpa2xtests.repositories;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;

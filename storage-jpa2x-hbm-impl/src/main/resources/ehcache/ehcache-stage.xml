@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache name="stage" xmlns="http://ehcache.org/ehcache.xsd">
+    <!--<diskStore path="java.io.tmpdir"/>-->
+
+    <!--
+        30d = 3600×24×30 = 2592000
+    -->
+
+    <cache name="org.hibernate.cache.internal.StandardQueryCache"
+           maxElementsInMemory="9999" eternal="false"
+           timeToIdleSeconds="2592000" timeToLiveSeconds="2592000"
+           overflowToDisk="false" overflowToOffHeap="false"/>
+
+    <cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+           maxElementsInMemory="9999" eternal="true"
+           overflowToDisk="false" overflowToOffHeap="false"/>
+
+    <defaultCache maxElementsInMemory="9999" eternal="false"
+                  timeToIdleSeconds="2592000" timeToLiveSeconds="2592000"
+                  overflowToDisk="false" overflowToOffHeap="false"/>
+</ehcache>

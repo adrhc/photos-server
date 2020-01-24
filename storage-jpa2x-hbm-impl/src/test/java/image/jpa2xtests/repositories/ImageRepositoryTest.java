@@ -5,7 +5,7 @@ import exifweb.util.random.RandomBeansExtensionEx;
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageFlagEnum;
 import image.cdm.image.status.ImageStatus;
-import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.repositories.image.ImageRepository;
 import image.jpa2x.util.Jpa2ndLevelCacheUtils;
 import image.jpa2xtests.config.Junit5Jpa2xInMemoryDbConfig;
 import image.persistence.entity.Image;
@@ -44,7 +44,7 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 		this.imageRepository.persist(image);
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		assertImageEquals(image, dbImage);
+		this.assertImageEquals(image, dbImage);
 	}
 
 	/**
@@ -86,7 +86,7 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 	void findByNameAndAlbumId() {
 		Image image = this.album.getImages().get(0);
 		Image dbImage = this.imageRepository.findByNameAndAlbumId(image.getName(), this.album.getId());
-		assertImageEquals(image, dbImage);
+		this.assertImageEquals(image, dbImage);
 	}
 
 	@Test
@@ -97,7 +97,7 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 						image.getName().replaceFirst("[.][^.]+$", ""),
 						image.getAlbum().getId() - 1);
 		assertFalse(dbImages.isEmpty());
-		assertImageEquals(image, dbImages.get(0));
+		this.assertImageEquals(image, dbImages.get(0));
 	}
 
 	@Test
@@ -108,7 +108,7 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 					.filter(i -> i.getId().equals(img.getId()))
 					.findAny();
 			assertTrue(dbImgOpt.isPresent());
-			assertImageEquals(img, dbImgOpt.get());
+			this.assertImageEquals(img, dbImgOpt.get());
 		});
 	}
 
@@ -116,14 +116,14 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 	void changeRating() {
 		Image image = this.album.getImages().get(0);
 		ImageRating imageRating = new ImageRating(image.getId(),
-				(byte) (1 + randomPositiveInt(5)));
+				(byte) (1 + this.randomPositiveInt(5)));
 		log.debug("*** imageRepository.changeRating ***");
 		this.imageRepository.changeRating(imageRating);
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertEquals(imageRating.getRating(), dbImage.getRating());
 		image.setRating(imageRating.getRating());
-		assertImageEquals(image, dbImage);
+		this.assertImageEquals(image, dbImage);
 	}
 
 	@Test
@@ -134,8 +134,8 @@ class ImageRepositoryTest extends ImageTestBase implements IImageAssertions, IPo
 		this.imageRepository.changeStatus(imageStatus);
 		log.debug("*** imageRepository.findById ***");
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
-		assertEquals(of(imageStatus.getStatus()), dbImage.getFlags());
-		image.setFlags(of(imageStatus.getStatus()));
-		assertImageEquals(image, dbImage);
+		assertEquals(this.of(imageStatus.getStatus()), dbImage.getFlags());
+		image.setFlags(this.of(imageStatus.getStatus()));
+		this.assertImageEquals(image, dbImage);
 	}
 }

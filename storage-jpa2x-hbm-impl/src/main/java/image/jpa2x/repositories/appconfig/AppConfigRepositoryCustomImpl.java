@@ -1,4 +1,4 @@
-package image.jpa2x.repositories;
+package image.jpa2x.repositories.appconfig;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;

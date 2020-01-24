@@ -1,8 +1,8 @@
 package image.photostests.junit5.album;
 
 import exifweb.util.random.RandomBeansExtensionEx;
-import image.jpa2x.repositories.AlbumRepository;
-import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
+import image.jpa2x.repositories.image.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
@@ -65,11 +65,8 @@ class AlbumRepositoryTest implements IImageAssertions {
 				"Album[" + this.album.getId() + "].images found in cache!");
 	}
 
-	/**
-	 * valid only when using @Cache on Album.images
-	 */
 	@Test
-	@Disabled
+	@Disabled("valid only when using @Cache on Album.images")
 	void albumImagesCacheTest() {
 		AlbumImagesCacheData data = this.preAlbumImagesCacheTest();
 		assertTrue(data.cache.containsCollection(data.albumImagesRegionName, this.album.getId()),

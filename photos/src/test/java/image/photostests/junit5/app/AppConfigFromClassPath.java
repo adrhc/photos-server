@@ -1,6 +1,6 @@
 package image.photostests.junit5.app;
 
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entitytests.IAppConfigSupplier;
 import org.springframework.beans.factory.annotation.Autowired;

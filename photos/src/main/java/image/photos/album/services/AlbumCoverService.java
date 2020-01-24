@@ -1,7 +1,7 @@
 package image.photos.album.services;
 
 import image.cdm.album.cover.AlbumCover;
-import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.photos.image.helpers.ImageHelper;

@@ -2,7 +2,7 @@ package image.exifweb.album.cover;
 
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.web.controller.INotModifiedChecker;
-import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.photos.album.services.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
-		return checkNotModified(this.albumRepository::getMaxLastUpdateForAll,
+		return this.checkNotModified(this.albumRepository::getMaxLastUpdateForAll,
 				this.albumCoverService::getCovers, webRequest);
 	}
 
@@ -40,7 +40,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AlbumCover getAlbumCoverById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		return checkNotModified(() -> this.albumCoverService.getCoverById(id),
+		return this.checkNotModified(() -> this.albumCoverService.getCoverById(id),
 				AlbumCover::getLastUpdate, webRequest);
 	}
 
@@ -49,7 +49,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AlbumCover searchAlbumCover(@RequestParam String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		return checkNotModified(() -> this.albumCoverService.getCoverByName(name),
+		return this.checkNotModified(() -> this.albumCoverService.getCoverByName(name),
 				AlbumCover::getLastUpdate, webRequest);
 	}
 }

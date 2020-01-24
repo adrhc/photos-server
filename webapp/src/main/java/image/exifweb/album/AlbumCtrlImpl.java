@@ -1,7 +1,7 @@
 package image.exifweb.album;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.jsonview.AlbumViews;
 import org.slf4j.Logger;

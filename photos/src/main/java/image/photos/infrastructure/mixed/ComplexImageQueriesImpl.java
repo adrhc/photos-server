@@ -1,6 +1,6 @@
 package image.photos.infrastructure.mixed;
 
-import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.repositories.image.ImageRepository;
 import image.persistence.entity.Image;
 import image.photos.album.helpers.AlbumHelper;
 import image.photos.infrastructure.filestore.FileStoreService;

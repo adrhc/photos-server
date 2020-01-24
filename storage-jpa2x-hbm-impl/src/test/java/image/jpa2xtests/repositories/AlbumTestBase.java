@@ -1,6 +1,6 @@
 package image.jpa2xtests.repositories;
 
-import image.jpa2x.repositories.AlbumRepository;
+import image.jpa2x.repositories.album.AlbumRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IAlbumAssertions;

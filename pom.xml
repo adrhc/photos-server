@@ -1482,8 +1482,8 @@
         <module>cdm</module>
         <module>storage-entities</module>
         <module>exifweb-messaging</module>
-        <module>storage-api</module>
-        <module>storage-impl-hbm</module>
+<!--        <module>storage-api</module>-->
+<!--        <module>storage-impl-hbm</module>-->
         <module>storage-jpa2x-hbm-impl</module>
         <!-- photos = business logic -->
         <module>photos</module>

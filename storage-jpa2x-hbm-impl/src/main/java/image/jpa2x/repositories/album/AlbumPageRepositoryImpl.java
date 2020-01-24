@@ -1,8 +1,8 @@
-package image.jpa2x.repositories;
+package image.jpa2x.repositories.album;
 
 import image.cdm.album.page.AlbumPage;
-import image.persistence.repository.AlbumPageRepository;
-import image.persistence.repository.ESortType;
+import image.jpa2x.repositories.ESortType;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import org.hibernate.jpa.QueryHints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

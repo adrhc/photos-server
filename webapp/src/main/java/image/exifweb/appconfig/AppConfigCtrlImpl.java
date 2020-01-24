@@ -6,7 +6,7 @@ import image.cdm.AppConfig;
 import image.exifweb.util.MailService;
 import image.exifweb.util.procinfo.ProcStatPercent;
 import image.exifweb.util.procinfo.ProcessInfoService;
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.photos.config.AppConfigService;
 import image.photos.util.conversion.PhotosConversionUtil;
 import org.slf4j.Logger;

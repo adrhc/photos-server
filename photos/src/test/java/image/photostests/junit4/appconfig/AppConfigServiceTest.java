@@ -1,6 +1,6 @@
 package image.photostests.junit4.appconfig;
 
-import image.jpa2x.repositories.AppConfigRepository;
+import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.photos.config.AppConfigService;
 import image.photostests.junit4.testconfig.PhotosProdJdbcDbConfig;
