@@ -2,12 +2,12 @@ package image.photos.image.services;
 
 import image.infrastructure.messaging.image.ImageEvent;
 import image.infrastructure.messaging.image.ImageEventTypeEnum;
+import image.jpa2x.repositories.ImageQueryRepositoryEx;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
-import image.photos.infrastructure.database.ImageQueryRepositoryEx;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

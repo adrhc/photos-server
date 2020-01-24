@@ -8,6 +8,7 @@ import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
 import image.persistence.entity.image.ImageFlags;
 import image.persistence.entity.image.ImageMetadata;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -22,6 +23,7 @@ import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
  * The most important part of the class name that
  * corresponds to the fragment interface is the Impl postfix.
  */
+@Repository
 @Transactional
 public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageFlagsUtils {
 	@PersistenceContext

@@ -1,4 +1,4 @@
-package image.photos.infrastructure.database;
+package image.jpa2x.repositories;
 
 import image.persistence.entity.Image;
 

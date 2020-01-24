@@ -1,6 +1,5 @@
-package image.photos.infrastructure.database;
+package image.jpa2x.repositories;
 
-import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
