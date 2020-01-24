@@ -2,6 +2,7 @@ package image.photos.album.services;
 
 import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.repositories.ESortType;
+import image.jpa2x.repositories.album.AlbumCoverRepository;
 import image.jpa2x.repositories.album.AlbumRepository;
 import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.Album;
@@ -31,13 +32,13 @@ public class AlbumExporterService {
 	public static final String PHOTOS_PER_PAGE = "photosPerPage";
 	private final AppConfigRepository appConfigRepository;
 	private final AlbumRepository albumRepository;
-	private final AlbumCoverService albumCoverService;
+	private final AlbumCoverRepository albumCoverRepository;
 	private final FileStoreService fileStoreService;
 
-	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumRepository albumRepository, AlbumCoverService albumCoverService, FileStoreService fileStoreService) {
+	public AlbumExporterService(AppConfigRepository appConfigRepository, AlbumRepository albumRepository, AlbumCoverRepository albumCoverRepository, FileStoreService fileStoreService) {
 		this.appConfigRepository = appConfigRepository;
 		this.albumRepository = albumRepository;
-		this.albumCoverService = albumCoverService;
+		this.albumCoverRepository = albumCoverRepository;
 		this.fileStoreService = fileStoreService;
 	}
 
@@ -90,7 +91,7 @@ public class AlbumExporterService {
 			errorConsumer.accept(e);
 			return;
 		}
-		List<AlbumCover> albums = this.albumCoverService.getCovers();
+		List<AlbumCover> albums = this.albumCoverRepository.getCovers();
 		try {
 			this.fileStoreService.writeJson(file, albums);
 		} catch (IOException e) {

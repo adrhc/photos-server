@@ -2,8 +2,8 @@ package image.exifweb.album.cover;
 
 import image.cdm.album.cover.AlbumCover;
 import image.exifweb.web.controller.INotModifiedChecker;
+import image.jpa2x.repositories.album.AlbumCoverRepository;
 import image.jpa2x.repositories.album.AlbumRepository;
-import image.photos.album.services.AlbumCoverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 	@Autowired
 	private AlbumRepository albumRepository;
 	@Autowired
-	private AlbumCoverService albumCoverService;
+	private AlbumCoverRepository albumCoverRepository;
 
 	@Override
 	@RequestMapping(method = RequestMethod.GET,
@@ -32,7 +32,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 	public List<AlbumCover> getAllCovers(WebRequest webRequest) {
 		logger.debug("BEGIN");
 		return this.checkNotModified(this.albumRepository::getMaxLastUpdateForAll,
-				this.albumCoverService::getCovers, webRequest);
+				this.albumCoverRepository::getCovers, webRequest);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AlbumCover getAlbumCoverById(@PathVariable Integer id, WebRequest webRequest) {
 		logger.debug("BEGIN {}", id);
-		return this.checkNotModified(() -> this.albumCoverService.getCoverById(id),
+		return this.checkNotModified(() -> this.albumCoverRepository.getCoverById(id),
 				AlbumCover::getLastUpdate, webRequest);
 	}
 
@@ -49,7 +49,7 @@ public class AlbumCoverCtrlImpl implements INotModifiedChecker, AlbumCoverCtrl {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public AlbumCover searchAlbumCover(@RequestParam String name, WebRequest webRequest) {
 		logger.debug("BEGIN {}", name);
-		return this.checkNotModified(() -> this.albumCoverService.getCoverByName(name),
+		return this.checkNotModified(() -> this.albumCoverRepository.getCoverByName(name),
 				AlbumCover::getLastUpdate, webRequest);
 	}
 }

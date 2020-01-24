@@ -1,4 +1,4 @@
-package image.photos.album.converter;
+package image.jpa2x.converter;
 
 import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.helper.ImageHelper;

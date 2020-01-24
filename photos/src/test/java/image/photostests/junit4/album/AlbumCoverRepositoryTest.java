@@ -1,7 +1,7 @@
 package image.photostests.junit4.album;
 
 import image.cdm.album.cover.AlbumCover;
-import image.photos.album.services.AlbumCoverService;
+import image.jpa2x.repositories.album.AlbumCoverRepository;
 import image.photostests.junit4.testconfig.PhotosProdJdbcDbConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,29 +22,29 @@ import static org.hamcrest.Matchers.*;
 @RunWith(SpringRunner.class)
 @PhotosProdJdbcDbConfig
 @Category(PhotosProdJdbcDbConfig.class)
-public class AlbumCoverServiceTest {
-	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverServiceTest.class);
+public class AlbumCoverRepositoryTest {
+	private static final Logger logger = LoggerFactory.getLogger(AlbumCoverRepositoryTest.class);
 
 	@Autowired
-	private AlbumCoverService albumCoverService;
+	private AlbumCoverRepository albumCoverRepository;
 
 	@Test
 	public void getCovers() {
-		List<AlbumCover> covers = this.albumCoverService.getCovers();
+		List<AlbumCover> covers = this.albumCoverRepository.getCovers();
 		assertThat(covers, hasItem(anything()));
 		logger.debug("covers.size = {}", covers.size());
 	}
 
 	@Test
 	public void getCoverById() {
-		AlbumCover cover = this.albumCoverService.getCoverById(45);
+		AlbumCover cover = this.albumCoverRepository.getCoverById(45);
 		assertThat(cover, notNullValue());
 		logger.debug(cover.getAlbumName());
 	}
 
 	@Test
 	public void getCoverByName() {
-		AlbumCover cover = this.albumCoverService.getCoverByName("2015-08-23 Natalia");
+		AlbumCover cover = this.albumCoverRepository.getCoverByName("2015-08-23 Natalia");
 		assertThat(cover, notNullValue());
 		logger.debug("{}, pk = {}", cover.getAlbumName(), cover.getId());
 	}
