@@ -20,7 +20,7 @@ import java.util.Date;
  * corresponds to the fragment interface is the Impl postfix.
  */
 @Transactional
-public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageFlagsUtils {
+public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageFlagsUtils {
 	@PersistenceContext
 	private EntityManager em;
 
@@ -32,9 +32,9 @@ public class ImageRepositoryCustomImpl implements ImageRepositoryCustom, IImageF
 	private static boolean removeAsCoverAndFromAlbumImages(Image persistentImage) {
 		boolean result = false;
 		Album album = persistentImage.getAlbum();
-		// isDeleted means "marked as deleted"
+		// isDeleted means "labeled" as deleted
 		if (!persistentImage.isDeleted()) {
-			// purge the image from DB
+			// purge image from DB
 			result = album.getImages().remove(persistentImage);
 		}
 		if (album.getCover() == null ||

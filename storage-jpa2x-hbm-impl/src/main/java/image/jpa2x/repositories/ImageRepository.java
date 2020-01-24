@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ImageRepository extends ImageQueryRepository,
-		ImageRepositoryCustom, ICustomJpaRepository<Image, Integer> {}
+		ImageUpdateRepository, ICustomJpaRepository<Image, Integer> {}
