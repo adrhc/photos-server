@@ -29,7 +29,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.CREATED;
 import static image.infrastructure.messaging.album.AlbumEventTypeEnum.MISSING_PATH;
@@ -86,8 +89,8 @@ public class AlbumImporterCtrlOnlyIT {
 	}
 
 	static class Config {
-		private static Optional<AlbumEvent> albumEvent(String name, AlbumEventTypeEnum albumEventType) {
-			return Optional.of(AlbumEvent.of(new Album(name), albumEventType));
+		private static AlbumEvent albumEvent(String name, AlbumEventTypeEnum albumEventType) {
+			return AlbumEvent.of(new Album(name), albumEventType);
 		}
 
 		@Bean
