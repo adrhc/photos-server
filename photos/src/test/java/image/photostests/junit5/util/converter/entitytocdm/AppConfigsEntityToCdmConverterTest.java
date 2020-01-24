@@ -2,7 +2,7 @@ package image.photostests.junit5.util.converter.entitytocdm;
 
 import image.persistence.entity.AppConfig;
 import image.persistence.entitytests.IAppConfigSupplier;
-import image.photos.util.conversion.PhotosConversionUtil;
+import image.photos.config.AppConfigConversionHelper;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photostests.junit5.util.assertion.IAppConfigAssertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,19 +16,19 @@ import java.util.List;
 @Tag("misc")
 public class AppConfigsEntityToCdmConverterTest implements IAppConfigSupplier, IAppConfigAssertions {
 	@Autowired
-	private PhotosConversionUtil photosConversionSupport;
+	private AppConfigConversionHelper photosConversionSupport;
 
 	private List<AppConfig> appConfigs;
 
 	@BeforeAll
 	void beforeAll() {
-		this.appConfigs = randomInstanceList(3, true, AppConfig.class);
+		this.appConfigs = this.randomInstanceList(3, true, AppConfig.class);
 	}
 
 	@Test
 	public void convert() {
 		List<image.cdm.AppConfig> cdmAppConfig =
 				this.photosConversionSupport.cdmAppConfigsOf(this.appConfigs);
-		assertAppConfigsEquals(cdmAppConfig, this.appConfigs);
+		this.assertAppConfigsEquals(cdmAppConfig, this.appConfigs);
 	}
 }

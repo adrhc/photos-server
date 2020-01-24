@@ -1,4 +1,4 @@
-package image.photos.util.conversion;
+package image.photos.config;
 
 import image.cdm.AppConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class PhotosConversionUtil {
+public class AppConfigConversionHelper {
 	private TypeDescriptor listOfCdmAppConfig = TypeDescriptor.collection(
 			List.class, TypeDescriptor.valueOf(image.cdm.AppConfig.class));
 	private TypeDescriptor listOfEntityAppConfig = TypeDescriptor.collection(

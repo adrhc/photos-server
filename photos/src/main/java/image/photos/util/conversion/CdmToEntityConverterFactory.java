@@ -18,10 +18,10 @@ import java.util.Map;
 public class CdmToEntityConverterFactory implements
 		ConverterFactory<ICdmEntity, IStorageEntity>, ConditionalConverter {
 	static final Map<Class<? extends ICdmEntity>,
-			Class<? extends IStorageEntity>> cdmToEntityClasses =
+			Class<? extends IStorageEntity>> CORRELATION =
 			new HashMap<>() {{
-				put(AppConfig.class, image.persistence.entity.AppConfig.class);
-				put(ExifInfo.class, ExifData.class);
+				this.put(AppConfig.class, image.persistence.entity.AppConfig.class);
+				this.put(ExifInfo.class, ExifData.class);
 			}};
 
 	@Override
@@ -29,12 +29,12 @@ public class CdmToEntityConverterFactory implements
 		if (!ICdmEntity.class.isAssignableFrom(sourceType.getObjectType())) {
 			return false;
 		}
-		Class<?> targetClass = this.cdmToEntityClasses.get(sourceType.getObjectType());
+		Class<?> targetClass = CORRELATION.get(sourceType.getObjectType());
 		return targetClass.isAssignableFrom(targetType.getObjectType());
 	}
 
 	@Override
 	public <T extends IStorageEntity> Converter<ICdmEntity, T> getConverter(Class<T> targetType) {
-		return (Converter<ICdmEntity, T>) new CopyPropertiesConverter<>(this.cdmToEntityClasses);
+		return (Converter<ICdmEntity, T>) new CopyPropertiesConverter<>(CORRELATION);
 	}
 }

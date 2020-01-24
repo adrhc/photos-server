@@ -5,7 +5,6 @@ import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.photos.infrastructure.filestore.FileStoreService;
-import image.photos.util.conversion.PhotosConversionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +26,16 @@ import java.util.List;
 public class AppConfigService {
 	private final ObjectMapper objectMapper;
 	private final AppConfigRepository appConfigRepository;
-	private final PhotosConversionUtil photosConversionSupport;
+	private final AppConfigConversionHelper appConfigConversionHelper;
 	private final FileStoreService fileStoreService;
 	@PersistenceContext
 	private EntityManager em;
 	@Value("${app.configs.file}")
 	private String appConfigsFile;
 
-	public AppConfigService(FileStoreService fileStoreService, PhotosConversionUtil photosConversionSupport, ObjectMapper objectMapper, AppConfigRepository appConfigRepository) {
+	public AppConfigService(FileStoreService fileStoreService, AppConfigConversionHelper photosConversionSupport, ObjectMapper objectMapper, AppConfigRepository appConfigRepository) {
 		this.fileStoreService = fileStoreService;
-		this.photosConversionSupport = photosConversionSupport;
+		this.appConfigConversionHelper = photosConversionSupport;
 		this.objectMapper = objectMapper;
 		this.appConfigRepository = appConfigRepository;
 	}
@@ -99,7 +98,7 @@ public class AppConfigService {
 //        logger.debug(ArrayUtils.toString(appConfigs));
 //        logger.debug("lastUpdatedAppConfigs = {}", getLastUpdatedAppConfigs());
 		this.objectMapper.writeValue(file.toFile(),
-				this.photosConversionSupport.cdmAppConfigsOf(appConfigs));
+				this.appConfigConversionHelper.cdmAppConfigsOf(appConfigs));
 		return file;
 	}
 
@@ -138,8 +137,11 @@ public class AppConfigService {
 	/**
 	 * updates appConfigs into DB
 	 */
-	public void updateAll(List<AppConfig> appConfigs) {
+	public void updateFromCdm(List<image.cdm.AppConfig> cdmAppConfigs) throws IOException {
+		List<image.persistence.entity.AppConfig> appConfigs =
+				this.appConfigConversionHelper.entityAppConfigsOf(cdmAppConfigs);
 		this.appConfigRepository.updateAll(appConfigs);
+		this.writeJsonForAppConfigs();
 	}
 
 	public void evictAppConfigCache() {

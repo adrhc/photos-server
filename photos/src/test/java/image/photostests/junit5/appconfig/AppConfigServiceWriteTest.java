@@ -5,8 +5,8 @@ import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import image.persistence.entity.AppConfig;
 import image.persistence.entity.enums.AppConfigEnum;
 import image.persistence.entitytests.IAppConfigSupplier;
+import image.photos.config.AppConfigConversionHelper;
 import image.photos.config.AppConfigService;
-import image.photos.util.conversion.PhotosConversionUtil;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photostests.junit5.util.assertion.IAppConfigAssertions;
 import io.github.glytching.junit.extension.folder.TemporaryFolder;
@@ -44,7 +44,7 @@ public class AppConfigServiceWriteTest implements IAppConfigAssertions, IAppConf
 	@Autowired
 	private AppConfigService appConfigService;
 	@Autowired
-	private PhotosConversionUtil photosConversionUtil;
+	private AppConfigConversionHelper photosConversionUtil;
 
 	@Random(type = AppConfig.class, size = 20, excludes = {"id", "lastUpdate"})
 	private List<AppConfig> appConfigs;

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by adr on 2/19/18.
@@ -14,10 +15,10 @@ public class ProcessRunner {
 	public String getProcessOutput(ProcessBuilder processBuilder) throws IOException, InterruptedException {
 		Process p = processBuilder.start();
 		p.waitFor();
-		InputStream is = p.getInputStream();
-		String psOutput = IOUtils.toString(is, "UTF-8");
-		IOUtils.closeQuietly(is);
-		p.destroy();
-		return psOutput;
+		try (InputStream is = p.getInputStream()) {
+			return IOUtils.toString(is, StandardCharsets.UTF_8);
+		} finally {
+			p.destroy();
+		}
 	}
 }

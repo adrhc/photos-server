@@ -28,8 +28,6 @@ public class ImageDimensionsTest {
 	private static final String XSH = "/home/adr/x.sh";
 	private static final Path IMAGE = pathOf("classpath:images/20171105_130105.jpg");
 
-	private ProcessRunner processRunner = new ProcessRunner();
-
 	@Before
 	public void beforeMethod() {
 		assumeTrue("missing " + XSH, Files.isExecutable(Path.of(XSH)));
@@ -44,7 +42,7 @@ public class ImageDimensionsTest {
 //                    "identify", "-verbose", path);
 		ProcessBuilder identifyImgDimensions = new ProcessBuilder(
 				XSH, "image_dims", IMAGE.toString());
-		String dimensions = this.processRunner.getProcessOutput(identifyImgDimensions);
+		String dimensions = new ProcessRunner().getProcessOutput(identifyImgDimensions);
 		logger.debug("dimensions " + dimensions + " for:\n" + IMAGE);
 		assertThat(dimensions, not(emptyOrNullString()));
 		String[] dims = dimensions.split("[x ]");

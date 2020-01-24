@@ -3,7 +3,6 @@ package image.jpa2x.repositories.album;
 import image.cdm.album.cover.AlbumCover;
 import image.jpa2x.converter.AlbumToCoverConverter;
 import image.persistence.entity.Album;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,16 +13,19 @@ import java.util.stream.Collectors;
  */
 @Repository
 public class AlbumCoverRepositoryImpl implements AlbumCoverRepository {
-	@Autowired
-	private AlbumToCoverConverter converter;
-	@Autowired
-	private AlbumRepository albumRepository;
+	private final AlbumToCoverConverter converter;
+	private final AlbumRepository albumRepository;
+
+	public AlbumCoverRepositoryImpl(AlbumToCoverConverter converter, AlbumRepository albumRepository) {
+		this.converter = converter;
+		this.albumRepository = albumRepository;
+	}
 
 	@Override
 	public List<AlbumCover> getCovers() {
 		return this.albumRepository
 				.findByDeletedFalseOrderByNameDesc().stream()
-				.map(it -> this.converter.convert(it))
+				.map(this.converter::convert)
 				.collect(Collectors.toList());
 	}
 
