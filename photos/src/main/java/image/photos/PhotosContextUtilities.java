@@ -38,8 +38,8 @@ public class PhotosContextUtilities {
 	@Autowired
 	@Bean({"mvcConversionService", "conversionService"})
 	public FormattingConversionService mvcConversionService(
-			Set<Converter> converterSet,
-			Set<ConverterFactory> converterFactories) {
+			Set<Converter<?, ?>> converterSet,
+			Set<ConverterFactory<?, ?>> converterFactories) {
 		DefaultFormattingConversionService conversionService =
 				new DefaultFormattingConversionService(false);
 
