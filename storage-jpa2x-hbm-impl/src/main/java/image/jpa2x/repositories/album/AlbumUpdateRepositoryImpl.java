@@ -2,10 +2,12 @@ package image.jpa2x.repositories.album;
 
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@Transactional
 public class AlbumUpdateRepositoryImpl implements AlbumUpdateRepository {
 	@PersistenceContext
 	private EntityManager em;
