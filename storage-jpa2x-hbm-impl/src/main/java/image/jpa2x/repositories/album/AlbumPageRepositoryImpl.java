@@ -6,6 +6,7 @@ import image.jpa2x.repositories.appconfig.AppConfigRepository;
 import org.hibernate.jpa.QueryHints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public class AlbumPageRepositoryImpl implements AlbumPageRepository {
 	@PersistenceContext
 	private EntityManager em;
