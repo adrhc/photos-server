@@ -154,7 +154,6 @@ public class AlbumImporterService implements IImageFlagsUtils {
 
 			int cpus = Runtime.getRuntime().availableProcessors();
 
-			// heavy / light lists construction
 			foundImageNames = Flux.fromStream(this.fileStoreService.walk(path))
 
 					// Prepare this Flux by dividing data on a number of 'rails' matching the number of CPU cores, in a round-robin fashion.
@@ -162,6 +161,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					// Specifies where each 'rail' will observe its incoming values with possibly work-stealing and a given prefetch amount.
 					.runOn(Schedulers.newBoundedElastic(cpus, Integer.MAX_VALUE, "import"), 1)
 
+					// importing image from file
 					.log()
 					.doOnNext(it -> log.debug("[before import] {}", it))
 					.flatMap(it -> Mono
@@ -174,6 +174,7 @@ public class AlbumImporterService implements IImageFlagsUtils {
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 
+					// setting isAtLeast1ImageChanged and preparing the file-names list
 					.doOnNext(event -> isAtLeast1ImageChanged.compareAndSet(
 							false, !event.getType().equals(ImageEventTypeEnum.NOTHING)))
 					.map(event -> event.getEntity().getName())
