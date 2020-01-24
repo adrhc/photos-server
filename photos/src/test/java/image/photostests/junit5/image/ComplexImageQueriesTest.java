@@ -5,7 +5,7 @@ import image.jpa2x.repositories.ImageRepository;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entitytests.assertion.IImageAssertions;
-import image.photos.infrastructure.database.AdvancedImageQueryRepository;
+import image.photos.infrastructure.database.ImageQueryRepositoryEx;
 import image.photos.infrastructure.mixed.ComplexImageQueries;
 import image.photostests.junit5.testconfig.Junit5PhotosInMemoryDbConfig;
 import image.photostests.overrides.infrastructure.filestore.FileStoreServiceTest;
@@ -31,7 +31,7 @@ class ComplexImageQueriesTest extends ImageTestBase implements IImageAssertions 
 	@Autowired
 	private ComplexImageQueries complexImageQueries;
 	@Autowired
-	private AdvancedImageQueryRepository advancedImageQueryRepository;
+	private ImageQueryRepositoryEx imageQueryRepositoryEx;
 	@Autowired
 	private FileStoreServiceTest fileStoreService;
 	@Autowired
@@ -50,7 +50,7 @@ class ComplexImageQueriesTest extends ImageTestBase implements IImageAssertions 
 	@Test
 	void findByNameAndAlbumId() {
 		Image image = this.album.getImages().get(0);
-		Image dbImage = this.advancedImageQueryRepository
+		Image dbImage = this.imageQueryRepositoryEx
 				.findByNameAndAlbumId(image.getName(), this.album.getId());
 		Assertions.assertNotNull(dbImage);
 		this.assertImageEquals(image, dbImage);

@@ -6,8 +6,8 @@ import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
 import image.photos.image.helpers.ThumbHelper;
-import image.photos.infrastructure.database.AdvancedImageQueryRepository;
-import image.photos.infrastructure.database.ImageCUDService;
+import image.photos.infrastructure.database.ImageQueryRepositoryEx;
+import image.photos.infrastructure.database.ImageUpdateRepositoryEx;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,19 +23,19 @@ import static image.jpa2x.util.ImageUtils.imageNameFrom;
 @Slf4j
 public class ImageImporterService {
 	private final ExifExtractorService exifExtractorService;
-	private final AdvancedImageQueryRepository advancedImageQueryRepository;
+	private final ImageQueryRepositoryEx imageQueryRepositoryEx;
 	private final ThumbHelper thumbHelper;
-	private final ImageCUDService imageCUDService;
+	private final ImageUpdateRepositoryEx imageUpdateRepositoryEx;
 	private final FileStoreService fileStoreService;
 
 	public ImageImporterService(ExifExtractorService exifExtractorService,
-			AdvancedImageQueryRepository advancedImageQueryRepository,
-			ThumbHelper thumbHelper, ImageCUDService imageCUDService,
+			ImageQueryRepositoryEx imageQueryRepositoryEx,
+			ThumbHelper thumbHelper, ImageUpdateRepositoryEx imageUpdateRepositoryEx,
 			FileStoreService fileStoreService) {
 		this.exifExtractorService = exifExtractorService;
-		this.advancedImageQueryRepository = advancedImageQueryRepository;
+		this.imageQueryRepositoryEx = imageQueryRepositoryEx;
 		this.thumbHelper = thumbHelper;
-		this.imageCUDService = imageCUDService;
+		this.imageUpdateRepositoryEx = imageUpdateRepositoryEx;
 		this.fileStoreService = fileStoreService;
 	}
 
@@ -44,7 +44,7 @@ public class ImageImporterService {
 				"Wrong image file (is a directory):\n{}" + imgFile;
 
 		// load Image from DB (if any)
-		Image dbImage = this.advancedImageQueryRepository
+		Image dbImage = this.imageQueryRepositoryEx
 				.findByNameAndAlbumId(imageNameFrom(imgFile), album.getId());
 
 		if (dbImage == null) {
@@ -64,7 +64,7 @@ public class ImageImporterService {
 		image.setName(imageName);
 		image.setAlbum(album);
 		// returns DB operation only
-		return this.imageCUDService.persist(image);
+		return this.imageUpdateRepositoryEx.persist(image);
 	}
 
 	private Optional<ImageEvent> updateFromFile(Path imgFile, Image image) throws IOException {
@@ -77,7 +77,7 @@ public class ImageImporterService {
 			ImageMetadata updatedImageMetadata =
 					this.exifExtractorService.extractMetadata(imgFile);
 			// returns DB operation only
-			return Optional.of(this.imageCUDService
+			return Optional.of(this.imageUpdateRepositoryEx
 					.updateImageMetadata(updatedImageMetadata, image.getId()));
 		}
 
@@ -87,7 +87,7 @@ public class ImageImporterService {
 				.thumbLastModified(imgFile, dbThumbLastModified);
 		if (thumbLastModifiedFromFile.after(dbThumbLastModified)) {
 			// returns DB operation only
-			return Optional.of(this.imageCUDService
+			return Optional.of(this.imageUpdateRepositoryEx
 					.updateThumbLastModified(thumbLastModifiedFromFile, image.getId()));
 		}
 

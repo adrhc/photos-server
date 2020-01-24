@@ -15,7 +15,7 @@ import image.photos.album.helpers.AlbumHelper;
 import image.photos.album.helpers.AlbumPathChecks;
 import image.photos.image.helpers.ImageHelper;
 import image.photos.image.services.ImageImporterService;
-import image.photos.infrastructure.database.ImageCUDService;
+import image.photos.infrastructure.database.ImageUpdateRepositoryEx;
 import image.photos.infrastructure.filestore.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,18 +49,18 @@ public class AlbumImporterService implements IImageFlagsUtils {
 	private final ImageImporterService imageImporterService;
 	private final ImageHelper imageHelper;
 	private final ImageQueryRepository imageQueryRepository;
-	private final ImageCUDService imageCUDService;
+	private final ImageUpdateRepositoryEx imageUpdateRepositoryEx;
 	private final AlbumRepository albumRepository;
 	private final AlbumTopic albumTopic;
 	private final AlbumPathChecks albumPathChecks;
 	private final AlbumHelper albumHelper;
 	private final FileStoreService fileStoreService;
 
-	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageCUDService imageCUDService, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
+	public AlbumImporterService(ImageHelper imageHelper, ImageImporterService imageImporterService, ImageUpdateRepositoryEx imageUpdateRepositoryEx, ImageQueryRepository imageQueryRepository, AlbumRepository albumRepository, AlbumTopic albumTopic, AlbumPathChecks albumPathChecks, AlbumHelper albumHelper, FileStoreService fileStoreService) {
 		this.imageHelper = imageHelper;
 		this.imageImporterService = imageImporterService;
 		this.imageQueryRepository = imageQueryRepository;
-		this.imageCUDService = imageCUDService;
+		this.imageUpdateRepositoryEx = imageUpdateRepositoryEx;
 		this.albumRepository = albumRepository;
 		this.albumTopic = albumTopic;
 		this.albumPathChecks = albumPathChecks;
@@ -252,16 +252,16 @@ public class AlbumImporterService implements IImageFlagsUtils {
 				// found: update db-image name
 				log.debug("poza din DB ({}) cu nume diferit in file system ({}):\nactualizez in DB cu {}",
 						dbName, oppositeExtensionCase, oppositeExtensionCase);
-				events.add(this.imageCUDService.changeName(oppositeExtensionCase, image.getId()));
+				events.add(this.imageUpdateRepositoryEx.changeName(oppositeExtensionCase, image.getId()));
 			} else if (this.areEquals(image.getFlags(), ImageFlagEnum.DEFAULT) ||
 					image.getRating() != ImageRating.MIN_RATING) {
 				// not found (flags & rating not changed): purge image from DB
 				log.debug("poza din DB ({}) nu exista in file system: sterg din DB", dbName);
-				events.add(this.imageCUDService.safelyDeleteImage(image.getId()));
+				events.add(this.imageUpdateRepositoryEx.safelyDeleteImage(image.getId()));
 			} else {
 				// not found (flags or rating changed): logically delete image
 				log.debug("poza din DB ({}) nu exista in file system: marchez ca stearsa", dbName);
-				events.add(this.imageCUDService.markDeleted(image.getId()));
+				events.add(this.imageUpdateRepositoryEx.markDeleted(image.getId()));
 			}
 		});
 		log.debug("END {}", album.getName());

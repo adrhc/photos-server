@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional
-public class AdvancedImageQueryRepositoryImpl implements AdvancedImageQueryRepository {
+public class ImageQueryRepositoryExImpl implements ImageQueryRepositoryEx {
 	private final ImageRepository imageRepository;
 
-	public AdvancedImageQueryRepositoryImpl(ImageRepository imageRepository) {this.imageRepository = imageRepository;}
+	public ImageQueryRepositoryExImpl(ImageRepository imageRepository) {this.imageRepository = imageRepository;}
 
 	@Override
 	public Image findByNameAndAlbumId(String name, Integer albumId) {
