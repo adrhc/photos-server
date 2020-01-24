@@ -339,7 +339,22 @@
                     <!--<includeTags>junit5&amp;photos&amp;json</includeTags>-->
                     <!--<includeTags>junit5&amp;photos&amp;misc</includeTags>-->
                     <!--</properties>-->
-                    <reuseForks>true</reuseForks>
+                    <!--
+                        2020.01.24, reuseForks = true
+                        
+                        image.exifwebtests.apache.ApacheService4Test
+
+                        Caused by: net.sf.ehcache.CacheException: Another CacheManager with same name 'in-memory' already exists in the same VM. Please provide unique names for each CacheManager in the config or do one of following:
+                        1. Use one of the CacheManager.create() static factory methods to reuse same CacheManager with same name or create one if necessary
+                        2. Shutdown the earlier cacheManager before creating new one with same name.
+                        The source of the existing CacheManager is: URLConfigurationSource [url=jar:file:/home/adr/.m2/repository/image/exifweb/storage-impl-hbm/1.0-SNAPSHOT/storage-impl-hbm-1.0-SNAPSHOT.jar!/ehcache/ehcache-in-memory.xml]
+                            at net.sf.ehcache.CacheManager.assertNoCacheManagerExistsWithSameName(CacheManager.java:631)
+                            at net.sf.ehcache.CacheManager.init(CacheManager.java:395)
+                            at net.sf.ehcache.CacheManager.<init>(CacheManager.java:269)
+                            at org.hibernate.cache.ehcache.internal.EhcacheRegionFactory.useNormalCacheManager(EhcacheRegionFactory.java:248)
+                            ... 95 more
+                    -->
+                    <reuseForks>false</reuseForks>
                 </configuration>
             </plugin>
 
