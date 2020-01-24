@@ -86,7 +86,7 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	public ImageEvent safelyDeleteImage(Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		boolean deleted = removeAsCoverAndFromAlbumImages(image);
-		return ImageEvent.of(image, deleted ? DELETED : NOTHING);
+		return ImageEvent.of(image, DELETED, !deleted);
 	}
 
 	@Override
