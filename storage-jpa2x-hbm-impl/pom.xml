@@ -18,6 +18,10 @@
     <dependencies>
         <dependency>
             <groupId>image.exifweb</groupId>
+            <artifactId>exifweb-messaging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>image.exifweb</groupId>
             <artifactId>util</artifactId>
         </dependency>
         <dependency>

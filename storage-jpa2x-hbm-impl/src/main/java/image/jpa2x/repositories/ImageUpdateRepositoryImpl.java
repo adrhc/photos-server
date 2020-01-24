@@ -2,6 +2,7 @@ package image.jpa2x.repositories;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
+import image.infrastructure.messaging.image.ImageEvent;
 import image.persistence.entity.Album;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.IImageFlagsUtils;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
+
+import static image.infrastructure.messaging.image.ImageEventTypeEnum.UPDATED;
 
 /**
  * 4.6.1. Customizing Individual Repositories
@@ -60,9 +63,10 @@ public class ImageUpdateRepositoryImpl implements ImageUpdateRepository, IImageF
 	}
 
 	@Override
-	public void changeName(String newName, Integer imageId) {
+	public ImageEvent changeName(String newName, Integer imageId) {
 		Image image = this.em.find(Image.class, imageId);
 		image.setName(newName);
+		return ImageEvent.of(image, UPDATED);
 	}
 
 	@Override

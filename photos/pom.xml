@@ -20,10 +20,6 @@
         </dependency>
         <dependency>
             <groupId>image.exifweb</groupId>
-            <artifactId>exifweb-messaging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>image.exifweb</groupId>
             <artifactId>storage-jpa2x-hbm-impl</artifactId>
             <!--
                 needs version because including test-jar also

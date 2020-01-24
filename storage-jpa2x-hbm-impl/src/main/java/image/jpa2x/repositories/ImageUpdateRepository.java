@@ -2,6 +2,7 @@ package image.jpa2x.repositories;
 
 import image.cdm.image.ImageRating;
 import image.cdm.image.status.ImageStatus;
+import image.infrastructure.messaging.image.ImageEvent;
 import image.persistence.entity.image.ImageMetadata;
 
 import java.util.Date;
@@ -19,7 +20,7 @@ public interface ImageUpdateRepository {
 
 	boolean markDeleted(Integer imageId);
 
-	void changeName(String newName, Integer imageId);
+	ImageEvent changeName(String newName, Integer imageId);
 
 	void updateThumbLastModified(Date thumbLastModified, Integer imageId);
 

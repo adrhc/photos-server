@@ -2,6 +2,7 @@ package image.photostests.junit5.infrastructure.database;
 
 import exifweb.util.random.RandomBeansExtensionEx;
 import image.jpa2x.repositories.ImageRepository;
+import image.jpa2x.repositories.ImageUpdateRepository;
 import image.jpa2xtests.repositories.ImageTestBase;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -25,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Junit5PhotosInMemoryDbConfig
 @Slf4j
 public class ImageUpdateRepositoryExTest extends ImageTestBase implements IImageAssertions {
+	@Autowired
+	private ImageUpdateRepository imageUpdateRepository;
 	@Autowired
 	private ImageUpdateRepositoryEx imageUpdateRepositoryEx;
 	@Autowired
@@ -58,7 +61,7 @@ public class ImageUpdateRepositoryExTest extends ImageTestBase implements IImage
 	@Test
 	void changeName(@Random String newName) {
 		Image image = this.album.getImages().get(0);
-		this.imageUpdateRepositoryEx.changeName(newName, image.getId());
+		this.imageUpdateRepository.changeName(newName, image.getId());
 		Image dbImage = this.imageRepository.findById(image.getId()).orElseThrow(AssertionError::new);
 		assertEquals(newName, dbImage.getName());
 		image.setName(newName);

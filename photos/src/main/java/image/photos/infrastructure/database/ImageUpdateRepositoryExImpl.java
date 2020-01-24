@@ -1,7 +1,6 @@
 package image.photos.infrastructure.database;
 
 import image.infrastructure.messaging.image.ImageEvent;
-import image.infrastructure.messaging.image.ImageEventTypeEnum;
 import image.jpa2x.repositories.ImageRepository;
 import image.persistence.entity.Image;
 import image.persistence.entity.image.ImageMetadata;
@@ -25,15 +24,6 @@ import static image.infrastructure.messaging.image.ImageEventTypeEnum.*;
 public class ImageUpdateRepositoryExImpl implements ImageUpdateRepositoryEx {
 	@Autowired
 	private ImageRepository imageRepository;
-
-	@Override
-	public ImageEvent changeName(String newName, Integer imageId) {
-		// transaction
-		this.imageRepository.changeName(newName, imageId);
-		Image image = this.imageRepository.getById(imageId);
-		// emission (only when transaction succeeds)
-		return of(image, ImageEventTypeEnum.UPDATED);
-	}
 
 	@Override
 	public ImageEvent safelyDeleteImage(Integer imageId) {
