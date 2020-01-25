@@ -15,74 +15,47 @@
         -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
+
         <!--
             see javac - - help
             see https://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html
         -->
         <!--<maven.compiler.release>${maven.compiler.target}</maven.compiler.release>-->
 
+        <!-- flags -->
+        <run-tomcat-embedded>provided</run-tomcat-embedded>
+        <run-jetty>provided</run-jetty>
+
         <!--
-            https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
-            Should be the same version for spring-instrument-tomcat-*.jar!
+        https://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/#aop-aj-ltw-environments
+        Should be the same version for spring-instrument-tomcat-*.jar!
         -->
         <!--<springframework.version>4.3.14.RELEASE</springframework.version>-->
         <!--<spring-security.version>3.2.10.RELEASE</spring-security.version>-->
         <!--<spring-security.version>4.2.4.RELEASE</spring-security.version>-->
-        <springframework.version>5.2.1.RELEASE</springframework.version>
-        <spring-security.version>${springframework.version}</spring-security.version>
-        <spring-data-jpa.version>2.2.1.RELEASE</spring-data-jpa.version>
+        <!--springframework.version>5.2.3.RELEASE</springframework.version>-->
+        <!--spring-security.version>5.2.1.RELEASE</spring-security.version>-->
+        <!--spring-data-releasetrain.version>Moore-SR4</spring-data-releasetrain.version>-->
+        <spring-boot.version>2.2.4.RELEASE</spring-boot.version>
+        <reactor-bom.version>Dysprosium-SR2</reactor-bom.version>
 
-        <jackson.version>2.10.0</jackson.version>
-
-        <!--<hibernate.version>4.3.11.Final</hibernate.version>-->
-        <!--<jackson-datatype-hibernate4.version>2.9.4</jackson-datatype-hibernate4.version>-->
-        <hibernate.version>5.4.8.Final</hibernate.version>
-
-        <ehcache.version>2.10.6</ehcache.version>
-
-        <slf4j.version>1.7.25</slf4j.version>
-        <!-- sync with slf4j-parent-*.pom -->
+        <!-- various libraries versions -->
+        <metadata-extractor.version>2.13.0</metadata-extractor.version>
+        <commons-io.version>2.6</commons-io.version>
         <log4j.version>1.2.17</log4j.version>
+        <lombok.version>1.18.10</lombok.version>
 
-        <javaee-api.version>7.0</javaee-api.version>
-
-        <aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
-        <!-- same as aspectjtools within aspectj-maven-plugin -->
-        <aspectjrt.version>1.9.2</aspectjrt.version>
-
-        <!--
-            java8 won't work with version (2.5.1, 3.7.0]
-            I guess it determines also the spring-instrument-tomcat version.
-        -->
-        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-
-        <run-tomcat-embedded>provided</run-tomcat-embedded>
-        <run-jetty>provided</run-jetty>
-        <tomcat.version>7.0.64</tomcat.version>
-
-        <commons.io>2.6</commons.io>
-        <mysql.connector>8.0.16</mysql.connector>
-        <metadata-extractor.version>2.11.0</metadata-extractor.version>
-        <net.sf.json>2.4</net.sf.json>
-        <jstl.version>1.2</jstl.version>
-        <commons-lang3.version>3.8.1</commons-lang3.version>
+        <!-- plugins -->
+        <lombok-maven-plugin.version>1.18.10.0</lombok-maven-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.0.0-M4</maven-failsafe-plugin.version>
         <maven-surefire-report-plugin.version>3.0.0-M4</maven-surefire-report-plugin.version>
         <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
         <!--
-            https://projectlombok.org/download-edge
+        java8 won't work with version (2.5.1, 3.7.0]
+        I guess it determines also the spring-instrument-tomcat version.
         -->
-        <!--<lombok.version>edge-SNAPSHOT</lombok.version>-->
-        <lombok.version>1.18.10</lombok.version>
-        <lombok-maven-plugin.version>1.18.10.0</lombok-maven-plugin.version>
-
-        <junit.version>4.13</junit.version>
-        <junit-jupiter.version>5.5.2</junit-jupiter.version>
-        <junit-platform-launcher.version>1.5.2</junit-platform-launcher.version>
-
-        <jaxb.version>2.3.1</jaxb.version>
-        <forkCount>1C</forkCount>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     </properties>
 
     <repositories>
@@ -102,12 +75,34 @@
 
     <dependencyManagement>
         <dependencies>
-            <!--<dependency>-->
-            <!--<groupId>org.springframework</groupId>-->
-            <!--<artifactId>spring-instrument-tomcat</artifactId>-->
-            <!--&lt;!&ndash;<version>4.2.9.RELEASE</version>&ndash;&gt;-->
-            <!--<version>4.3.13.RELEASE</version>-->
-            <!--</dependency>-->
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>${reactor-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--
+                <dependency>
+                    <groupId>org.springframework.data</groupId>
+                    <artifactId>spring-data-releasetrain</artifactId>
+                    <version>${spring-data-releasetrain}</version>
+                    <scope>import</scope>
+                    <type>pom</type>
+                </dependency>
+            -->
+
+            <!-- BEGIN CURRENT PROJECT VERSIONS -->
 
             <dependency>
                 <groupId>image.exifweb</groupId>
@@ -210,22 +205,14 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- END CURRENT PROJECT VERSIONS -->
+
+            <!-- BEGIN VARIOUS LIBRARIES VERSIONS -->
+
             <dependency>
                 <groupId>com.rainerhahnekamp</groupId>
                 <artifactId>sneakythrow</artifactId>
                 <version>1.1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.jolbox</groupId>
-                <artifactId>bonecp</artifactId>
-                <version>0.8.0.RELEASE</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.9.3</version>
             </dependency>
 
             <dependency>
@@ -249,66 +236,21 @@
             </dependency>
 
             <dependency>
-                <groupId>io.projectreactor</groupId>
-                <artifactId>reactor-bom</artifactId>
-                <version>Dysprosium-SR2</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>${commons.io}</version>
+                <version>${commons-io.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.3</version>
             </dependency>
 
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
-
-            <!--
-                ERROR (at compilation when missing aspectjrt):
-                    couldn't find aspectjrt.jar on classpath, checked ...
-            -->
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>${aspectjrt.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.connector}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang3.version}</version>
+                <groupId>com.jolbox</groupId>
+                <artifactId>bonecp</artifactId>
+                <version>0.8.0.RELEASE</version>
             </dependency>
 
             <dependency>
@@ -317,462 +259,22 @@
                 <version>${metadata-extractor.version}</version>
             </dependency>
 
-            <!-- org.springframework -->
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-instrument</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-                <version>${springframework.version}</version>
-            </dependency>
-
-            <!-- spring-data-jpa -->
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-jpa</artifactId>
-                <version>${spring-data-jpa.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-orm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-instrument</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aspects</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <!-- org.springframework.security -->
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jdbc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webflux</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webmvc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-test</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jdbc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webflux</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webmvc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-websocket</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-expression</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-orm</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-test</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-aspects</artifactId>
-                <version>${spring-security.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-test</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.26.0-GA</version>
+                <scope>runtime</scope>
             </dependency>
 
             <dependency>
-                <groupId>net.sf.ehcache</groupId>
-                <artifactId>ehcache</artifactId>
-                <version>${ehcache.version}</version>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-            <!-- depends on hibernate-core -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
+            <!-- END VARIOUS LIBRARIES VERSIONS -->
 
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <!--
-                jackson-datatype-hibernate4 depends on:
-                    jackson-core -> jackson-databind -> jackson-annotations
-                version determined by jackson-datatype-hibernate4.version
-
-                see mvn dependency:tree | grep -B3 jackson
-            -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-hibernate5</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <!--
-                https://github.com/FasterXML/jackson-modules-java8
-
-                Jackson 3.x changes things as it requires Java 8 to work and can thereby directly supported features. Because of this parameter-names and datatypes modules are merged into jackson-databind and need not be registered; datetime module (JavaTimeModule) remains separate module due to its size and configurability options.
-            -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-parameter-names</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
-                <version>${jstl.version}</version>
-            </dependency>
-
-            <!--<dependency>-->
-            <!--<groupId>javax.servlet.jsp.jstl</groupId>-->
-            <!--<artifactId>jstl-api</artifactId>-->
-            <!--<version>${jstl.version}</version>-->
-            <!--</dependency>-->
-
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <!--<dependency>-->
-            <!--<groupId>com.github.peichhorn</groupId>-->
-            <!--<artifactId>lombok-pg</artifactId>-->
-            <!--<version>0.11.3</version>-->
-            <!--<scope>provided</scope>-->
-            <!--</dependency>-->
-
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>3.2.0</version>
-            </dependency>
-
-            <!--
-                ERROR
-                    Absent Code attribute in method that is not native or abstract in class file javax/persistence/GenerationType
-                SOLUTION
-                    Let this dependency the last!
-
-                see https://stackoverflow.com/questions/8483419/jpa-classformat-error-absent-code-attribute-in-method-that-is-not-native-or-abs
-            -->
-            <!--<dependency>-->
-            <!--<groupId>javax</groupId>-->
-            <!--<artifactId>javaee-api</artifactId>-->
-            <!--<version>${javaee-api.version}</version>-->
-            <!--<scope>provided</scope>-->
-            <!--</dependency>-->
-
-            <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.3.2</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>4.0.1</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.xml.bind</groupId>
-                <artifactId>jaxb-api</artifactId>
-                <version>${jaxb.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jaxb</groupId>
-                <artifactId>jaxb-runtime</artifactId>
-                <version>${jaxb.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>1.4.199</version>
-                <scope>test</scope>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
-            <!--<dependency>-->
-            <!--<groupId>org.hsqldb</groupId>-->
-            <!--<artifactId>hsqldb</artifactId>-->
-            <!--<version>2.4.0</version>-->
-            <!--<scope>test</scope>-->
-            <!--</dependency>-->
-            <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
-            <!--<dependency>-->
-            <!--<groupId>org.apache.derby</groupId>-->
-            <!--<artifactId>derby</artifactId>-->
-            <!--<version>10.14.1.0</version>-->
-            <!--<scope>test</scope>-->
-            <!--</dependency>-->
-
-            <!-- junit 5 -->
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!--
-                https://junit.org/junit5/docs/current/user-guide/#running-tests-ide-intellij-idea
-                
-                Only needed to run tests in a version of IntelliJ IDEA that bundles older versions
-            -->
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-launcher</artifactId>
-                <version>${junit-platform-launcher.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.vintage</groupId>
-                <artifactId>junit-vintage-engine</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <!-- junit 4 -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hamcrest</groupId>
-                <artifactId>hamcrest-library</artifactId>
-                <version>2.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.exparity</groupId>
-                <artifactId>hamcrest-date</artifactId>
-                <version>2.0.7</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${springframework.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-test</artifactId>
-                <version>${spring-security.version}</version>
-                <scope>test</scope>
-            </dependency>
+            <!-- BEGIN TEST LIBRARIES -->
 
             <!--
                 https://mvnrepository.com/artifact/io.takari.junit/takari-cpsuite
@@ -792,6 +294,7 @@
             <!--<artifactId>jexample</artifactId>-->
             <!--<version>4.4-378</version>-->
             <!--</dependency>-->
+
             <!-- https://mvnrepository.com/artifact/net.jcip/jcip-annotations -->
             <dependency>
                 <groupId>net.jcip</groupId>
@@ -801,9 +304,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-core</artifactId>
-                <version>3.2.4</version>
+                <groupId>org.exparity</groupId>
+                <artifactId>hamcrest-date</artifactId>
+                <version>2.0.7</version>
                 <scope>test</scope>
             </dependency>
 
@@ -815,20 +318,6 @@
                 <artifactId>junit-extensions</artifactId>
                 <version>2.3.0</version>
                 <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.jayway.jsonpath</groupId>
-                <artifactId>json-path</artifactId>
-                <version>2.4.0</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.26.0-GA</version>
-                <scope>runtime</scope>
             </dependency>
 
         </dependencies>
@@ -843,55 +332,67 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Only needed to run tests in a version of IntelliJ IDEA that bundles older versions -->
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.exparity</groupId>
             <artifactId>hamcrest-date</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.takari.junit</groupId>
             <artifactId>takari-cpsuite</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>net.jcip</groupId>
             <artifactId>jcip-annotations</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.glytching</groupId>
             <artifactId>junit-extensions</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -1013,7 +514,7 @@
                     </executions>
                     <configuration>
                         <skipAfterFailureCount>1</skipAfterFailureCount>
-<!--                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
+                        <!--                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
                         <forkCount>1C</forkCount>
                         <reuseForks>false</reuseForks>
                         <disableXmlReport>false</disableXmlReport>
@@ -1037,7 +538,7 @@
                     <!-- combine.children="merge" is the default -->
                     <configuration>
                         <skipAfterFailureCount>1</skipAfterFailureCount>
-<!--                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
+                        <!--                        <argLine>-Xmx512m -XX:MetaspaceSize=256m</argLine>-->
                         <!--
                             https://stackoverflow.com/questions/26882936/why-does-springjunit4classrunner-not-work-with-surefire-parallel-methods
                             parallel=methods -> ApplicationContext fails with this multithreaded environment
@@ -1484,8 +985,8 @@
         <module>cdm</module>
         <module>storage-entities</module>
         <module>exifweb-messaging</module>
-        <!--        <module>storage-api</module>-->
-        <!--        <module>storage-impl-hbm</module>-->
+        <!--module>storage-api</module>-->
+        <!--module>storage-impl-hbm</module>-->
         <module>storage-jpa2x-hbm-impl</module>
         <!-- photos = business logic -->
         <module>photos</module>
