@@ -86,8 +86,6 @@ public class AppConfigService {
 	 * Metoda cu dublu scope:
 	 * - update appConfigs.json
 	 * - update lastUpdatedAppConfigs
-	 *
-	 * @throws IOException
 	 */
 	public Path writeJsonForAppConfigs() throws IOException {
 		Path dir = Path.of(this.appConfigRepository

@@ -18,6 +18,10 @@ public abstract class AppConfigFromClassPath implements IAppConfigSupplier {
 		return pathOf(ALBUMS_ROOT);
 	}
 
+	protected void albumAutoExport(Boolean enabled) {
+		this.configRepository.updateOrCreate(enabled.toString(), AppConfigEnum.album_autoexport);
+	}
+
 	protected void photosJsonPath(Path tempDir) {
 		this.configRepository.updateOrCreate(tempDir.toString(), AppConfigEnum.photos_json_FS_path);
 	}

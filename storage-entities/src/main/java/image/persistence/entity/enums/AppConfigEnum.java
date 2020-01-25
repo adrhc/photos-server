@@ -15,7 +15,8 @@ import java.io.Serializable;
 public enum AppConfigEnum implements Serializable {
 	albums_path("albums_path"),
 	photos_per_page("photos_per_page"),
-	photos_json_FS_path("photos json FS path");
+	photos_json_FS_path("photos json FS path"),
+	album_autoexport("album-autoexport");
 
 	/**
 	 * corresponds to the DB value

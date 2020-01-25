@@ -91,6 +91,7 @@ class AlbumImporterCtrlIT extends AppConfigFromClassPath {
 		this.defaultAlbumsRoot();
 		this.photosJsonPath(jsonDir);
 		this.photosPerPage(PHOTOS_PER_PAGE);
+		this.albumAutoExport(true);
 	}
 
 	@WithMockUser(value = "admin", roles = {"ADMIN"})

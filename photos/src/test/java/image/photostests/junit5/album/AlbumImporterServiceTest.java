@@ -64,6 +64,7 @@ class AlbumImporterServiceTest extends AppConfigFromClassPath {
 		this.albumRepository.deleteAll();
 		this.defaultAlbumsRoot();
 		this.photosPerPage(PHOTOS_PER_PAGE);
+		this.albumAutoExport(false);
 	}
 
 	@ParameterizedTest
