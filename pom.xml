@@ -41,7 +41,7 @@
 
         <!-- various libraries versions -->
         <metadata-extractor.version>2.13.0</metadata-extractor.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <log4j.version>1.2.17</log4j.version>
         <lombok.version>1.18.10</lombok.version>
 
